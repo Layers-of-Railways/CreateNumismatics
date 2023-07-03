@@ -1,9 +1,19 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
 architectury {
     platformSetupLoomIde()
     forge()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+    }
 }
 
 configurations {
@@ -14,36 +24,75 @@ configurations {
     developmentForge.extendsFrom common
 }
 
-dependencies {
-    forge "net.minecraftforge:forge:${forge_version}"
+repositories {
+    // mavens for Forge-exclusives
+    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { // Create Forge and Registrate Forge
+        url = "https://maven.tterrag.com/"
+        content {
+            includeGroup("com.tterrag.registrate")
+            includeGroup("com.simibubi.create")
+        }
+    }
+}
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+dependencies {
+    forge("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+    // Create and its dependencies
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_forge_version}:slim") { transitive = false }
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_forge_version}")
+    modImplementation("com.jozufozu.flywheel:flywheel-forge-${flywheel_forge_minecraft_version}:${flywheel_forge_version}")
+
+    // Development QOL
+    modLocalRuntime("mezz.jei:jei-${minecraft_version}-forge:${jei_version}") { transitive = false }
+
+    // if you would like to add integration with JEI, uncomment this line.
+//    modCompileOnly("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
 }
 
 processResources {
-    inputs.property "version", project.version
+    // set up properties for filling into metadata
+    Map<String, String> properties = Map.of(
+            "version", version,
+            "forge_version", forge_version.split("\\.")[0], // only specify major version of forge
+            "minecraft_version", minecraft_version,
+            "create_version", create_forge_version.split("-")[0] // cut off build number
+    )
+    properties.forEach((k, v) -> inputs.property(k, v))
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand properties
+    }
+}
+
+loom {
+    forge {
+        mixinConfig(
+                "examplemod-common.mixins.json",
+                "examplemod.mixins.json"
+        )
     }
 }
 
 shadowJar {
     exclude "fabric.mod.json"
+    exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    archiveClassifier.set("dev-shadow")
+    classifier "dev-shadow"
 }
 
 remapJar {
-    inputFile.set shadowJar.archiveFile
+    input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveClassifier.set(null)
+    classifier null
 }
 
 jar {
-    archiveClassifier.set("dev")
+    classifier "dev"
 }
 
 sourcesJar {

@@ -1,8 +1,6 @@
 {
   "pack": {
-    "description": "CreateNumismatics resources",
-    "pack_format": 8,
-    "forge:resource_pack_format": 8,
-    "forge:data_pack_format": 9
+    "description": "Create: Numismatics",
+    "pack_format": 8
   }
 }
