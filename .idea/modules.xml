@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/currency.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/currency.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/currency.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/currency.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/currency.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/currency.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/currency.fabric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/currency.fabric.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/currency.fabric.test.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/currency.fabric.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/forge/currency.forge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/forge/currency.forge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/forge/currency.forge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/forge/currency.forge.test.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "CreateNumismatics",
+  "version": "${version}",
+
+  "name": "Numismatics",
+  "description": "",
+  "authors": ["IThundxr"],
+  "contact": {},
+
+  "license": "All Rights Reserved",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": {},
+  "mixins": [
+    "CreateNumismatics.mixins.json",
+    "CreateNumismatics-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": ">=1.18"
+  }
+}
