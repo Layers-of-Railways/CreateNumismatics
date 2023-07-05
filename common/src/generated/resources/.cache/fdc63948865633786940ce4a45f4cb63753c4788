@@ -1,0 +1,7 @@
+// 1.19.2	2023-07-05T13:39:24.673629281	Registrate Provider for numismatics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+cc9df080b9b98fbea3845f600e4e36b2a562701e assets/numismatics/models/item/example_item.json
+2b2a4bde1a1c86393b28fa3ff9b81ef1ddeed22d data/numismatics/loot_tables/blocks/example_block.json
+4be4e7cb271e7aa2bbc44da5d38b28c00f7ed446 assets/numismatics/lang/en_us.json
+605c8ac36e95d743bff9bf3a1ff236b20cf17fa7 assets/numismatics/models/block/example_block.json
+3eaf958b05d5fac02bc98590813c07036d3fe2f3 assets/numismatics/blockstates/example_block.json
+4c0d8874f70d5f4d60a4c57a4492580fe670b829 assets/numismatics/lang/en_ud.json
