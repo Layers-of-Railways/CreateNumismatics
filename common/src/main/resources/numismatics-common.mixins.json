@@ -1,10 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.examplemod.mixin",
+  "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ithundxr.examplemod.mixin.MixinTitleScreen"
+    "client.MixinTitleScreen"
   ],
   "mixins": [
   ],

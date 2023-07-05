@@ -4,30 +4,30 @@ issueTrackerURL = "https://github.com/IThundxr/CreateNumismatics/issues"
 license = "BY-NC-SA"
 
 [[mods]]
-modId = "createnumismatics"
+modId = "numismatics"
 version = "${version}"
 displayName = "Create: Numismatics"
-authors = "IThundxr, Violet, Pink"
+authors = "IThundxr, Violet, Pink, Slimeist"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''
 logoFile = "icon.png"
 
-[[dependencies.createnumismatics]]
+[[dependencies.numismatics]]
 modId = "forge"
 mandatory = true
 versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.createnumismatics]]
+[[dependencies.numismatics]]
 modId = "minecraft"
 mandatory = true
 versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.createnumismatics]]
+[[dependencies.numismatics]]
 modId="create"
 mandatory=true
 versionRange="${create_version}"

@@ -1,27 +1,27 @@
 {
   "schemaVersion": 1,
-  "id": "createnumismatics",
+  "id": "numismatics",
   "version": "${version}",
   "name": "Create: Numismatics",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
-    "IThundxr", "Violet", "Pink"
+    "IThundxr", "Violet", "Pink", "Slimeist"
   ],
   "contact": {
     "homepage": "https://ithundxr.dev",
     "sources": "https://github.com/IThundxr/CreateNumismatics"
   },
   "license": "BY-NC-SA",
-  "icon": "assets/examplemod/icon.png",
+  "icon": "assets/numismatics/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ithundxr.examplemod.fabric.ExampleModFabric"
+      "dev.ithundxr.createnumismatics.fabric.NumismaticsFabric"
     ]
   },
   "mixins": [
-    "createnumismatics.mixins.json",
-    "createnumismatics-common.mixins.json"
+    "numismatics.mixins.json",
+    "numismatics-common.mixins.json"
   ],
   "depends": {
     "minecraft": "${minecraft_version}",
