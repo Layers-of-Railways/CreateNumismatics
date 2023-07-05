@@ -1,6 +1,6 @@
 package dev.ithundxr.createnumismatics.forge;
 
-import dev.ithundxr.createnumismatics.ExampleBlocks;
+import dev.ithundxr.createnumismatics.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -11,7 +11,7 @@ public class NumismaticsForge {
     public NumismaticsForge() {
         // registrate must be given the mod event bus on forge before registration
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ExampleBlocks.REGISTRATE.registerEventListeners(eventBus);
+        NumismaticsBlocks.REGISTRATE.registerEventListeners(eventBus);
         Numismatics.init();
     }
 }

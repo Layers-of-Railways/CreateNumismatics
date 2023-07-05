@@ -8,7 +8,22 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+    Project common = project(":common")
+    accessWidenerPath = common.loom.accessWidenerPath
+
+    runs {
+        datagen {
+            client()
+
+            name "Minecraft Data"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${common.file("src/generated/resources")}"
+            vmArg "-Dfabric-api.datagen.modid=numismatics"
+            vmArg "-Dporting_lib.datagen.existing_resources=${common.file("src/main/resources")}"
+
+            environmentVariable("DATAGEN", "TRUE")
+        }
+    }
 }
 
 configurations {
@@ -28,6 +43,10 @@ repositories {
     maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+    maven { // forge config api port
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
 }
 
 dependencies {
@@ -40,6 +59,9 @@ dependencies {
 
     // Create - dependencies are added transitively
     modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:${create_fabric_version}")
+
+    // because create fabric is a bit broken I think
+    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.9"
 
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${lazydfu_version}")

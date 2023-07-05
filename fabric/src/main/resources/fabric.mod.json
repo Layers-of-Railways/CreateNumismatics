@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "dev.ithundxr.createnumismatics.fabric.NumismaticsFabric"
+    ],
+    "fabric-datagen": [
+      "dev.ithundxr.createnumismatics.fabric.NumismaticsDataFabric"
     ]
   },
   "mixins": [
