@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.ithundxr.createnumismatics.fabric.NumismaticsFabric"
+      "dev.ithundxr.createnumismatics.fabric.NumismaticsImpl"
     ],
     "fabric-datagen": [
       "dev.ithundxr.createnumismatics.fabric.NumismaticsDataFabric"

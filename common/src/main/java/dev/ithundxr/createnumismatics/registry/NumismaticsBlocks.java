@@ -1,7 +1,8 @@
-package dev.ithundxr.createnumismatics;
+package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.world.level.block.Block;
 
 public class NumismaticsBlocks {
