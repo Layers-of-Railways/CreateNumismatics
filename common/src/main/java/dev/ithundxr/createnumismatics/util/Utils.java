@@ -9,12 +9,6 @@ import java.util.function.Predicate;
 
 public class Utils {
     @ExpectPlatform
-    public static String platformName() {
-        // Just throw an error, the content should get replaced at runtime.
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
     public static boolean isDevEnv() {
         throw new AssertionError();
     }

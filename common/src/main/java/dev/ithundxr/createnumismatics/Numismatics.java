@@ -16,6 +16,7 @@ import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangPartials;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
+import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.Utils;
@@ -44,14 +45,14 @@ public class Numismatics {
     }
 
     public static void init() {
-        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, Create.VERSION, Utils.platformName());
+        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, Create.VERSION, Loader.getCurrent());
 
         ModSetup.register();
         finalizeRegistrate();
 
         registerCommands(NumismaticsCommands::register);
 
-        if (Utils.isDevEnv()) {
+        if (Utils.isDevEnv() && Loader.getCurrent().isFabricLike()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
         }
     }
