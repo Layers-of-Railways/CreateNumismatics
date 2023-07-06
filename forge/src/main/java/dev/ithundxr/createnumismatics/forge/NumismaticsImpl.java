@@ -5,24 +5,48 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands.CommandSelection;
+import net.minecraftforge.common.util.MavenVersionStringHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 @Mod(Numismatics.MOD_ID)
 @Mod.EventBusSubscriber
 public class NumismaticsImpl {
+    static IEventBus eventBus;
+
     public NumismaticsImpl() {
-        // registrate must be given the mod event bus on forge before registration
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        NumismaticsBlocks.REGISTRATE.registerEventListeners(eventBus);
+        eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         Numismatics.init();
+    }
+
+    public static String findVersion() {
+        String versionString = "UNKNOWN";
+
+        List<IModInfo> infoList = ModList.get().getModFileById(Numismatics.MOD_ID).getMods();
+        if (infoList.size() > 1) {
+            Numismatics.LOGGER.error("Multiple mods for MOD_ID: " + Numismatics.MOD_ID);
+        }
+        for (IModInfo info : infoList) {
+            if (info.getModId().equals(Numismatics.MOD_ID)) {
+                versionString = MavenVersionStringHelper.artifactVersionToString(info.getVersion());
+                break;
+            }
+        }
+        return versionString;
+    }
+
+    public static void finalizeRegistrate() {
+        Numismatics.registrate().registerEventListeners(eventBus);
     }
 
     private static final Set<BiConsumer<CommandDispatcher<CommandSourceStack>, Boolean>> commandConsumers = new HashSet<>();
