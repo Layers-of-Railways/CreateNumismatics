@@ -4,7 +4,6 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,8 +33,8 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                                           @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
 
-        if (hit.getDirection() != Direction.NORTH)
-            return InteractionResult.PASS;
+        if (hit.getDirection() != state.getValue(HORIZONTAL_FACING))
+            return InteractionResult.FAIL;
 
         if (state.getValue(POWERED))
             return InteractionResult.FAIL;
@@ -50,9 +49,7 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
                 activate(state, level, pos);
             }
 
-            return InteractionResult.CONSUME;
-        } else {
-            return InteractionResult.CONSUME;
         }
+        return InteractionResult.CONSUME;
     }
 }
