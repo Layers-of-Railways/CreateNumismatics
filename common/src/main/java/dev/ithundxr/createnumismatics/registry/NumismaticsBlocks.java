@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 public class NumismaticsBlocks {
 	public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(Numismatics.MOD_ID);
 
-	public static final BlockEntry<Block> EXAMPLE_BLOCK = REGISTRATE.block("example_block", Block::new).register();
+	public static final BlockEntry<Block> BANK_TERMINAL = REGISTRATE.block("bank_terminal", Block::new).register();
 
 	public static void init() {
 		// load the class and register everything
