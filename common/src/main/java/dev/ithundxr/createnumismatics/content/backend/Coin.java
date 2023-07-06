@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.content.bank;
+package dev.ithundxr.createnumismatics.content.backend;
 
 import com.simibubi.create.foundation.utility.Couple;
 

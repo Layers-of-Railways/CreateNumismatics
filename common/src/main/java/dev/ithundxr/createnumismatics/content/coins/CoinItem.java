@@ -1,6 +1,7 @@
-package dev.ithundxr.createnumismatics.content.bank;
+package dev.ithundxr.createnumismatics.content.coins;
 
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.minecraft.world.item.Item;
 
 public class CoinItem extends Item {

@@ -1,6 +1,5 @@
-package dev.ithundxr.createnumismatics.content.bank;
+package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.nbt.CompoundTag;

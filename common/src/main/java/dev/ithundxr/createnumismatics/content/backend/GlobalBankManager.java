@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.content.bank;
+package dev.ithundxr.createnumismatics.content.backend;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;

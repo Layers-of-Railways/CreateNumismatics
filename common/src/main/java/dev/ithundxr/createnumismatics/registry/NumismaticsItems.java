@@ -4,8 +4,8 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.util.ItemUtils;
-import dev.ithundxr.createnumismatics.content.bank.Coin;
-import dev.ithundxr.createnumismatics.content.bank.CoinItem;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import net.minecraft.world.item.*;
 import javax.annotation.Nonnull;
 

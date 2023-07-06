@@ -1,16 +1,13 @@
 package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.tree.CommandNode;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.bank.BankAccount;
-import dev.ithundxr.createnumismatics.content.bank.Coin;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

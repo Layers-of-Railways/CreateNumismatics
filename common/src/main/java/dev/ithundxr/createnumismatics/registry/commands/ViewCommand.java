@@ -5,8 +5,8 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.bank.BankAccount;
-import dev.ithundxr.createnumismatics.content.bank.Coin;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -17,7 +17,6 @@ import net.minecraftforge.server.command.EnumArgument;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
