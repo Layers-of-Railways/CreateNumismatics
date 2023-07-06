@@ -7,6 +7,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 
 import java.util.function.BiConsumer;
@@ -19,9 +20,20 @@ public class NumismaticsImpl implements ModInitializer {
                 () -> () -> "{} is accessing Porting Lib on a Fabric client!",
                 () -> () -> "{} is accessing Porting Lib on a Fabric server!"
                 ), Numismatics.NAME);
-        // on fabric, Registrates must be explicitly finalized and registered.
-        NumismaticsBlocks.REGISTRATE.register();
         CommonEventsFabric.init();
+    }
+
+    public static String findVersion() {
+        return FabricLoader.getInstance()
+                .getModContainer(Numismatics.MOD_ID)
+                .orElseThrow()
+                .getMetadata()
+                .getVersion()
+                .getFriendlyString();
+    }
+
+    public static void finalizeRegistrate() {
+        Numismatics.registrate().register();
     }
 
     public static void registerCommands(BiConsumer<CommandDispatcher<CommandSourceStack>, Boolean> consumer) {

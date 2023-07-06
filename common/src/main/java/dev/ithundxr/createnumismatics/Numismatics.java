@@ -4,7 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.LangMerger;
+import com.simibubi.create.foundation.item.ItemDescription;
+import com.simibubi.create.foundation.item.KineticStats;
+import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
+import com.tterrag.registrate.Registrate;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangPartials;
 import dev.ithundxr.createnumismatics.content.bank.GlobalBankManager;
@@ -24,14 +29,23 @@ import java.util.function.BiConsumer;
 public class Numismatics {
     public static final String MOD_ID = "numismatics";
     public static final String NAME = "Create: Numismatics";
+    public static final String VERSION = findVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
 
+    private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID)
+            .creativeModeTab(() -> NumismaticsItems.mainCreativeTab, "Create: Numismatics");
+
+    static {
+        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
+                .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
+    }
 
     public static void init() {
-        LOGGER.info("{} initializing! Create version: {} on platform: {}", NAME, Create.VERSION, Utils.platformName());
-        NumismaticsBlocks.init(); // hold registrate in a separate class to avoid loading early on forge
-        NumismaticsItems.init();
+        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, Create.VERSION, Utils.platformName());
+
+        ModSetup.register();
+        finalizeRegistrate();
 
         registerCommands(NumismaticsCommands::register);
 
@@ -41,15 +55,25 @@ public class Numismatics {
     }
 
     public static CreateRegistrate registrate() {
-        return NumismaticsBlocks.REGISTRATE;
+        return REGISTRATE;
+    }
+
+    @ExpectPlatform
+    public static String findVersion() {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void finalizeRegistrate() {
+        throw new AssertionError();
     }
 
     public static void gatherData(DataGenerator gen) {
-        PonderLocalization.provideRegistrateLang(registrate());
+        PonderLocalization.provideRegistrateLang(REGISTRATE);
         gen.addProvider(true, new LangMerger(gen, MOD_ID, "Numismatics", NumismaticsLangPartials.values()));
     }
 
-    public static ResourceLocation id(String path) {
+    public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
 
