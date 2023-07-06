@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "numismatics:block/bank_terminal"
+    }
+  }
+}

@@ -8,21 +8,35 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import net.minecraft.world.item.*;
 import javax.annotation.Nonnull;
+import java.util.EnumMap;
 
 public class NumismaticsItems {
 	private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
 	public static final CreativeModeTab mainCreativeTab = new CreativeModeTab(ItemUtils.nextTabId(), Numismatics.MOD_ID) {
 		@Override
 		@Nonnull
-		public ItemStack makeIcon() { return NumismaticsItems.COG.asStack(); }
+		public ItemStack makeIcon() { return getCoin(Coin.COG).asStack(); }
 	};
 
-	public static final ItemEntry<CoinItem> SPUR = REGISTRATE.item("spur", CoinItem.create(Coin.SPUR)).lang("Spur").register();
-	public static final ItemEntry<CoinItem> BEVEL = REGISTRATE.item("bevel", CoinItem.create(Coin.BEVEL)).lang("Bevel").register();
-	public static final ItemEntry<CoinItem> SPROCKET = REGISTRATE.item("sprocket", CoinItem.create(Coin.SPROCKET)).lang("Sprocket").register();
-	public static final ItemEntry<CoinItem> COG = REGISTRATE.item("cog", CoinItem.create(Coin.COG)).lang("Cog").register();
-	public static final ItemEntry<CoinItem> CROWN = REGISTRATE.item("crown", CoinItem.create(Coin.CROWN)).lang("Crown").register();
-	public static final ItemEntry<CoinItem> SUN = REGISTRATE.item("sun", CoinItem.create(Coin.SUN)).lang("Sun").register();
+	private static ItemEntry<CoinItem> makeCoin(Coin coin) {
+		return REGISTRATE.item(coin.getName(), CoinItem.create(coin))
+			.lang(coin.getDisplayName())
+			.properties(p -> p.rarity(coin.rarity))
+			.model((c, p) -> p.generated(c, p.modLoc("item/coin/" + coin.getName())))
+			.register();
+	}
+
+	public static final EnumMap<Coin, ItemEntry<CoinItem>> COINS = new EnumMap<>(Coin.class);
+
+	static {
+		for (Coin coin : Coin.values()) {
+			COINS.put(coin, makeCoin(coin));
+		}
+	}
+
+	public static ItemEntry<CoinItem> getCoin(Coin coin) {
+		return COINS.get(coin);
+	}
 
 	public static void init() {
 		// load the class and register everything

@@ -1,4 +1,10 @@
 {
-  "block.numismatics.example_block": "ʞɔoןᗺ ǝןdɯɐxƎ",
-  "item.numismatics.example_item": "ɯǝʇI ǝןdɯɐxƎ"
+  "block.numismatics.bank_terminal": "ןɐuıɯɹǝ⟘ ʞuɐᗺ",
+  "item.numismatics.bevel": "ןǝʌǝᗺ",
+  "item.numismatics.cog": "boƆ",
+  "item.numismatics.crown": "uʍoɹƆ",
+  "item.numismatics.sprocket": "ʇǝʞɔoɹdS",
+  "item.numismatics.spur": "ɹndS",
+  "item.numismatics.sun": "unS",
+  "itemGroup.numismatics": "sɔıʇɐɯsıɯnN :ǝʇɐǝɹƆ"
 }

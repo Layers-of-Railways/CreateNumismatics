@@ -1,6 +1,8 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import com.simibubi.create.foundation.utility.Couple;
+import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.world.item.Rarity;
 
 import java.util.Locale;
 
@@ -12,18 +14,20 @@ import java.util.Locale;
 8 crowns to a sun
  */
 public enum Coin {
-    SPUR(1),
-    BEVEL(8), // 8 spurs
-    SPROCKET(16), // 16 spurs, 2 bevels
-    COG(64), // 64 spurs, 8 bevels, 4 sprockets
-    CROWN(512), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
-    SUN(4096) // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
+    SPUR(1, Rarity.COMMON),
+    BEVEL(8, Rarity.COMMON), // 8 spurs
+    SPROCKET(16, Rarity.COMMON), // 16 spurs, 2 bevels
+    COG(64, Rarity.UNCOMMON), // 64 spurs, 8 bevels, 4 sprockets
+    CROWN(512, Rarity.RARE), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
+    SUN(4096, Rarity.EPIC) // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
 
     public final int value; // in terms of spurs
+    public final Rarity rarity;
 
-    Coin(int value) {
+    Coin(int value, Rarity rarity) {
         this.value = value;
+        this.rarity = rarity;
     }
 
     /**
@@ -53,5 +57,9 @@ public enum Coin {
 
     public String getName(int amount) {
         return getName() + (amount != 1 ? "s" : "");
+    }
+
+    public String getDisplayName() {
+        return TextUtils.titleCaseConversion(getName());
     }
 }

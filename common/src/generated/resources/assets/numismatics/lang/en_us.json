@@ -2,9 +2,16 @@
 
 	"_": "->------------------------]  Game Elements  [------------------------<-",
 
-	"block.numismatics.example_block": "Example Block",
+	"block.numismatics.bank_terminal": "Bank Terminal",
 
-	"item.numismatics.example_item": "Example Item",
+	"item.numismatics.bevel": "Bevel",
+	"item.numismatics.cog": "Cog",
+	"item.numismatics.crown": "Crown",
+	"item.numismatics.sprocket": "Sprocket",
+	"item.numismatics.spur": "Spur",
+	"item.numismatics.sun": "Sun",
+
+	"itemGroup.numismatics": "Create: Numismatics",
 
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
@@ -13,6 +20,7 @@
 
 	"_": "->------------------------]  Item Descriptions  [------------------------<-",
 
+	"item.numismatics.coin.tooltip.value": "Value (in Spurs): %s¤",
 
 	"_": "Thank you for translating Numismatics!"
 

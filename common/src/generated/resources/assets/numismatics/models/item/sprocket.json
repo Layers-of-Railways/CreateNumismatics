@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "numismatics:item/example_item"
+    "layer0": "numismatics:item/coin/sprocket"
   }
 }
