@@ -85,7 +85,7 @@ public class NumismaticsTags {
   }
 
   public enum AllItemTags {
-//    CONDUCTOR_CAPS
+    COINS
     ;
 
     public final TagKey<Item> tag;

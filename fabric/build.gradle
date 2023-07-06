@@ -124,6 +124,8 @@ remapJar {
 
 jar {
     classifier "dev"
+
+    exclude "**/*.xcf"
 }
 
 sourcesJar {

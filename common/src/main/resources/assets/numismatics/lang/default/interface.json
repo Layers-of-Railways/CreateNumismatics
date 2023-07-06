@@ -1,3 +1,9 @@
 {
-
+  "create.numismatics.andesite_depositor.price": "Price",
+  "create.item.numismatics.spur": "Spur",
+  "create.item.numismatics.bevel": "Bevel",
+  "create.item.numismatics.sprocket": "Sprocket",
+  "create.item.numismatics.cog": "Cog",
+  "create.item.numismatics.crown": "Crown",
+  "create.item.numismatics.sun": "Sun"
 }

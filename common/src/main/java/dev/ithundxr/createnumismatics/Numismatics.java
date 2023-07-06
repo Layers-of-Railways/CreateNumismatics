@@ -52,7 +52,7 @@ public class Numismatics {
         registerCommands(NumismaticsCommands::register);
 
         if (Utils.isDevEnv()) {
-            SharedConstants.IS_RUNNING_IN_IDE = true;
+            SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
         }
     }
 

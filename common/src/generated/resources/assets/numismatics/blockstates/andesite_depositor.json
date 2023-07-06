@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "numismatics:block/andesite_depositor",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "numismatics:block/andesite_depositor",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "numismatics:block/andesite_depositor"
+    },
+    "facing=west": {
+      "model": "numismatics:block/andesite_depositor",
+      "y": 90
+    }
+  }
+}

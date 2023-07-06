@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "numismatics:block/andesite_depositor_select",
+    "east": "numismatics:block/andesite_depositor_side",
+    "north": "numismatics:block/andesite_depositor_side",
+    "south": "numismatics:block/andesite_depositor_slot",
+    "up": "numismatics:block/andesite_depositor_select",
+    "west": "numismatics:block/andesite_depositor_side"
+  }
+}

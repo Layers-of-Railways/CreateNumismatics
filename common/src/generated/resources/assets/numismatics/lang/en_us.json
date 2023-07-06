@@ -2,6 +2,7 @@
 
 	"_": "->------------------------]  Game Elements  [------------------------<-",
 
+	"block.numismatics.andesite_depositor": "Andesite Depositor",
 	"block.numismatics.bank_terminal": "Bank Terminal",
 
 	"item.numismatics.bevel": "Bevel",
@@ -16,11 +17,22 @@
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
+	"create.numismatics.andesite_depositor.price": "Price",
+
+	"create.item.numismatics.spur": "Spur",
+	"create.item.numismatics.bevel": "Bevel",
+	"create.item.numismatics.sprocket": "Sprocket",
+	"create.item.numismatics.cog": "Cog",
+	"create.item.numismatics.crown": "Crown",
+	"create.item.numismatics.sun": "Sun",
 
 
 	"_": "->------------------------]  Item Descriptions  [------------------------<-",
 
-	"item.numismatics.coin.tooltip.value": "Value (in Spurs): %s¤",
+	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
+	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
+
+	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
 
 	"_": "Thank you for translating Numismatics!"
 
