@@ -28,6 +28,7 @@ public class NumismaticsBlocks {
 						.cube(c.getName(), p.modLoc("block/andesite_depositor_select"), p.modLoc("block/andesite_depositor_select"),
 							p.modLoc("block/andesite_depositor_side"), p.modLoc("block/andesite_depositor_slot"),
 							p.modLoc("block/andesite_depositor_side"), p.modLoc("block/andesite_depositor_side"))
+							.texture("particle", "create:block/andesite_casing")
 					)
 					.rotationY((int) state.getValue(AbstractDepositorBlock.HORIZONTAL_FACING).toYRot())
 					.build(),

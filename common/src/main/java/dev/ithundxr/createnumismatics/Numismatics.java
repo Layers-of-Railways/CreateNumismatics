@@ -52,7 +52,7 @@ public class Numismatics {
 
         registerCommands(NumismaticsCommands::register);
 
-        if (Utils.isDevEnv() && Loader.getCurrent().isFabricLike()) {
+        if (Utils.isDevEnv() && Loader.CURRENT.isFabricLike()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
         }
     }
