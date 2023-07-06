@@ -39,19 +39,19 @@ public class BankAccount {
         setBalance(getBalance() + amount);
     }
 
-    public boolean removeBalance(Coin coin, int amount) {
-        return removeBalance(coin, amount, false);
+    public boolean deduct(Coin coin, int amount) {
+        return deduct(coin, amount, false);
     }
 
-    public boolean removeBalance(int amount) {
-        return removeBalance(amount, false);
+    public boolean deduct(int amount) {
+        return deduct(amount, false);
     }
 
-    public boolean removeBalance(Coin coin, int amount, boolean force) {
-        return removeBalance(coin.toSpurs(amount), force);
+    public boolean deduct(Coin coin, int amount, boolean force) {
+        return deduct(coin.toSpurs(amount), force);
     }
 
-    public boolean removeBalance(int amount, boolean force) {
+    public boolean deduct(int amount, boolean force) {
         if (amount < 0) {
             crashDev("Cannot remove negative amount from balance! (Account: "+this+")");
             return false;

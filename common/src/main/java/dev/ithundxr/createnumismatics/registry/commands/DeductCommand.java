@@ -1,16 +1,13 @@
 package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.tree.CommandNode;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankAccount;
 import dev.ithundxr.createnumismatics.content.bank.Coin;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -24,10 +21,17 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
-public class PayCommand {
+public class DeductCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {
-        return literal("pay")
+        ArgumentBuilder<CommandSourceStack, ?> forceLiteral = literal("force");
+        ArgumentBuilder<CommandSourceStack, ?> baseLiteral =  literal("deduct")
             .requires(cs -> cs.hasPermission(2))
+            .then(register(forceLiteral, true));
+        return register(baseLiteral, false);
+    }
+
+    private static ArgumentBuilder<CommandSourceStack, ?> register(ArgumentBuilder<CommandSourceStack, ?> parent, boolean force) {
+        return parent
             .then(literal("banker")
                 .then(argument("pos", BlockPosArgument.blockPos())
                     .then(argument("amount", integer(0))
@@ -38,7 +42,7 @@ public class PayCommand {
                             int amount = getInteger(ctx, "amount");
                             UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                            return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount);
+                            return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount, force);
                         })
                         .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                             .executes(ctx -> {
@@ -49,7 +53,7 @@ public class PayCommand {
                                 Coin coin = ctx.getArgument("coin", Coin.class);
                                 UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                                return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount, coin);
+                                return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount, force, coin);
                             })
                         )
                     )
@@ -63,7 +67,7 @@ public class PayCommand {
 
                         int sum = 0;
                         for (GameProfile account : accounts) {
-                            sum += execute(ctx, account.getId(), true, account.getName(), amount);
+                            sum += execute(ctx, account.getId(), true, account.getName(), amount, force);
                         }
                         return sum;
                     })
@@ -75,7 +79,7 @@ public class PayCommand {
 
                             int sum = 0;
                             for (GameProfile account : accounts) {
-                                sum += execute(ctx, account.getId(), true, account.getName(), amount, coin);
+                                sum += execute(ctx, account.getId(), true, account.getName(), amount, force, coin);
                             }
                             return sum;
                         })
@@ -84,27 +88,33 @@ public class PayCommand {
             );
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount) {
-        return execute(ctx, account, create, name, amount, Coin.SPUR);
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, boolean force) {
+        return execute(ctx, account, create, name, amount, force, Coin.SPUR);
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, Coin coin) {
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, boolean force, Coin coin) {
         int spurValue = coin.toSpurs(amount);
-        if (pay(account, spurValue, create)) {
-            ctx.getSource().sendSuccess(Component.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
+        int result = deduct(account, spurValue, force, create);
+        if (result == 1) {
+            ctx.getSource().sendSuccess(Component.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
         } else {
-            ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
-            return 0;
+            if (result == -1) {
+                ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
+            } else if (force) {
+                ctx.getSource().sendSuccess(Component.literal("Force-deducted "+amount+" "+coin.getName(amount)+" from "+name+"."), true);
+            } else {
+                ctx.getSource().sendFailure(Component.literal("Could not deduct "+amount+" "+coin.getName(amount)+" from "+name+"."));
+            }
+            return result;
         }
     }
 
-    private static boolean pay(UUID id, int amount, boolean create) {
+    private static int deduct(UUID id, int amount, boolean force, boolean create) {
         BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id) : Numismatics.BANK.getAccount(id);
         if (account == null) {
-            return false;
+            return -1;
         }
-        account.deposit(amount);
-        return true;
+        return account.deduct(amount, force) ? 1 : 0;
     }
 }

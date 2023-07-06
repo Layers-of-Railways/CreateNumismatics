@@ -4,8 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.simibubi.create.infrastructure.command.AllCommands;
+import dev.ithundxr.createnumismatics.registry.commands.DeductCommand;
 import dev.ithundxr.createnumismatics.registry.commands.PayCommand;
 import dev.ithundxr.createnumismatics.registry.commands.ReloadCommandsCommand;
+import dev.ithundxr.createnumismatics.registry.commands.ViewCommand;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -18,6 +20,8 @@ public class NumismaticsCommands {
         var numismaticsCommand = literal("numismatics")
             .requires(cs -> cs.hasPermission(0))
             .then(PayCommand.register())
+            .then(DeductCommand.register())
+            .then(ViewCommand.register())
             //.then(ClearCasingCacheCommand.register())
             //.then(SplitTrainCommand.register())
             //.then(TrainInfoCommand.register());

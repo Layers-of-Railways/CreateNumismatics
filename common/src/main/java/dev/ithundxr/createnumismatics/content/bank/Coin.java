@@ -13,11 +13,11 @@ import java.util.Locale;
  */
 public enum Coin {
     SPUR(1),
-    BEVEL(8),
-    SPROCKET(16),
-    COG(64),
-    CROWN(512),
-    SUN(4096)
+    BEVEL(8), // 8 spurs
+    SPROCKET(16), // 16 spurs, 2 bevels
+    COG(64), // 64 spurs, 8 bevels, 4 sprockets
+    CROWN(512), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
+    SUN(4096) // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
 
     public final int value; // in terms of spurs
@@ -41,6 +41,7 @@ public enum Coin {
      * @return Couple of (amount of this coin, remainder of spurs)
      */
     public Couple<Integer> convert(int amount) {
+        if (this == SPUR) return Couple.create(amount, 0);
         int remainder = amount % value;
         int converted = (amount - remainder) / value;
         return Couple.create(converted, remainder);
@@ -48,5 +49,9 @@ public enum Coin {
 
     public String getName() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    public String getName(int amount) {
+        return getName() + (amount != 1 ? "s" : "");
     }
 }

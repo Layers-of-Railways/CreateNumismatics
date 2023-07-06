@@ -12,6 +12,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +34,10 @@ public class Numismatics {
         NumismaticsItems.init();
 
         registerCommands(NumismaticsCommands::register);
+
+        if (Utils.isDevEnv()) {
+            SharedConstants.IS_RUNNING_IN_IDE = true;
+        }
     }
 
     public static CreateRegistrate registrate() {
