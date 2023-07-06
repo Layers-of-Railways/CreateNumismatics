@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:brass_nuggets",
+      "required": false
+    },
+    {
+      "id": "#forge:nuggets/brass",
+      "required": false
+    }
+  ]
+}

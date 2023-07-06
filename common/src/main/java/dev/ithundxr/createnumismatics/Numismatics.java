@@ -9,8 +9,12 @@ import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
+import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
 import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangPartials;
+import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
+import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
@@ -67,6 +71,10 @@ public class Numismatics {
     }
 
     public static void gatherData(DataGenerator gen) {
+        REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
+        REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
+        gen.addProvider(true, NumismaticsSequencedAssemblyRecipeGen.create(gen));
+        gen.addProvider(true, NumismaticsStandardRecipeGen.create(gen));
         PonderLocalization.provideRegistrateLang(REGISTRATE);
         gen.addProvider(true, new LangMerger(gen, MOD_ID, "Numismatics", NumismaticsLangPartials.values()));
     }
