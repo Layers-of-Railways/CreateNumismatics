@@ -23,7 +23,6 @@ public class NumismaticsItems {
 			.tag(NumismaticsTags.AllItemTags.COINS.tag)
 			.lang(coin.getDisplayName())
 			.properties(p -> p.rarity(coin.rarity))
-			.properties(p -> p.stacksTo(256))
 			.model((c, p) -> p.generated(c, p.modLoc("item/coin/" + coin.getName())))
 			.register();
 	}
