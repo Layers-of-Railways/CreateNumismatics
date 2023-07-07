@@ -16,6 +16,6 @@ public class CommonEvents {
      * @return true if the block may be broken, false otherwise
      */
     public static boolean onBlockBreak(LevelAccessor level, BlockPos pos, BlockState state, Player player) {
-        return !(state.getBlock() instanceof TrustedBlock trustedBlock) || player.isShiftKeyDown() && trustedBlock.isTrusted(player, level, pos);
+        return !(state.getBlock() instanceof TrustedBlock trustedBlock) || (player.isShiftKeyDown() && trustedBlock.isTrusted(player, level, pos));
     }
 }

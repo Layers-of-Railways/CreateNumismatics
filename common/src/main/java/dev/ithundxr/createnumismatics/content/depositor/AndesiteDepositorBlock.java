@@ -53,7 +53,7 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         if (state.getValue(HORIZONTAL_FACING) != hit.getDirection())
             return InteractionResult.PASS;
 
-        if (state.getValue(POWERED))
+        if (state.getValue(POWERED) || state.getValue(LOCKED))
             return InteractionResult.FAIL;
 
         if (level.isClientSide)
