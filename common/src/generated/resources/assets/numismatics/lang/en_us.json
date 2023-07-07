@@ -28,6 +28,8 @@
 
 	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
 
+	"item.numismatics.coin.tooltip.count": "Count: %s %s",
+
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
@@ -40,6 +42,8 @@
 	"create.item.numismatics.crown": "Crown",
 	"create.item.numismatics.sun": "Sun",
 
+	"gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
+
 
 	"_": "->------------------------]  Item Descriptions  [------------------------<-",
 
@@ -47,6 +51,8 @@
 	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
 
 	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
+
+	"item.numismatics.coin.tooltip.count": "Count: %s %s",
 
 	"_": "Thank you for translating Numismatics!"
 

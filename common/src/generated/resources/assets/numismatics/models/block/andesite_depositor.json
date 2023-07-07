@@ -1,12 +1,9 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "minecraft:block/orientable",
   "textures": {
-    "down": "numismatics:block/andesite_depositor_select",
-    "east": "numismatics:block/andesite_depositor_side",
-    "north": "numismatics:block/andesite_depositor_side",
+    "front": "numismatics:block/andesite_depositor_slot",
     "particle": "create:block/andesite_casing",
-    "south": "numismatics:block/andesite_depositor_slot",
-    "up": "numismatics:block/andesite_depositor_select",
-    "west": "numismatics:block/andesite_depositor_side"
+    "side": "numismatics:block/andesite_depositor_side",
+    "top": "numismatics:block/andesite_depositor_select"
   }
 }

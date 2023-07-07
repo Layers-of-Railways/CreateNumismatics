@@ -1,25 +1,29 @@
 package dev.ithundxr.createnumismatics.content.coins;
 
+import com.mojang.datafixers.util.Pair;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SlotCoinBag extends Slot {
+import java.util.Optional;
 
+public class SlotDiscreteCoinBag extends Slot {
     private static final Container emptyInventory = new SimpleContainer(0);
-    private final CoinBag coinBag;
+    private final DiscreteCoinBag coinBag;
     private final Coin coin;
     private final boolean canInsert;
     private final boolean canExtract;
 
-    public SlotCoinBag(CoinBag coinBag, Coin coin, int x, int y, boolean canInsert, boolean canExtract) {
+    public SlotDiscreteCoinBag(DiscreteCoinBag coinBag, Coin coin, int x, int y, boolean canInsert, boolean canExtract) {
         super(emptyInventory, 0, x, y);
         this.coinBag = coinBag;
         this.coin = coin;
@@ -35,7 +39,7 @@ public class SlotCoinBag extends Slot {
         if (stack.isEmpty())
             return false;
 
-        return stack.getItem() instanceof CoinItem;
+        return stack.getItem() instanceof CoinItem coinItem && coinItem.coin == coin;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class SlotCoinBag extends Slot {
     @Override
     public void set(ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() instanceof CoinItem coinItem && coinItem.coin == coin) {
-            coinBag.set(coin, stack.getCount());
+            coinBag.setDiscrete(coin, stack.getCount());
             setChanged();
         }
     }
@@ -61,7 +65,12 @@ public class SlotCoinBag extends Slot {
 
     @Override
     public int getMaxStackSize() {
-        return NumismaticsItems.getCoin(coin).get().getMaxStackSize();
+        return Integer.MAX_VALUE;//NumismaticsItems.getCoin(coin).get().getMaxStackSize();
+    }
+
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return getMaxStackSize();
     }
 
     @Override
@@ -69,17 +78,28 @@ public class SlotCoinBag extends Slot {
         if (!canExtract)
             return false;
 
-        return coinBag.get(coin) > 0;
+        return coinBag.getDiscrete(coin) > 0;
     }
 
     @Override
     public @NotNull ItemStack remove(int amount) {
-        amount = Math.min(amount, coinBag.get(coin));
+        amount = Math.min(amount, coinBag.getDiscrete(coin));
 
         if (amount <= 0)
             return ItemStack.EMPTY;
 
-        coinBag.set(coin, coinBag.get(coin) - amount);
-        return NumismaticsItems.getCoin(coin).asStack(amount);
+        coinBag.subtract(coin, amount);
+        return coin.asStack(amount);
+    }
+
+    @Override
+    public @NotNull Optional<ItemStack> tryRemove(int count, int decrement, @NotNull Player player) {
+        return super.tryRemove(count, Math.min(64, decrement), player);
+    }
+
+    @Nullable
+    @Override
+    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+        return Pair.of(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/coin/outline/"+coin.getName()));
     }
 }

@@ -80,4 +80,24 @@ public class TextUtils {
         }, Style.EMPTY);
         return Components.literal(partsStringBuilder.toString());
     }
+
+    public static String formatInt(int num) {
+        return formatInt(num, ",");
+    }
+
+    public static String formatInt(int num, String separator) {
+        String raw = String.valueOf(num);
+        if (raw.length() <= 3)
+            return raw;
+
+        int start = raw.length() % 3;
+        StringBuilder out = new StringBuilder(raw.length() + (raw.length()/3) * separator.length());
+        out.append(raw, 0, start);
+        for (int i = 0; i < raw.length() / 3; i++) {
+            if (i != 0 || start != 0)
+                out.append(separator);
+            out.append(raw, i*3 + start, i*3 + start + 3);
+        }
+        return out.toString();
+    }
 }

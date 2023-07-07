@@ -7,6 +7,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorScreen;
+import dev.ithundxr.createnumismatics.content.terminal.BankMenu;
+import dev.ithundxr.createnumismatics.content.terminal.BankScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,6 +20,12 @@ public class NumismaticsMenuTypes {
         "andesite_depositor",
         AndesiteDepositorMenu::new,
         () -> AndesiteDepositorScreen::new
+    );
+
+    public static final MenuEntry<BankMenu> BANK = register(
+        "bank",
+        BankMenu::new,
+        () -> BankScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

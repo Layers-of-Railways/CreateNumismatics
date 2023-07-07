@@ -1,25 +1,26 @@
-// 1.19.2	2023-07-06T19:17:04.987402221	Registrate Provider for numismatics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2023-07-07T15:47:14.705555648	Registrate Provider for numismatics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 187e917e6a02d61b15493f292d7b1db2151ddfd0 assets/numismatics/models/item/crown.json
 3790fd3429be9a3684f38ed85d6fe3a92cf9f30e data/minecraft/tags/blocks/mineable/axe.json
 2f1dad2a2e0086d54cf4b88378feacc04341d87f data/numismatics/tags/items/internal/ingots/iron_ingots.json
 790ff3c5da6a67a5de1ceb7138fa3e1c0fe97f80 data/numismatics/tags/items/internal/dyes/lime_dyes.json
 4458283178334ae169a7cbbd1aa09067cbb99ee7 data/numismatics/tags/items/internal/dyes/green_dyes.json
-2b2a4bde1a1c86393b28fa3ff9b81ef1ddeed22d data/numismatics/loot_tables/blocks/bank_terminal.json
-26a29a2a21754270520d8a3a18bf472f8ca3af98 assets/numismatics/models/block/andesite_depositor_locked.json
-0524471ca528bc7a7ab076c0ba8d2bbe29f297bf assets/numismatics/blockstates/andesite_depositor.json
+60e7874211bab33c8b6993d565abe4a9928f1814 data/numismatics/loot_tables/blocks/bank_terminal.json
+cbe5d58cd555d202f48ce4d1ce6e9a4c8a8341bc assets/numismatics/models/block/andesite_depositor_locked.json
+f7f43dd6d567ec8303c73b79409bc92d8b56574a assets/numismatics/blockstates/andesite_depositor.json
 5b0244502972f49d063d98fa0cb3f6fc65af82b2 data/numismatics/tags/items/internal/string.json
-a327eb29d0566d601c79f1ad381ac7842cf81edc assets/numismatics/models/block/bank_terminal.json
+cad4fe432d37304d1f4c9c8454fc19795f962816 assets/numismatics/models/block/bank_terminal.json
 facbd710d107ebc9b2c6ddfa3b59a16d5f85c992 assets/numismatics/models/item/spur.json
 4d944b6e0e93a3444591a2e540530da0b2a0ff08 data/numismatics/tags/items/internal/dyes/light_blue_dyes.json
 52b48750de8a5a571a08bce3f2f025474153d50b assets/numismatics/models/item/bevel.json
 9fdcd12c871f136e66973a8c02be94a675a4b727 data/numismatics/tags/items/internal/dyes/yellow_dyes.json
+228b67a48aa045bfe809c54c756df80eb0765aad assets/numismatics/models/item/bank_terminal.json
 e62db1a880d468865769307ad19f16d9b7dac7c1 data/numismatics/tags/items/internal/dyes/light_gray_dyes.json
 224bcb5095af5ab25eb16ab0d9c1993323734cf9 data/numismatics/tags/items/internal/nuggets/zinc_nuggets.json
 2449b7346e1657ef1c6ab4c134aab55b216ec783 assets/numismatics/models/item/andesite_depositor.json
 2a6aaab63efb82be5fee5de0f9d96824d520b25e data/numismatics/tags/items/internal/dyes/blue_dyes.json
 3790fd3429be9a3684f38ed85d6fe3a92cf9f30e data/numismatics/tags/blocks/internal/relocation_not_supported.json
 d36f0cc1a6b0873730d353bd84dda701d169265b data/numismatics/tags/items/internal/plates/iron_plates.json
-c20e4aacb0f3baba91e482e2089ba75dad3b1a3b assets/numismatics/blockstates/bank_terminal.json
+3961fdf3030140fc32e0e8c1d440ac395e62f5b6 assets/numismatics/blockstates/bank_terminal.json
 a2dec3b886deae84d88babd6fb1ce2997d193533 data/numismatics/tags/items/coins.json
 3f0d912779200aaaf55bef102d9b96acead1a636 data/numismatics/tags/items/internal/dyes/purple_dyes.json
 648d4e81b9c69233750484245f51b45823c4cdbf assets/numismatics/lang/en_us.json
@@ -31,7 +32,7 @@ ce821bcccb920fd51237904e253fb29100882648 data/numismatics/tags/items/internal/dy
 d38d7d40599c66ac84ef7dd2c1635d3ba7794871 data/numismatics/tags/items/internal/nuggets/brass_nuggets.json
 ad712dd2a2a7268dfa773f38a50d526952758d5c data/numismatics/tags/items/internal/dyes/cyan_dyes.json
 ac8c537dfc0e6704a0abe4f47130c41b19cde231 data/numismatics/tags/items/internal/dyes/magenta_dyes.json
-48e93f4e545fadd4e4eac9a600431ab27ca2054f assets/numismatics/models/block/andesite_depositor.json
+34d98fa65f6cda4f78e06a5b4f535305b26ac6e3 assets/numismatics/models/block/andesite_depositor.json
 a7e754dd80af7eff6447f4376b98ebe4eb54e7d6 data/numismatics/tags/items/internal/dyes/black_dyes.json
 8fd12493390894fa5b3988f499f758c17137af16 assets/numismatics/models/item/sun.json
 4a6ca666740b098929798ad132260f288cc228c0 data/numismatics/tags/items/internal/ingots/copper_ingots.json
@@ -39,7 +40,7 @@ a7e754dd80af7eff6447f4376b98ebe4eb54e7d6 data/numismatics/tags/items/internal/dy
 b1f339ffecbae2c812e18a1286162d31429ce356 data/numismatics/tags/items/internal/dyes/gray_dyes.json
 b6efde0135fab023b1b51f219254e5e9d7439f6a assets/numismatics/models/item/cog.json
 95b492bd9230dc90fca9395c823cef39e644d8f2 assets/numismatics/models/item/sprocket.json
-3790fd3429be9a3684f38ed85d6fe3a92cf9f30e data/minecraft/tags/blocks/mineable/pickaxe.json
+06c967969c6ab89bfe82d2ab4fbccb4bc5f0847d data/minecraft/tags/blocks/mineable/pickaxe.json
 36e1dad2803241c11c646b9737be8af6d67ef8fe data/c/tags/items/string.json
 27788e1854c12b323c1fe5945858fce4d1544e3c data/numismatics/tags/items/internal/dyes/white_dyes.json
 17b5bc6d0bfd98157c3d2ed8ee6ebc81fd6d7599 data/numismatics/tags/items/internal/nuggets/iron_nuggets.json

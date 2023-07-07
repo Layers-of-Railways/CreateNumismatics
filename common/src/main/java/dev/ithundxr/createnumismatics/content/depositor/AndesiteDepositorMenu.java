@@ -3,7 +3,7 @@ package dev.ithundxr.createnumismatics.content.depositor;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.content.coins.SlotCoinBag;
+import dev.ithundxr.createnumismatics.content.coins.SlotDiscreteCoinBag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
@@ -46,7 +46,7 @@ public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity
         int y = 21;
 
         for (Coin coin : Coin.values()) {
-            addSlot(new SlotCoinBag(contentHolder.inventory, coin, x, y, false, true));
+            addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
             x += 18;
         }
 
@@ -70,7 +70,10 @@ public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity
             return ItemStack.EMPTY;
         ItemStack stack = clickedSlot.getItem();
 
-        Coin coin = ((CoinItem) stack.getItem()).coin;
+        if (!(stack.getItem() instanceof CoinItem coinItem))
+            return ItemStack.EMPTY;
+
+        Coin coin = coinItem.coin;
         int startCount = stack.getCount();
 
         if (index < COIN_SLOTS) {

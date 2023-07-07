@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "numismatics:bank_terminal"
         }
       ],
       "rolls": 1.0

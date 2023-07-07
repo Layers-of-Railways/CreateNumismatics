@@ -2,33 +2,35 @@
   "variants": {
     "facing=east,locked=false": {
       "model": "numismatics:block/andesite_depositor",
-      "y": 270
+      "y": 450
     },
     "facing=east,locked=true": {
       "model": "numismatics:block/andesite_depositor_locked",
-      "y": 270
+      "y": 450
     },
     "facing=north,locked=false": {
       "model": "numismatics:block/andesite_depositor",
-      "y": 180
+      "y": 360
     },
     "facing=north,locked=true": {
       "model": "numismatics:block/andesite_depositor_locked",
-      "y": 180
+      "y": 360
     },
     "facing=south,locked=false": {
-      "model": "numismatics:block/andesite_depositor"
+      "model": "numismatics:block/andesite_depositor",
+      "y": 180
     },
     "facing=south,locked=true": {
-      "model": "numismatics:block/andesite_depositor_locked"
+      "model": "numismatics:block/andesite_depositor_locked",
+      "y": 180
     },
     "facing=west,locked=false": {
       "model": "numismatics:block/andesite_depositor",
-      "y": 90
+      "y": 270
     },
     "facing=west,locked=true": {
       "model": "numismatics:block/andesite_depositor_locked",
-      "y": 90
+      "y": 270
     }
   }
 }

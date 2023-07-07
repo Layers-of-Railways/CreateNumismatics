@@ -78,10 +78,10 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof AndesiteDepositorBlockEntity andesiteDepositorBE) {
             for (Coin coin : Coin.values()) {
-                int count = andesiteDepositorBE.inventory.get(coin);
+                int count = andesiteDepositorBE.inventory.getDiscrete(coin);
                 if (count > 0) {
                     Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), NumismaticsItems.getCoin(coin).asStack(count));
-                    andesiteDepositorBE.inventory.set(coin, 0);
+                    andesiteDepositorBE.inventory.setDiscrete(coin, 0);
                 }
             }
         }

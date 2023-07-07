@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable",
   "textures": {
-    "all": "numismatics:block/bank_terminal"
+    "front": "numismatics:block/bank_terminal_front",
+    "particle": "numismatics:block/bank_terminal_top",
+    "side": "numismatics:block/bank_terminal_side",
+    "top": "numismatics:block/bank_terminal_top"
   }
 }

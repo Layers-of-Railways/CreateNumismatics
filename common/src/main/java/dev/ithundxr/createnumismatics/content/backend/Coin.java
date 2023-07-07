@@ -5,7 +5,9 @@ import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Pair;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import java.util.Locale;
@@ -90,5 +92,9 @@ public enum Coin implements INamedIconOptions {
             case COG -> BEVEL;
             case CROWN, SUN -> COG;
         };
+    }
+
+    public ItemStack asStack(int amount) {
+        return NumismaticsItems.getCoin(this).asStack(amount);
     }
 }

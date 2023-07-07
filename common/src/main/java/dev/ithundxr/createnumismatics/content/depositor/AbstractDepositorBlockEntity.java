@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.coins.CoinBag;
+import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
@@ -33,7 +34,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
 
     protected final List<UUID> trustList = new ArrayList<>();
 
-    protected final CoinBag inventory = new CoinBag();
+    protected final DiscreteCoinBag inventory = new DiscreteCoinBag();
 
     @Nullable
     protected UUID depositAccount;
