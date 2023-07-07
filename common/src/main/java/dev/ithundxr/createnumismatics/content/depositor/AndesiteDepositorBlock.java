@@ -3,14 +3,18 @@ package dev.ithundxr.createnumismatics.content.depositor;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -39,8 +43,10 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         if (hit.getDirection().getAxis().isVertical()) {
             if (level.isClientSide)
                 return InteractionResult.SUCCESS;
-            withBlockEntityDo(level, pos,
-                be -> NetworkHooks.openScreen((ServerPlayer) player, be, be::sendToMenu));
+            if (isTrusted(player, level, pos)) {
+                withBlockEntityDo(level, pos,
+                    be -> NetworkHooks.openScreen((ServerPlayer) player, be, be::sendToMenu));
+            }
             return InteractionResult.SUCCESS;
         }
 
@@ -65,5 +71,24 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         } else {
             return InteractionResult.CONSUME;
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.is(newState.getBlock())) {
+            return;
+        }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof AndesiteDepositorBlockEntity andesiteDepositorBE) {
+            for (Coin coin : Coin.values()) {
+                int count = andesiteDepositorBE.inventory.get(coin);
+                if (count > 0) {
+                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), NumismaticsItems.getCoin(coin).asStack(count));
+                    andesiteDepositorBE.inventory.set(coin, 0);
+                }
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }
