@@ -67,10 +67,8 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
                 andesiteDepositor.inventory.add(coin, 1);
             }
 
-            return InteractionResult.CONSUME;
-        } else {
-            return InteractionResult.CONSUME;
         }
+        return InteractionResult.CONSUME;
     }
 
     @Override

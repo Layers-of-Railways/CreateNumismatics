@@ -14,7 +14,7 @@ public class NumismaticsDataFabric implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator gen) {
         Path numismaticsResources = Paths.get(System.getProperty(ExistingFileHelper.EXISTING_RESOURCES));
         ExistingFileHelper helper = new ExistingFileHelper(
-            Set.of(numismaticsResources), Set.of("create"), true, null, null
+            Set.of(numismaticsResources), Set.of("create"), false, null, null
         );
         Numismatics.registrate().setupDatagen(gen, helper);
         Numismatics.gatherData(gen);

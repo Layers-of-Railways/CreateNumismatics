@@ -14,6 +14,20 @@
 
 	"itemGroup.numismatics": "Create: Numismatics",
 
+	"create.numismatics.andesite_depositor.price": "Price",
+
+	"create.item.numismatics.spur": "Spur",
+	"create.item.numismatics.bevel": "Bevel",
+	"create.item.numismatics.sprocket": "Sprocket",
+	"create.item.numismatics.cog": "Cog",
+	"create.item.numismatics.crown": "Crown",
+	"create.item.numismatics.sun": "Sun",
+
+	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
+	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
+
+	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
+
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
