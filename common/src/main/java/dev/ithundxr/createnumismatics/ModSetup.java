@@ -11,6 +11,7 @@ public class ModSetup {
         NumismaticsItems.init();
         NumismaticsBlockEntities.register();
         NumismaticsBlocks.init();
+        NumismaticsMenuTypes.register();
         NumismaticsTags.register();
 
         GogglesItem.addIsWearingPredicate((player) -> {

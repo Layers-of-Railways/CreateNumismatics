@@ -30,29 +30,30 @@ public class CoinItem extends Item {
         return (properties) -> new CoinItem(properties, coin);
     }
 
-    public static boolean extract(Player player, InteractionHand hand, Coin coin) {
-        return extract(player, hand, coin, false);
+    public static boolean extract(Player player, InteractionHand hand, Coin coin, boolean onlyHand) {
+        return extract(player, hand, coin, false, onlyHand);
     }
 
-    public static boolean extract(Player player, InteractionHand hand, Map<Coin, Integer> coins) {
-        return extract(player, hand, coins, false);
+    public static boolean extract(Player player, InteractionHand hand, Map<Coin, Integer> coins, boolean onlyHand) {
+        return extract(player, hand, coins, false, onlyHand);
     }
 
-    public static boolean extract(Player player, InteractionHand hand, Coin coin, boolean simulate) {
-        return extract(player, hand, ImmutableMap.of(coin, 1), simulate);
+    public static boolean extract(Player player, InteractionHand hand, Coin coin, boolean simulate, boolean onlyHand) {
+        return extract(player, hand, ImmutableMap.of(coin, 1), simulate, onlyHand);
     }
 
-    public static boolean extract(Player player, InteractionHand hand, Map<Coin, Integer> coins, boolean simulate) {
+    public static boolean extract(Player player, InteractionHand hand, Map<Coin, Integer> coins, boolean simulate, boolean onlyHand) {
         if (!simulate) {
-            if (!extract(player, hand, coins, true)) {
+            if (!extract(player, hand, coins, true, onlyHand)) {
                 return false;
             }
         }
-        CoinBag coinBag = new CoinBag(coins);
+        CoinBag coinBag = CoinBag.of(coins);
 
         List<ItemStack> inventoryList = new ArrayList<>();
         inventoryList.add(player.getItemInHand(hand));
-        inventoryList.addAll(player.getInventory().items);
+        if (!onlyHand)
+            inventoryList.addAll(player.getInventory().items);
 
         for (ItemStack stack : inventoryList) {
             if (coinBag.isEmpty())

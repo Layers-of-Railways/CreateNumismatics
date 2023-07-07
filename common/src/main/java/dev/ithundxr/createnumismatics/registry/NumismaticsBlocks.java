@@ -5,6 +5,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
+import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MaterialColor;
@@ -22,6 +23,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.sound(SoundType.WOOD))
 		.properties(p -> p.explosionResistance(3600000.0f)) // same as bedrock
 		.transform(axeOrPickaxe())
+		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.blockstate((c, p) -> p.getVariantBuilder(c.get())
 			.forAllStatesExcept((state) -> ConfiguredModel.builder()
 					.modelFile(p.models()

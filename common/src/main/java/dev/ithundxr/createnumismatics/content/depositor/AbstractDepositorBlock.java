@@ -33,14 +33,16 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEntity> extends Block implements
     IWrenchable, IBE<T>, ForcedGoggleOverlay, TrustedBlock {
 
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty LOCKED = BlockStateProperties.LOCKED;
 
     public AbstractDepositorBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState()
             .setValue(HORIZONTAL_FACING, Direction.NORTH)
-            .setValue(POWERED, false));
+            .setValue(POWERED, false)
+            .setValue(LOCKED, false));
     }
 
     @Override
@@ -76,7 +78,7 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
     }
 
     public void activate(BlockState state, ServerLevel level, BlockPos pos) {
-        if (state.getValue(POWERED)) {
+        if (state.getValue(POWERED) || state.getValue(LOCKED)) {
             return;
         }
 
@@ -103,7 +105,7 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, POWERED);
+        builder.add(HORIZONTAL_FACING, POWERED, LOCKED);
     }
 
     @Override
@@ -140,5 +142,18 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
             return 0.0f;
         }
         return super.getDestroyProgress(state, player, level, pos);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void neighborChanged(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
+        if (level.isClientSide) {
+            return;
+        }
+        boolean locked = state.getValue(LOCKED);
+        boolean shouldLock = level.hasNeighborSignal(pos);
+        if (locked ^ shouldLock) {
+            level.setBlock(pos, state.setValue(LOCKED, shouldLock), 2);
+        }
     }
 }

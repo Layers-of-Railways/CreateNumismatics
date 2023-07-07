@@ -29,6 +29,9 @@ public class CommonTags {
 		}
 	});
 
+	public static final CommonTag<Block>
+			RELOCATION_NOT_SUPPORTED = block("relocation_not_supported");
+
 	public static CommonTag<Block> block(String path) {
 		return CommonTag.conventional(Registry.BLOCK_REGISTRY, path);
 	}
