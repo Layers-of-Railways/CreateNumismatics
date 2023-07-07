@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBox
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
+import dev.ithundxr.createnumismatics.content.coins.CoinBag;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
@@ -28,6 +29,8 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     protected UUID owner;
 
     protected final List<UUID> trustList = new ArrayList<>();
+
+    protected final CoinBag inventory = new CoinBag();
 
     public AbstractDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -53,6 +56,9 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
             }
             tag.put("TrustList", list);
         }
+        if (!inventory.isEmpty()) {
+            tag.put("Inventory", inventory.save(new CompoundTag()));
+        }
     }
 
     @Override
@@ -67,6 +73,11 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
                 if (entry.getType() == IntArrayTag.TYPE)
                     trustList.add(NbtUtils.loadUUID(entry));
             }
+        }
+
+        inventory.clear();
+        if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
+            inventory.load(tag.getCompound("Inventory"));
         }
     }
 

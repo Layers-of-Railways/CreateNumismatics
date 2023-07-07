@@ -3,8 +3,10 @@ package dev.ithundxr.createnumismatics.content.depositor;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +36,15 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                                           @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
 
-        if (hit.getDirection() != Direction.NORTH)
+        if (hit.getDirection().getAxis().isVertical()) {
+            if (level.isClientSide)
+                return InteractionResult.SUCCESS;
+            withBlockEntityDo(level, pos,
+                be -> NetworkHooks.openScreen((ServerPlayer) player, be, be::sendToMenu));
+            return InteractionResult.SUCCESS;
+        }
+
+        if (state.getValue(HORIZONTAL_FACING) != hit.getDirection())
             return InteractionResult.PASS;
 
         if (state.getValue(POWERED))
@@ -46,8 +56,9 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         if (level.getBlockEntity(pos) instanceof AndesiteDepositorBlockEntity andesiteDepositor) {
             Coin coin = andesiteDepositor.getCoin();
 
-            if (CoinItem.extract(player, hand, coin)) {
+            if (CoinItem.extract(player, hand, coin, true)) {
                 activate(state, level, pos);
+                andesiteDepositor.inventory.add(coin, 1);
             }
 
             return InteractionResult.CONSUME;
