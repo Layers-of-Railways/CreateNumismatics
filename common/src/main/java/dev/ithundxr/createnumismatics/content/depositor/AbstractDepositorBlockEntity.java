@@ -5,6 +5,9 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
+import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.coins.CoinBag;
 import dev.ithundxr.createnumismatics.util.Utils;
@@ -31,6 +34,9 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     protected final List<UUID> trustList = new ArrayList<>();
 
     protected final CoinBag inventory = new CoinBag();
+
+    @Nullable
+    protected UUID depositAccount;
 
     public AbstractDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -59,6 +65,8 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         if (!inventory.isEmpty()) {
             tag.put("Inventory", inventory.save(new CompoundTag()));
         }
+        if (depositAccount != null)
+            tag.putUUID("DepositAccount", depositAccount);
     }
 
     @Override
@@ -79,6 +87,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
             inventory.load(tag.getCompound("Inventory"));
         }
+        depositAccount = tag.hasUUID("DepositAccount") ? tag.getUUID("DepositAccount") : null;
     }
 
     @Override
@@ -86,8 +95,20 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         if (Utils.isDevEnv()) { // easier to test this way in dev
             return player.getItemBySlot(EquipmentSlot.FEET).is(Items.GOLDEN_BOOTS);
         } else {
-            return owner == null || owner.equals(player.getUUID());
+            return owner == null || owner.equals(player.getUUID()) || trustList.contains(player.getUUID());
         }
+    }
+
+    public void addCoin(Coin coin, int count) {
+        if (depositAccount != null) {
+            BankAccount account = Numismatics.BANK.getAccount(depositAccount);
+            if (account != null) {
+                account.deposit(coin, count);
+                return;
+            }
+        }
+        inventory.add(coin, 1);
+        setChanged();
     }
 
     protected static class DepositorValueBoxTransform extends CenteredSideValueBoxTransform {

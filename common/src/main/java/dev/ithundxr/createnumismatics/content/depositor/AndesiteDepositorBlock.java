@@ -6,9 +6,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -64,7 +62,7 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
 
             if (CoinItem.extract(player, hand, coin, true)) {
                 activate(state, level, pos);
-                andesiteDepositor.inventory.add(coin, 1);
+                andesiteDepositor.addCoin(coin, 1);
             }
 
         }

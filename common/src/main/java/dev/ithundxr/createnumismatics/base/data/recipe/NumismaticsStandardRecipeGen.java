@@ -4,6 +4,7 @@ import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -39,6 +40,12 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
         .viaShapeless(b -> b
             .requires(Ingredients.copperIngot())
             .requires(Ingredients.brassNugget()));*/
+
+    GeneratedRecipe ANDESITE_DEPOSITOR = create(NumismaticsBlocks.ANDESITE_DEPOSITOR)
+        .unlockedBy(Ingredients::andesiteCasing)
+        .viaShapeless(b -> b
+            .requires(Ingredients.andesiteCasing())
+            .requires(Ingredients.ironSheet()));
 
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder("/", result);

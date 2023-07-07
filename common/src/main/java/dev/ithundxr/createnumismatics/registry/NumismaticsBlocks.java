@@ -12,6 +12,8 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
+import static dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock.HORIZONTAL_FACING;
+import static dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock.LOCKED;
 
 public class NumismaticsBlocks {
 	private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
@@ -27,12 +29,13 @@ public class NumismaticsBlocks {
 		.blockstate((c, p) -> p.getVariantBuilder(c.get())
 			.forAllStatesExcept((state) -> ConfiguredModel.builder()
 					.modelFile(p.models()
-						.cube(c.getName(), p.modLoc("block/andesite_depositor_select"), p.modLoc("block/andesite_depositor_select"),
-							p.modLoc("block/andesite_depositor_side"), p.modLoc("block/andesite_depositor_slot"),
+						.cube(c.getName() + (state.getValue(LOCKED) ? "_locked" : ""), p.modLoc("block/andesite_depositor_select"), p.modLoc("block/andesite_depositor_select"),
+							p.modLoc("block/andesite_depositor_side"),
+							p.modLoc("block/andesite_depositor_slot" + (state.getValue(LOCKED) ? "_locked" : "")),
 							p.modLoc("block/andesite_depositor_side"), p.modLoc("block/andesite_depositor_side"))
 							.texture("particle", "create:block/andesite_casing")
 					)
-					.rotationY((int) state.getValue(AbstractDepositorBlock.HORIZONTAL_FACING).toYRot())
+					.rotationY((int) state.getValue(HORIZONTAL_FACING).toYRot())
 					.build(),
 				AbstractDepositorBlock.POWERED
 			)
