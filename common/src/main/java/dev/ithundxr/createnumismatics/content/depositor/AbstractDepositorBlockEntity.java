@@ -137,7 +137,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
                 return;
             }
         }
-        inventory.add(coin, 1);
+        inventory.add(coin, count);
         setChanged();
     }
 
