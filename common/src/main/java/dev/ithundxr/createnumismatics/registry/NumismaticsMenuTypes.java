@@ -9,6 +9,8 @@ import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorScreen;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.BankScreen;
+import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
+import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,6 +22,12 @@ public class NumismaticsMenuTypes {
         "andesite_depositor",
         AndesiteDepositorMenu::new,
         () -> AndesiteDepositorScreen::new
+    );
+
+    public static final MenuEntry<BrassDepositorMenu> BRASS_DEPOSITOR = register(
+        "brass_depositor",
+        BrassDepositorMenu::new,
+        () -> BrassDepositorScreen::new
     );
 
     public static final MenuEntry<BankMenu> BANK = register(

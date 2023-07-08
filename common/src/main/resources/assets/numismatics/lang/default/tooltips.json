@@ -4,5 +4,6 @@
   "block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
   "item.numismatics.coin.tooltip.count": "Count: %s %s",
   "item.numismatics.card.tooltip.bound": "Bound",
-  "item.numismatics.card.tooltip.blank": "Blank"
+  "item.numismatics.card.tooltip.blank": "Blank",
+  "block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤"
 }

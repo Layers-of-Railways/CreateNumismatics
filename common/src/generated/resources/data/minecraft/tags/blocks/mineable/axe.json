@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "numismatics:andesite_depositor"
+    "numismatics:andesite_depositor",
+    "numismatics:brass_depositor"
   ]
 }

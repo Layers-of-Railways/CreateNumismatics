@@ -3,7 +3,7 @@
   "textures": {
     "front": "numismatics:block/andesite_depositor_slot_locked",
     "particle": "create:block/andesite_casing",
-    "side": "numismatics:block/andesite_depositor_side",
+    "side": "create:block/andesite_casing",
     "top": "numismatics:block/andesite_depositor_select"
   }
 }

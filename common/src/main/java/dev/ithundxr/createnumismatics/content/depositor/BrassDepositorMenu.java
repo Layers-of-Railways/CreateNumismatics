@@ -3,13 +3,13 @@ package dev.ithundxr.createnumismatics.content.depositor;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
+import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.SlotDiscreteCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -19,38 +19,38 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity> {
+public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     public static final int COIN_SLOTS = Coin.values().length;
     public static final int CARD_SLOT_INDEX = COIN_SLOTS;
     public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
-    public AndesiteDepositorMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
-    public AndesiteDepositorMenu(MenuType<?> type, int id, Inventory inv, AndesiteDepositorBlockEntity contentHolder) {
+    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, BrassDepositorBlockEntity contentHolder) {
         super(type, id, inv, contentHolder);
     }
 
     @Override
-    protected AndesiteDepositorBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected BrassDepositorBlockEntity createOnClient(FriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
-        if (blockEntity instanceof AndesiteDepositorBlockEntity andesiteDepositorBE) {
-            andesiteDepositorBE.readClient(extraData.readNbt());
-            return andesiteDepositorBE;
+        if (blockEntity instanceof BrassDepositorBlockEntity brassDepositorBE) {
+            brassDepositorBE.readClient(extraData.readNbt());
+            return brassDepositorBE;
         }
         return null;
     }
 
     @Override
-    protected void initAndReadInventory(AndesiteDepositorBlockEntity contentHolder) {}
+    protected void initAndReadInventory(BrassDepositorBlockEntity contentHolder) {}
 
     @Override
     protected void addSlots() {
         int x = 11;
-        int y = 21;
+        int y = 122;
 
         for (Coin coin : Coin.values()) {
             x += 18;
@@ -58,11 +58,26 @@ public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity
         }
         addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 11, y)); // make here to preserve slot order
 
-        addPlayerSlots(31, 64);
+        addPlayerSlots(31, 165);
+
+        // label coins
+
+        int labelX1 = 12;
+        int labelX2 = labelX1 + 86;
+        int labelY = 46;
+        int labelYIncrement = 22;
+
+        for (int i = 0; i < 6; i++) {
+            Coin coin = Coin.values()[i];
+            int slotX = i < 3 ? labelX1 : labelX2;
+            int slotY = labelY + ((i%3) * labelYIncrement);
+
+            addSlot(new CoinDisplaySlot(coin, slotX, slotY));
+        }
     }
 
     @Override
-    protected void saveData(AndesiteDepositorBlockEntity contentHolder) {}
+    protected void saveData(BrassDepositorBlockEntity contentHolder) {}
 
     @Override
     public void clicked(int slotId, int button, @NotNull ClickType clickType, @NotNull Player player) {

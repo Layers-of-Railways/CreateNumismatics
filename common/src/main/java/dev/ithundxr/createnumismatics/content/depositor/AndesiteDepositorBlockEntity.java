@@ -4,7 +4,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
-import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
@@ -64,7 +63,9 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        if (!isTrusted(player))
+            return null;
         return new AndesiteDepositorMenu(NumismaticsMenuTypes.ANDESITE_DEPOSITOR.get(), i, inventory, this);
     }
 

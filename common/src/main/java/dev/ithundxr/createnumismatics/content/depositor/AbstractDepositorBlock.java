@@ -2,8 +2,10 @@ package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.ForcedGoggleOverlay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -155,5 +159,24 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
         if (locked ^ shouldLock) {
             level.setBlock(pos, state.setValue(LOCKED, shouldLock), 2);
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.is(newState.getBlock())) {
+            return;
+        }
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof AbstractDepositorBlockEntity abstractDepositorBE) {
+            for (Coin coin : Coin.values()) {
+                int count = abstractDepositorBE.inventory.getDiscrete(coin);
+                if (count > 0) {
+                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), NumismaticsItems.getCoin(coin).asStack(count));
+                    abstractDepositorBE.inventory.setDiscrete(coin, 0);
+                }
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }

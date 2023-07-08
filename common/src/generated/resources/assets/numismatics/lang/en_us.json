@@ -4,6 +4,7 @@
 
 	"block.numismatics.andesite_depositor": "Andesite Depositor",
 	"block.numismatics.bank_terminal": "Bank Terminal",
+	"block.numismatics.brass_depositor": "Brass Depositor",
 
 	"item.numismatics.bevel": "Bevel",
 	"item.numismatics.black_card": "Black Card",
@@ -50,6 +51,8 @@
 	"item.numismatics.card.tooltip.bound": "Bound",
 	"item.numismatics.card.tooltip.blank": "Blank",
 
+	"block.numismatics.brass_depositor.tooltip.price": "Price: %s %s %s¤",
+
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
@@ -75,6 +78,8 @@
 	"item.numismatics.coin.tooltip.count": "Count: %s %s",
 	"item.numismatics.card.tooltip.bound": "Bound",
 	"item.numismatics.card.tooltip.blank": "Blank",
+
+	"block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
 
 	"_": "Thank you for translating Numismatics!"
 

@@ -17,6 +17,7 @@ Copied from Create
 public enum NumismaticsGuiTextures implements ScreenElement {
 
     ANDESITE_DEPOSITOR("andesite_depositor", 182, 44),
+    BRASS_DEPOSITOR("brass_depositor", 182, 145),
     BANK_TERMINAL("bank_terminal",200, 132)
     ;
 

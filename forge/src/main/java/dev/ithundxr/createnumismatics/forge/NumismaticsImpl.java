@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
+import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.commands.CommandSourceStack;
@@ -27,6 +28,8 @@ public class NumismaticsImpl {
     public NumismaticsImpl() {
         eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         Numismatics.init();
+        //noinspection Convert2MethodRef
+        Env.CLIENT.runIfCurrent(() -> () -> NumismaticsClientImpl.init());
     }
 
     public static String findVersion() {

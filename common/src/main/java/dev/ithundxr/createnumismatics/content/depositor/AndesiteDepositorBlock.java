@@ -89,23 +89,4 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
         }
         return InteractionResult.CONSUME;
     }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.is(newState.getBlock())) {
-            return;
-        }
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof AndesiteDepositorBlockEntity andesiteDepositorBE) {
-            for (Coin coin : Coin.values()) {
-                int count = andesiteDepositorBE.inventory.getDiscrete(coin);
-                if (count > 0) {
-                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), NumismaticsItems.getCoin(coin).asStack(count));
-                    andesiteDepositorBE.inventory.setDiscrete(coin, 0);
-                }
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 }

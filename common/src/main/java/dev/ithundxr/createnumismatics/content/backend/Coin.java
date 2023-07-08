@@ -97,4 +97,14 @@ public enum Coin implements INamedIconOptions {
     public ItemStack asStack(int amount) {
         return NumismaticsItems.getCoin(this).asStack(amount);
     }
+
+    public static Coin closest(int value) {
+        Coin closest = Coin.SPUR;
+
+        for (Coin coin : values()) {
+            if (Math.abs(coin.value - value) <= Math.abs(closest.value - value))
+                closest = coin;
+        }
+        return closest;
+    }
 }

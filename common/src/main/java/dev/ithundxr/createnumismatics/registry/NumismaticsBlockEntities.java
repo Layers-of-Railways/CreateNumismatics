@@ -4,6 +4,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
 
 public class NumismaticsBlockEntities {
     private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
@@ -15,6 +16,10 @@ public class NumismaticsBlockEntities {
 
     public static final BlockEntityEntry<AndesiteDepositorBlockEntity> ANDESITE_DEPOSITOR = REGISTRATE.blockEntity("andesite_depositor", AndesiteDepositorBlockEntity::new)
         .validBlocks(NumismaticsBlocks.ANDESITE_DEPOSITOR)
+        .register();
+
+    public static final BlockEntityEntry<BrassDepositorBlockEntity> BRASS_DEPOSITOR = REGISTRATE.blockEntity("brass_depositor", BrassDepositorBlockEntity::new)
+        .validBlocks(NumismaticsBlocks.BRASS_DEPOSITOR)
         .register();
 
 

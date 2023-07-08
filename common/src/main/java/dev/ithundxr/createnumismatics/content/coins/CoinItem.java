@@ -71,7 +71,6 @@ public class CoinItem extends Item {
                 coinBag.subtract(coin, extracted);
                 if (!simulate)
                     stack.setCount(stack.getCount() - extracted);
-                return true;
             }
         }
         return coinBag.isEmpty();

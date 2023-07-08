@@ -19,6 +19,7 @@ import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
@@ -51,6 +52,7 @@ public class Numismatics {
         finalizeRegistrate();
 
         registerCommands(NumismaticsCommands::register);
+        NumismaticsPackets.PACKETS.registerC2SListener();
 
         if (Utils.isDevEnv() && Loader.CURRENT.isFabricLike()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
