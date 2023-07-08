@@ -47,6 +47,13 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
             .requires(Ingredients.andesiteCasing())
             .requires(Ingredients.ironSheet()));
 
+    GeneratedRecipe BRASS_DEPOSITOR = create(NumismaticsBlocks.BRASS_DEPOSITOR)
+        .unlockedBy(Ingredients::brassCasing)
+        .viaShapeless(b -> b
+            .requires(Ingredients.brassCasing())
+            .requires(Ingredients.sturdySheet())
+            .requires(Ingredients.electronTube()));
+
     GeneratedRecipe BANK_TERMINAL = create(NumismaticsBlocks.BANK_TERMINAL)
         .unlockedBy(Ingredients::precisionMechanism)
         .viaShapeless(b -> b

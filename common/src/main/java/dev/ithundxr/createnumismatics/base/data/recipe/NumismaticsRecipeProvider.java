@@ -134,5 +134,9 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
     public static ItemLike industrialIron() {
       return AllBlocks.INDUSTRIAL_IRON_BLOCK.get();
     }
+
+    public static ItemLike sturdySheet() {
+      return AllItems.STURDY_SHEET.get();
+    }
   }
 }

@@ -1,4 +1,4 @@
-// 1.19.2	2023-07-08T15:24:21.687756865	Registrate Provider for numismatics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2023-07-08T15:50:55.698623541	Registrate Provider for numismatics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 187e917e6a02d61b15493f292d7b1db2151ddfd0 assets/numismatics/models/item/crown.json
 2f1dad2a2e0086d54cf4b88378feacc04341d87f data/numismatics/tags/items/internal/ingots/iron_ingots.json
 74157acdffb8771f8589c0bc9eb11be9d5bcfb3f data/numismatics/loot_tables/blocks/brass_depositor.json
