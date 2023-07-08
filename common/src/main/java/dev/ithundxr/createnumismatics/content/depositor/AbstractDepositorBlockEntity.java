@@ -144,6 +144,8 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     @Override
     public void lazyTick() {
         super.lazyTick();
+        if (level == null || level.isClientSide)
+            return;
         UUID depositAccount = getDepositAccount();
         if (depositAccount != null && !inventory.isEmpty()) {
             BankAccount account = Numismatics.BANK.getAccount(depositAccount);

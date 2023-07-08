@@ -176,4 +176,8 @@ public class BankAccount implements MenuProvider {
             BankAccount.this.setBalance(value);
         }
     }
+
+    public boolean isAuthorized(Player player) {
+        return player.getUUID().equals(this.id);
+    }
 }

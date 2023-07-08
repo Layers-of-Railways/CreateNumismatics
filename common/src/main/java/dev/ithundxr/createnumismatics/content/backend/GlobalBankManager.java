@@ -1,5 +1,7 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
+import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
@@ -15,6 +17,12 @@ public class GlobalBankManager {
 
     public GlobalBankManager() {
         cleanUp();
+    }
+
+    private void warnIfClient() {
+        if (Utils.isDevEnv() && Thread.currentThread().getName().equals("Render thread")) {
+            Numismatics.LOGGER.error("Bank manager should not be accessed on the client"); // set breakpoint here when developing
+        }
     }
 
     public void levelLoaded(LevelAccessor level) {
@@ -48,10 +56,12 @@ public class GlobalBankManager {
 
     @Nullable
     public BankAccount getAccount(UUID uuid) {
+        warnIfClient();
         return accounts.get(uuid);
     }
 
     public BankAccount getOrCreateAccount(UUID uuid) {
+        warnIfClient();
         if (accounts.containsKey(uuid)) {
             return accounts.get(uuid);
         } else {
