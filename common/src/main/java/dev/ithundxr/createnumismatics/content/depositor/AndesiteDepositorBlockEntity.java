@@ -115,6 +115,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         return NO_SLOTS;
     }
 
+    // this abstraction is needed to allow mods to simulate adding/removing items before coins are put into CoinBag or bank account
     @NotNull
     private ItemStack inputStack = ItemStack.EMPTY;
 
