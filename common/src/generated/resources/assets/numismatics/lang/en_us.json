@@ -6,11 +6,27 @@
 	"block.numismatics.bank_terminal": "Bank Terminal",
 
 	"item.numismatics.bevel": "Bevel",
+	"item.numismatics.black_card": "Black Card",
+	"item.numismatics.blue_card": "Blue Card",
+	"item.numismatics.brown_card": "Brown Card",
 	"item.numismatics.cog": "Cog",
 	"item.numismatics.crown": "Crown",
+	"item.numismatics.cyan_card": "Cyan Card",
+	"item.numismatics.gray_card": "Gray Card",
+	"item.numismatics.green_card": "Green Card",
+	"item.numismatics.light_blue_card": "Light_blue Card",
+	"item.numismatics.light_gray_card": "Light_gray Card",
+	"item.numismatics.lime_card": "Lime Card",
+	"item.numismatics.magenta_card": "Magenta Card",
+	"item.numismatics.orange_card": "Orange Card",
+	"item.numismatics.pink_card": "Pink Card",
+	"item.numismatics.purple_card": "Purple Card",
+	"item.numismatics.red_card": "Red Card",
 	"item.numismatics.sprocket": "Sprocket",
 	"item.numismatics.spur": "Spur",
 	"item.numismatics.sun": "Sun",
+	"item.numismatics.white_card": "White Card",
+	"item.numismatics.yellow_card": "Yellow Card",
 
 	"itemGroup.numismatics": "Create: Numismatics",
 
@@ -23,12 +39,16 @@
 	"create.item.numismatics.crown": "Crown",
 	"create.item.numismatics.sun": "Sun",
 
+	"gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
+
 	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
 	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
 
 	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
 
 	"item.numismatics.coin.tooltip.count": "Count: %s %s",
+	"item.numismatics.card.tooltip.bound": "Bound",
+	"item.numismatics.card.tooltip.blank": "Blank",
 
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
@@ -53,6 +73,8 @@
 	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
 
 	"item.numismatics.coin.tooltip.count": "Count: %s %s",
+	"item.numismatics.card.tooltip.bound": "Bound",
+	"item.numismatics.card.tooltip.blank": "Blank",
 
 	"_": "Thank you for translating Numismatics!"
 

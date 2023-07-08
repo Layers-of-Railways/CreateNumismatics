@@ -3,9 +3,12 @@ package dev.ithundxr.createnumismatics.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.item.DyedItemList;
+import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.util.ItemUtils;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.world.item.*;
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
@@ -38,6 +41,16 @@ public class NumismaticsItems {
 	public static ItemEntry<CoinItem> getCoin(Coin coin) {
 		return COINS.get(coin);
 	}
+
+	public static final DyedItemList<CardItem> CARDS = new DyedItemList<>(color -> {
+		String colorName = color.getSerializedName();
+		return REGISTRATE.item(colorName+"_card", p -> new CardItem(p, color))
+			.properties(p -> p.stacksTo(1))
+			.tag(NumismaticsTags.AllItemTags.CARDS.tag)
+			.lang(TextUtils.titleCaseConversion(color.getName()) + " Card")
+			.model((c, p) -> p.generated(c, Numismatics.asResource("item/card/"+colorName+"_card")))
+			.register();
+	});
 
 	public static void init() {
 		// load the class and register everything

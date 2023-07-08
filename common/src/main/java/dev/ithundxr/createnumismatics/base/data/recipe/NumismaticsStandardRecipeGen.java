@@ -47,6 +47,13 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
             .requires(Ingredients.andesiteCasing())
             .requires(Ingredients.ironSheet()));
 
+    GeneratedRecipe BANK_TERMINAL = create(NumismaticsBlocks.BANK_TERMINAL)
+        .unlockedBy(Ingredients::precisionMechanism)
+        .viaShapeless(b -> b
+            .requires(Ingredients.precisionMechanism())
+            .requires(Ingredients.industrialIron())
+            .requires(Ingredients.electronTube()));
+
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder("/", result);
     }

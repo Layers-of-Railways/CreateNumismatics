@@ -4,6 +4,7 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import dev.ithundxr.createnumismatics.util.Utils;
 import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +44,7 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
                 return InteractionResult.SUCCESS;
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
-                    be -> NetworkHooks.openScreen((ServerPlayer) player, be, be::sendToMenu));
+                    be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
             }
             return InteractionResult.SUCCESS;
         }

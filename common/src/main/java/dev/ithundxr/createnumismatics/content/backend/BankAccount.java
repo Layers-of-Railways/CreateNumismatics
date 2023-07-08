@@ -3,7 +3,7 @@ package dev.ithundxr.createnumismatics.content.backend;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
-import dev.ithundxr.createnumismatics.content.terminal.BankMenu;
+import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

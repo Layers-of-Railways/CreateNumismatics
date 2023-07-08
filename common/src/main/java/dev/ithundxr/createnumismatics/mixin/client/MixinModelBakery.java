@@ -33,5 +33,6 @@ public class MixinModelBakery {
             ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/coin/outline/"+coin.getName())));
         }
         ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/coin/outline/animated")));
+        ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/card/outline")));
     }
 }
