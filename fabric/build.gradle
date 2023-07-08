@@ -23,6 +23,11 @@ loom {
 
             environmentVariable("DATAGEN", "TRUE")
         }
+
+        client {
+
+            programArg "--username=Dev"
+        }
     }
 }
 

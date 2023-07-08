@@ -37,4 +37,15 @@ public class CardSlot extends Slot {
             return super.mayPlace(stack) && !CardItem.isBound(stack);
         }
     }
+
+    public static class BoundCardSlot extends CardSlot {
+        public BoundCardSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public boolean mayPlace(@NotNull ItemStack stack) {
+            return super.mayPlace(stack) && CardItem.isBound(stack);
+        }
+    }
 }

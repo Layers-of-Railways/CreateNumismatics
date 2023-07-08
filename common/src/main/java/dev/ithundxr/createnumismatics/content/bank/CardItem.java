@@ -41,6 +41,16 @@ public class CardItem extends Item {
     }
 
     @SuppressWarnings("DataFlowIssue")
+    @Nullable
+    public static UUID get(ItemStack itemStack) {
+        if (!isBound(itemStack))
+            return null;
+
+        CompoundTag tag = itemStack.getTag();
+        return tag.getUUID("AccountID");
+    }
+
+    @SuppressWarnings("DataFlowIssue")
     public static boolean isBound(ItemStack itemStack) {
         return itemStack.hasTag() && itemStack.getTag().hasUUID("AccountID");
     }

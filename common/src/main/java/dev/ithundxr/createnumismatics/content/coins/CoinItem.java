@@ -84,6 +84,11 @@ public class CoinItem extends Item {
         return stack;
     }
 
+    public static ItemStack clearDisplayedCount(ItemStack stack) {
+        stack.removeTagKey("DisplayedCount");
+        return stack;
+    }
+
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);

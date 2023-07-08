@@ -46,7 +46,7 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
         });
         addRenderableWidget(confirmButton);
 
-        extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 84, 84, 92));
+        extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 64, 84, 74));
     }
 
     @Override

@@ -27,7 +27,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     public static final int COIN_INPUT_SLOT_INDEX = COIN_SLOTS;
     public static final int CARD_SLOT_INDEX = COIN_INPUT_SLOT_INDEX + 1;
     public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
-    public static final int PLAYER_HOTBAR_START_INDEX = PLAYER_INV_START_INDEX + 9;
+    public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
     protected ContainerData dataAccess;
     private CardWritingContainer cardWritingContainer;
@@ -89,7 +89,7 @@ public class BankMenu extends MenuBase<BankAccount> {
         if (!clickedSlot.hasItem())
             return ItemStack.EMPTY;
 
-        ItemStack slotStack = clickedSlot.getItem();
+        ItemStack slotStack = CoinItem.clearDisplayedCount(clickedSlot.getItem());
         ItemStack returnStack = slotStack.copy();
 
         if (index <= CARD_SLOT_INDEX) {
@@ -103,9 +103,9 @@ public class BankMenu extends MenuBase<BankAccount> {
             return ItemStack.EMPTY; // failed to move to coin input slot
         } else if (NumismaticsTags.AllItemTags.CARDS.matches(slotStack) && !moveItemStackTo(slotStack, CARD_SLOT_INDEX, CARD_SLOT_INDEX + 1, false)) {
             return ItemStack.EMPTY; // failed to move to card slot
-        } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_START_INDEX && !moveItemStackTo(slotStack, PLAYER_HOTBAR_START_INDEX, PLAYER_INV_END_INDEX, false)) {
+        } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_END_INDEX && !moveItemStackTo(slotStack, PLAYER_HOTBAR_END_INDEX, PLAYER_INV_END_INDEX, false)) {
             return ItemStack.EMPTY;
-        } else if (index >= PLAYER_HOTBAR_START_INDEX && index < PLAYER_INV_END_INDEX && !moveItemStackTo(slotStack, PLAYER_INV_START_INDEX, PLAYER_HOTBAR_START_INDEX, false)) {
+        } else if (index >= PLAYER_HOTBAR_END_INDEX && index < PLAYER_INV_END_INDEX && !moveItemStackTo(slotStack, PLAYER_INV_START_INDEX, PLAYER_HOTBAR_END_INDEX, false)) {
             return ItemStack.EMPTY;
         }
 
@@ -192,7 +192,9 @@ public class BankMenu extends MenuBase<BankAccount> {
         }
 
         @Override
-        public void setChanged() {}
+        public void setChanged() {
+
+        }
 
         @Override
         public boolean stillValid(@NotNull Player player) {
