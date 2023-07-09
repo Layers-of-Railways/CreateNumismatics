@@ -11,6 +11,7 @@ import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
@@ -72,7 +73,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.color(MaterialColor.COLOR_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
-		.properties(p -> p.requiresCorrectToolForDrops())
+		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.lang("Bank Terminal")
 		.blockstate((c, p) -> p.getVariantBuilder(c.get())
@@ -89,7 +90,7 @@ public class NumismaticsBlocks {
 		.simpleItem()
 		.register();
 
-	public static void init() {
+	public static void register() {
 		// load the class and register everything
 		Numismatics.LOGGER.info("Registering blocks for " + Numismatics.NAME);
 	}

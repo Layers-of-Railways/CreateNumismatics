@@ -24,9 +24,7 @@ import java.util.List;
 
 public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
 
-    private IconButton confirmButton;
-
-    private NumismaticsGuiTextures background = NumismaticsGuiTextures.BANK_TERMINAL;
+    private final NumismaticsGuiTextures background = NumismaticsGuiTextures.BANK_TERMINAL;
     private final ItemStack renderedItem = NumismaticsBlocks.BANK_TERMINAL.asStack();
 
     private List<Rect2i> extraAreas = Collections.emptyList();
@@ -44,7 +42,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         int x = leftPos;
         int y = topPos;
 
-        confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
+        IconButton confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
         confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 

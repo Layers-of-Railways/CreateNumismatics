@@ -8,9 +8,9 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 public class ModSetup {
     public static void register() {
-        NumismaticsItems.init();
+        NumismaticsItems.register();
         NumismaticsBlockEntities.register();
-        NumismaticsBlocks.init();
+        NumismaticsBlocks.register();
         NumismaticsMenuTypes.register();
         NumismaticsTags.register();
 
