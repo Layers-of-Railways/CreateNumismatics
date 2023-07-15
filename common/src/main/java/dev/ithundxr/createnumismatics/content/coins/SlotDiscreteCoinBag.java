@@ -3,7 +3,6 @@ package dev.ithundxr.createnumismatics.content.coins;
 import com.mojang.datafixers.util.Pair;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

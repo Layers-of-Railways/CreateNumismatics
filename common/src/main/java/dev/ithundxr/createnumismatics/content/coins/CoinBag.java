@@ -1,14 +1,9 @@
 package dev.ithundxr.createnumismatics.content.coins;
 
 import com.simibubi.create.foundation.utility.Couple;
-import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public interface CoinBag {
     void add(Coin coin, int count);

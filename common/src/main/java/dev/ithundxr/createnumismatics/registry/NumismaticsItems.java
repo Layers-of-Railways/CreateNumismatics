@@ -9,7 +9,9 @@ import dev.ithundxr.createnumismatics.util.ItemUtils;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.TextUtils;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
 

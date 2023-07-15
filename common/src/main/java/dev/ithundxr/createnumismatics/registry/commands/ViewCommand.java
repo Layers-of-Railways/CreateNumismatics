@@ -17,7 +17,6 @@ import net.minecraftforge.server.command.EnumArgument;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
