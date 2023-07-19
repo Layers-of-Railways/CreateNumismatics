@@ -2,6 +2,7 @@ package dev.ithundxr.createnumismatics.multiloader;
 
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -33,11 +34,11 @@ public class CommonTags {
 			RELOCATION_NOT_SUPPORTED = block("relocation_not_supported");
 
 	public static CommonTag<Block> block(String path) {
-		return CommonTag.conventional(Registry.BLOCK_REGISTRY, path);
+		return CommonTag.conventional(Registries.BLOCK, path);
 	}
 
 	public static CommonTag<Item> item(String common, String fabric, String forge) {
-		return CommonTag.conventional(Registry.ITEM_REGISTRY, common, fabric, forge);
+		return CommonTag.conventional(Registries.ITEM, common, fabric, forge);
 	}
 
 	public static CommonTag<Item> item(String path) {

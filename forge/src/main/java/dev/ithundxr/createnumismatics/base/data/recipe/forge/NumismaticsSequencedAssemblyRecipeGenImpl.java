@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+//fixme
 public class NumismaticsSequencedAssemblyRecipeGenImpl extends NumismaticsSequencedAssemblyRecipeGen {
 	protected NumismaticsSequencedAssemblyRecipeGenImpl(DataGenerator pGenerator) {
 		super(pGenerator);

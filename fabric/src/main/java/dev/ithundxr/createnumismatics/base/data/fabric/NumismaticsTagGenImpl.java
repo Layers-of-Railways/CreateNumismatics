@@ -6,6 +6,6 @@ import net.minecraft.tags.TagKey;
 
 public class NumismaticsTagGenImpl {
 	public static <T> TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
-		return prov.tag(tag);
+		return prov.addTag(tag);
 	}
 }

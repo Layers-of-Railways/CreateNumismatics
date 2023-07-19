@@ -10,10 +10,10 @@ import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
+import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
@@ -22,7 +22,7 @@ public class NumismaticsBlocks {
 	private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
 
 	public static final BlockEntry<AndesiteDepositorBlock> ANDESITE_DEPOSITOR = REGISTRATE.block("andesite_depositor", AndesiteDepositorBlock::new)
-		.properties(p -> p.color(MaterialColor.PODZOL))
+		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
 		.properties(p -> p.strength(1.0f, 3600000.0f)) // explosion resistance same as bedrock
 		.transform(axeOrPickaxe())
@@ -46,7 +46,7 @@ public class NumismaticsBlocks {
 		.register();
 
 	public static final BlockEntry<BrassDepositorBlock> BRASS_DEPOSITOR = REGISTRATE.block("brass_depositor", BrassDepositorBlock::new)
-		.properties(p -> p.color(MaterialColor.PODZOL))
+		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
 		.properties(p -> p.strength(1.4f, 3600000.0f)) // explosion resistance same as bedrock
 		.transform(axeOrPickaxe())
@@ -71,7 +71,7 @@ public class NumismaticsBlocks {
 
 	public static final BlockEntry<BankTerminalBlock> BANK_TERMINAL = REGISTRATE.block("bank_terminal", BankTerminalBlock::new)
 		.initialProperties(SharedProperties::softMetal)
-		.properties(p -> p.color(MaterialColor.COLOR_GRAY))
+		.properties(p -> p.mapColor(MapColor.COLOR_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())

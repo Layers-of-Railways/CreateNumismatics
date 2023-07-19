@@ -40,9 +40,6 @@ public class CoinDisplaySlot extends Slot {
     public void set(@NotNull ItemStack stack) {}
 
     @Override
-    public void initialize(@NotNull ItemStack stack) {}
-
-    @Override
     public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}
 
     @Override

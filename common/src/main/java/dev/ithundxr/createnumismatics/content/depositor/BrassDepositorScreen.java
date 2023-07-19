@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+//fixme
 public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepositorMenu> {
 
     private IconButton confirmButton;

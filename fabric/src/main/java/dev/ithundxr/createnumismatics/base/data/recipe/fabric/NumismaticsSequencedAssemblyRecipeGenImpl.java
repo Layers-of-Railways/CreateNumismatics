@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.function.Consumer;
 
+//fixme
 public class NumismaticsSequencedAssemblyRecipeGenImpl extends NumismaticsSequencedAssemblyRecipeGen {
 	protected NumismaticsSequencedAssemblyRecipeGenImpl(DataGenerator pGenerator) {
 		super(pGenerator);

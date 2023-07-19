@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+//fixme
 public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<AndesiteDepositorMenu> {
 
     private IconButton confirmButton;

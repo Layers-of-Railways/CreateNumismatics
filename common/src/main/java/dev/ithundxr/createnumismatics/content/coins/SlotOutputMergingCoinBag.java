@@ -44,10 +44,11 @@ public class SlotOutputMergingCoinBag extends Slot {
         }*/
     }
 
-    @Override
-    public void initialize(@NotNull ItemStack stack) {
-        set(stack);
-    }
+    //fixme
+//    @Override
+//    public void initialize(@NotNull ItemStack stack) {
+//        set(stack);
+//    }
 
     @Override
     public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}

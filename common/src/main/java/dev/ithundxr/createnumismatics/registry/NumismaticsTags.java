@@ -3,6 +3,8 @@ package dev.ithundxr.createnumismatics.registry;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -63,7 +65,7 @@ public class NumismaticsTags {
 
     AllBlockTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
       ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
-      tag = optionalTag(Registry.BLOCK, id);
+      tag = optionalTag(BuiltInRegistries.BLOCK, id);
     }
 
     @SuppressWarnings("deprecation")

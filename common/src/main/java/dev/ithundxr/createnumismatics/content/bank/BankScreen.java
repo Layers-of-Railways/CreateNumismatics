@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+//fixme
 public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
 
     private final NumismaticsGuiTextures background = NumismaticsGuiTextures.BANK_TERMINAL;

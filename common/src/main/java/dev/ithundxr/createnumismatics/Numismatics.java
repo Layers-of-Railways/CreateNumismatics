@@ -37,8 +37,9 @@ public class Numismatics {
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
 
-    private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID)
-            .creativeModeTab(() -> NumismaticsItems.mainCreativeTab, "Create: Numismatics");
+    private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
+    //fixme
+            //.creativeModeTab(() -> NumismaticsItems.mainCreativeTab, "Create: Numismatics");
 
     static {
         REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)

@@ -26,6 +26,7 @@ public class MixinModelBakery {
         ids.add(FIRE_1);
     ```
      */
+    //fixme
     @Inject(method = "method_24150", at = @At("HEAD"))
     private static void snr$addExtraUnreferencedTextures(HashSet<Material> ids, CallbackInfo ci) {
         for (Coin coin : Coin.values()) {
