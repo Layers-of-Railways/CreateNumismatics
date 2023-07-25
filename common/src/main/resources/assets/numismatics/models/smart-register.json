@@ -1,0 +1,52 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "numismatics:block/shop/register/smart_register_face",
+		"1": "numismatics:block/shop/register/smart_register_side",
+		"2": "numismatics:block/shop/register/smart_register_reading_comb",
+		"3": "create:block/brass_casing",
+		"4": "numismatics:block/shop/register/smart_register_drum",
+		"5": "numismatics:block/shop/register/smart_register_drum_endcap",
+		"6": "numismatics:block/shop/register/smart_register_back",
+		"7": "numismatics:block/shop/register/brass_casing_short",
+		"particle": "create:block/brass_casing"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 8],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 16, 8, 0], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#6"},
+				"west": {"uv": [0, 0, 8, 16], "texture": "#1"},
+				"up": {"uv": [0, 8, 16, 16], "rotation": 180, "texture": "#2"},
+				"down": {"uv": [0, 8, 16, 16], "texture": "#3"}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [16, 8, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 8], "texture": "#missing"},
+				"east": {"uv": [8, 8, 16, 16], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [0, 8, 16, 16], "texture": "#7"},
+				"west": {"uv": [0, 0, 8, 8], "rotation": 90, "texture": "#1"},
+				"up": {"uv": [0, 8, 16, 16], "texture": "#3"},
+				"down": {"uv": [0, 0, 16, 8], "texture": "#3"}
+			}
+		},
+		{
+			"from": [1, 8, 8],
+			"to": [15, 15, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 14, 7], "texture": "#missing"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#5"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#4"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#5"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#4"},
+				"down": {"uv": [0, 0, 14, 7], "texture": "#missing"}
+			}
+		}
+	]
+}
