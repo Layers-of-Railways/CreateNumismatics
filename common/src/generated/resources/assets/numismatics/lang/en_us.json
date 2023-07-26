@@ -15,8 +15,8 @@
 	"item.numismatics.cyan_card": "Cyan Card",
 	"item.numismatics.gray_card": "Gray Card",
 	"item.numismatics.green_card": "Green Card",
-	"item.numismatics.light_blue_card": "Light_blue Card",
-	"item.numismatics.light_gray_card": "Light_gray Card",
+	"item.numismatics.light_blue_card": "Light Blue Card",
+	"item.numismatics.light_gray_card": "Light Gray Card",
 	"item.numismatics.lime_card": "Lime Card",
 	"item.numismatics.magenta_card": "Magenta Card",
 	"item.numismatics.orange_card": "Orange Card",
@@ -28,32 +28,6 @@
 	"item.numismatics.sun": "Sun",
 	"item.numismatics.white_card": "White Card",
 	"item.numismatics.yellow_card": "Yellow Card",
-
-	"create.numismatics.andesite_depositor.price": "Price",
-
-	"create.item.numismatics.spur": "Spur",
-	"create.item.numismatics.bevel": "Bevel",
-	"create.item.numismatics.sprocket": "Sprocket",
-	"create.item.numismatics.cog": "Cog",
-	"create.item.numismatics.crown": "Crown",
-	"create.item.numismatics.sun": "Sun",
-
-	"gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
-
-	"command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
-
-	"itemGroup.numismatics": "Create: Numismatics",
-
-	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
-	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
-
-	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
-
-	"item.numismatics.coin.tooltip.count": "Count: %s %s",
-	"item.numismatics.card.tooltip.bound": "Bound",
-	"item.numismatics.card.tooltip.blank": "Blank",
-
-	"block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
 
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",

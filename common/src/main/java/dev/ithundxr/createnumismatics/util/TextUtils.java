@@ -25,6 +25,8 @@ public class TextUtils {
             return inputString.toUpperCase();
         }
 
+        inputString = inputString.replaceAll("_", " ");
+
         StringBuffer resultPlaceHolder = new StringBuffer(inputString.length());
 
         Stream.of(inputString.split(" ")).forEach(stringPart ->

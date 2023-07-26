@@ -45,6 +45,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     protected final List<UUID> trustList = new ArrayList<>();
 
     protected final DiscreteCoinBag inventory = new DiscreteCoinBag();
+    private boolean delayedDataSync = false;
 
     public AbstractDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -144,6 +145,10 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         super.lazyTick();
         if (level == null || level.isClientSide)
             return;
+        if (delayedDataSync) {
+            delayedDataSync = false;
+            sendData();
+        }
         UUID depositAccount = getDepositAccount();
         if (depositAccount != null && !inventory.isEmpty()) {
             BankAccount account = Numismatics.BANK.getAccount(depositAccount);
@@ -155,6 +160,10 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
                 }
             }
         }
+    }
+
+    void notifyDelayedDataSync() {
+        delayedDataSync = true;
     }
 
     protected static class DepositorValueBoxTransform extends CenteredSideValueBoxTransform {

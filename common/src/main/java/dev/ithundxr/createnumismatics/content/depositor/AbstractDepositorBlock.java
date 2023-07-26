@@ -2,11 +2,12 @@ package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
+import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
-import dev.ithundxr.createnumismatics.util.ForcedGoggleOverlay;
+import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -35,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEntity> extends Block implements
-    IWrenchable, IBE<T>, ForcedGoggleOverlay, TrustedBlock {
+    IWrenchable, IBE<T>, ForcedGoggleOverlay, TrustedBlock, NotifyFailedBreak {
 
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -178,5 +180,12 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);
+    }
+
+    @Override
+    public void notifyFailedBreak(LevelAccessor level, BlockPos pos, BlockState state, Player player) {
+        if (level.getBlockEntity(pos) instanceof AbstractDepositorBlockEntity abstractDepositorBE) {
+            abstractDepositorBE.notifyDelayedDataSync();
+        }
     }
 }

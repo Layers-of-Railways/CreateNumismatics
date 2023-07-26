@@ -1,10 +1,12 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -150,12 +152,12 @@ public class NumismaticsCreativeModeTabs {
                 visibilities.put(entry.asItem(), factory);
             });
 
-            /*for (ItemEntry<ConductorCapItem> entry : CRItems.ITEM_CONDUCTOR_CAP.values()) {
-                ConductorCapItem item = entry.get();
+            for (ItemEntry<CardItem> entry : NumismaticsItems.CARDS) {
+                CardItem item = entry.get();
                 if (item.color != DyeColor.RED) {
                     visibilities.put(item, TabVisibility.SEARCH_TAB_ONLY);
                 }
-            }*/
+            }
 
             return item -> {
                 TabVisibility visibility = visibilities.get(item);
