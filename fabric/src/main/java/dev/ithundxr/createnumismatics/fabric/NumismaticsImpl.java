@@ -2,8 +2,8 @@ package dev.ithundxr.createnumismatics.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.events.fabric.CommonEventsFabric;
+import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.function.BiConsumer;
 

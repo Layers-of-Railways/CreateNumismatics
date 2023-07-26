@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "numismatics:block/andesite_depositor_slot",
+    "front": "numismatics:block/depositor/andesite_depositor_slot",
     "particle": "create:block/andesite_casing",
     "side": "create:block/andesite_casing",
-    "top": "numismatics:block/andesite_depositor_select"
+    "top": "numismatics:block/depositor/andesite_depositor_select"
   }
 }

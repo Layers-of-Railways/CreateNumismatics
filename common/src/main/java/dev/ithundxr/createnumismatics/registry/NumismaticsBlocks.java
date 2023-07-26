@@ -33,8 +33,8 @@ public class NumismaticsBlocks {
 					.modelFile(p.models()
 						.orientable(c.getName() + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : ""),
 							Create.asResource("block/andesite_casing"),
-							p.modLoc("block/andesite_depositor_slot" + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : "")),
-							p.modLoc("block/andesite_depositor_select"))
+							p.modLoc("block/depositor/andesite_depositor_slot" + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : "")),
+							p.modLoc("block/depositor/andesite_depositor_select"))
 						.texture("particle", Create.asResource("block/andesite_casing"))
 					)
 					.rotationY((int) state.getValue(AbstractDepositorBlock.HORIZONTAL_FACING).toYRot() + 180)
@@ -57,8 +57,8 @@ public class NumismaticsBlocks {
 					.modelFile(p.models()
 						.orientable(c.getName() + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : ""),
 							Create.asResource("block/brass_casing"),
-							p.modLoc("block/brass_depositor_slot" + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : "")),
-							p.modLoc("block/brass_depositor_select"))
+							p.modLoc("block/depositor/brass_depositor_slot" + (state.getValue(AbstractDepositorBlock.LOCKED) ? "_locked" : "")),
+							p.modLoc("block/depositor/brass_depositor_select"))
 						.texture("particle", Create.asResource("block/brass_casing"))
 					)
 					.rotationY((int) state.getValue(AbstractDepositorBlock.HORIZONTAL_FACING).toYRot() + 180)
@@ -79,9 +79,10 @@ public class NumismaticsBlocks {
 		.blockstate((c, p) -> p.getVariantBuilder(c.get())
 			.forAllStates((state) -> ConfiguredModel.builder()
 				.modelFile(p.models()
-					.orientable(c.getName(), p.modLoc("block/bank_terminal_side"), p.modLoc("block/bank_terminal_front"),
-						p.modLoc("block/bank_terminal_top"))
-					.texture("particle", p.modLoc("block/bank_terminal_top"))
+					.orientable(c.getName(), p.modLoc("block/bank_terminal/bank_terminal_side"),
+						p.modLoc("block/bank_terminal/bank_terminal_front"),
+						p.modLoc("block/bank_terminal/bank_terminal_top"))
+					.texture("particle", p.modLoc("block/bank_terminal/bank_terminal_top"))
 				)
 				.rotationY((int) state.getValue(BankTerminalBlock.HORIZONTAL_FACING).toYRot() + 180)
 				.build()
