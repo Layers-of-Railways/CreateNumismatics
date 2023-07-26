@@ -66,6 +66,9 @@ public class NumismaticsIcons extends AllIcons {
     @Environment(EnvType.CLIENT)
     @Override
     public void render(GuiGraphics graphics, int x, int y) {
+        if (isCoin) { // essential to make coins look decent in scroll options
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+        }
         graphics.blit(ICON_ATLAS, x, y, 0, iconX, iconY, 16, 16, 256, 256);
     }
 
