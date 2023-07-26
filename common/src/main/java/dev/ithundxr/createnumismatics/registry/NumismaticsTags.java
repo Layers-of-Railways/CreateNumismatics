@@ -88,7 +88,8 @@ public class NumismaticsTags {
 
   public enum AllItemTags {
     COINS,
-    CARDS
+    CARDS,
+    ID_CARDS
     ;
 
     public final TagKey<Item> tag;

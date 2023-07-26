@@ -18,7 +18,8 @@ public enum NumismaticsGuiTextures implements ScreenElement {
 
     ANDESITE_DEPOSITOR("andesite_depositor", 182, 44),
     BRASS_DEPOSITOR("brass_depositor", 182, 145),
-    BANK_TERMINAL("bank_terminal",200, 132)
+    BANK_TERMINAL("bank_terminal",200, 132),
+    TRUST_LIST("trust_list",200, 110)
     ;
 
     public static final int FONT_COLOR = 0x575F7A;

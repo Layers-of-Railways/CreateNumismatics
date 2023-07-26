@@ -5,13 +5,18 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOp
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,7 +41,21 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         coinOption = new ProtectedScrollOptionBehaviour<>(Coin.class, Components.translatable("create.numismatics.andesite_depositor.price"), this,
-            new DepositorValueBoxTransform(), this::isTrusted);
+            new DepositorValueBoxTransform(), this::isTrusted) {
+            @Override
+            public void onShortInteract(Player player, InteractionHand hand, Direction side) {
+                if (isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
+                    Utils.openScreen(serverPlayer,
+                        TrustListMenu.provider(AndesiteDepositorBlockEntity.this, NumismaticsBlocks.ANDESITE_DEPOSITOR.asStack()),
+                        (buf) -> {
+                            buf.writeItem(NumismaticsBlocks.ANDESITE_DEPOSITOR.asStack());
+                            AndesiteDepositorBlockEntity.this.sendToMenu(buf);
+                        });
+                } else {
+                    super.onShortInteract(player, hand, side);
+                }
+            }
+        };
         behaviours.add(coinOption);
     }
 

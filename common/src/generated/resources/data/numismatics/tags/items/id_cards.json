@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "numismatics:white_id_card",
+    "numismatics:orange_id_card",
+    "numismatics:magenta_id_card",
+    "numismatics:light_blue_id_card",
+    "numismatics:yellow_id_card",
+    "numismatics:lime_id_card",
+    "numismatics:pink_id_card",
+    "numismatics:gray_id_card",
+    "numismatics:light_gray_id_card",
+    "numismatics:cyan_id_card",
+    "numismatics:purple_id_card",
+    "numismatics:blue_id_card",
+    "numismatics:brown_id_card",
+    "numismatics:green_id_card",
+    "numismatics:red_id_card",
+    "numismatics:black_id_card"
+  ]
+}

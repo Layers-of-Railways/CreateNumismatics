@@ -6,6 +6,7 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.item.DyedItemList;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 
@@ -42,6 +43,16 @@ public class NumismaticsItems {
 			.tag(NumismaticsTags.AllItemTags.CARDS.tag)
 			.lang(TextUtils.titleCaseConversion(color.getName()) + " Card")
 			.model((c, p) -> p.generated(c, Numismatics.asResource("item/card/"+colorName+"_card")))
+			.register();
+	});
+
+	public static final DyedItemList<IDCardItem> ID_CARDS = new DyedItemList<>(color -> {
+		String colorName = color.getSerializedName();
+		return REGISTRATE.item(colorName+"_id_card", p -> new IDCardItem(p, color))
+			.properties(p -> p.stacksTo(16))
+			.tag(NumismaticsTags.AllItemTags.ID_CARDS.tag)
+			.lang(TextUtils.titleCaseConversion(color.getName()) + " ID Card")
+			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/"+colorName+"_id_card")))
 			.register();
 	});
 

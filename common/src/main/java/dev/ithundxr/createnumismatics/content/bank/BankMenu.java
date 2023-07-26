@@ -118,30 +118,6 @@ public class BankMenu extends MenuBase<BankAccount> {
         return returnStack;
     }
 
-    public ItemStack hopperQuickMoveStack(Player player, int index) {
-        Slot clickedSlot = this.slots.get(index);
-        if (!clickedSlot.hasItem())
-            return ItemStack.EMPTY;
-
-        ItemStack slotStack = clickedSlot.getItem();
-        ItemStack returnStack = slotStack.copy();
-        if (index < 5) {
-            if (!this.moveItemStackTo(slotStack, 5, this.slots.size(), true)) {
-                return ItemStack.EMPTY; // failed to move to player inv
-            }
-        } else if (!this.moveItemStackTo(slotStack, 0, 5, false)) {
-            return ItemStack.EMPTY; // failed to move to hopper inv
-        }
-
-        if (slotStack.isEmpty()) {
-            clickedSlot.set(ItemStack.EMPTY);
-        } else {
-            clickedSlot.setChanged();
-        }
-
-        return returnStack;
-    }
-
     private class CardWritingContainer implements Container {
         @NotNull
         protected final List<ItemStack> stacks = new ArrayList<>();

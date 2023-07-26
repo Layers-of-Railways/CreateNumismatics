@@ -1,5 +1,6 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
+import com.google.common.collect.ImmutableList;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
@@ -7,15 +8,20 @@ import com.simibubi.create.foundation.utility.VecHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Trusted {
+public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Trusted, TrustListHolder {
 
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
@@ -39,10 +45,13 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
             AbstractDepositorBlockEntity.this.setChanged();
         }
     };
+
     @Nullable
     protected UUID owner;
 
     protected final List<UUID> trustList = new ArrayList<>();
+
+    public final TrustListContainer trustListContainer = new TrustListContainer(trustList, this::setChanged);
 
     protected final DiscreteCoinBag inventory = new DiscreteCoinBag();
     private boolean delayedDataSync = false;
@@ -64,13 +73,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         super.write(tag, clientPacket);
         if (owner != null)
             tag.putUUID("Owner", owner);
-        if (!trustList.isEmpty()) {
-            ListTag list = new ListTag();
-            for (UUID id : trustList) {
-                list.add(NbtUtils.createUUID(id));
-            }
-            tag.put("TrustList", list);
-        }
+
         if (!inventory.isEmpty()) {
             tag.put("Inventory", inventory.save(new CompoundTag()));
         }
@@ -78,21 +81,16 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         if (!cardContainer.getItem(0).isEmpty()) {
             tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
         }
+
+        if (!trustListContainer.isEmpty()) {
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+        }
     }
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
-        trustList.clear();
-
-        if (tag.contains("TrustList", Tag.TAG_LIST)) {
-            ListTag list = tag.getList("TrustList", Tag.TAG_INT_ARRAY);
-            for (Tag entry : list) {
-                if (entry.getType() == IntArrayTag.TYPE)
-                    trustList.add(NbtUtils.loadUUID(entry));
-            }
-        }
 
         inventory.clear();
         if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
@@ -104,6 +102,12 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
             cardContainer.setItem(0, cardStack);
         } else {
             cardContainer.setItem(0, ItemStack.EMPTY);
+        }
+
+        trustListContainer.clearContent();
+        trustList.clear();
+        if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
+            trustListContainer.load(tag.getCompound("TrustListInv"));
         }
     }
 
@@ -175,5 +179,15 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         protected Vec3 getSouthLocation() {
             return VecHelper.voxelSpace(8, 8, 15.5);
         }
+    }
+
+    @Override
+    public ImmutableList<UUID> getTrustList() {
+        return ImmutableList.copyOf(trustList);
+    }
+
+    @Override
+    public Container getBackingContainer() {
+        return trustListContainer;
     }
 }

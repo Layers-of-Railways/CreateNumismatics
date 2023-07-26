@@ -5,6 +5,8 @@ import com.tterrag.registrate.builders.MenuBuilder;
 import com.tterrag.registrate.util.entry.MenuEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListScreen;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorScreen;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
@@ -34,6 +36,12 @@ public class NumismaticsMenuTypes {
         "bank",
         BankMenu::new,
         () -> BankScreen::new
+    );
+
+    public static final MenuEntry<TrustListMenu> TRUST_LIST = register(
+        "trust_list",
+        TrustListMenu::new,
+        () -> TrustListScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(
