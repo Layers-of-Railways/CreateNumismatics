@@ -112,7 +112,7 @@ public class NumismaticsTags {
 
     AllItemTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
       ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
-      tag = optionalTag(Registry.ITEM, id);
+      tag = optionalTag(BuiltInRegistries.ITEM, id);
       this.alwaysDatagen = alwaysDatagen;
     }
 

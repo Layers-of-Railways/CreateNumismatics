@@ -5,23 +5,14 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.item.DyedItemList;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
-import dev.ithundxr.createnumismatics.util.ItemUtils;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.TextUtils;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import java.util.EnumMap;
 
 public class NumismaticsItems {
 	private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
-	public static final CreativeModeTab mainCreativeTab = new CreativeModeTab(ItemUtils.nextTabId(), Numismatics.MOD_ID) {
-		@Override
-		@Nonnull
-		public ItemStack makeIcon() { return getCoin(Coin.COG).asStack(); }
-	};
 
 	private static ItemEntry<CoinItem> makeCoin(Coin coin) {
 		return REGISTRATE.item(coin.getName(), CoinItem.create(coin))

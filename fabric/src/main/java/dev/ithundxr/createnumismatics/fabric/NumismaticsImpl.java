@@ -6,13 +6,17 @@ import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.function.BiConsumer;
 
 public class NumismaticsImpl implements ModInitializer {
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void onInitialize() {
         Numismatics.init();
@@ -21,6 +25,7 @@ public class NumismaticsImpl implements ModInitializer {
                 () -> () -> "{} is accessing Porting Lib on a Fabric server!"
                 ), Numismatics.NAME);
         CommonEventsFabric.init();
+        ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(Numismatics.MOD_ID, "enum"), EnumArgument.class, new EnumArgument.Info());
     }
 
     public static String findVersion() {

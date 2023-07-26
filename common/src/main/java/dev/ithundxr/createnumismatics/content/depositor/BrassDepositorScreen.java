@@ -16,6 +16,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-//fixme
 public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepositorMenu> {
 
     private IconButton confirmButton;
@@ -76,7 +76,7 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
                 .titled(Components.literal(TextUtils.titleCaseConversion(coin.getName(0))))
                 .calling((value) -> {
                     menu.contentHolder.setPrice(coin, value);
-                    coinLabels[i].x = baseX + 18 - font.width(coinLabels[i].text) / 2;
+                    coinLabels[i].setX(baseX + 18 - font.width(coinLabels[i].text) / 2);
                 });
             addRenderableWidget(coinScrollInputs[i]);
 
@@ -93,29 +93,29 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack ms, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
         int invY = topPos + background.height + 2;
-        renderPlayerInventory(ms, invX, invY);
+        renderPlayerInventory(graphics, invX, invY);
 
         int x = leftPos;
         int y = topPos;
 
-        background.render(ms, x, y, this);
+        background.render(graphics, x, y);
 
         GuiGameElement.of(renderedItem).<GuiGameElement
                 .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 70, -200)
             .scale(5)
-            .render(ms);
+            .render(graphics);
 
-        drawCenteredString(ms, font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
+        graphics.drawCenteredString(font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
 
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(menu.contentHolder.getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
         Component balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
             TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
-        drawCenteredString(ms, font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
+        graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }
 
     @Override

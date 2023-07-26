@@ -1,11 +1,18 @@
 package dev.ithundxr.createnumismatics.forge;
 
+import com.jozufozu.flywheel.Flywheel;
+import com.jozufozu.flywheel.config.BackendTypeArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
+import dev.ithundxr.createnumismatics.registry.forge.NumismaticsCreativeModeTabsImpl;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands.CommandSelection;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.core.registries.Registries;
 import net.minecraftforge.common.util.MavenVersionStringHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -14,6 +21,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,9 +35,17 @@ public class NumismaticsImpl {
 
     public NumismaticsImpl() {
         eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        NumismaticsCreativeModeTabsImpl.register(eventBus);
         Numismatics.init();
         //noinspection Convert2MethodRef
         Env.CLIENT.runIfCurrent(() -> () -> NumismaticsClientImpl.init());
+        eventBus.addListener(NumismaticsImpl::registerArgumentTypes);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void registerArgumentTypes(RegisterEvent event) {
+        event.register(Registries.COMMAND_ARGUMENT_TYPE, Numismatics.asResource("enum"),
+            () -> ArgumentTypeInfos.registerByClass(EnumArgument.class, new EnumArgument.Info()));
     }
 
     public static String findVersion() {

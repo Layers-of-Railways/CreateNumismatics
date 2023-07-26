@@ -67,11 +67,10 @@ public class TextUtils {
 //        if (transparent) {
 //            font.drawInBatch(text, f2, 0, -1, false, matrix4f, pBuffer, false, 0, pPackedLight);
 //        }
-// fixme dont know what to do here but this fixes it might need to switch these
-        font.drawInBatch(text, f2, 0, 553648127, false, matrix4f, pBuffer, Font.DisplayMode.NORMAL, j, pPackedLight);
+        font.drawInBatch(text, f2, 0, 553648127, false, matrix4f, pBuffer, transparent ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL, j, pPackedLight);
 
         if (transparent) {
-            font.drawInBatch(text, f2, 0, -1, false, matrix4f, pBuffer, Font.DisplayMode.SEE_THROUGH, 0, pPackedLight);
+            font.drawInBatch(text, f2, 0, -1, false, matrix4f, pBuffer, Font.DisplayMode.NORMAL, 0, pPackedLight);
         }
 
         poseStack.popPose();

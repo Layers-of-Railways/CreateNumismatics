@@ -2,9 +2,9 @@ package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.Commands.literal;
@@ -19,7 +19,7 @@ public class ReloadCommandsCommand {
                     ctx.getSource().getServer().getCommands().sendCommands(player);
                 }
                 NumismaticsCommands.register(dispatcher, dedicated);
-                ctx.getSource().sendSuccess(Component.literal("Reloaded commands!"), true);
+                ctx.getSource().sendSuccess(() -> Components.literal("Reloaded commands!"), true);
                 return 1;
             });
     }

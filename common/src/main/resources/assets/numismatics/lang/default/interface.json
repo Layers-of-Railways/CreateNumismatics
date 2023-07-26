@@ -6,5 +6,7 @@
   "create.item.numismatics.cog": "Cog",
   "create.item.numismatics.crown": "Crown",
   "create.item.numismatics.sun": "Sun",
-  "gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤"
+  "gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
+  "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
+  "itemGroup.numismatics": "Create: Numismatics"
 }

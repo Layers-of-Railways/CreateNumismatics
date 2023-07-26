@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "create:brass_casing"
+              "create:andesite_casing"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "numismatics:crafting///brass_depositor"
+        "recipe": "numismatics:crafting///andesite_depositor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "numismatics:crafting///brass_depositor"
+      "numismatics:crafting///andesite_depositor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

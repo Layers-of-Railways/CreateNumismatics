@@ -18,12 +18,15 @@ import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipe
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
+import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs;
+import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +41,11 @@ public class Numismatics {
     public static final GlobalBankManager BANK = new GlobalBankManager();
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
-    //fixme
-            //.creativeModeTab(() -> NumismaticsItems.mainCreativeTab, "Create: Numismatics");
 
     static {
         REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
                 .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
+        Tabs.MAIN.use();
     }
 
     public static void init() {
@@ -74,13 +76,13 @@ public class Numismatics {
         throw new AssertionError();
     }
 
-    public static void gatherData(DataGenerator gen) {
+    public static void gatherData(DataGenerator.PackGenerator gen) {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        gen.addProvider(true, NumismaticsSequencedAssemblyRecipeGen.create(gen));
-        gen.addProvider(true, NumismaticsStandardRecipeGen.create(gen));
+        gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
+        gen.addProvider(NumismaticsStandardRecipeGen::new);
         PonderLocalization.provideRegistrateLang(REGISTRATE);
-        gen.addProvider(true, new LangMerger(gen, MOD_ID, "Numismatics", NumismaticsLangPartials.values()));
+        gen.addProvider((PackOutput output) -> NumismaticsLangPartials.createMerger(output, MOD_ID, "Numismatics", NumismaticsLangPartials.values()));
     }
 
     public static ResourceLocation asResource(String path) {

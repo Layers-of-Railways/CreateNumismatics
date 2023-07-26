@@ -37,25 +37,14 @@ public class SlotOutputMergingCoinBag extends Slot {
     }
 
     @Override
-    public void set(@NotNull ItemStack stack) {
-        /*if (stack.isEmpty() || stack.getItem() instanceof CoinItem coinItem && coinItem.coin == coin) {
-            coinBag.setDiscrete(coin, stack.getCount());
-            setChanged();
-        }*/
-    }
-
-    //fixme
-//    @Override
-//    public void initialize(@NotNull ItemStack stack) {
-//        set(stack);
-//    }
+    public void set(@NotNull ItemStack stack) {}
 
     @Override
     public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}
 
     @Override
     public int getMaxStackSize() {
-        return Integer.MAX_VALUE;//NumismaticsItems.getCoin(coin).get().getMaxStackSize();
+        return Integer.MAX_VALUE;
     }
 
     @Override

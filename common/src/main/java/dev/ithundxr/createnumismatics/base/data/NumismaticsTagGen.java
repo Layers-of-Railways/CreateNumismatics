@@ -48,9 +48,8 @@ public class NumismaticsTagGen {
         CommonTags.BRASS_NUGGETS.generateCommon(tags);
         CommonTags.COPPER_INGOTS.generateCommon(tags);
         CommonTags.IRON_INGOTS.generateCommon(tags);
-        //fixme
         CommonTags.STRING.generateCommon(tags)
-            .generateBoth(tags, tag -> tag.add(Items.STRING));
+            .generateBoth(tags, tag -> tag.add(Items.STRING.builtInRegistryHolder().key()));
         CommonTags.IRON_PLATES.generateCommon(tags);
 //			.generateBoth(tags, tag -> tag.add(AllItems.IRON_SHEET.get()));
 

@@ -3,15 +3,15 @@ package dev.ithundxr.createnumismatics.registry.commands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -88,10 +88,10 @@ public class PayCommand {
     private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, Coin coin) {
         int spurValue = coin.toSpurs(amount);
         if (pay(account, spurValue, create)) {
-            ctx.getSource().sendSuccess(Component.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
+            ctx.getSource().sendSuccess(() -> Components.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
         } else {
-            ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
+            ctx.getSource().sendFailure(Components.literal("Could not find account for "+name+"."));
             return 0;
         }
     }

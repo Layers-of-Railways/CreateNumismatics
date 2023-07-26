@@ -26,13 +26,13 @@ public class MixinModelBakery {
         ids.add(FIRE_1);
     ```
      */
-    //fixme
-    @Inject(method = "method_24150", at = @At("HEAD"))
+    //todo is this needed? new atlas may no longer require doing this
+/*    @Inject(method = "method_24150", at = @At("HEAD"))
     private static void snr$addExtraUnreferencedTextures(HashSet<Material> ids, CallbackInfo ci) {
         for (Coin coin : Coin.values()) {
             ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/coin/outline/"+coin.getName())));
         }
         ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/coin/outline/animated")));
         ids.add(new Material(InventoryMenu.BLOCK_ATLAS, Numismatics.asResource("item/card/outline")));
-    }
+    }*/
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "numismatics:crafting///bank_terminal"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

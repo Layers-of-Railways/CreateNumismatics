@@ -5,7 +5,8 @@ import com.simibubi.create.AllItems;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +25,12 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
 
   protected final List<GeneratedRecipe> all = new ArrayList<>();
 
-  public NumismaticsRecipeProvider(DataGenerator pGenerator) {
-    super(pGenerator);
+  public NumismaticsRecipeProvider(PackOutput pOutput) {
+    super(pOutput);
   }
 
-  public void registerRecipes(@NotNull Consumer<FinishedRecipe> p_200404_1_) {
+  @Override
+  public void buildRecipes(@NotNull Consumer<FinishedRecipe> p_200404_1_) {
     all.forEach(c -> c.register(p_200404_1_));
     Numismatics.LOGGER.info(getName() + " registered " + all.size() + " recipe" + (all.size() == 1 ? "" : "s"));
   }
@@ -78,7 +80,7 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
     }
 
     public static TagKey<Item> fence() {
-      return TagKey.<Item>create(Registry.ITEM_REGISTRY, new ResourceLocation("minecraft:fences"));
+      return TagKey.<Item>create(Registries.ITEM, new ResourceLocation("minecraft:fences"));
     }
 
     public static ItemLike campfire() {

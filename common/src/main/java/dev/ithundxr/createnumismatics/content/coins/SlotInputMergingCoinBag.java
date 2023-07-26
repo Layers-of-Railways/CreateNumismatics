@@ -50,18 +50,12 @@ public class SlotInputMergingCoinBag extends Slot {
         }
     }
 
-    //fixme
-//    @Override
-//    public void initialize(@NotNull ItemStack stack) {
-//        set(stack);
-//    }
-
     @Override
     public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}
 
     @Override
     public int getMaxStackSize() {
-        return Integer.MAX_VALUE;//NumismaticsItems.getCoin(coin).get().getMaxStackSize();
+        return Integer.MAX_VALUE;
     }
 
     @Override

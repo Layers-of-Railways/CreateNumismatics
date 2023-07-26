@@ -3,15 +3,15 @@ package dev.ithundxr.createnumismatics.registry.commands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -96,15 +96,15 @@ public class DeductCommand {
         int spurValue = coin.toSpurs(amount);
         int result = deduct(account, spurValue, force, create);
         if (result == 1) {
-            ctx.getSource().sendSuccess(Component.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
+            ctx.getSource().sendSuccess(() -> Components.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
         } else {
             if (result == -1) {
-                ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
+                ctx.getSource().sendFailure(Components.literal("Could not find account for "+name+"."));
             } else if (force) {
-                ctx.getSource().sendSuccess(Component.literal("Force-deducted "+amount+" "+coin.getName(amount)+" from "+name+"."), true);
+                ctx.getSource().sendSuccess(() -> Components.literal("Force-deducted "+amount+" "+coin.getName(amount)+" from "+name+"."), true);
             } else {
-                ctx.getSource().sendFailure(Component.literal("Could not deduct "+amount+" "+coin.getName(amount)+" from "+name+"."));
+                ctx.getSource().sendFailure(Components.literal("Could not deduct "+amount+" "+coin.getName(amount)+" from "+name+"."));
             }
             return result;
         }

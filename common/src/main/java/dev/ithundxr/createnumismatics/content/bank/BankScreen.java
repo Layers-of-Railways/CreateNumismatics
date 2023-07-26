@@ -13,6 +13,7 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-//fixme
 public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
 
     private final NumismaticsGuiTextures background = NumismaticsGuiTextures.BANK_TERMINAL;
@@ -56,22 +56,23 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack ms, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        PoseStack ms = graphics.pose();
         int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
         int invY = topPos + background.height + 2;
-        renderPlayerInventory(ms, invX, invY);
+        renderPlayerInventory(graphics, invX, invY);
 
         int x = leftPos;
         int y = topPos;
 
-        background.render(ms, x, y, this);
+        background.render(graphics, x, y);
 
         GuiGameElement.of(renderedItem).<GuiGameElement
                 .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 64, -200)
             .scale(5)
-            .render(ms);
+            .render(graphics);
 
-        drawCenteredString(ms, font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
+        graphics.drawCenteredString(font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
 
 
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(menu.contentHolder.getBalance());
@@ -79,6 +80,6 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         int spurs = cogsAndSpurs.getSecond();
         Component balanceLabel = Components.translatable("gui.numismatics.bank_terminal.balance",
             TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
-        drawCenteredString(ms, font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
+        graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }
 }

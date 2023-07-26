@@ -8,6 +8,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 public class ModSetup {
     public static void register() {
+        NumismaticsCreativeModeTabs.register();
         NumismaticsItems.register();
         NumismaticsBlockEntities.register();
         NumismaticsBlocks.register();

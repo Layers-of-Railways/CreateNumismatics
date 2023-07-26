@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-//fixme
 public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<AndesiteDepositorMenu> {
 
     private IconButton confirmButton;
@@ -56,21 +56,21 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack ms, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
         int invY = topPos + background.height + 2;
-        renderPlayerInventory(ms, invX, invY);
+        renderPlayerInventory(graphics, invX, invY);
 
         int x = leftPos;
         int y = topPos;
 
-        background.render(ms, x, y, this);
+        background.render(graphics, x, y);
 
         GuiGameElement.of(renderedItem).<GuiGameElement
                 .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 70, -200)
             .scale(5)
-            .render(ms);
+            .render(graphics);
 
-        drawCenteredString(ms, font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
+        graphics.drawCenteredString(font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
     }
 }

@@ -7,10 +7,8 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -24,7 +22,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
-public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
+public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
 
     /*GeneratedRecipe TRACK_COUPLER = create(CRBlocks.TRACK_COUPLER)
         .unlockedBy(Ingredients::railwayCasing)
@@ -73,13 +71,8 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
         return create(result::get);
     }
 
-    protected NumismaticsStandardRecipeGen(DataGenerator pGenerator) {
-        super(pGenerator);
-    }
-
-    @ExpectPlatform
-    public static RecipeProvider create(DataGenerator gen) {
-        throw new AssertionError();
+    public NumismaticsStandardRecipeGen(PackOutput pOutput) {
+        super(pOutput);
     }
 
     @Override
@@ -139,7 +132,7 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
 
         GeneratedRecipe viaShaped(UnaryOperator<ShapedRecipeBuilder> builder) {
             return register(consumer -> {
-                ShapedRecipeBuilder b = builder.apply(ShapedRecipeBuilder.shaped(result.get(), amount));
+                ShapedRecipeBuilder b = builder.apply(ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result.get(), amount));
                 if (unlockedBy != null)
                     b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
                 b.save(consumer, createLocation("crafting"));
@@ -148,7 +141,7 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
 
         GeneratedRecipe viaShapeless(UnaryOperator<ShapelessRecipeBuilder> builder) {
             return register(consumer -> {
-                ShapelessRecipeBuilder b = builder.apply(ShapelessRecipeBuilder.shapeless(result.get(), amount));
+                ShapelessRecipeBuilder b = builder.apply(ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result.get(), amount));
                 if (unlockedBy != null)
                     b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
                 b.save(consumer, createLocation("crafting"));
@@ -186,9 +179,9 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
             private float exp;
             private int cookingTime;
 
-            private final SimpleCookingSerializer<?> FURNACE = RecipeSerializer.SMELTING_RECIPE,
-                SMOKER = RecipeSerializer.SMOKING_RECIPE, BLAST = RecipeSerializer.BLASTING_RECIPE,
-                CAMPFIRE = RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
+            private final SimpleCookingSerializer<?> FURNACE = (SimpleCookingSerializer<?>) RecipeSerializer.SMELTING_RECIPE,
+                SMOKER = (SimpleCookingSerializer<?>) RecipeSerializer.SMOKING_RECIPE, BLAST = (SimpleCookingSerializer<?>) RecipeSerializer.BLASTING_RECIPE,
+                CAMPFIRE = (SimpleCookingSerializer<?>) RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
 
             GeneratedCookingRecipeBuilder(Supplier<Ingredient> ingredient) {
                 this.ingredient = ingredient;
@@ -239,7 +232,7 @@ public abstract class NumismaticsStandardRecipeGen extends NumismaticsRecipeProv
                     boolean isOtherMod = compatDatagenOutput != null;
 
                     SimpleCookingRecipeBuilder b = builder.apply(
-                        SimpleCookingRecipeBuilder.cooking(ingredient.get(), isOtherMod ? Items.DIRT : result.get(),
+                        SimpleCookingRecipeBuilder.generic(ingredient.get(), RecipeCategory.MISC, isOtherMod ? Items.DIRT : result.get(),
                             exp, (int) (cookingTime * cookingTimeModifier), serializer));
                     if (unlockedBy != null)
                         b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
