@@ -187,7 +187,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     }
 
     @Override
-    public Container getBackingContainer() {
+    public Container getTrustListBackingContainer() {
         return trustListContainer;
     }
 }

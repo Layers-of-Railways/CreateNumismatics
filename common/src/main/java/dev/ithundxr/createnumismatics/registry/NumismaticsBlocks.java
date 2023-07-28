@@ -1,11 +1,13 @@
 package dev.ithundxr.createnumismatics.registry;
 
+import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.data.BuilderTransformers;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
@@ -49,6 +51,19 @@ public class NumismaticsBlocks {
 		.transform(pickaxeOnly())
 		.lang("Bank Terminal")
 		.transform(BuilderTransformers.bankTerminal())
+		.simpleItem()
+		.register();
+
+	public static final BlockEntry<BlazeBankerBlock> BLAZE_BANKER = REGISTRATE.block("blaze_banker", BlazeBankerBlock::new)
+		.initialProperties(SharedProperties::softMetal)
+		.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
+		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+		.transform(pickaxeOnly())
+		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
+		.tag(AllTags.AllBlockTags.FAN_TRANSPARENT.tag, AllTags.AllBlockTags.PASSIVE_BOILER_HEATERS.tag)
+		.lang("Blaze Banker")
+//		.transform(BuilderTransformers.bankTerminal())
 		.simpleItem()
 		.register();
 

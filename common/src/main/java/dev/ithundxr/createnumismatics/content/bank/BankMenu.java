@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class BankMenu extends MenuBase<BankAccount> {
     public static final int COIN_SLOTS = Coin.values().length;
@@ -55,7 +57,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     @Override
     protected void addSlots() {
         if (cardWritingContainer == null)
-            cardWritingContainer = new CardWritingContainer();
+            cardWritingContainer = new CardWritingContainer(this::slotsChanged, contentHolder.id);
         int x = 13;
         int y = 71;
 
@@ -118,11 +120,16 @@ public class BankMenu extends MenuBase<BankAccount> {
         return returnStack;
     }
 
-    private class CardWritingContainer implements Container {
+    public static class CardWritingContainer implements Container {
+        private final Consumer<CardWritingContainer> slotsChangedCallback;
+        private final UUID uuid;
+
         @NotNull
         protected final List<ItemStack> stacks = new ArrayList<>();
 
-        protected CardWritingContainer() {
+        public CardWritingContainer(Consumer<CardWritingContainer> slotsChangedCallback, UUID uuid) {
+            this.slotsChangedCallback = slotsChangedCallback;
+            this.uuid = uuid;
             stacks.add(ItemStack.EMPTY);
         }
 
@@ -149,7 +156,7 @@ public class BankMenu extends MenuBase<BankAccount> {
         public @NotNull ItemStack removeItem(int slot, int amount) {
             ItemStack stack = ContainerHelper.removeItem(this.stacks, 0, amount);
             if (!stack.isEmpty()) {
-                BankMenu.this.slotsChanged(this);
+                this.slotsChangedCallback.accept(this);
             }
             return stack;
         }
@@ -163,8 +170,8 @@ public class BankMenu extends MenuBase<BankAccount> {
         public void setItem(int slot, @NotNull ItemStack stack) {
             this.stacks.set(0, stack);
             if (!CardItem.isBound(stack))
-                CardItem.set(stack, contentHolder.id);
-            BankMenu.this.slotsChanged(this);
+                CardItem.set(stack, uuid);
+            this.slotsChangedCallback.accept(this);
         }
 
         @Override

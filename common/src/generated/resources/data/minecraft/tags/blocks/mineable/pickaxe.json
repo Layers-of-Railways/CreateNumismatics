@@ -3,6 +3,7 @@
   "values": [
     "numismatics:andesite_depositor",
     "numismatics:brass_depositor",
-    "numismatics:bank_terminal"
+    "numismatics:bank_terminal",
+    "numismatics:blaze_banker"
   ]
 }

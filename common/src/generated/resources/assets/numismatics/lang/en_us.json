@@ -4,6 +4,7 @@
 
 	"block.numismatics.andesite_depositor": "Andesite Depositor",
 	"block.numismatics.bank_terminal": "Bank Terminal",
+	"block.numismatics.blaze_banker": "Blaze Banker",
 	"block.numismatics.brass_depositor": "Brass Depositor",
 
 	"item.numismatics.bevel": "Bevel",
@@ -60,6 +61,10 @@
 
 	"itemGroup.numismatics": "Create: Numismatics",
 
+	"gui.numismatics.trust_list": "Trust List",
+
+	"create.numismatics.trust_list.configure": "Configure Trust List",
+
 	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
 	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
 
@@ -75,8 +80,6 @@
 	"item.numismatics.id_card.tooltip.already_bound": "Already bound, sneak+use to unbind",
 	"item.numismatics.id_card.tooltip.cleared": "Cleared",
 	"item.numismatics.id_card.tooltip.bound": "Bound to self",
-
-	"gui.numismatics.trust_list": "Trust List",
 
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",

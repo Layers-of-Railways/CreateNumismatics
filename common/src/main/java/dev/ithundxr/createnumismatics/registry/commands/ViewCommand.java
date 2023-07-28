@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,7 +33,7 @@ public class ViewCommand {
                         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                         UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                        return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")");
+                        return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")");
                     })
                     .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                         .executes(ctx -> {
@@ -42,7 +43,7 @@ public class ViewCommand {
                             Coin coin = ctx.getArgument("coin", Coin.class);
                             UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                            return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", coin);
+                            return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", coin);
                         })
                     )
                 )
@@ -53,7 +54,7 @@ public class ViewCommand {
 
                     int sum = 0;
                     for (GameProfile account : accounts) {
-                        sum += execute(ctx, account.getId(), true, account.getName());
+                        sum += execute(ctx, account.getId(), Type.PLAYER, true, account.getName());
                     }
                     return sum;
                 })
@@ -64,7 +65,7 @@ public class ViewCommand {
 
                         int sum = 0;
                         for (GameProfile account : accounts) {
-                            sum += execute(ctx, account.getId(), true, account.getName(), coin);
+                            sum += execute(ctx, account.getId(), Type.PLAYER, true, account.getName(), coin);
                         }
                         return sum;
                     })
@@ -72,12 +73,12 @@ public class ViewCommand {
             );
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name) {
-        return execute(ctx, account, create, name, Coin.SPUR);
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name) {
+        return execute(ctx, account, type, create, name, Coin.SPUR);
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, Coin coin) {
-        int balance = getBalance(account, create);
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, Coin coin) {
+        int balance = getBalance(account, create, type);
         if (balance != -1) {
             Couple<Integer> coinAndRemainder = coin.convert(balance);
             int coinCount = coinAndRemainder.getFirst();
@@ -96,8 +97,8 @@ public class ViewCommand {
         }
     }
 
-    private static int getBalance(UUID id, boolean create) {
-        BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id) : Numismatics.BANK.getAccount(id);
+    private static int getBalance(UUID id, boolean create, Type type) {
+        BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id, type) : Numismatics.BANK.getAccount(id);
         if (account == null) {
             return -1;
         }

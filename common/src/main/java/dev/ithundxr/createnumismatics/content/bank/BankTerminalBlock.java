@@ -2,6 +2,7 @@ package dev.ithundxr.createnumismatics.content.bank;
 
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -53,12 +55,23 @@ public class BankTerminalBlock extends Block {
         builder.add(HORIZONTAL_FACING);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        BankAccount account = Numismatics.BANK.getAccount(player);
+        ItemStack handStack = player.getItemInHand(hand);
+
+        BankAccount account;
+
+        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack) && CardItem.isBound(handStack)
+            && (account = Numismatics.BANK.getAccount(CardItem.get(handStack))) != null && account.isAuthorized(player)) {
+            // intentionally left blank
+        } else {
+            account = Numismatics.BANK.getAccount(player);
+        }
+
         Utils.openScreen((ServerPlayer) player, account, account::sendToMenu);
         return InteractionResult.SUCCESS;
     }

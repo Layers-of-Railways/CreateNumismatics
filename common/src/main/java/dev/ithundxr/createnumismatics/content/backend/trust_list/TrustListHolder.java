@@ -12,5 +12,5 @@ public interface TrustListHolder {
     /**
      * Required to have 27 slots
      */
-    Container getBackingContainer();
+    Container getTrustListBackingContainer();
 }

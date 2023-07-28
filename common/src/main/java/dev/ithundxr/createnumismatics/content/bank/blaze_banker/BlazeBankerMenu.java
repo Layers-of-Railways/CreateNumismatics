@@ -1,80 +1,64 @@
-package dev.ithundxr.createnumismatics.content.backend.trust_list;
+package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
-import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import com.simibubi.create.foundation.utility.Components;
+import dev.ithundxr.createnumismatics.content.bank.BankMenu;
+import dev.ithundxr.createnumismatics.content.bank.BankMenu.CardWritingContainer;
+import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class TrustListMenu extends MenuBase<TrustListHolder> {
-    public static final int CARD_SLOTS = 27;
-    public static final int PLAYER_INV_START_INDEX = CARD_SLOTS;
+public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
+    public static final int ID_CARD_SLOTS = 27;
+    public static final int CARD_SLOT_INDEX = ID_CARD_SLOTS;
+    public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
 
-    ItemStack renderedItem;
+    private CardWritingContainer cardWritingContainer;
 
-    public TrustListMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
-    protected TrustListMenu(MenuType<?> type, int id, Inventory inv, TrustListHolder contentHolder, ItemStack renderedItem) {
+    protected BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, BlazeBankerBlockEntity contentHolder) {
         super(type, id, inv, contentHolder);
-        this.renderedItem = renderedItem;
-    }
-
-    public static MenuProvider provider(TrustListHolder contentHolder, ItemStack renderedItem) {
-        return new MenuProvider() {
-            @Override
-            public @NotNull Component getDisplayName() {
-                return Components.translatable("gui.numismatics.trust_list");
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                return new TrustListMenu(NumismaticsMenuTypes.TRUST_LIST.get(), i, inventory, contentHolder, renderedItem);
-            }
-        };
     }
 
     @Override
-    protected TrustListHolder createOnClient(FriendlyByteBuf extraData) {
-        renderedItem = extraData.readItem();
+    protected BlazeBankerBlockEntity createOnClient(FriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
-        if (blockEntity instanceof SyncedBlockEntity syncedBE && syncedBE instanceof TrustListHolder trustListHolder) {
-            syncedBE.readClient(extraData.readNbt());
-            return trustListHolder;
+        if (blockEntity instanceof BlazeBankerBlockEntity blazeBankerBE) {
+            blazeBankerBE.readClient(extraData.readNbt());
+            return blazeBankerBE;
         }
         return null;
     }
 
     @Override
-    protected void initAndReadInventory(TrustListHolder contentHolder) {
-
-    }
+    protected void initAndReadInventory(BlazeBankerBlockEntity contentHolder) {}
 
     @Override
     protected void addSlots() {
+        if (cardWritingContainer == null)
+            cardWritingContainer = new CardWritingContainer(this::slotsChanged, contentHolder.accountUUID);
         int x = 16;
         int y = 21;
 
-        for (int i = 0; i < CARD_SLOTS; i++) {
+        for (int i = 0; i < ID_CARD_SLOTS; i++) {
             if (i % 9 == 0 && i > 0) {
                 x = 16;
                 y += 18;
@@ -82,13 +66,20 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
             addSlot(new BoundIDCardSlot(contentHolder.getTrustListBackingContainer(), i, x, y));
             x += 18;
         }
+        addSlot(new CardSlot.UnboundCardSlot(cardWritingContainer, 0, 7, 87));
 
         addPlayerSlots(40, 130);
     }
 
     @Override
-    protected void saveData(TrustListHolder contentHolder) {
+    protected void saveData(BlazeBankerBlockEntity contentHolder) {}
 
+    @Override
+    public void removed(Player playerIn) {
+        super.removed(playerIn);
+        if (playerIn instanceof ServerPlayer) {
+            clearContainer(player, cardWritingContainer);
+        }
     }
 
     @Override
@@ -101,15 +92,17 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         ItemStack slotStack = CoinItem.clearDisplayedCount(clickedSlot.getItem());
         ItemStack returnStack = slotStack.copy();
 
-        if (index < CARD_SLOTS) {
+        if (index <= CARD_SLOT_INDEX) {
             int count = slotStack.getCount();
             if (!moveItemStackTo(slotStack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;
 
             returnStack = ItemStack.EMPTY;
             clickedSlot.remove(count);
-        } else if (slotStack.getItem() instanceof IDCardItem && IDCardItem.isBound(slotStack) && !moveItemStackTo(slotStack, 0, CARD_SLOTS, false)) {
-            return ItemStack.EMPTY; // failed to move to card slots
+        } else if (slotStack.getItem() instanceof IDCardItem && IDCardItem.isBound(slotStack) && !moveItemStackTo(slotStack, 0, ID_CARD_SLOTS, false)) {
+            return ItemStack.EMPTY; // failed to move to id card slots
+        } else if (NumismaticsTags.AllItemTags.CARDS.matches(slotStack) && !moveItemStackTo(slotStack, CARD_SLOT_INDEX, CARD_SLOT_INDEX + 1, false)) {
+            return ItemStack.EMPTY; // failed to move to card slot
         } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_END_INDEX && !moveItemStackTo(slotStack, PLAYER_HOTBAR_END_INDEX, PLAYER_INV_END_INDEX, false)) {
             return ItemStack.EMPTY;
         } else if (index >= PLAYER_HOTBAR_END_INDEX && index < PLAYER_INV_END_INDEX && !moveItemStackTo(slotStack, PLAYER_INV_START_INDEX, PLAYER_HOTBAR_END_INDEX, false)) {
@@ -134,7 +127,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         if (reverseDirection) {
             i = endIndex - 1;
         }
-        if (stack.isStackable() && startIndex >= CARD_SLOTS) {
+        if (stack.isStackable() && startIndex >= ID_CARD_SLOTS) {
             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 slot = this.slots.get(i);
                 itemStack = slot.getItem();

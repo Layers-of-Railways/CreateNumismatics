@@ -5,5 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 
 public interface TrustedBlock {
-    boolean isTrusted(Player player, BlockGetter level, BlockPos pos);
+    default boolean isTrusted(Player player, BlockGetter level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof Trusted trusted && trusted.isTrusted(player);
+    }
 }

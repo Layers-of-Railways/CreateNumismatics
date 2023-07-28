@@ -115,11 +115,6 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
     }
 
     @Override
-    public boolean isTrusted(Player player, BlockGetter level, BlockPos pos) {
-        return level.getBlockEntity(pos) instanceof Trusted trusted && trusted.isTrusted(player);
-    }
-
-    @Override
     public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (placer instanceof Player player && level.getBlockEntity(pos) instanceof AbstractDepositorBlockEntity depositorBE) {
@@ -179,7 +174,7 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
                 }
             }
         }
-        super.onRemove(state, level, pos, newState, isMoving);
+        IBE.onRemove(state, level, pos, newState);
     }
 
     @Override

@@ -3,10 +3,14 @@ package dev.ithundxr.createnumismatics.base.data;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllBlockTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllItemTags;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,6 +38,9 @@ public class NumismaticsTagGen {
     public static void generateBlockTags(RegistrateTagsProvider<Block> tags) {
 //		tagAppender(tags, AllBlockTags.TRACKS)
 //			.add(AllBlocks.TRACK.get());
+        CommonTags.RELOCATION_NOT_SUPPORTED.generateBoth(tags, tag -> {
+                tag.addTag(CommonTags.RELOCATION_NOT_SUPPORTED.tag);
+        });
         for (TagKey<Block> tag : OPTIONAL_TAGS.keySet()) {
             var appender = tagAppender(tags, tag);
             for (ResourceLocation loc : OPTIONAL_TAGS.get(tag))

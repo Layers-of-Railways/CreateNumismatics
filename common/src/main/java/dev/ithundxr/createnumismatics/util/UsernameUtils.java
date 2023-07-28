@@ -2,6 +2,7 @@
 package dev.ithundxr.createnumismatics.util;
 
 import com.google.gson.JsonParser;
+import dev.ithundxr.createnumismatics.NumismaticsClient;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -36,6 +37,9 @@ public enum UsernameUtils {
                 if (Minecraft.getInstance().getUser().getUuid().equals(uuid.toString())) {
                     uuidNameMap.put(uuid, Minecraft.getInstance().getUser().getName());
                     result.setValue(uuidNameMap.get(uuid));
+                }
+                if (NumismaticsClient.bankAccountLabels.containsKey(uuid)) {
+                    result.setValue(NumismaticsClient.bankAccountLabels.get(uuid));
                 }
             });
             if (result.getValue() != null) {

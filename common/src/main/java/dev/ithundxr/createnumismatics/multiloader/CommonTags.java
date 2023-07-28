@@ -30,6 +30,9 @@ public class CommonTags {
 		}
 	});
 
+	/**
+	 * Only for writing TO, not for testing
+	 */
 	public static final CommonTag<Block>
 			RELOCATION_NOT_SUPPORTED = block("relocation_not_supported");
 

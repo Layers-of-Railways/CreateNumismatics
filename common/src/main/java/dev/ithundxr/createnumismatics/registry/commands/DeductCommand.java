@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,7 +43,7 @@ public class DeductCommand {
                             int amount = getInteger(ctx, "amount");
                             UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                            return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount, force);
+                            return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount, force);
                         })
                         .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                             .executes(ctx -> {
@@ -53,7 +54,7 @@ public class DeductCommand {
                                 Coin coin = ctx.getArgument("coin", Coin.class);
                                 UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
 
-                                return execute(ctx, id, false, "Mechanical Banker at (" + pos.toShortString() + ")", amount, force, coin);
+                                return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount, force, coin);
                             })
                         )
                     )
@@ -67,7 +68,7 @@ public class DeductCommand {
 
                         int sum = 0;
                         for (GameProfile account : accounts) {
-                            sum += execute(ctx, account.getId(), true, account.getName(), amount, force);
+                            sum += execute(ctx, account.getId(), Type.PLAYER, true, account.getName(), amount, force);
                         }
                         return sum;
                     })
@@ -79,7 +80,7 @@ public class DeductCommand {
 
                             int sum = 0;
                             for (GameProfile account : accounts) {
-                                sum += execute(ctx, account.getId(), true, account.getName(), amount, force, coin);
+                                sum += execute(ctx, account.getId(), Type.PLAYER, true, account.getName(), amount, force, coin);
                             }
                             return sum;
                         })
@@ -88,13 +89,13 @@ public class DeductCommand {
             );
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, boolean force) {
-        return execute(ctx, account, create, name, amount, force, Coin.SPUR);
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, int amount, boolean force) {
+        return execute(ctx, account, type, create, name, amount, force, Coin.SPUR);
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, boolean create, String name, int amount, boolean force, Coin coin) {
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, int amount, boolean force, Coin coin) {
         int spurValue = coin.toSpurs(amount);
-        int result = deduct(account, spurValue, force, create);
+        int result = deduct(account, spurValue, force, create, type);
         if (result == 1) {
             ctx.getSource().sendSuccess(() -> Components.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
@@ -110,8 +111,8 @@ public class DeductCommand {
         }
     }
 
-    private static int deduct(UUID id, int amount, boolean force, boolean create) {
-        BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id) : Numismatics.BANK.getAccount(id);
+    private static int deduct(UUID id, int amount, boolean force, boolean create, Type type) {
+        BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id, type) : Numismatics.BANK.getAccount(id);
         if (account == null) {
             return -1;
         }

@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.content.bank;
 
 import com.simibubi.create.foundation.utility.Components;
+import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -55,12 +56,25 @@ public class CardItem extends Item {
         return itemStack.hasTag() && itemStack.getTag().hasUUID("AccountID");
     }
 
+    @Nullable
+    public static String getPlayerName(ItemStack itemStack) {
+        if (!isBound(itemStack))
+            return null;
+        return UsernameUtils.INSTANCE.getName(get(itemStack), null);
+    }
+
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         if (isBound(stack)) {
-            tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound")
-                .withStyle(ChatFormatting.GREEN));
+            String name = getPlayerName(stack);
+            if (name == null) {
+                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound")
+                    .withStyle(ChatFormatting.GREEN));
+            } else {
+                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound.to", name)
+                    .withStyle(ChatFormatting.GREEN));
+            }
         } else {
             tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.blank"));
         }

@@ -1,10 +1,12 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -21,7 +23,12 @@ public class GlobalBankManager {
 
     private void warnIfClient() {
         if (Utils.isDevEnv() && Thread.currentThread().getName().equals("Render thread")) {
+            long start = System.currentTimeMillis();
             Numismatics.LOGGER.error("Bank manager should not be accessed on the client"); // set breakpoint here when developing
+            long end = System.currentTimeMillis();
+            if (end - start < 50) { // crash if breakpoint wasn't set
+                throw new RuntimeException("Illegal bank access performed on client, please set a breakpoint above");
+            }
         }
     }
 
@@ -51,7 +58,7 @@ public class GlobalBankManager {
     }
 
     public BankAccount getAccount(Player player) {
-        return getOrCreateAccount(player.getUUID());
+        return getOrCreateAccount(player.getUUID(), Type.PLAYER);
     }
 
     @Nullable
@@ -60,12 +67,15 @@ public class GlobalBankManager {
         return accounts.get(uuid);
     }
 
-    public BankAccount getOrCreateAccount(UUID uuid) {
+    @SuppressWarnings("ConstantValue")
+    public BankAccount getOrCreateAccount(@NotNull UUID uuid, Type type) {
         warnIfClient();
         if (accounts.containsKey(uuid)) {
             return accounts.get(uuid);
         } else {
-            BankAccount account = new BankAccount(uuid);
+            if (uuid == null)
+                throw new RuntimeException("UUID cannot be null");
+            BankAccount account = new BankAccount(uuid, type);
             accounts.put(uuid, account);
             markBankDirty();
             return account;

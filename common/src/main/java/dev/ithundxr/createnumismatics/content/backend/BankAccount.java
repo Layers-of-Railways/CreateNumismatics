@@ -1,11 +1,21 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.item.DyedItemList;
 import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
+import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
+import dev.ithundxr.createnumismatics.util.UsernameUtils;
+import io.github.fabricators_of_create.porting_lib.tags.TagHelper;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -16,13 +26,56 @@ import net.minecraft.world.inventory.ContainerData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static dev.ithundxr.createnumismatics.Numismatics.crashDev;
 
 public class BankAccount implements MenuProvider {
+    public enum Type {
+        PLAYER(false, false),
+        BLAZE_BANKER(true, true);
+
+        public final boolean useTrustList;
+        public final boolean hasLabel;
+
+        Type(boolean useTrustList, boolean hasLabel) {
+            this.useTrustList = useTrustList;
+            this.hasLabel = hasLabel;
+        }
+
+        public static Type read(FriendlyByteBuf buf) {
+            return Type.values()[buf.readInt()];
+        }
+
+        public static Type read(CompoundTag nbt) {
+            String name = nbt.getString("AccountType");
+            try {
+                return Type.valueOf(name.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                return PLAYER;
+            }
+        }
+
+        public void write(FriendlyByteBuf buf) {
+            buf.writeInt(ordinal());
+        }
+
+        public void write(CompoundTag nbt) {
+            nbt.putString("AccountType", name());
+        }
+    }
     public final UUID id;
+    public final Type type;
     private int balance;
+
+    @Nullable
+    private List<UUID> trustList; // only present on server
+
+    @Nullable
+    private String label;
+
     public final BankAccountCoinBag linkedCoinBag = new BankAccountCoinBag();
     private final boolean clientSide;
     public final ContainerData dataAccess = new ContainerData() {
@@ -43,22 +96,25 @@ public class BankAccount implements MenuProvider {
         }
     };
 
-    public BankAccount(UUID id) {
-        this(id, 0);
+    public BankAccount(UUID id, Type type) {
+        this(id, 0, type);
     }
 
-    public BankAccount(UUID id, int balance) {
-        this(id, balance, false);
+    public BankAccount(UUID id, int balance, Type type) {
+        this(id, type, balance, false);
     }
 
-    protected BankAccount(UUID id, int balance, boolean clientSide) {
+    protected BankAccount(UUID id, Type type, int balance, boolean clientSide) {
         this.id = id;
+        this.type = type;
         this.balance = balance;
         this.clientSide = clientSide;
+        if (type.useTrustList && !clientSide)
+            trustList = new ArrayList();
     }
 
     public static BankAccount clientSide(FriendlyByteBuf buf) {
-        return new BankAccount(buf.readUUID(), buf.readVarInt(), true);
+        return new BankAccount(buf.readUUID(), Type.read(buf), buf.readVarInt(), true);
     }
 
     public int getBalance() {
@@ -119,24 +175,47 @@ public class BankAccount implements MenuProvider {
         return super.toString() + " {id=" + id + ", balance=" + balance + "}";
     }
 
-    public static BankAccount create() {
-        return new BankAccount(UUID.randomUUID());
+    public static BankAccount create(Type type) {
+        return new BankAccount(UUID.randomUUID(), type);
     }
 
     public static BankAccount load(CompoundTag nbt) {
         BankAccount account;
         if (nbt.hasUUID("id")) {
-            account = new BankAccount(nbt.getUUID("id"));
+            account = new BankAccount(nbt.getUUID("id"), Type.read(nbt));
         } else {
-            account = create();
+            Numismatics.LOGGER.error("Account found without ID, deleting");
+            return null;
         }
         account.balance = nbt.getInt("balance");
+        if (account.trustList != null && nbt.contains("TrustList")) {
+            account.trustList.clear();
+            account.trustList.addAll(NBTHelper.readCompoundList(
+                nbt.getList("TrustList", Tag.TAG_COMPOUND),
+                (tag) -> tag.getUUID("UUID")
+            ));
+        }
+        if (account.type.hasLabel && nbt.contains("Label", Tag.TAG_STRING))
+            account.label = nbt.getString("Label");
         return account;
     }
 
     public CompoundTag save(CompoundTag nbt) {
         nbt.putUUID("id", id);
+        type.write(nbt);
         nbt.putInt("balance", balance);
+
+        if (type.useTrustList && trustList != null) {
+            trustList = trustList.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+            nbt.put("TrustList", NBTHelper.writeCompoundList(trustList, (uuid) -> {
+                CompoundTag tag = new CompoundTag();
+                tag.putUUID("UUID", uuid);
+                return tag;
+            }));
+        }
+
+        if (type.hasLabel && label != null)
+            nbt.putString("Label", label);
         return nbt;
     }
 
@@ -145,8 +224,29 @@ public class BankAccount implements MenuProvider {
             Numismatics.BANK.markBankDirty();
     }
 
+    @Nullable
+    public String getLabel() {
+        return type.hasLabel ? label : null;
+    }
+
+    public void setLabel(@Nullable String label) {
+        if (type.hasLabel) {
+            if (this.label != null && this.label.equals(label))
+                return;
+            this.label = label;
+            markDirty();
+            NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), new BankAccountLabelPacket(this));
+        }
+    }
+
     @Override
     public @NotNull Component getDisplayName() {
+        if (getLabel() != null)
+            return Components.literal(getLabel());
+
+        String name = UsernameUtils.INSTANCE.getName(id, null);
+        if (name != null)
+            return Components.literal(name);
         return Components.translatable("block.numismatics.bank_terminal");
     }
 
@@ -158,6 +258,7 @@ public class BankAccount implements MenuProvider {
 
     public void sendToMenu(FriendlyByteBuf buf) {
         buf.writeUUID(this.id);
+        type.write(buf);
         buf.writeVarInt(this.balance);
     }
 
@@ -178,6 +279,17 @@ public class BankAccount implements MenuProvider {
     }
 
     public boolean isAuthorized(Player player) {
-        return player.getUUID().equals(this.id);
+        return isAuthorized(player.getUUID());
+    }
+
+    public boolean isAuthorized(UUID uuid) {
+        return uuid.equals(this.id) || (this.type.useTrustList && this.trustList != null && this.trustList.contains(uuid));
+    }
+
+    public void updateTrustList(Consumer<List<UUID>> updater) {
+        if (trustList != null) {
+            updater.accept(trustList);
+            markDirty();
+        }
     }
 }

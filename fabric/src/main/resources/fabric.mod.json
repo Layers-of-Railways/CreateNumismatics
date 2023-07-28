@@ -18,6 +18,9 @@
     "main": [
       "dev.ithundxr.createnumismatics.fabric.NumismaticsImpl"
     ],
+    "client": [
+      "dev.ithundxr.createnumismatics.fabric.NumismaticsClientImpl"
+    ],
     "fabric-datagen": [
       "dev.ithundxr.createnumismatics.fabric.NumismaticsDataFabric"
     ]
