@@ -6,6 +6,8 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import dev.ithundxr.createnumismatics.content.vendor.VendorRenderer;
 
 public class NumismaticsBlockEntities {
     private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
@@ -26,6 +28,11 @@ public class NumismaticsBlockEntities {
     public static final BlockEntityEntry<BlazeBankerBlockEntity> BLAZE_BANKER = REGISTRATE.blockEntity("blaze_banker", BlazeBankerBlockEntity::new)
         .validBlocks(NumismaticsBlocks.BLAZE_BANKER)
         .register();
+
+    public static final BlockEntityEntry<VendorBlockEntity> VENDOR = REGISTRATE.blockEntity("vendor", VendorBlockEntity::new)
+            .validBlocks(NumismaticsBlocks.VENDOR)
+            .renderer(() -> VendorRenderer::new)
+            .register();
 
 
     @SuppressWarnings("EmptyMethod")
