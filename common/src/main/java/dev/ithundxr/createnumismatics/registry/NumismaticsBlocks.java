@@ -1,6 +1,5 @@
 package dev.ithundxr.createnumismatics.registry;
 
-import com.jozufozu.flywheel.backend.RenderLayer;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -71,7 +70,7 @@ public class NumismaticsBlocks {
 		.simpleItem()
 		.register();
 
-	public static final BlockEntry<Block> VENDOR = REGISTRATE.block("shop", Block::new)
+	public static final BlockEntry<VendorBlock> VENDOR = REGISTRATE.block("shop", VendorBlock::new)
 //			.initialProperties(SharedProperties::softMetal)
 			.properties(BlockBehaviour.Properties::noOcclusion)
 //			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))

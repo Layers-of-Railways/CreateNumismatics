@@ -2,12 +2,12 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"1": "numismatics:block/shop/display_case/brass_casing_short",
-		"2": "numismatics:block/shop/display_case/display_case_plate",
-		"3": "numismatics:block/shop/display_case/framed_glass_small",
-		"4": "numismatics:block/shop/display_case/display_case_front",
-		"5": "numismatics:block/shop/display_case/brass_casing",
-		"particle": "numismatics:block/shop/display_case/framed_glass_small"
+		"1": "numismatics:block/shop/vendor/brass_casing_short",
+		"2": "numismatics:block/shop/vendor/display_case_plate",
+		"3": "numismatics:block/shop/vendor/framed_glass_small",
+		"4": "numismatics:block/shop/vendor/display_case_front",
+		"5": "numismatics:block/shop/vendor/brass_casing",
+		"particle": "numismatics:block/shop/vendor/framed_glass_small"
 	},
 	"elements": [
 		{
