@@ -11,8 +11,10 @@ import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -77,6 +79,23 @@ public class NumismaticsBlocks {
 		.lang("Blaze Banker")
 		.simpleItem()
 		.register();
+
+	public static final BlockEntry<VendorBlock> VENDOR = REGISTRATE.block("shop", VendorBlock::new)
+//			.initialProperties(SharedProperties::softMetal)
+			.properties(BlockBehaviour.Properties::noOcclusion)
+//			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
+//			.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+//			.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+//			.transform(pickaxeOnly())
+			.addLayer(() -> RenderType::cutout)
+			.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
+//			.tag(AllTags.AllBlockTags.FAN_TRANSPARENT.tag, AllTags.AllBlockTags.PASSIVE_BOILER_HEATERS.tag)
+			.lang("Vendor")
+			.blockstate((c, p) -> p.simpleBlock(c.getEntry(), p.models()
+					.getExistingFile(Numismatics.asResource("block/display_case"))
+			))
+			.simpleItem()
+			.register();
 
 	public static void register() {
 		// load the class and register everything
