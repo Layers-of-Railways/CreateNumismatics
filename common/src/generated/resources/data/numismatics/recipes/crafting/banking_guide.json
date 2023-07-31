@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "numismatics:cog"
+    },
+    {
+      "item": "create:sturdy_sheet"
+    },
+    {
+      "item": "minecraft:paper"
+    }
+  ],
+  "result": {
+    "item": "numismatics:banking_guide"
+  }
+}

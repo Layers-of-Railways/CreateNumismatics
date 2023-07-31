@@ -1,5 +1,6 @@
 package dev.ithundxr.createnumismatics.registry;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -11,9 +12,13 @@ import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
@@ -58,12 +63,18 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.lightLevel(state -> 15))
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
+		.transform(BuilderTransformers.blazeBanker())
+		.addLayer(() -> RenderType::cutoutMipped)
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.tag(AllTags.AllBlockTags.FAN_TRANSPARENT.tag, AllTags.AllBlockTags.PASSIVE_BOILER_HEATERS.tag)
+		.loot((lt, block) -> lt.add(block, lt.createSingleItemTable(AllBlocks.BLAZE_BURNER)
+			.withPool(lt.applyExplosionCondition(NumismaticsItems.BANKING_GUIDE.get(), LootPool.lootPool()
+				.setRolls(ConstantValue.exactly(1.0f))
+				.add(LootItem.lootTableItem(NumismaticsItems.BANKING_GUIDE.get()))))))
 		.lang("Blaze Banker")
-//		.transform(BuilderTransformers.bankTerminal())
 		.simpleItem()
 		.register();
 

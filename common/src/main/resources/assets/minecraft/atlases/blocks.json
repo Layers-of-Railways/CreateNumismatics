@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "numismatics:entity/tophat"
+    }
+  ]
+}

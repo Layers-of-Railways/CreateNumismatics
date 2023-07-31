@@ -3,7 +3,9 @@ package dev.ithundxr.createnumismatics.base.data.recipe;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -139,6 +141,14 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
 
     public static ItemLike sturdySheet() {
       return AllItems.STURDY_SHEET.get();
+    }
+
+    public static ItemLike cogCoin() {
+      return NumismaticsItems.getCoin(Coin.COG);
+    }
+
+    public static ItemLike paper() {
+      return Items.PAPER;
     }
   }
 }

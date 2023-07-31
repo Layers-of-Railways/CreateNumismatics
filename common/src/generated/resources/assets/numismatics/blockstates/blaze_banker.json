@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "numismatics:block/blaze_banker"
+      "model": "create:block/blaze_burner/block"
     }
   }
 }

@@ -54,7 +54,7 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
     @Override
     protected void addSlots() {
         if (cardWritingContainer == null)
-            cardWritingContainer = new CardWritingContainer(this::slotsChanged, contentHolder.accountUUID);
+            cardWritingContainer = new CardWritingContainer(this::slotsChanged, contentHolder.getAccountId());
         int x = 16;
         int y = 21;
 

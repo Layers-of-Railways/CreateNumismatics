@@ -4,6 +4,7 @@ import com.simibubi.create.Create;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
@@ -36,6 +37,13 @@ public class BuilderTransformersImpl {
                 )
                 .rotationY((int) state.getValue(BankTerminalBlock.HORIZONTAL_FACING).toYRot() + 180)
                 .build()
+            )
+        );
+    }
+
+    public static <B extends BlazeBankerBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> blazeBanker() {
+        return a -> a.blockstate((c, p) -> p.simpleBlock(c.get(), p.models()
+                .getExistingFile(Create.asResource("block/blaze_burner/block"))
             )
         );
     }

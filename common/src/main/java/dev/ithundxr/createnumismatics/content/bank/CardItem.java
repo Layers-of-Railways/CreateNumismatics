@@ -5,6 +5,9 @@ import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -78,5 +81,20 @@ public class CardItem extends Item {
         } else {
             tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.blank"));
         }
+    }
+
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand usedHand) {
+        ItemStack handStack = player.getItemInHand(usedHand);
+        if (level.isClientSide)
+            return InteractionResultHolder.success(handStack);
+
+        if (isBound(handStack) && player.isShiftKeyDown()) {
+            clear(handStack);
+            player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
+            return InteractionResultHolder.success(handStack);
+        }
+
+        return InteractionResultHolder.pass(handStack);
     }
 }

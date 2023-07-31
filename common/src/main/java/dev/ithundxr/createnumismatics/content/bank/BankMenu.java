@@ -169,7 +169,7 @@ public class BankMenu extends MenuBase<BankAccount> {
         @Override
         public void setItem(int slot, @NotNull ItemStack stack) {
             this.stacks.set(0, stack);
-            if (!CardItem.isBound(stack))
+            if (!CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack))
                 CardItem.set(stack, uuid);
             this.slotsChangedCallback.accept(this);
         }

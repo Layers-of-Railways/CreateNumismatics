@@ -7,6 +7,7 @@ import dev.ithundxr.createnumismatics.base.item.DyedItemList;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BankingGuideItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 
@@ -55,6 +56,10 @@ public class NumismaticsItems {
 			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/"+colorName+"_id_card")))
 			.register();
 	});
+
+	public static final ItemEntry<BankingGuideItem> BANKING_GUIDE = REGISTRATE.item("banking_guide", BankingGuideItem::new)
+		.lang("Banking Guide")
+		.register();
 
 	public static void register() {
 		// load the class and register everything

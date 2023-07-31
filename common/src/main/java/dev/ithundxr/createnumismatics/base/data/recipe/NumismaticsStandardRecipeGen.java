@@ -5,6 +5,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -58,6 +59,13 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .requires(Ingredients.precisionMechanism())
             .requires(Ingredients.industrialIron())
             .requires(Ingredients.electronTube()));
+
+    GeneratedRecipe BANKING_GUIDE = create(NumismaticsItems.BANKING_GUIDE)
+        .unlockedBy(Ingredients::cogCoin)
+        .viaShapeless(b -> b
+            .requires(Ingredients.cogCoin())
+            .requires(Ingredients.sturdySheet())
+            .requires(Ingredients.paper()));
 
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder("/", result);

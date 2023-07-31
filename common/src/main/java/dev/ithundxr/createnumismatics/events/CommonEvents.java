@@ -22,6 +22,8 @@ public class CommonEvents {
      * @return true if the block may be broken, false otherwise
      */
     public static boolean onBlockBreak(LevelAccessor level, BlockPos pos, BlockState state, Player player) {
+        if (!(player instanceof ServerPlayer))
+            return true;
         boolean mayBreak = true;
         if (state.getBlock() instanceof ConditionalBreak conditionalBreak) {
             mayBreak = conditionalBreak.mayBreak(level, pos, state, player);

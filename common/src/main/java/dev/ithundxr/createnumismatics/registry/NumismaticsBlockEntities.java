@@ -4,6 +4,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerRenderer;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
 
@@ -25,6 +26,7 @@ public class NumismaticsBlockEntities {
 
     public static final BlockEntityEntry<BlazeBankerBlockEntity> BLAZE_BANKER = REGISTRATE.blockEntity("blaze_banker", BlazeBankerBlockEntity::new)
         .validBlocks(NumismaticsBlocks.BLAZE_BANKER)
+        .renderer(() -> BlazeBankerRenderer::new)
         .register();
 
 

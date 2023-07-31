@@ -11,7 +11,22 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "numismatics:blaze_banker"
+          "name": "create:blaze_burner"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "numismatics:banking_guide"
         }
       ],
       "rolls": 1.0

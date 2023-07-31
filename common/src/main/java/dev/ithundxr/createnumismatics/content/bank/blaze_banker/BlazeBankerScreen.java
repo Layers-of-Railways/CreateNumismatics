@@ -10,13 +10,13 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Indicator;
 import com.simibubi.create.foundation.utility.Components;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
-import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
-import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
+import dev.ithundxr.createnumismatics.registry.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -118,8 +118,16 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
 
         background.render(graphics, x, y);
 
+        Minecraft mc = Minecraft.getInstance();
+
         GuiGameElement.of(renderedItem).<GuiGameElement
                 .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 70, -200)
+            .scale(5)
+            .render(graphics);
+
+        GuiBlockEntityRenderBuilder.of(menu.contentHolder)
+            .<GuiGameElement
+                .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 70, -230)
             .scale(5)
             .render(graphics);
 

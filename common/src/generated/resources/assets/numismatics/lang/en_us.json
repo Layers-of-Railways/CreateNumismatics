@@ -7,6 +7,7 @@
 	"block.numismatics.blaze_banker": "Blaze Banker",
 	"block.numismatics.brass_depositor": "Brass Depositor",
 
+	"item.numismatics.banking_guide": "Banking Guide",
 	"item.numismatics.bevel": "Bevel",
 	"item.numismatics.black_card": "Black Card",
 	"item.numismatics.black_id_card": "Black ID Card",
@@ -81,6 +82,9 @@
 	"item.numismatics.id_card.tooltip.cleared": "Cleared",
 	"item.numismatics.id_card.tooltip.bound": "Bound to self",
 
+	"item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
+	"item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
+
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
@@ -121,6 +125,9 @@
 	"item.numismatics.id_card.tooltip.already_bound": "Already bound, sneak+use to unbind",
 	"item.numismatics.id_card.tooltip.cleared": "Cleared",
 	"item.numismatics.id_card.tooltip.bound": "Bound to self",
+
+	"item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
+	"item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
 	"_": "Thank you for translating Numismatics!"
 
