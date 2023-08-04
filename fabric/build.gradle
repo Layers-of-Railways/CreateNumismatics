@@ -104,7 +104,7 @@ dependencies {
 processResources {
     // set up properties for filling into metadata
     Map<String, String> properties = Map.of(
-            "version", version,
+            "version", version as String,
             "fabric_loader_version", fabric_loader_version,
             "fabric_api_version", fabric_api_version,
             "minecraft_version", minecraft_version,
@@ -142,18 +142,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier = null
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 
     exclude "**/*.xcf"
 
@@ -194,8 +194,7 @@ publishing {
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+
     }
 }

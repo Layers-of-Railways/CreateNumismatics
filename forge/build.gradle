@@ -65,7 +65,7 @@ dependencies {
 processResources {
     // set up properties for filling into metadata
     Map<String, String> properties = Map.of(
-            "version", version,
+            "version", version as String,
             "forge_version", forge_version.split("\\.")[0], // only specify major version of forge
             "minecraft_version", minecraft_version,
             "create_version", create_forge_version.split("-")[0] // cut off build number
@@ -112,17 +112,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier = null
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 
     exclude "**/*.xcf"
 }
@@ -147,8 +147,7 @@ publishing {
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+
     }
 }
