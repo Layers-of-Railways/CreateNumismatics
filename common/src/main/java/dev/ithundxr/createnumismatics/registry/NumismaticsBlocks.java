@@ -80,7 +80,7 @@ public class NumismaticsBlocks {
 		.simpleItem()
 		.register();
 
-	public static final BlockEntry<VendorBlock> VENDOR = REGISTRATE.block("shop", VendorBlock::new)
+	public static final BlockEntry<VendorBlock> VENDOR = REGISTRATE.block("vendor", p -> new VendorBlock(p, false))
 //			.initialProperties(SharedProperties::softMetal)
 			.properties(BlockBehaviour.Properties::noOcclusion)
 //			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
@@ -91,10 +91,12 @@ public class NumismaticsBlocks {
 			.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 //			.tag(AllTags.AllBlockTags.FAN_TRANSPARENT.tag, AllTags.AllBlockTags.PASSIVE_BOILER_HEATERS.tag)
 			.lang("Vendor")
-			.blockstate((c, p) -> p.simpleBlock(c.getEntry(), p.models()
+			.blockstate((c, p) -> p.horizontalBlock(c.getEntry(), p.models()
 					.getExistingFile(Numismatics.asResource("block/display_case"))
 			))
-			.simpleItem()
+			.item()
+			.model((c, p) -> p.blockItem(c))
+			.build()
 			.register();
 
 	public static void register() {
