@@ -7,7 +7,7 @@
   "item.numismatics.card.tooltip.bound.to": "Bound to: %s",
   "item.numismatics.card.tooltip.blank": "Blank",
   "block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
-  "item.numismatics.id_card.tooltip.already_bound": "Already bound, sneak+use to unbind",
+  "item.numismatics.id_card.tooltip.already_bound": "Already bound, Sneak + Use to Unbind",
   "item.numismatics.id_card.tooltip.cleared": "Cleared",
   "item.numismatics.id_card.tooltip.bound": "Bound to self",
 

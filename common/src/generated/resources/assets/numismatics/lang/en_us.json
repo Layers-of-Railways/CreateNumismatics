@@ -48,44 +48,6 @@
 	"item.numismatics.yellow_card": "Yellow Card",
 	"item.numismatics.yellow_id_card": "Yellow ID Card",
 
-	"create.numismatics.andesite_depositor.price": "Price",
-
-	"create.item.numismatics.spur": "Spur",
-	"create.item.numismatics.bevel": "Bevel",
-	"create.item.numismatics.sprocket": "Sprocket",
-	"create.item.numismatics.cog": "Cog",
-	"create.item.numismatics.crown": "Crown",
-	"create.item.numismatics.sun": "Sun",
-
-	"gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
-
-	"command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
-
-	"itemGroup.numismatics": "Create: Numismatics",
-
-	"gui.numismatics.trust_list": "Trust List",
-
-	"create.numismatics.trust_list.configure": "Configure Trust List",
-
-	"item.numismatics.coin.tooltip.value": "Value: %s %s (%s¤)",
-	"item.numismatics.coin.tooltip.value.basic": "Value: %s¤",
-
-	"block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
-
-	"item.numismatics.coin.tooltip.count": "Count: %s %s",
-	"item.numismatics.card.tooltip.bound": "Bound",
-	"item.numismatics.card.tooltip.bound.to": "Bound to: %s",
-	"item.numismatics.card.tooltip.blank": "Blank",
-
-	"block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
-
-	"item.numismatics.id_card.tooltip.already_bound": "Already bound, sneak+use to unbind",
-	"item.numismatics.id_card.tooltip.cleared": "Cleared",
-	"item.numismatics.id_card.tooltip.bound": "Bound to self",
-
-	"item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
-	"item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
-
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
@@ -123,7 +85,7 @@
 
 	"block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
 
-	"item.numismatics.id_card.tooltip.already_bound": "Already bound, sneak+use to unbind",
+	"item.numismatics.id_card.tooltip.already_bound": "Already bound, Sneak + Use to Unbind",
 	"item.numismatics.id_card.tooltip.cleared": "Cleared",
 	"item.numismatics.id_card.tooltip.bound": "Bound to self",
 
