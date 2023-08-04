@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "numismatics:shop"
+          "name": "numismatics:vendor"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "numismatics:blocks/shop"
+  "random_sequence": "numismatics:blocks/vendor"
 }
