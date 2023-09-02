@@ -28,6 +28,7 @@ repositories {
     // mavens for Forge-exclusives
     maven { url = "https://maven.theillusivec4.top/" } // Curios
     maven { url = "https://maven.terraformersmc.com/releases/" } // EMI
+    maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
     maven { // Create Forge and Registrate Forge
         url = "https://maven.tterrag.com/"
         content {
@@ -60,6 +61,9 @@ dependencies {
 
     // if you would like to add integration with JEI, uncomment this line.
 //    modCompileOnly("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+
+    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1"))
+    implementation(include("com.github.LlamaLad7:MixinExtras:0.1.1"))
 }
 
 processResources {

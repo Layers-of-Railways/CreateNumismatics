@@ -7,7 +7,8 @@
     "client.MixinModelBakery"
   ],
   "mixins": [
-    "AccessorLangMerger"
+    "AccessorLangMerger",
+    "MixinGoogleOverlayRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

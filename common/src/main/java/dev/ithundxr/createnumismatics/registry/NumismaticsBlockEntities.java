@@ -32,10 +32,9 @@ public class NumismaticsBlockEntities {
         .register();
 
     public static final BlockEntityEntry<VendorBlockEntity> VENDOR = REGISTRATE.blockEntity("vendor", VendorBlockEntity::new)
-            .validBlocks(NumismaticsBlocks.VENDOR)
+            .validBlocks(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
             .renderer(() -> VendorRenderer::new)
             .register();
-
 
     @SuppressWarnings("EmptyMethod")
     public static void register() {}

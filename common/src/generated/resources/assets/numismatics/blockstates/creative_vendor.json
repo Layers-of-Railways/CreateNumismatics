@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "numismatics:block/creative_display_case",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "numismatics:block/creative_display_case"
+    },
+    "facing=south": {
+      "model": "numismatics:block/creative_display_case",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "numismatics:block/creative_display_case",
+      "y": 270
+    }
+  }
+}

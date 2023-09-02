@@ -2,10 +2,10 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"1": "numismatics:block/shop/display_case/creative_casing_short",
-		"2": "numismatics:block/shop/display_case/creative_display_case_front",
-		"3": "numismatics:block/shop/display_case/framed_glass_small",
-		"4": "numismatics:block/shop/display_case/creative_display_case_plate",
+		"1": "numismatics:block/shop/vendor/creative_casing_short",
+		"2": "numismatics:block/shop/vendor/creative_display_case_front",
+		"3": "numismatics:block/shop/vendor/framed_glass_small",
+		"4": "numismatics:block/shop/vendor/creative_display_case_plate",
 		"5": "create:block/creative_casing",
 		"particle": "create:block/creative_casing"
 	},
