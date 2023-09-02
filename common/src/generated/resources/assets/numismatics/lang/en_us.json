@@ -131,6 +131,8 @@
 	"item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
 	"item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
+	"block.numismatics.vendor.tooltip.price": "Price: %s %s, %s¤",
+
 	"_": "Thank you for translating Numismatics!"
 
 }

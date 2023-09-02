@@ -4,7 +4,9 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -46,10 +48,8 @@ public class ClientUtils {
         if (level == null)
             return goggles;
 
-        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity vendorBlockEntity) {
-            // get the block entities cost and show the item for that and its cost and under
-            // show what is being sold (the enchants)
-            return Items.DIAMOND.getDefaultInstance();
+        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity) {
+            return NumismaticsItems.getCoin(Coin.COG).asStack();
         }
         return goggles;
     }

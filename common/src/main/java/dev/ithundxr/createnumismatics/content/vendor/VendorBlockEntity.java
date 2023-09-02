@@ -5,6 +5,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
@@ -18,6 +19,7 @@ import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -222,16 +224,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-//        Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
-//        int cogs = cogsAndSpurs.getFirst();
-//        int spurs = cogsAndSpurs.getSecond();
-//        MutableComponent balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
-//                TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
-//        Lang.builder()
-//                .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
-//                .forGoggles(tooltip);
-        MutableComponent label = Components.literal("Lol");
-        Lang.builder().add(label).forGoggles(tooltip);
+        Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
+        int cogs = cogsAndSpurs.getFirst();
+        int spurs = cogsAndSpurs.getSecond();
+        MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
+                TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+        Lang.builder()
+                .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+                .forGoggles(tooltip);
+        Lang.builder().add(balanceLabel);
         return true;
     }
 
@@ -258,6 +259,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     public void setPrice(Coin coin, int price) {
         this.price.setPrice(coin, price);
+    }
+
+    public ItemStack getSellingItem() {
+        return sellingContainer.getItem(0);
     }
 
     /* Begin Container */

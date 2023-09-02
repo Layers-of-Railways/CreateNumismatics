@@ -8,9 +8,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
@@ -21,11 +21,16 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
     public void render(@NotNull VendorBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack,
                        @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        ItemStack itemStack = blockEntity.getSellingItem();
         float age = AnimationTickHolder.getRenderTime();
-        ItemStack itemStack = new ItemStack(Items.DIAMOND);
+        float yHeight = 0.65F;
+
+        if (itemStack.getItem() instanceof BlockItem) {
+            yHeight = 0.6F;
+        }
 
         poseStack.pushPose();
-        poseStack.translate(0.5F, 0.7F, 0.5F);
+        poseStack.translate(0.5F, yHeight, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(age % 360.0F));
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
                 poseStack, buffer, blockEntity.getLevel(), 0);
