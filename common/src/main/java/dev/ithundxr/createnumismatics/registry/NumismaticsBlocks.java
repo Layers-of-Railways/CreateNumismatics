@@ -14,7 +14,6 @@ import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -95,7 +94,7 @@ public class NumismaticsBlocks {
 					.getExistingFile(Numismatics.asResource("block/display_case"))
 			))
 			.item()
-			.model((c, p) -> p.blockItem(c))
+			.model((c, p) -> p.withExistingParent("vendor", Numismatics.asResource("block/display_case")))
 			.build()
 			.register();
 
