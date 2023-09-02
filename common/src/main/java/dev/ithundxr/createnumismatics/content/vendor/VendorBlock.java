@@ -2,12 +2,17 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
+import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +31,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -106,6 +112,31 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
         if (!isTrusted(context.getPlayer(), context.getLevel(), context.getClickedPos()))
             return InteractionResult.FAIL;
         return IWrenchable.super.onSneakWrenched(state, context);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+                                          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+
+        if (player.isCrouching() && hit.getDirection().getAxis().isVertical()) {
+            if (level.isClientSide)
+                return InteractionResult.SUCCESS;
+            if (isTrusted(player, level, pos)) {
+                withBlockEntityDo(level, pos,
+                    be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
+
+        /*SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
+        if (priceBehaviour != null && priceBehaviour.deduct(player, hand)) {
+            activate(state, level, pos);
+        }*/
+        return InteractionResult.CONSUME;
     }
 
     @Override

@@ -20,7 +20,8 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     BRASS_DEPOSITOR("brass_depositor", 182, 145),
     BANK_TERMINAL("bank_terminal",200, 132),
     TRUST_LIST("trust_list",200, 110),
-    BLAZE_BANKER("blaze_banker",200, 110)
+    BLAZE_BANKER("blaze_banker",200, 110),
+    VENDOR("vendor", 236, 145),
     ;
 
     public static final int FONT_COLOR = 0x575F7A;

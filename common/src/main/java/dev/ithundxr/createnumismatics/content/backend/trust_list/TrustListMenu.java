@@ -1,16 +1,30 @@
 package dev.ithundxr.createnumismatics.content.backend.trust_list;
 
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
+import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import com.simibubi.create.foundation.utility.Components;
+import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
+import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.depositor.ProtectedScrollOptionBehaviour;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -182,5 +196,43 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
             }
         }
         return bl;
+    }
+
+    public enum TrustListSham implements INamedIconOptions {
+        NONE;
+
+        @Override
+        public AllIcons getIcon() {
+            return AllIcons.I_VIEW_SCHEDULE;
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return "numismatics.trust_list.configure";
+        }
+    }
+
+    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
+        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("create.numismatics.trust_list.configure"), be,
+            slot, be::isTrusted) {
+            @Override
+            public void onShortInteract(Player player, InteractionHand hand, Direction side) {
+                if (be.isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
+                    Utils.openScreen(serverPlayer,
+                        TrustListMenu.provider(be, displayStack),
+                        (buf) -> {
+                            buf.writeItem(displayStack);
+                            be.sendToMenu(buf);
+                        });
+                } else {
+                    super.onShortInteract(player, hand, side);
+                }
+            }
+
+            @Override
+            public boolean acceptsValueSettings() {
+                return false;
+            }
+        };
     }
 }

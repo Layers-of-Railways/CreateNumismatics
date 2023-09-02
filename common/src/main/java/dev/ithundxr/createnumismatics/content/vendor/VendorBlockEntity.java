@@ -15,30 +15,43 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContai
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
+import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
+import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveGoggleInformation {
+public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveGoggleInformation, WorldlyContainer, MenuProvider {
     public final Container cardContainer = new SimpleContainer(1) {
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            VendorBlockEntity.this.setChanged();
+        }
+    };
+
+    public final Container sellingContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
             super.setChanged();
@@ -56,6 +69,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private boolean delayedDataSync = false;
 
     private SliderStylePriceBehaviour price;
+    public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
 
 
@@ -84,8 +98,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
         }
 
+        if (!sellingContainer.getItem(0).isEmpty()) {
+            tag.put("Selling", sellingContainer.getItem(0).save(new CompoundTag()));
+        }
+
         if (!trustListContainer.isEmpty()) {
             tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+        }
+
+        if (!items.isEmpty()) {
+            tag.put("Inventory", ContainerHelper.saveAllItems(new CompoundTag(), items));
         }
     }
 
@@ -106,10 +128,22 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             cardContainer.setItem(0, ItemStack.EMPTY);
         }
 
+        if (tag.contains("Selling", Tag.TAG_COMPOUND)) {
+            ItemStack sellingStack = ItemStack.of(tag.getCompound("Selling"));
+            sellingContainer.setItem(0, sellingStack);
+        } else {
+            sellingContainer.setItem(0, ItemStack.EMPTY);
+        }
+
         trustListContainer.clearContent();
         trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
             trustListContainer.load(tag.getCompound("TrustListInv"));
+        }
+
+        items.clear();
+        if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
+            ContainerHelper.loadAllItems(tag.getCompound("Inventory"), items);
         }
     }
 
@@ -200,4 +234,109 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         Lang.builder().add(label).forGoggles(tooltip);
         return true;
     }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return Components.translatable("block.numismatics.vendor");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        if (!isTrusted(player))
+            return null;
+        return new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), i, inventory, this);
+    }
+
+    public int getTotalPrice() {
+        return price.getTotalPrice();
+    }
+
+    public int getPrice(Coin coin) {
+        return price.getPrice(coin);
+    }
+
+    public void setPrice(Coin coin, int price) {
+        this.price.setPrice(coin, price);
+    }
+
+    /* Begin Container */
+
+    @Override
+    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+        return side == Direction.DOWN ? new int[0] : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return direction != Direction.DOWN;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
+        return false;
+    }
+
+    @Override
+    public int getContainerSize() {
+        return 9;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (ItemStack stack : items) {
+            if (!stack.isEmpty())
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public @NotNull ItemStack getItem(int slot) {
+        return slot >= 0 && slot < items.size() ? items.get(slot) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public @NotNull ItemStack removeItem(int slot, int amount) {
+        ItemStack itemStack = ContainerHelper.removeItem(items, slot, amount);
+        if (!itemStack.isEmpty()) {
+            setChanged();
+        }
+
+        return itemStack;
+    }
+
+    @Override
+    public @NotNull ItemStack removeItemNoUpdate(int slot) {
+        ItemStack itemStack = items.get(slot);
+        if (itemStack.isEmpty()) {
+            return ItemStack.EMPTY;
+        } else {
+            items.set(slot, ItemStack.EMPTY);
+            return itemStack;
+        }
+    }
+
+    @Override
+    public void setItem(int slot, @NotNull ItemStack stack) {
+        items.set(slot, stack);
+        if (!stack.isEmpty() && stack.getCount() > getMaxStackSize()) {
+            stack.setCount(getMaxStackSize());
+        }
+
+        setChanged();
+    }
+
+    @Override
+    public boolean stillValid(@NotNull Player player) {
+        return Container.stillValidBlockEntity(this, player);
+    }
+
+    @Override
+    public void clearContent() {
+        items.clear();
+        setChanged();
+    }
+
+    /* End Container */
 }

@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu.TrustListSham;
 import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
@@ -43,43 +44,9 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         super(type, pos, state);
     }
 
-    private enum TrustListSham implements INamedIconOptions {
-        NONE;
-
-        @Override
-        public AllIcons getIcon() {
-            return AllIcons.I_VIEW_SCHEDULE;
-        }
-
-        @Override
-        public String getTranslationKey() {
-            return "numismatics.trust_list.configure";
-        }
-    }
-
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        trustListButton = new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("create.numismatics.trust_list.configure"), this,
-            new DepositorValueBoxTransform(), this::isTrusted) {
-            @Override
-            public void onShortInteract(Player player, InteractionHand hand, Direction side) {
-                if (isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
-                    Utils.openScreen(serverPlayer,
-                        TrustListMenu.provider(BrassDepositorBlockEntity.this, NumismaticsBlocks.BRASS_DEPOSITOR.asStack()),
-                        (buf) -> {
-                            buf.writeItem(NumismaticsBlocks.BRASS_DEPOSITOR.asStack());
-                            BrassDepositorBlockEntity.this.sendToMenu(buf);
-                        });
-                } else {
-                    super.onShortInteract(player, hand, side);
-                }
-            }
-
-            @Override
-            public boolean acceptsValueSettings() {
-                return false;
-            }
-        };
+        trustListButton = TrustListMenu.makeConfigureButton(this, new DepositorValueBoxTransform(), NumismaticsBlocks.BRASS_DEPOSITOR.asStack());
         behaviours.add(trustListButton);
 
         price = new SliderStylePriceBehaviour(this, this::addCoin);

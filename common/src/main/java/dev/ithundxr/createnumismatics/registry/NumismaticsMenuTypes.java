@@ -15,6 +15,8 @@ import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.BankScreen;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorScreen;
+import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
+import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -50,6 +52,12 @@ public class NumismaticsMenuTypes {
         "blaze_banker",
         BlazeBankerMenu::new,
         () -> BlazeBankerScreen::new
+    );
+
+    public static final MenuEntry<VendorMenu> VENDOR = register(
+        "vendor",
+        VendorMenu::new,
+        () -> VendorScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(
