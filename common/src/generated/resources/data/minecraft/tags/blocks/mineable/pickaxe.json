@@ -4,6 +4,8 @@
     "numismatics:andesite_depositor",
     "numismatics:brass_depositor",
     "numismatics:bank_terminal",
-    "numismatics:blaze_banker"
+    "numismatics:blaze_banker",
+    "numismatics:vendor",
+    "numismatics:creative_vendor"
   ]
 }
