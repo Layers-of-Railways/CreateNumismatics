@@ -32,7 +32,6 @@ dependencies {
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
 
     implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1"))
-    implementation(include("com.github.LlamaLad7:MixinExtras:0.1.1"))
 }
 
 sourceSets.main {
