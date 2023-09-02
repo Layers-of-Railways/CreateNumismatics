@@ -19,7 +19,7 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
     @Override
     public void render(@NotNull VendorBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack,
                        @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        float age = AnimationTickHolder.getRenderTime();
+        float age = AnimationTickHolder.getRenderTime() + blockEntity.hashCode();
 
         ItemStack itemStack = new ItemStack(Items.DIAMOND);
 

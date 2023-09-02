@@ -1,8 +1,10 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -62,30 +65,9 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        if (level.getBlockEntity(pos) instanceof BrassDepositorBlockEntity brassDepositor) {
-            int totalPrice = brassDepositor.getTotalPrice();
-
-            ItemStack handStack = player.getItemInHand(hand);
-            if (NumismaticsTags.AllItemTags.CARDS.matches(handStack)) {
-                if (CardItem.isBound(handStack)) {
-                    UUID id = CardItem.get(handStack);
-                    BankAccount account = Numismatics.BANK.getAccount(id);
-                    if (account != null && account.isAuthorized(player)) {
-                        if (account.deduct(totalPrice)) {
-                            activate(state, level, pos);
-                            for (Map.Entry<Coin, Integer> entry : brassDepositor.prices.entrySet()) {
-                                brassDepositor.addCoin(entry.getKey(), entry.getValue());
-                            }
-                        }
-                    }
-                }
-            } else if (CoinItem.extract(player, hand, brassDepositor.prices, false)) {
-                activate(state, level, pos);
-                for (Map.Entry<Coin, Integer> entry : brassDepositor.prices.entrySet()) {
-                    brassDepositor.addCoin(entry.getKey(), entry.getValue());
-                }
-            }
-
+        SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
+        if (priceBehaviour != null && priceBehaviour.deduct(player, hand)) {
+            activate(state, level, pos);
         }
         return InteractionResult.CONSUME;
     }

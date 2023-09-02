@@ -16,7 +16,7 @@ public class ModSetup {
         NumismaticsTags.register();
 
         GogglesItem.addIsWearingPredicate((player) -> {
-            if (!new Exception().getStackTrace()[2].getClassName().equals("com.simibubi.create.content.equipment.goggles.GoggleOverlayRenderer"))
+            if (!new Exception().getStackTrace()[2].getClassName().equals("com.simibubi.create.content.equipment.goggles.GoggleOverlayRenderer")) // fixme getting stacktrace is slow, use mixin to improve this
                 return false;
             MutableObject<Boolean> isLookingAtForced = new MutableObject<>(false);
             Env.CLIENT.runIfCurrent(() -> () -> isLookingAtForced.setValue(ClientUtils.isLookingAtForcedGoggleOverlay()));

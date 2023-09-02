@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
+import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
@@ -54,6 +55,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     protected final DiscreteCoinBag inventory = new DiscreteCoinBag();
     private boolean delayedDataSync = false;
 
+    private SliderStylePriceBehaviour price;
+
 
 
     public VendorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -62,7 +65,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        price = new SliderStylePriceBehaviour(this, this::addCoin);
+        behaviours.add(price);
+    }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
@@ -70,9 +76,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (owner != null)
             tag.putUUID("Owner", owner);
 
-//        if (!inventory.isEmpty()) {
-//            tag.put("Inventory", inventory.save(new CompoundTag()));
-//        }
+        if (!inventory.isEmpty()) {
+            tag.put("Inventory", inventory.save(new CompoundTag()));
+        }
 
         if (!cardContainer.getItem(0).isEmpty()) {
             tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
@@ -88,10 +94,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         super.read(tag, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
-//        inventory.clear();
-//        if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
-//            inventory.load(tag.getCompound("Inventory"));
-//        }
+        inventory.clear();
+        if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
+            inventory.load(tag.getCompound("Inventory"));
+        }
 
         if (tag.contains("Card", Tag.TAG_COMPOUND)) {
             ItemStack cardStack = ItemStack.of(tag.getCompound("Card"));
@@ -107,23 +113,30 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     }
 
-    public boolean isOwner(Block block, Player player) {
-        if (!(block instanceof VendorBlock vendorBlock))
-            return false;
-
-        if (vendorBlock.isCreativeVendor)
-            return (player != null && player.isCreative());
-
-        return owner == null || owner.equals(player.getUUID()) || trustList.contains(player.getUUID());
-    }
-
     @Override
     public boolean isTrustedInternal(Player player) {
         if (Utils.isDevEnv()) { // easier to test this way in dev
             return player.getItemBySlot(EquipmentSlot.FEET).is(Items.GOLDEN_BOOTS);
         } else {
+            if (getBlockState().getBlock() instanceof VendorBlock vendorBlock && vendorBlock.isCreativeVendor) {
+                return player != null && player.isCreative();
+            }
+
             return owner == null || owner.equals(player.getUUID()) || trustList.contains(player.getUUID());
         }
+    }
+
+    public void addCoin(Coin coin, int count) {
+        UUID depositAccount = getDepositAccount();
+        if (depositAccount != null) {
+            BankAccount account = Numismatics.BANK.getAccount(depositAccount);
+            if (account != null) {
+                account.deposit(coin, count);
+                return;
+            }
+        }
+        inventory.add(coin, count);
+        setChanged();
     }
 
     @Nullable
