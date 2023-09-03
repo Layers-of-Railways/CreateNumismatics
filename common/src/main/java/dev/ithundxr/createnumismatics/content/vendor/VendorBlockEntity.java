@@ -121,8 +121,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
         }
 
-        if (!sellingContainer.getItem(0).isEmpty()) {
-            tag.put("Selling", sellingContainer.getItem(0).save(new CompoundTag()));
+        if (!getSellingItem().isEmpty()) {
+            tag.put("Selling", getSellingItem().save(new CompoundTag()));
         }
 
         if (!trustListContainer.isEmpty()) {
@@ -255,7 +255,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     @Override
     @Environment(EnvType.CLIENT)
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        ItemStack sellingStack = sellingContainer.getItem(0);
+        ItemStack sellingStack = getSellingItem();
         if (sellingStack.isEmpty())
             return false;
 
@@ -449,7 +449,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     public boolean matchesSellingItem(@NotNull ItemStack b) {
-        ItemStack a = sellingContainer.getItem(0);
+        ItemStack a = getSellingItem();
         if (a.isEmpty() || b.isEmpty())
             return false;
 
@@ -485,7 +485,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         // condense stock
         // (try to) charge cost
         // dispense stock
-        ItemStack selling = sellingContainer.getItem(0);
+        ItemStack selling = getSellingItem();
         if (selling.isEmpty())
             return;
 

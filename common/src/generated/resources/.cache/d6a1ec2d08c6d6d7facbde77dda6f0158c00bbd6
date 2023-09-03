@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-02T15:21:35.494251725	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2023-09-02T18:10:18.166991776	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 2f1dad2a2e0086d54cf4b88378feacc04341d87f data/numismatics/tags/items/internal/ingots/iron_ingots.json
 dc5c60bbbaf3a5d7bc1f9bc0c9377757dbd8de49 data/numismatics/loot_tables/blocks/bank_terminal.json
 5b0244502972f49d063d98fa0cb3f6fc65af82b2 data/numismatics/tags/items/internal/string.json
