@@ -10,5 +10,9 @@
   "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
   "itemGroup.numismatics": "Create: Numismatics",
   "gui.numismatics.trust_list": "Trust List",
-  "create.numismatics.trust_list.configure": "Configure Trust List"
+  "create.numismatics.trust_list.configure": "Configure Trust List",
+  "gui.numismatics.vendor.count": " (%sx)",
+  "gui.numismatics.vendor.out_of_stock": "Out of stock",
+  "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
+  "gui.numismatics.vendor.insufficient_funds": "Insufficient funds"
 }

@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.*;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -14,17 +16,27 @@ import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
+import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu.TrustListSham;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
-import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,6 +49,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,6 +86,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     private SliderStylePriceBehaviour price;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    @SuppressWarnings("FieldCanBeLocal")
+    private ScrollOptionBehaviour<TrustListSham> trustListButton;
 
 
 
@@ -82,6 +98,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        trustListButton = TrustListMenu.makeConfigureButton(this, new VendorValueBoxTransform(), isCreativeVendor()
+            ? NumismaticsBlocks.CREATIVE_VENDOR.asStack()
+            : NumismaticsBlocks.VENDOR.asStack());
+        behaviours.add(trustListButton);
+
         price = new SliderStylePriceBehaviour(this, this::addCoin);
         behaviours.add(price);
     }
@@ -149,12 +170,21 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     }
 
+    @Nullable
+    private Boolean isCreativeVendorCached;
+
+    public boolean isCreativeVendor() {
+        if (isCreativeVendorCached == null)
+            isCreativeVendorCached = getBlockState().getBlock() instanceof VendorBlock vendorBlock && vendorBlock.isCreativeVendor;
+        return isCreativeVendorCached;
+    }
+
     @Override
     public boolean isTrustedInternal(Player player) {
         if (Utils.isDevEnv()) { // easier to test this way in dev
             return player.getItemBySlot(EquipmentSlot.FEET).is(Items.GOLDEN_BOOTS);
         } else {
-            if (getBlockState().getBlock() instanceof VendorBlock vendorBlock && vendorBlock.isCreativeVendor) {
+            if (isCreativeVendor()) {
                 return player != null && player.isCreative();
             }
 
@@ -223,22 +253,46 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        ItemStack sellingStack = sellingContainer.getItem(0);
+        if (sellingStack.isEmpty())
+            return false;
+
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
-        MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
-                TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
-        Lang.builder()
-                .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+        MutableComponent balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
+            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+
+        boolean isFirst = true;
+        for (Component component : Screen.getTooltipFromItem(Minecraft.getInstance(), sellingStack)) {
+            MutableComponent mutable = component.copy();
+            if (isFirst) {
+                isFirst = false;
+                if (sellingStack.getCount() != 1) {
+                    mutable.append(
+                        Components.translatable("gui.numismatics.vendor.count", sellingStack.getCount())
+                            .withStyle(ChatFormatting.GREEN)
+                    );
+                }
+            }
+            Lang.builder()
+                .add(mutable)
                 .forGoggles(tooltip);
-        Lang.builder().add(balanceLabel);
+        }
+
+        tooltip.add(Components.immutableEmpty());
+
+        Lang.builder()
+            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+            .forGoggles(tooltip);
         return true;
     }
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Components.translatable("block.numismatics.vendor");
+        return Components.translatable(isCreativeVendor() ? "block.numismatics.creative_vendor" : "block.numismatics.vendor");
     }
 
     @Nullable
@@ -273,8 +327,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
+    public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
+        return matchesSellingItem(stack);
+    }
+
+    @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-        return direction != Direction.DOWN;
+        return direction != Direction.DOWN && canPlaceItem(index, itemStack);
     }
 
     @Override
@@ -344,4 +403,128 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     /* End Container */
+
+    protected static class VendorValueBoxTransform extends CenteredSideValueBoxTransform {
+        public VendorValueBoxTransform() {
+            super((state, d) -> d == state.getValue(VendorBlock.HORIZONTAL_FACING));
+        }
+
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 4, 15.5);
+        }
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    private CompoundTag cleanTags(@NotNull CompoundTag tag) {
+        tag = tag.copy();
+        tag.remove("RepairCost");
+        tag.remove("Count");
+
+        // sort enchants
+        ListTag enchants = tag.getList("Enchantments", Tag.TAG_COMPOUND);
+        if (!enchants.isEmpty()) {
+            ArrayList<Tag> tags = new ArrayList<>(enchants);
+            tags.sort((a, b) -> {
+                if (a.equals(b))
+                    return 0;
+                if (a instanceof CompoundTag ca && b instanceof CompoundTag cb) {
+                    if (ca.contains("id", Tag.TAG_STRING) && cb.contains("id", Tag.TAG_STRING)) {
+                        int comp = ca.getString("id").compareTo(cb.getString("id"));
+                        if (comp != 0) return comp;
+                    }
+
+                    return ca.getShort("lvl") - cb.getShort("lvl");
+                }
+                return 0;
+            });
+
+            enchants = new ListTag();
+            enchants.addAll(tags);
+            tag.put("Enchantments", enchants);
+        }
+
+        return tag;
+    }
+
+    public boolean matchesSellingItem(@NotNull ItemStack b) {
+        ItemStack a = sellingContainer.getItem(0);
+        if (a.isEmpty() || b.isEmpty())
+            return false;
+
+        if (!ItemStack.isSameItem(a, b))
+            return false;
+
+        CompoundTag an = a.getTag();
+        CompoundTag bn = b.getTag();
+
+        if (an == null || bn == null) {
+            return an == bn;
+        }
+
+        an = cleanTags(an);
+        bn = cleanTags(bn);
+
+        return an.equals(bn);
+    }
+
+    protected void condenseItems() {
+        NonNullList<ItemStack> newItems = NonNullList.withSize(items.size(), ItemStack.EMPTY);
+        for (int i = 0; i < items.size(); i++) {
+            newItems.set(i, items.get(i));
+        }
+        items.clear();
+
+        for (ItemStack stack : newItems) {
+            ItemUtil.moveItemStackTo(stack, this, false);
+        }
+    }
+
+    public void tryBuy(Player player, InteractionHand hand) {
+        // condense stock
+        // (try to) charge cost
+        // dispense stock
+        ItemStack selling = sellingContainer.getItem(0);
+        if (selling.isEmpty())
+            return;
+
+        condenseItems();
+
+        if (isCreativeVendor()) {
+            if (price.deduct(player, hand)) {
+                ItemStack output = selling.copy();
+                ItemUtil.givePlayerItem(player, output);
+            } else {
+                // insufficient funds
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                    .withStyle(ChatFormatting.DARK_RED), false);
+            }
+            return;
+        } else {
+            for (ItemStack stack : items) {
+                if (matchesSellingItem(stack) && stack.getCount() >= selling.getCount()) {
+                    if (price.deduct(player, hand)) {
+                        ItemStack output = stack.split(selling.getCount());
+                        ItemUtil.givePlayerItem(player, output);
+                    } else {
+                        // insufficient funds
+                        player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                            .withStyle(ChatFormatting.DARK_RED), false);
+                    }
+                    return;
+                }
+            }
+
+            // out of stock
+            String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+            if (ownerName != null) {
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.named", ownerName)
+                    .withStyle(ChatFormatting.DARK_RED), false);
+            } else {
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock")
+                    .withStyle(ChatFormatting.DARK_RED), false);
+            }
+        }
+    }
 }

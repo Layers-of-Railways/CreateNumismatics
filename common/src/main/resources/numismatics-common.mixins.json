@@ -4,11 +4,12 @@
   "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "client.MixinGoogleOverlayRenderer",
     "client.MixinModelBakery"
   ],
   "mixins": [
     "AccessorLangMerger",
-    "MixinGoogleOverlayRenderer"
+    "MixinAbstractContainerMenu"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -6,7 +6,6 @@ import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.SlotDiscreteCoinBag;
-import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -60,16 +59,16 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
             x += 18;
         }
-        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 142, y)); // make here to preserve slot order
-        addSlot(new Slot(contentHolder.sellingContainer, 0, 170, y));
+        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 170, y)); // make here to preserve slot order
+        addSlot(new Slot(contentHolder.sellingContainer, 0, 142, y));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                addSlot(new Slot(contentHolder, j + i * 3, 87 + j * 18, 49 + i * 18));
+                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87 + j * 18, 49 + i * 18, contentHolder::matchesSellingItem));
             }
         }
 
-        addPlayerSlots(31, 165);
+        addPlayerSlots(58, 165);
 
         // label coins
 
@@ -130,13 +129,16 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
         } else if (index == SELLING_SLOT_INDEX) { // removing selling item
             if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;
+        } else if (INV_START_INDEX <= index && index < INV_END_INDEX) { // removing stock
+            if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
+                return ItemStack.EMPTY;
         } else { // player inventory
             /*
             priority:
             1. Coin slots
             2. Card slot
             3. Selling slot (if empty)
-            4. Inventory
+            4. Inventory (if accepted)
             5. Player inventory
              */
             if (stack.getItem() instanceof CoinItem && !moveItemStackTo(stack, 0, COIN_SLOTS, false)) {
@@ -145,7 +147,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
                 return ItemStack.EMPTY;
             } else if (contentHolder.sellingContainer.isEmpty() && !moveItemStackTo(stack, SELLING_SLOT_INDEX, SELLING_SLOT_INDEX+1, false)) {
                 return ItemStack.EMPTY;
-            } else if (!moveItemStackTo(stack, INV_START_INDEX, INV_END_INDEX, false)) {
+            } else if (contentHolder.matchesSellingItem(stack) && !moveItemStackTo(stack, INV_START_INDEX, INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;
             } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_END_INDEX && !moveItemStackTo(stack, PLAYER_HOTBAR_END_INDEX, PLAYER_INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;

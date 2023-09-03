@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
@@ -31,8 +32,8 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
     private IconButton confirmButton;
 
-    private NumismaticsGuiTextures background = NumismaticsGuiTextures.VENDOR;
-    private final ItemStack renderedItem = NumismaticsBlocks.VENDOR.asStack();
+    private NumismaticsGuiTextures background;
+    private final ItemStack renderedItem;
 
     private final int COIN_COUNT = Coin.values().length;
 
@@ -43,6 +44,8 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+        renderedItem = container.contentHolder.isCreativeVendor() ? NumismaticsBlocks.CREATIVE_VENDOR.asStack() : NumismaticsBlocks.VENDOR.asStack();
+        background = container.contentHolder.isCreativeVendor() ? NumismaticsGuiTextures.CREATIVE_VENDOR : NumismaticsGuiTextures.VENDOR;
     }
 
     @Override
@@ -106,6 +109,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
         GuiGameElement.of(renderedItem).<GuiGameElement
                 .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 70, -200)
+            .scale(5)
+            .render(graphics);
+
+        GuiBlockEntityRenderBuilder.of(menu.contentHolder)
+            .<GuiGameElement
+                .GuiRenderBuilder>at(x + background.width + 6, y + background.height - 90, -230)
             .scale(5)
             .render(graphics);
 

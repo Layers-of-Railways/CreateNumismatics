@@ -1,9 +1,9 @@
-// 1.20.1	2023-09-02T12:18:52.31550322	Create: Numismatics/Numismatics Standard Recipes
+// 1.20.1	2023-09-02T15:21:35.497330928	Create: Numismatics/Numismatics Standard Recipes
+dcb522b8700b7e058e043573f31c4fc67551eb86 data/numismatics/recipes/crafting/andesite_depositor.json
+244012381f0600ab5116066948c81398dcdbd3d4 data/numismatics/advancements/recipes/misc/crafting/bank_terminal.json
 ba04c62863e2c847ad7ac240e282c3f6ecd85d62 data/numismatics/recipes/crafting/banking_guide.json
 11be645cfbf1ee8721ffceb2b47d30e2923e9323 data/numismatics/advancements/recipes/misc/crafting/andesite_depositor.json
-360f03b664bac1cf6fde98e1ec77ca6e93933c4a data/numismatics/advancements/recipes/misc/crafting/banking_guide.json
 e16d9a5134c226db94bb389c44e55a8b393ca6c4 data/numismatics/recipes/crafting/brass_depositor.json
-244012381f0600ab5116066948c81398dcdbd3d4 data/numismatics/advancements/recipes/misc/crafting/bank_terminal.json
-dcb522b8700b7e058e043573f31c4fc67551eb86 data/numismatics/recipes/crafting/andesite_depositor.json
 67ac012247db080a6231312a1de981724cd3f82d data/numismatics/recipes/crafting/bank_terminal.json
 39047da0807eb1054a179e6ecf63e85676a9f0a0 data/numismatics/advancements/recipes/misc/crafting/brass_depositor.json
+360f03b664bac1cf6fde98e1ec77ca6e93933c4a data/numismatics/advancements/recipes/misc/crafting/banking_guide.json

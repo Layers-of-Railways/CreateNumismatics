@@ -86,6 +86,21 @@ public class SlotDiscreteCoinBag extends Slot {
         return coin.asStack(amount);
     }
 
+    /**
+     * Tries to add a stack to the coin hoard
+     * @param stack ItemStack to add, will be cleared if placing succeeds
+     * @return success
+     */
+    public boolean tryPlace(ItemStack stack) {
+        if (!mayPlace(stack)) return false;
+
+        coinBag.add(coin, stack.getCount());
+        stack.setCount(0);
+        setChanged();
+
+        return true;
+    }
+
     @Override
     public @NotNull Optional<ItemStack> tryRemove(int count, int decrement, @NotNull Player player) {
         return super.tryRemove(count, Math.min(64, decrement), player);

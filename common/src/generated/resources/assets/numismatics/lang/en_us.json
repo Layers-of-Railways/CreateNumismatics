@@ -87,6 +87,8 @@
 	"item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
 	"item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
+	"gui.numismatics.vendor.count": " (%sx)",
+
 
 	"_": "->------------------------]  UI & Messages  [------------------------<-",
 
@@ -108,6 +110,11 @@
 	"gui.numismatics.trust_list": "Trust List",
 
 	"create.numismatics.trust_list.configure": "Configure Trust List",
+
+	"gui.numismatics.vendor.count": " (%sx)",
+	"gui.numismatics.vendor.out_of_stock": "Out of stock",
+	"gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
+	"gui.numismatics.vendor.insufficient_funds": "Insufficient funds",
 
 
 	"_": "->------------------------]  Item Descriptions  [------------------------<-",

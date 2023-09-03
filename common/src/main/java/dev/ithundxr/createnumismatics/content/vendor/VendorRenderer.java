@@ -18,10 +18,10 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
     }
 
     @Override
-    public void render(@NotNull VendorBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack,
+    public void render(@NotNull VendorBlockEntity be, float partialTick, @NotNull PoseStack poseStack,
                        @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        ItemStack itemStack = blockEntity.getSellingItem();
+        ItemStack itemStack = be.getSellingItem();
         float age = AnimationTickHolder.getRenderTime();
         float yHeight = 0.65F;
 
@@ -33,7 +33,7 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
         poseStack.translate(0.5F, yHeight, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(age % 360.0F));
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
-                poseStack, buffer, blockEntity.getLevel(), 0);
+                poseStack, buffer, be.getLevel(), 0);
         poseStack.popPose();
     }
 }

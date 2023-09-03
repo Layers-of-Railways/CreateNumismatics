@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.mixin;
+package dev.ithundxr.createnumismatics.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -12,11 +12,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GoggleOverlayRenderer.class)
 public class MixinGoogleOverlayRenderer {
+    @SuppressWarnings("unused")
     @WrapOperation(
             method = "renderOverlay",
             at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/ItemEntry;asStack()Lnet/minecraft/world/item/ItemStack;")
     )
     private static ItemStack changeDisplayItem(ItemEntry<GogglesItem> instance, Operation<ItemStack> original) {
-        return ClientUtils.changeGoggleOverlayItem();
+        return ClientUtils.changeGoggleOverlayItem(() -> original.call(instance));
     }
 }
