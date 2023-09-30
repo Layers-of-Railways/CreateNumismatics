@@ -78,7 +78,7 @@ dependencies {
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:$fabric_api_version")
 
     // because create fabric is a bit broken I think
-    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.9"
+    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.11"
 
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${lazydfu_version}")
