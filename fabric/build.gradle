@@ -100,8 +100,8 @@ dependencies {
 //    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
 //    modCompileOnly("dev.emi:emi:${emi_version}")
 
-    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1"))
-    implementation(include("com.github.LlamaLad7:MixinExtras:0.1.1"))
+    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.2.0"))
+    implementation(include("com.github.LlamaLad7:MixinExtras:0.2.0"))
 }
 
 processResources {
