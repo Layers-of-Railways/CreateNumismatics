@@ -78,7 +78,7 @@ dependencies {
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:$fabric_api_version")
 
     // because create fabric is a bit broken I think
-    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.9"
+    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.11"
 
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${lazydfu_version}")
@@ -100,8 +100,8 @@ dependencies {
 //    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
 //    modCompileOnly("dev.emi:emi:${emi_version}")
 
-    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1"))
-    implementation(include("com.github.LlamaLad7:MixinExtras:0.1.1"))
+    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.2.0"))
+    implementation(include("com.github.LlamaLad7:MixinExtras:0.2.0"))
 }
 
 processResources {
