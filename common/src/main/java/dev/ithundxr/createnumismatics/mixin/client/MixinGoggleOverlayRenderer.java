@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GoggleOverlayRenderer.class)
-public class MixinGoogleOverlayRenderer {
+public class MixinGoggleOverlayRenderer {
     @SuppressWarnings("unused")
     @WrapOperation(
             method = "renderOverlay",
