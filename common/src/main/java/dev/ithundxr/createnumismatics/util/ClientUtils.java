@@ -1,13 +1,7 @@
 package dev.ithundxr.createnumismatics.util;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.simibubi.create.AllItems;
-import com.simibubi.create.content.equipment.goggles.GogglesItem;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
-import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
