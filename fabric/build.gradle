@@ -54,15 +54,6 @@ repositories {
     }
 }
 
-configurations.configureEach {
-    resolutionStrategy.eachDependency {
-        switch (requested.module.name) { // some dependencies pull in broken, outdated versions of these.
-            case "fabric-loader": useVersion(fabric_loader_version); break
-            case "fabric-api": useVersion(fabric_api_version); break
-        }
-    }
-}
-
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
     common(project(path: ":common", configuration: "namedElements")) { transitive = false }
@@ -78,7 +69,7 @@ dependencies {
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:$fabric_api_version")
 
     // because create fabric is a bit broken I think
-    modApi "net.minecraftforge:forgeconfigapiport-fabric:4.2.11"
+    modImplementation "net.minecraftforge:forgeconfigapiport-fabric:4.2.11"
 
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${lazydfu_version}")
@@ -91,8 +82,9 @@ dependencies {
         case "rei": modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}"); break
         case "emi": modLocalRuntime("dev.emi:emi-fabric:${emi_version}"); break
         case "disabled": break
-        default: println("Unknown recipe viewer specified: ${fabric_recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
+        default: println("Unknown recipe viewer specified: ${recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
     }
+
     // if you would like to add integration with them, uncomment them here.
 //    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
 //    modCompileOnly("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
@@ -100,8 +92,7 @@ dependencies {
 //    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
 //    modCompileOnly("dev.emi:emi:${emi_version}")
 
-    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.2.0"))
-    implementation(include("com.github.LlamaLad7:MixinExtras:0.2.0"))
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${mixin_extras_version}")))
 }
 
 processResources {

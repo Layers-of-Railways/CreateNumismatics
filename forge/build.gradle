@@ -53,17 +53,17 @@ dependencies {
         case "rei": modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}"); break
         case "emi": modLocalRuntime("dev.emi:emi-forge:${emi_version}"); break
         case "disabled": break
-        default: println("Unknown recipe viewer specified: ${fabric_recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
+        default: println("Unknown recipe viewer specified: ${recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
     }
 
     // Development QOL
     //modLocalRuntime("mezz.jei:jei-${minecraft_version}-forge:${jei_version}") { transitive = false }
 
     // if you would like to add integration with JEI, uncomment this line.
-//    modCompileOnly("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    //modCompileOnly("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
 
-    implementation(annotationProcessor("com.github.LlamaLad7:MixinExtras:0.2.0"))
-    implementation(include("com.github.LlamaLad7:MixinExtras:0.2.0"))
+    compileOnly("io.github.llamalad7:mixinextras-common:${mixin_extras_version}")
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${mixin_extras_version}")))
 }
 
 processResources {
