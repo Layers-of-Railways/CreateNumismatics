@@ -8,7 +8,6 @@
     "client.MixinModelBakery"
   ],
   "mixins": [
-    "AccessorLangMerger",
     "MixinAbstractContainerMenu"
   ],
   "injectors": {
