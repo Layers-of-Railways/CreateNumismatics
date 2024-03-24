@@ -7,6 +7,6 @@ import static dev.ithundxr.createnumismatics.registry.forge.NumismaticsCreativeM
 
 public class NumismaticsCreativeModeTabsTabsImpl {
     public static void use(NumismaticsCreativeModeTabs.Tabs tab) {
-        Numismatics.registrate().useCreativeTab(getTabObject(tab.getKey()));
+        Numismatics.registrate().setCreativeTab(getTabObject(tab.getKey()));
     }
 }

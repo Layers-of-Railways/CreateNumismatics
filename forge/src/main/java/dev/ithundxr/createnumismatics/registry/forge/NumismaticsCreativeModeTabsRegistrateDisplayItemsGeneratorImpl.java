@@ -1,5 +1,6 @@
 package dev.ithundxr.createnumismatics.registry.forge;
 
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs;
@@ -20,6 +21,6 @@ public class NumismaticsCreativeModeTabsRegistrateDisplayItemsGeneratorImpl {
     }
 
     public static boolean isInCreativeTab(RegistryEntry<?> entry, ResourceKey<CreativeModeTab> tab) {
-        return Numismatics.registrate().isInCreativeTab(entry, getTabObject(tab));
+        return CreateRegistrate.isInCreativeTab(entry, getTabObject(tab));
     }
 }
