@@ -3,11 +3,13 @@ package dev.ithundxr.createnumismatics.registry.commands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BankAccountBehaviour;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
@@ -30,22 +32,20 @@ public class PayCommand {
                 .then(argument("pos", BlockPosArgument.blockPos())
                     .then(argument("amount", integer(0))
                         .executes(ctx -> {
-                            Numismatics.LOGGER.error("Banker not implemented yet.");
-
                             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                             int amount = getInteger(ctx, "amount");
-                            UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
+                            BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+                            UUID id = bankAct.getAccountUUID();
 
                             return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount);
                         })
                         .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                             .executes(ctx -> {
-                                Numismatics.LOGGER.error("Banker not implemented yet.");
-
                                 BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                                 int amount = getInteger(ctx, "amount");
                                 Coin coin = ctx.getArgument("coin", Coin.class);
-                                UUID id = UUID.randomUUID(); // todo when banker implemented do this properly
+                                BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+                                UUID id = bankAct.getAccountUUID();
 
                                 return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount, coin);
                             })

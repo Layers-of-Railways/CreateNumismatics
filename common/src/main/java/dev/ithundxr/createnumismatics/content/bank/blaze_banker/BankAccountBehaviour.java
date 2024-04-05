@@ -1,6 +1,5 @@
 package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
-import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -11,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.UUID;
 
 public class BankAccountBehaviour extends BlockEntityBehaviour {
-    public static final BehaviourType<AdvancementBehaviour> TYPE = new BehaviourType<>();
+    public static final BehaviourType<BankAccountBehaviour> TYPE = new BehaviourType<>();
     private UUID accountUUID;
     public BankAccountBehaviour(SmartBlockEntity be) {
         super(be);
