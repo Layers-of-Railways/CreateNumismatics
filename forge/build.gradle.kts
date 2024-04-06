@@ -1,3 +1,5 @@
+import dev.ithundxr.silk.ChangelogText
+
 architectury.forge()
 
 loom {
@@ -39,6 +41,36 @@ dependencies {
 
     compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
+}
+
+publishMods {
+    file = tasks.remapJar.get().archiveFile
+    version.set(project.version.toString())
+    changelog = ChangelogText.getChangelogText(rootProject).toString()
+    type = STABLE
+    displayName = "Numismatics ${"mod_version"()} Fabric ${"minecraft_version"()}"
+    modLoaders.add("forge")
+    modLoaders.add("neoforge")
+
+    curseforge {
+        projectId = "curseforge_id"()
+        accessToken = System.getenv("CURSEFORGE_TOKEN")
+        minecraftVersions.add("minecraft_version"())
+
+        requires {
+            slug = "create"
+        }
+    }
+
+    modrinth {
+        projectId = "modrinth_id"()
+        accessToken = System.getenv("MODRINTH_TOKEN")
+        minecraftVersions.add("minecraft_version"())
+
+        requires {
+            slug = "create"
+        }
+    }
 }
 
 operator fun String.invoke(): String {
