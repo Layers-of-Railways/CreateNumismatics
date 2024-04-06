@@ -3,18 +3,15 @@ package dev.ithundxr.createnumismatics.content.backend;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.item.DyedItemList;
-import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
+import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
+import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
-import io.github.fabricators_of_create.porting_lib.tags.TagHelper;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -76,16 +73,18 @@ public class BankAccount implements MenuProvider {
     @Nullable
     private String label;
 
-    public final BankAccountCoinBag linkedCoinBag = new BankAccountCoinBag();
+    public final MergingCoinBag linkedCoinBag = new BankAccountCoinBag();
     private final boolean clientSide;
     public final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
+            //Numismatics.LOGGER.warn("BankAccount dataAccess#get called with index " + index + " (Account: "+BankAccount.this+"), returning "+balance);
             return balance;
         }
 
         @Override
         public void set(int index, int value) {
+            //Numismatics.LOGGER.warn("BankAccount dataAccess#set called with index " + index + " (Account: "+BankAccount.this+"), setting balance to "+value);
             if (clientSide)
                 setBalance(value);
         }
@@ -110,7 +109,7 @@ public class BankAccount implements MenuProvider {
         this.balance = balance;
         this.clientSide = clientSide;
         if (type.useTrustList && !clientSide)
-            trustList = new ArrayList();
+            trustList = new ArrayList<>();
     }
 
     public static BankAccount clientSide(FriendlyByteBuf buf) {
@@ -172,7 +171,7 @@ public class BankAccount implements MenuProvider {
 
     @Override
     public String toString() {
-        return super.toString() + " {id=" + id + ", balance=" + balance + "}";
+        return super.toString() + " {id=" + id + ", balance=" + balance + ", clientside=" + clientSide + "}";
     }
 
     public static BankAccount create(Type type) {
@@ -252,7 +251,7 @@ public class BankAccount implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new BankMenu(NumismaticsMenuTypes.BANK.get(), i, inventory, this, dataAccess);
     }
 

@@ -22,12 +22,16 @@ public class GlobalBankManager {
     }
 
     private void warnIfClient() {
-        if (Utils.isDevEnv() && Thread.currentThread().getName().equals("Render thread")) {
+        if (Thread.currentThread().getName().equals("Render thread")) {
             long start = System.currentTimeMillis();
             Numismatics.LOGGER.error("Bank manager should not be accessed on the client"); // set breakpoint here when developing
-            long end = System.currentTimeMillis();
-            if (end - start < 50) { // crash if breakpoint wasn't set
-                throw new RuntimeException("Illegal bank access performed on client, please set a breakpoint above");
+            if (Utils.isDevEnv()) {
+                long end = System.currentTimeMillis();
+                if (end - start < 50) { // crash if breakpoint wasn't set
+                    throw new RuntimeException("Illegal bank access performed on client, please set a breakpoint above");
+                }
+            } else {
+                Numismatics.LOGGER.error("Stacktrace: ", new RuntimeException("Illegal bank access performed on client"));
             }
         }
     }

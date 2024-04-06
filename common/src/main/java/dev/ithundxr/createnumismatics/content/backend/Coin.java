@@ -88,7 +88,7 @@ public enum Coin implements INamedIconOptions {
     public Coin getDescription() {
         return switch (this) {
             case SPUR, BEVEL, SPROCKET -> SPUR;
-            case COG -> BEVEL;
+            case COG -> COG;
             case CROWN, SUN -> COG;
         };
     }

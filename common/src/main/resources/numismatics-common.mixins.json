@@ -8,7 +8,8 @@
     "client.MixinModelBakery"
   ],
   "mixins": [
-    "MixinAbstractContainerMenu"
+    "MixinAbstractContainerMenu",
+    "MixinServerPlayer"
   ],
   "injectors": {
     "defaultRequire": 1

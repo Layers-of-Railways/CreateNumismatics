@@ -3,6 +3,8 @@ package dev.ithundxr.createnumismatics.registry.packets;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +38,7 @@ public class BankAccountLabelPacket implements S2CPacket {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void handle(Minecraft mc) {
         if (label == null) {
             NumismaticsClient.bankAccountLabels.remove(id);
