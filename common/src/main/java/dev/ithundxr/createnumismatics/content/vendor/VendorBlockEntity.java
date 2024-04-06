@@ -523,10 +523,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.named", ownerName)
-                    .withStyle(ChatFormatting.DARK_RED), false);
+                    .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             } else {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock")
-                    .withStyle(ChatFormatting.DARK_RED), false);
+                    .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
         }
     }
