@@ -1,7 +1,6 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -9,14 +8,12 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,36 +29,18 @@ import java.util.List;
 
 public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider, WorldlyContainer {
 
-    private ScrollOptionBehaviour<Coin> coinOption;
+    private Coin coin;
 
     public AndesiteDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        coinOption = new ProtectedScrollOptionBehaviour<>(Coin.class, Components.translatable("create.numismatics.andesite_depositor.price"), this,
-            new DepositorValueBoxTransform(), this::isTrusted) {
-            @Override
-            public void onShortInteract(Player player, InteractionHand hand, Direction side) {
-                if (isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
-                    Utils.openScreen(serverPlayer,
-                        TrustListMenu.provider(AndesiteDepositorBlockEntity.this, NumismaticsBlocks.ANDESITE_DEPOSITOR.asStack()),
-                        (buf) -> {
-                            buf.writeItem(NumismaticsBlocks.ANDESITE_DEPOSITOR.asStack());
-                            AndesiteDepositorBlockEntity.this.sendToMenu(buf);
-                        });
-                } else {
-                    super.onShortInteract(player, hand, side);
-                }
-            }
-        };
-        behaviours.add(coinOption);
-    }
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        Coin coin = coinOption.get();
+        Coin coin = getCoin();
         Lang.builder()
             .add(Components.translatable("block.numismatics.andesite_depositor.tooltip.price",
                     1, Components.translatable(coin.getTranslationKey()), coin.value
@@ -71,8 +50,12 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         return true;
     }
 
+    public void setCoin(Coin coin) {
+        this.coin = coin;
+    }
+
     public Coin getCoin() {
-        return coinOption.get();
+        return coin;
     }
 
     @Override
@@ -94,6 +77,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
 
         if (!inputStack.isEmpty())
             tag.put("InputStack", inputStack.save(new CompoundTag()));
+        tag.putInt("Coin", coin.ordinal());
     }
 
     @Override
@@ -105,6 +89,13 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         } else {
             inputStack = ItemStack.EMPTY;
         }
+
+        int coinIdx = 0;
+        if (tag.contains("ScrollValue", Tag.TAG_INT))
+            coinIdx = tag.getInt("ScrollValue");
+        else if (tag.contains("Coin", Tag.TAG_INT))
+            coinIdx = tag.getInt("Coin");
+        coin = Coin.values()[coinIdx];
     }
 
     @Override
@@ -192,5 +183,10 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     @Override
     public void clearContent() {
         inputStack = ItemStack.EMPTY;
+    }
+
+    @Override
+    public void openTrustListMenu(ServerPlayer player) {
+        TrustListMenu.openMenu(this, player, NumismaticsBlocks.ANDESITE_DEPOSITOR.asStack());
     }
 }

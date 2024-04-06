@@ -52,15 +52,15 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
 
     @Override
     protected void addSlots() {
-        int x = 14;
+        int x = 14+16;
         int y = 122;
 
         for (Coin coin : Coin.values()) {
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
             x += 18;
         }
-        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 170, y)); // make here to preserve slot order
-        addSlot(new Slot(contentHolder.sellingContainer, 0, 142, y));
+        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 170+4, y)); // make here to preserve slot order
+        addSlot(new Slot(contentHolder.sellingContainer, 0, 142+5, y));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {

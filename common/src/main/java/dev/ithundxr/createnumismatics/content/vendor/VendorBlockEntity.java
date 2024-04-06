@@ -5,10 +5,9 @@ import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
+import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.*;
+import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -17,12 +16,13 @@ import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePric
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
-import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu.TrustListSham;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
@@ -40,6 +40,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -50,7 +51,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,9 +87,6 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     private SliderStylePriceBehaviour price;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
-    @SuppressWarnings("FieldCanBeLocal")
-    private ScrollOptionBehaviour<TrustListSham> trustListButton;
-
 
 
     public VendorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -99,11 +96,6 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        trustListButton = TrustListMenu.makeConfigureButton(this, new VendorValueBoxTransform(), isCreativeVendor()
-            ? NumismaticsBlocks.CREATIVE_VENDOR.asStack()
-            : NumismaticsBlocks.VENDOR.asStack());
-        behaviours.add(trustListButton);
-
         price = new SliderStylePriceBehaviour(this, this::addCoin);
         behaviours.add(price);
     }
@@ -405,17 +397,6 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     /* End Container */
 
-    protected static class VendorValueBoxTransform extends CenteredSideValueBoxTransform {
-        public VendorValueBoxTransform() {
-            super((state, d) -> d == state.getValue(VendorBlock.HORIZONTAL_FACING));
-        }
-
-        @Override
-        protected Vec3 getSouthLocation() {
-            return VecHelper.voxelSpace(8, 4, 15.5);
-        }
-    }
-
     @NotNull
     @Contract("_ -> new")
     private CompoundTag cleanTags(@NotNull CompoundTag tag) {
@@ -529,5 +510,19 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     .withStyle(ChatFormatting.DARK_RED), false);
             }
         }
+    }
+
+    @Override
+    public void openTrustListMenu(ServerPlayer player) {
+        TrustListMenu.openMenu(this, player, isCreativeVendor()
+            ? NumismaticsBlocks.CREATIVE_VENDOR.asStack()
+            : NumismaticsBlocks.VENDOR.asStack());
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void openTrustList() {
+        if (level == null || !level.isClientSide)
+            return;
+        NumismaticsPackets.PACKETS.send(new OpenTrustListPacket<>(this));
     }
 }

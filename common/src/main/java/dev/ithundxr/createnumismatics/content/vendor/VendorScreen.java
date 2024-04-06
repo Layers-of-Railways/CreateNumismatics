@@ -29,6 +29,7 @@ import java.util.List;
 
 public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
+    private IconButton trustListButton;
     private IconButton confirmButton;
 
     private NumismaticsGuiTextures background;
@@ -55,6 +56,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
         int x = leftPos;
         int y = topPos;
+
+        trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
+        trustListButton.withCallback(() -> {
+            menu.contentHolder.openTrustList();
+        });
+        addRenderableWidget(trustListButton);
 
         confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
         confirmButton.withCallback(() -> {

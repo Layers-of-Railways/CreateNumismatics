@@ -1,14 +1,18 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
+import com.google.common.collect.ImmutableList;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
+import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
+import java.util.List;
 import java.util.Locale;
 
 import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
@@ -40,6 +44,20 @@ public enum Coin implements INamedIconOptions {
         this.icon = icon;
         this.icon.setCoin();
         this.fontChar = fontChar;
+    }
+
+    private static final List<Component> labeledComponents;
+    static {
+        Component[] tmp = new Component[values().length];
+        for (Coin coin : values()) {
+            tmp[coin.ordinal()] = Components.literal(coin.fontChar + " "
+                + Components.translatable(coin.getTranslationKey()).getString());
+        }
+        labeledComponents = ImmutableList.copyOf(tmp);
+    }
+
+    public static List<Component> labeledComponents() {
+        return labeledComponents;
     }
 
     /**

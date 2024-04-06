@@ -49,20 +49,20 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
 
     @Override
     protected void addSlots() {
-        int x = 11;
+        int x = 11+26;
         int y = 122;
 
         for (Coin coin : Coin.values()) {
             x += 18;
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
         }
-        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 11, y)); // make here to preserve slot order
+        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 11+26, y)); // make here to preserve slot order
 
-        addPlayerSlots(31, 165);
+        addPlayerSlots(31+13, 165);
 
         // label coins
 
-        int labelX1 = 12;
+        int labelX1 = 12+13;
         int labelX2 = labelX1 + 86;
         int labelY = 46;
         int labelYIncrement = 22;

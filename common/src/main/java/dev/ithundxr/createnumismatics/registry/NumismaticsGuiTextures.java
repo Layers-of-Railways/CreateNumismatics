@@ -1,7 +1,6 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.UIRenderHelper;
 import com.simibubi.create.foundation.gui.element.ScreenElement;
 import com.simibubi.create.foundation.utility.Color;
@@ -16,8 +15,8 @@ Copied from Create
  */
 public enum NumismaticsGuiTextures implements ScreenElement {
 
-    ANDESITE_DEPOSITOR("andesite_depositor", 182, 44),
-    BRASS_DEPOSITOR("brass_depositor", 182, 145),
+    ANDESITE_DEPOSITOR("andesite_depositor", 182, 79),
+    BRASS_DEPOSITOR("brass_depositor", 208, 145),
     BANK_TERMINAL("bank_terminal",200, 132),
     TRUST_LIST("trust_list",200, 110),
     BLAZE_BANKER("blaze_banker",200, 110),

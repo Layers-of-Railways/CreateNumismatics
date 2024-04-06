@@ -1,27 +1,20 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
-import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
-import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu.TrustListSham;
 import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.TextUtils;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,9 +28,6 @@ import java.util.List;
 
 public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider {
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private ScrollOptionBehaviour<TrustListSham> trustListButton;
-
     private SliderStylePriceBehaviour price;
 
     public BrassDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -46,9 +36,6 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        trustListButton = TrustListMenu.makeConfigureButton(this, new DepositorValueBoxTransform(), NumismaticsBlocks.BRASS_DEPOSITOR.asStack());
-        behaviours.add(trustListButton);
-
         price = new SliderStylePriceBehaviour(this, this::addCoin);
         behaviours.add(price);
     }
@@ -102,5 +89,10 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
             .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color))
             .forGoggles(tooltip);
         return true;
+    }
+
+    @Override
+    public void openTrustListMenu(ServerPlayer player) {
+        TrustListMenu.openMenu(this, player, NumismaticsBlocks.BRASS_DEPOSITOR.asStack());
     }
 }
