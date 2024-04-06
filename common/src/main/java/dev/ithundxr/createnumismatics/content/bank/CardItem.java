@@ -3,8 +3,11 @@ package dev.ithundxr.createnumismatics.content.bank;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -89,12 +92,18 @@ public class CardItem extends Item {
         if (level.isClientSide)
             return InteractionResultHolder.success(handStack);
 
-        if (isBound(handStack) && player.isShiftKeyDown()) {
-            clear(handStack);
-            player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
-            return InteractionResultHolder.success(handStack);
+        if (isBound(handStack)) {
+            if(player.isShiftKeyDown()) {
+                clear(handStack);
+                player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
+                return InteractionResultHolder.success(handStack);
+            }
         }
-
-        return InteractionResultHolder.pass(handStack);
+        else {
+            set(handStack, player.getUUID());
+            level.playSound(null, new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ()), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+            player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.bound"), true);
+            return InteractionResultHolder.success(handStack);
+        } return InteractionResultHolder.pass(handStack);
     }
 }
