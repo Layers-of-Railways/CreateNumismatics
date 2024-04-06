@@ -48,7 +48,7 @@ publishMods {
     version.set(project.version.toString())
     changelog = ChangelogText.getChangelogText(rootProject).toString()
     type = STABLE
-    displayName = "Numismatics ${"mod_version"()} Fabric ${"minecraft_version"()}"
+    displayName = "Numismatics ${"mod_version"()} Forge ${"minecraft_version"()}"
     modLoaders.add("forge")
     modLoaders.add("neoforge")
 
