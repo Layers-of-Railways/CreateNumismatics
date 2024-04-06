@@ -8,14 +8,17 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
+import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity.Mode;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -38,7 +41,10 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
     private final int COIN_COUNT = Coin.values().length;
 
     private final Label[] coinLabels = new Label[COIN_COUNT];
-    private ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
+    private final ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
+
+    private Label modeLabel;
+    private SelectionScrollInput modeScrollInput;
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
@@ -94,6 +100,21 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
             coinScrollInputs[i].onChanged();
         }
 
+        modeLabel = new Label(x + 90 + 3, y + 40 + 5, Components.immutableEmpty()).withShadow();
+        addRenderableWidget(modeLabel);
+
+        modeScrollInput = new SelectionScrollInput(x + 90, y + 40, 46, 18);
+        modeScrollInput.forOptions(Mode.getComponents());
+        modeScrollInput.writingTo(modeLabel);
+        modeScrollInput.titled(Components.translatable("block.numismatics.vendor.tooltip.mode"));
+        modeScrollInput.calling(idx -> {
+            menu.contentHolder.setMode(Mode.values()[idx]);
+        });
+        addRenderableWidget(modeScrollInput);
+
+        modeScrollInput.setState(menu.contentHolder.getMode().ordinal());
+        modeScrollInput.onChanged();
+
         extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 68, 84, 84));
     }
 
@@ -135,8 +156,25 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
     }
 
     @Override
+    protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
+        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
+            Component component = null;
+            if (hoveredSlot.index == VendorMenu.SELLING_SLOT_INDEX) {
+                component = Components.translatable("block.numismatics.vendor.tooltip.trade_item");
+            } else if (VendorMenu.INV_START_INDEX <= hoveredSlot.index && hoveredSlot.index < VendorMenu.INV_END_INDEX) {
+                component = Components.translatable("block.numismatics.vendor.tooltip.stock");
+            }
+            if (component != null) {
+                guiGraphics.renderTooltip(font, component, x, y);
+            }
+        }
+    }
+
+    @Override
     public void removed() {
         NumismaticsPackets.PACKETS.send(new SliderStylePriceConfigurationPacket(menu.contentHolder));
+        NumismaticsPackets.PACKETS.send(new VendorConfigurationPacket(menu.contentHolder));
         super.removed();
     }
 }

@@ -59,6 +59,13 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         super(type, pos, state);
     }
 
+    public @Nullable UUID getCardId() {
+        ItemStack card = cardContainer.getItem(0);
+        if (!(card.getItem() instanceof CardItem))
+            return null;
+        return CardItem.get(card);
+    }
+
     public void activate() {
         if (level instanceof ServerLevel serverLevel) {
             if (getBlockState().getBlock() instanceof AbstractDepositorBlock<?> depositorBlock) {

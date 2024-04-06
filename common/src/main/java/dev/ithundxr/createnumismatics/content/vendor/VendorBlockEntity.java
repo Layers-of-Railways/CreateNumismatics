@@ -41,6 +41,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -55,9 +56,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveGoggleInformation, WorldlyContainer, MenuProvider {
     public final Container cardContainer = new SimpleContainer(1) {
@@ -86,6 +85,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private boolean delayedDataSync = false;
 
     private SliderStylePriceBehaviour price;
+    private Mode mode = Mode.SELL;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
 
@@ -96,8 +96,19 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        price = new SliderStylePriceBehaviour(this, this::addCoin);
+        price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
         behaviours.add(price);
+    }
+
+    public int getCoinCount(Coin coin) {
+        return this.inventory.getDiscrete(coin);
+    }
+
+    public @Nullable UUID getCardId() {
+        ItemStack card = cardContainer.getItem(0);
+        if (!(card.getItem() instanceof CardItem))
+            return null;
+        return CardItem.get(card);
     }
 
     @Override
@@ -125,6 +136,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (!items.isEmpty()) {
             tag.put("Inventory", ContainerHelper.saveAllItems(new CompoundTag(), items));
         }
+
+        tag.putInt("Mode", mode.ordinal());
     }
 
     @Override
@@ -161,6 +174,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
             ContainerHelper.loadAllItems(tag.getCompound("Inventory"), items);
         }
+
+        mode = Mode.values()[tag.getInt("Mode")];
     }
 
     @Nullable
@@ -255,9 +270,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
-        MutableComponent balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
+        MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
             TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
 
+        // Selling/Buying
+        Lang.builder()
+            .add(Components.translatable(mode.getOpposite().getTranslationKey()))
+            .forGoggles(tooltip);
+
+        // Item
+        // ...
         boolean isFirst = true;
         for (Component component : Screen.getTooltipFromItem(Minecraft.getInstance(), sellingStack)) {
             MutableComponent mutable = component.copy();
@@ -276,6 +298,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         tooltip.add(Components.immutableEmpty());
+
+        // For: ...
 
         Lang.builder()
             .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
@@ -308,6 +332,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         this.price.setPrice(coin, price);
     }
 
+    /**
+     * Note: if mode == BUY, then this is actually the buying item - if someone has better names, please refactor :)
+     */
     public ItemStack getSellingItem() {
         return sellingContainer.getItem(0);
     }
@@ -316,12 +343,14 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+        if (mode == Mode.BUY)
+            return side == Direction.DOWN ? new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8} : new int[0];
         return side == Direction.DOWN ? new int[0] : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     }
 
     @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return matchesSellingItem(stack);
+        return mode == Mode.SELL && matchesSellingItem(stack);
     }
 
     @Override
@@ -331,7 +360,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
-        return false;
+        return direction == Direction.DOWN && mode == Mode.BUY;
     }
 
     @Override
@@ -463,7 +492,14 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     }
 
-    public void tryBuy(Player player, InteractionHand hand, BlockPos pos) {
+    public void tryTransaction(Player player, InteractionHand hand) {
+        switch (mode) {
+            case SELL -> trySellTo(player, hand);
+            case BUY -> tryBuyFrom(player, hand);
+        }
+    }
+
+    private void trySellTo(Player player, InteractionHand hand) {
         // condense stock
         // (try to) charge cost
         // dispense stock
@@ -477,24 +513,27 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             if (price.deduct(player, hand)) {
                 ItemStack output = selling.copy();
                 ItemUtil.givePlayerItem(player, output);
+
+                level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
             } else {
                 // insufficient funds
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
                     .withStyle(ChatFormatting.DARK_RED), true);
-                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+                level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
-            return;
         } else {
             for (ItemStack stack : items) {
                 if (matchesSellingItem(stack) && stack.getCount() >= selling.getCount()) {
                     if (price.deduct(player, hand)) {
                         ItemStack output = stack.split(selling.getCount());
                         ItemUtil.givePlayerItem(player, output);
+
+                        level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
                     } else {
                         // insufficient funds
                         player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
                             .withStyle(ChatFormatting.DARK_RED), true);
-                        level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+                        level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
                     }
                     return;
                 }
@@ -505,13 +544,111 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             if (ownerName != null) {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.named", ownerName)
                     .withStyle(ChatFormatting.DARK_RED), true);
-                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+                level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             } else {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock")
                     .withStyle(ChatFormatting.DARK_RED), true);
-                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+                level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
         }
+    }
+
+    private void tryBuyFrom(Player player, InteractionHand hand) {
+        ItemStack buying = getSellingItem();
+        if (buying.isEmpty())
+            return;
+
+        ItemStack handStack = player.getItemInHand(hand);
+
+        if (handStack.isEmpty()) {
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.no_item_in_hand")
+                .withStyle(ChatFormatting.DARK_RED), true);
+            level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            return;
+        }
+
+        // check if the held item matches our filter
+        if (!matchesSellingItem(handStack)) {
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.incorrect_item")
+                .withStyle(ChatFormatting.DARK_RED), true);
+            level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            return;
+        }
+
+        if (handStack.getCount() < buying.getCount()) {
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.too_few_items")
+                .withStyle(ChatFormatting.DARK_RED), true);
+            level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            return;
+        }
+
+        // check if the vendor has space
+        boolean hasSpace = false;
+        int targetStackIdx = 0;
+        for (ItemStack stack : items) {
+            if (stack.isEmpty()) {
+                hasSpace = true;
+                break;
+            }
+            if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
+                hasSpace = true;
+                break;
+            }
+            targetStackIdx++;
+        }
+        if (!hasSpace) {
+            String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+            if (ownerName != null) {
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full.named", ownerName)
+                    .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            } else {
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full")
+                    .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            }
+            return;
+        }
+
+        // check if the vendor has enough money
+        if (isCreativeVendor() || price.canPayOut()) {
+            handStack.shrink(buying.getCount());
+            player.setItemInHand(hand, handStack);
+            items.set(targetStackIdx, buying.copy());
+
+            if (!isCreativeVendor())
+                price.deductFromSelf(false);
+
+            price.pay(player);
+
+            level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+
+            return;
+        } else if (getCardId() != null) {
+            BankAccount account = Numismatics.BANK.getAccount(getCardId());
+            if (account != null && account.deduct(price.getTotalPrice())) {
+                handStack.shrink(buying.getCount());
+                player.setItemInHand(hand, handStack);
+                items.set(targetStackIdx, buying.copy());
+
+                price.pay(player);
+
+                level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+
+                return;
+            }
+        }
+
+        // insufficient funds (return early on success)
+        String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+        if (ownerName != null) {
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds.named", ownerName)
+                .withStyle(ChatFormatting.DARK_RED), true);
+        } else {
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                .withStyle(ChatFormatting.DARK_RED), true);
+        }
+        level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
     }
 
     @Override
@@ -526,5 +663,43 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (level == null || !level.isClientSide)
             return;
         NumismaticsPackets.PACKETS.send(new OpenTrustListPacket<>(this));
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        if (level != null && !level.isClientSide)
+            setChanged();
+    }
+
+    public enum Mode {
+        SELL,
+        BUY
+        ;
+
+        private static final List<Component> components = ImmutableList.copyOf(
+            Arrays.stream(values())
+                .map(Mode::getTranslationKey)
+                .map(Components::translatable)
+                .iterator()
+        );
+
+        public static List<Component> getComponents() {
+            return components;
+        }
+
+        public String getTranslationKey() {
+            return "gui.numismatics.vendor.mode." + name().toLowerCase(Locale.ROOT);
+        }
+
+        public Mode getOpposite() {
+            return switch (this) {
+                case SELL -> BUY;
+                case BUY -> SELL;
+            };
+        }
     }
 }

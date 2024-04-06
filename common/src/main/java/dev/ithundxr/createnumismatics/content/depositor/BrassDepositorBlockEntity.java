@@ -36,8 +36,12 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        price = new SliderStylePriceBehaviour(this, this::addCoin);
+        price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
         behaviours.add(price);
+    }
+
+    public int getCoinCount(Coin coin) {
+        return this.inventory.getDiscrete(coin);
     }
 
     @Override

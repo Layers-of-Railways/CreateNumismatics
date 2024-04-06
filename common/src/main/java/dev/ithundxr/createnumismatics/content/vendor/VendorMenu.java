@@ -64,7 +64,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87 + j * 18, 49 + i * 18, contentHolder::matchesSellingItem));
+                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87 + j * 18, 49 + i * 18 + 11, contentHolder::matchesSellingItem));
             }
         }
 

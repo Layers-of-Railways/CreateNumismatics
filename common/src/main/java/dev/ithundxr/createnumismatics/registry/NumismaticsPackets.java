@@ -4,10 +4,7 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerEditPacket;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
 import dev.ithundxr.createnumismatics.multiloader.PacketSet;
-import dev.ithundxr.createnumismatics.registry.packets.AndesiteDepositorConfigurationPacket;
-import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
-import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
-import dev.ithundxr.createnumismatics.registry.packets.VarIntContainerSetDataPacket;
+import dev.ithundxr.createnumismatics.registry.packets.*;
 
 public class NumismaticsPackets {
     public static final PacketSet PACKETS = PacketSet.builder(Numismatics.MOD_ID, 1) // increment version on changes (keep on version 1 until first release)
@@ -16,6 +13,7 @@ public class NumismaticsPackets {
         .c2s(BlazeBankerEditPacket.class, BlazeBankerEditPacket::new)
         .c2s(AndesiteDepositorConfigurationPacket.class, AndesiteDepositorConfigurationPacket::new)
         .c2s(OpenTrustListPacket.class, OpenTrustListPacket::new)
+        .c2s(VendorConfigurationPacket.class, VendorConfigurationPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)

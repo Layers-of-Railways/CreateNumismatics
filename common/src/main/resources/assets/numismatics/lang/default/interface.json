@@ -11,8 +11,17 @@
   "itemGroup.numismatics": "Create: Numismatics",
   "gui.numismatics.trust_list": "Trust List",
   "create.numismatics.trust_list.configure": "Configure Trust List",
+
   "gui.numismatics.vendor.count": " (%sx)",
   "gui.numismatics.vendor.out_of_stock": "Out of stock",
   "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
-  "gui.numismatics.vendor.insufficient_funds": "Insufficient funds"
+  "gui.numismatics.vendor.insufficient_funds": "Insufficient funds",
+  "gui.numismatics.vendor.insufficient_funds.named": "Insufficient funds, contact %s for a refill",
+  "gui.numismatics.vendor.mode.sell": "Sell",
+  "gui.numismatics.vendor.mode.buy": "Buy",
+  "gui.numismatics.vendor.incorrect_item": "Incorrect item",
+  "gui.numismatics.vendor.too_few_items": "Too few items",
+  "gui.numismatics.vendor.full": "Vendor is full",
+  "gui.numismatics.vendor.full.named": "Vendor is full, contact %s to empty it",
+  "gui.numismatics.vendor.no_item_in_hand": "Hold the stack of items you want to sell"
 }

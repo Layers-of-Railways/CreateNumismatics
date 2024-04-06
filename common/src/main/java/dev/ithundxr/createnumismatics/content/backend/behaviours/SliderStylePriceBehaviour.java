@@ -20,6 +20,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
@@ -28,10 +29,13 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
     protected final EnumMap<Coin, Integer> prices = new EnumMap<>(Coin.class);
 
     protected final BiConsumer<Coin, Integer> addCoin;
+    protected final Function<Coin, Integer> getCount;
 
-    public SliderStylePriceBehaviour(SmartBlockEntity be, BiConsumer<Coin, Integer> addCoin) {
+    public SliderStylePriceBehaviour(SmartBlockEntity be, BiConsumer<Coin, Integer> addCoin,
+                                     Function<Coin, Integer> getCount) {
         super(be);
         this.addCoin = addCoin;
+        this.getCount = getCount;
     }
 
     @Override
@@ -115,5 +119,44 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         }
 
         return false;
+    }
+
+    public boolean canPayOut() {
+        return deductFromSelf(true);
+    }
+
+    public boolean deductFromSelf(boolean simulate) {
+        if (!simulate && !canPayOut())
+            return false;
+
+        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+            Coin coin = entry.getKey();
+            int price = entry.getValue();
+            int count = getCount.apply(coin);
+            if (count < price)
+                return false;
+            if (!simulate)
+                addCoin.accept(coin, -price);
+        }
+        return true;
+    }
+
+    /**
+     * Warning: this creates coins, make sure to call {@link #deductFromSelf} before calling this method.
+     */
+    public void pay(Player player) {
+        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+            Coin coin = entry.getKey();
+            int toPay = entry.getValue();
+            while (toPay > 0) {
+                int count = Math.min(toPay, 64);
+                toPay -= count;
+
+                ItemStack stack = coin.asStack(count);
+                if (!player.getInventory().add(stack)) {
+                    player.drop(stack, false);
+                }
+            }
+        }
     }
 }

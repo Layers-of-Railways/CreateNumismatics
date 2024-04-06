@@ -10,6 +10,10 @@
   "item.numismatics.id_card.tooltip.already_bound": "Already bound, Sneak + Use to Unbind",
   "item.numismatics.id_card.tooltip.cleared": "Cleared",
   "item.numismatics.id_card.tooltip.bound": "Bound to self",
+  "block.numismatics.vendor.tooltip.price": "For: %s %s, %s¤",
+  "block.numismatics.vendor.tooltip.mode": "Mode",
+  "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
+  "block.numismatics.vendor.tooltip.stock": "Stock",
 
   "item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_."

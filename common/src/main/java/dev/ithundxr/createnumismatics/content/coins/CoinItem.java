@@ -8,6 +8,7 @@ import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -57,6 +58,30 @@ public class CoinItem extends Item {
         if (!onlyHand)
             inventoryList.addAll(player.getInventory().items);
 
+        return extract(inventoryList, coinBag, simulate);
+    }
+
+    public static boolean extract(Container container, Map<Coin, Integer> coins, boolean simulate) {
+        if (!simulate) {
+            if (!extract(container, coins, true)) {
+                return false;
+            }
+        }
+        DiscreteCoinBag coinBag = DiscreteCoinBag.of(coins);
+
+        List<ItemStack> inventoryList = new ArrayList<>();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            inventoryList.add(container.getItem(i));
+        }
+
+        return extract(inventoryList, coinBag, simulate);
+    }
+
+    public static boolean extract(List<ItemStack> inventoryList, Map<Coin, Integer> coins, boolean simulate) {
+        return extract(inventoryList, DiscreteCoinBag.of(coins), simulate);
+    }
+
+    private static boolean extract(List<ItemStack> inventoryList, DiscreteCoinBag coinBag, boolean simulate) {
         for (ItemStack stack : inventoryList) {
             if (coinBag.isEmpty())
                 return true;
