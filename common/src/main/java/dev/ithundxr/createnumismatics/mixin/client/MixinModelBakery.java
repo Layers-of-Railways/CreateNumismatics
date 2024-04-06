@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashSet;
 
-@Mixin(ModelBakery.class)
+//@Mixin(ModelBakery.class)
 public class MixinModelBakery {
     /*
     injecting into the following:

@@ -53,7 +53,7 @@ public class Numismatics {
         registerCommands(NumismaticsCommands::register);
         NumismaticsPackets.PACKETS.registerC2SListener();
 
-        if (Utils.isDevEnv() && Loader.CURRENT.isFabricLike()) {
+        if (Utils.isDevEnv() && Loader.FABRIC.isCurrent()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
         }
     }

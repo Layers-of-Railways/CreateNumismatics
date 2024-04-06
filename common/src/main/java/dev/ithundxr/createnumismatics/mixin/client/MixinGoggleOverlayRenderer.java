@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GoggleOverlayRenderer.class)
 public class MixinGoggleOverlayRenderer {
-    @SuppressWarnings("unused")
     @WrapOperation(
             method = "renderOverlay",
             at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/ItemEntry;asStack()Lnet/minecraft/world/item/ItemStack;")

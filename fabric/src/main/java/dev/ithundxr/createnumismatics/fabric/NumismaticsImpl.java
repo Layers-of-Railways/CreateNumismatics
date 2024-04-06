@@ -19,10 +19,6 @@ public class NumismaticsImpl implements ModInitializer {
     @Override
     public void onInitialize() {
         Numismatics.init();
-        Numismatics.LOGGER.info(EnvExecutor.unsafeRunForDist(
-                () -> () -> "{} is accessing Porting Lib on a Fabric client!",
-                () -> () -> "{} is accessing Porting Lib on a Fabric server!"
-                ), Numismatics.NAME);
         CommonEventsFabric.init();
         ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(Numismatics.MOD_ID, "enum"), EnumArgument.class, new EnumArgument.Info());
     }

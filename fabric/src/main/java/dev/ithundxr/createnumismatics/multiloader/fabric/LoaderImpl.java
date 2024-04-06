@@ -5,6 +5,6 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class LoaderImpl {
     public static Loader getCurrent() {
-        return FabricLoader.getInstance().isModLoaded("quilt_loader") ? Loader.QUILT : Loader.FABRIC;
+        return Loader.FABRIC;
     }
 }

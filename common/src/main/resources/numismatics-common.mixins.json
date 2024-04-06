@@ -4,8 +4,7 @@
   "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "client.MixinGoggleOverlayRenderer",
-    "client.MixinModelBakery"
+    "client.MixinGoggleOverlayRenderer"
   ],
   "mixins": [
     "MixinAbstractContainerMenu",

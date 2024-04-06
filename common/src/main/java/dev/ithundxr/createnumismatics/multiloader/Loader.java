@@ -6,13 +6,9 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import java.util.function.Supplier;
 
 public enum Loader {
-    FORGE, FABRIC, QUILT;
+    FORGE, FABRIC;
 
     public static final Loader CURRENT = getCurrent();
-
-    public boolean isFabricLike() {
-        return getCurrent() == FABRIC || getCurrent() == QUILT;
-    }
 
     public boolean isCurrent() {
         return this == CURRENT;
