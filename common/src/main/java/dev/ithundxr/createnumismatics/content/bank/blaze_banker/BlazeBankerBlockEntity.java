@@ -24,6 +24,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
@@ -312,5 +313,15 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
 
     public int getClientsideBalance() {
         return clientsideBalance;
+    }
+
+    @Override
+    public void openTrustListMenu(ServerPlayer player) {
+        if (!isTrusted(player)) {
+            return;
+        }
+        if (level == null || level.isClientSide)
+            return;
+        Utils.openScreen(player, this, this::sendToMenu);
     }
 }

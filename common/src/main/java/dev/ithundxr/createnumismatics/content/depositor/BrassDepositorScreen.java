@@ -28,6 +28,7 @@ import java.util.List;
 
 public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepositorMenu> {
 
+    private IconButton trustListButton;
     private IconButton confirmButton;
 
     private NumismaticsGuiTextures background = NumismaticsGuiTextures.BRASS_DEPOSITOR;
@@ -53,6 +54,12 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
         int x = leftPos;
         int y = topPos;
 
+        trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
+        trustListButton.withCallback(() -> {
+            menu.contentHolder.openTrustList();
+        });
+        addRenderableWidget(trustListButton);
+
         confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
         confirmButton.withCallback(() -> {
             onClose();
@@ -62,7 +69,7 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
         for (Coin coin : Coin.values()) {
             int i = coin.ordinal();
 
-            int baseX = x + 36 + (i < 3 ? 0 : 86);
+            int baseX = x + 36 + (i < 3 ? 0 : 86) + 13;
 
             int yIncrement = 22;
             int baseY = y + 45 + (yIncrement * (i%3));

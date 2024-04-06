@@ -2,14 +2,11 @@ package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.block.IBE;
 import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
-import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -99,7 +96,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
 
         if (isTrusted(player, level, pos)) {
             withBlockEntityDo(level, pos,
-                be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
+                be -> be.openTrustListMenu((ServerPlayer) player));
             return InteractionResult.SUCCESS;
         }
 

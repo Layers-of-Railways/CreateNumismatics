@@ -12,10 +12,7 @@ import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlockEntity;
-import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.content.depositor.ProtectedScrollOptionBehaviour;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -234,5 +231,16 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
                 return false;
             }
         };
+    }
+
+    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
+        if (be.isTrusted(player)) {
+            Utils.openScreen(player,
+                TrustListMenu.provider(be, displayStack),
+                (buf) -> {
+                    buf.writeItem(displayStack);
+                    be.sendToMenu(buf);
+                });
+        }
     }
 }

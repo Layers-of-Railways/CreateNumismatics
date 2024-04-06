@@ -49,7 +49,7 @@ public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity
     @Override
     protected void addSlots() {
         int x = 11;
-        int y = 21;
+        int y = 21 + 35;
 
         for (Coin coin : Coin.values()) {
             x += 18;
@@ -57,7 +57,7 @@ public class AndesiteDepositorMenu extends MenuBase<AndesiteDepositorBlockEntity
         }
         addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 11, y)); // make here to preserve slot order
 
-        addPlayerSlots(31, 64);
+        addPlayerSlots(31, 64 + 35);
     }
 
     @Override
