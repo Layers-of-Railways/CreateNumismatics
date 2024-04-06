@@ -8,6 +8,7 @@ plugins {
     java
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.5-SNAPSHOT" apply false
+    id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.15" // https://github.com/IThundxr/silk
 }
@@ -89,6 +90,7 @@ subprojects {
     }
 
     apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "me.modmuss50.mod-publish-plugin")
 
     architectury {
         platformSetupLoomIde()
@@ -182,6 +184,17 @@ fun hasUnstaged(): Boolean {
     if (result.isNotEmpty())
         println("Found stageable results:\n${result}\n")
     return result.isNotEmpty()
+}
+
+tasks.create("numismaticsPublish") {
+    when (val platform = System.getenv("PLATFORM")) {
+        "both" -> {
+            dependsOn(tasks.build, ":fabric:publishMods", ":forge:publishMods")
+        }
+        "fabric", "forge" -> {
+            dependsOn("${platform}:build", "${platform}:publishMods")
+        }
+    }
 }
 
 operator fun String.invoke(): String {
