@@ -1,5 +1,7 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
+import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -8,8 +10,11 @@ import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -79,8 +84,10 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
             } else if (CoinItem.extract(player, hand, coin, true)) {
                 activate(state, level, pos);
                 andesiteDepositor.addCoin(coin, 1);
-            }
-
+            } else {
+                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                        .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
         }
         return InteractionResult.CONSUME;
     }

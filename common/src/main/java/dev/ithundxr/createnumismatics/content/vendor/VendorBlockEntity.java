@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.google.common.collect.ImmutableList;
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -39,6 +40,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -480,7 +482,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     }
 
-    public void tryBuy(Player player, InteractionHand hand) {
+    public void tryBuy(Player player, InteractionHand hand, BlockPos pos) {
         // condense stock
         // (try to) charge cost
         // dispense stock
@@ -497,7 +499,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             } else {
                 // insufficient funds
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
-                    .withStyle(ChatFormatting.DARK_RED), false);
+                    .withStyle(ChatFormatting.DARK_RED), true);
+                level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
             return;
         } else {
@@ -509,7 +512,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     } else {
                         // insufficient funds
                         player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
-                            .withStyle(ChatFormatting.DARK_RED), false);
+                            .withStyle(ChatFormatting.DARK_RED), true);
+                        level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
                     }
                     return;
                 }

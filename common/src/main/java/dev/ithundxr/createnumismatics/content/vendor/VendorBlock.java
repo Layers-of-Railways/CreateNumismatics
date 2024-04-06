@@ -134,7 +134,7 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
         if (priceBehaviour != null && priceBehaviour.deduct(player, hand)) {
             activate(state, level, pos);
         }*/
-        withBlockEntityDo(level, pos, be -> be.tryBuy(player, hand));
+        withBlockEntityDo(level, pos, be -> be.tryBuy(player, hand, pos));
         return InteractionResult.CONSUME;
     }
 
