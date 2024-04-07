@@ -34,8 +34,8 @@ public class CommonEvents {
         }
 
         if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isShiftKeyDown() && trustedBlock.isTrusted(player, level, pos)) {
-            player.displayClientMessage(Components.translatable("block.numismatics.trustedBlock.attemptBreak")
-                    .withStyle(ChatFormatting.DARK_RED), true);;
+            player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break")
+                    .withStyle(ChatFormatting.DARK_RED), true);
         }
 
 
