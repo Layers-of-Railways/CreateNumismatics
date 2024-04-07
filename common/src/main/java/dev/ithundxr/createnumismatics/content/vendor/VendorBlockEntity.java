@@ -572,11 +572,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         for (ItemStack stack : items) {
             if (stack.isEmpty()) {
                 space += buying.getMaxStackSize();
-                break;
+                continue;
             }
             if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
                 space += stack.getMaxStackSize() - stack.getCount();
-                break;
             }
         }
 
