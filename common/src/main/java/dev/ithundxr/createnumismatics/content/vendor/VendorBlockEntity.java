@@ -594,20 +594,18 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         // check if the vendor has space
-        boolean hasSpace = false;
-        int targetStackIdx = 0;
+        int space = 0;
         for (ItemStack stack : items) {
             if (stack.isEmpty()) {
-                hasSpace = true;
+                space += buying.getMaxStackSize();
                 break;
             }
             if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
-                hasSpace = true;
+                space += stack.getMaxStackSize() - stack.getCount();
                 break;
             }
-            targetStackIdx++;
         }
-        if (!hasSpace) {
+        if (space < buying.getCount()) {
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full.named", ownerName)
@@ -625,7 +623,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (isCreativeVendor() || price.canPayOut()) {
             handStack.shrink(buying.getCount());
             player.setItemInHand(hand, handStack);
-            items.set(targetStackIdx, buying.copy());
+
+            addBoughtItem(buying.copy());
 
             if (!isCreativeVendor())
                 price.deductFromSelf(false);
@@ -640,7 +639,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             if (account != null && account.deduct(price.getTotalPrice())) {
                 handStack.shrink(buying.getCount());
                 player.setItemInHand(hand, handStack);
-                items.set(targetStackIdx, buying.copy());
+
+                addBoughtItem(buying.copy());
 
                 price.pay(player);
 
@@ -660,6 +660,27 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 .withStyle(ChatFormatting.DARK_RED), true);
         }
         level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+    }
+
+    private void addBoughtItem(ItemStack stack) {
+        if (!matchesSellingItem(stack)) return;
+
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack item = items.get(i);
+            if (item.isEmpty() || matchesSellingItem(item)) {
+                if (item.getCount() + stack.getCount() <= item.getMaxStackSize()) {
+                    items.set(i, getSellingItem().copyWithCount(item.getCount() + stack.getCount()));
+                    return;
+                } else {
+                    int diff = item.getMaxStackSize() - item.getCount();
+                    items.set(i, getSellingItem().copyWithCount(item.getMaxStackSize()));
+                    stack.shrink(diff);
+                }
+            }
+
+            if (stack.isEmpty())
+                break;
+        }
     }
 
     @Override
