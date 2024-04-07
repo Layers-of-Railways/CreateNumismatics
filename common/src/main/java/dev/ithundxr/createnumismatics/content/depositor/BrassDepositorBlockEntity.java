@@ -92,6 +92,12 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         Lang.builder()
             .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color))
             .forGoggles(tooltip);
+
+        for (MutableComponent component : price.getCondensedPriceBreakdown()) {
+            Lang.builder()
+                .add(component)
+                .forGoggles(tooltip);
+        }
         return true;
     }
 
