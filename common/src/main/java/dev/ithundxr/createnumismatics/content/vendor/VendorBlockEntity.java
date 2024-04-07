@@ -347,6 +347,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         Lang.builder()
             .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
             .forGoggles(tooltip);
+
+        for (MutableComponent component : price.getCondensedPriceBreakdown()) {
+            Lang.builder()
+                .add(component)
+                .forGoggles(tooltip);
+        }
         return true;
     }
 

@@ -3,22 +3,23 @@ package dev.ithundxr.createnumismatics.content.backend.behaviours;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -162,5 +163,68 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
                 }
             }
         }
+    }
+
+    public List<MutableComponent> getCondensedPriceBreakdown() {
+        List<MutableComponent> components = new ArrayList<>();
+
+        int[] columnWidths = new int[]{0, 0, 0};
+        {
+            int columnIdx = 0;
+            for (int i = 0; i < Coin.values().length; i++) {
+                Coin coin = Coin.values()[i];
+                int count = prices.getOrDefault(coin, 0);
+                if (count > 0) {
+                    columnWidths[columnIdx] = Math.max(columnWidths[columnIdx], String.valueOf(count).length());
+
+                    columnIdx = (columnIdx + 1) % 3;
+                }
+            }
+        }
+
+
+        MutableComponent current = null;
+        int countOnCurrent = 0;
+        for (int i = 0; i < Coin.values().length; i++) {
+            Coin coin = Coin.values()[i];
+            int count = prices.getOrDefault(coin, 0);
+            if (count > 0) {
+                if (current == null) {
+                    current = Components.empty();
+                }
+
+                if (countOnCurrent++ >= 3) {
+                    components.add(current);
+                    //components.add(Components.empty());
+                    current = Components.empty();
+                    countOnCurrent = 1;
+                }
+
+                if (countOnCurrent > 1)
+                    current.append("  |  ");
+
+                // \uF017 is a 6-wide space (same advance as applied to numbers) defined by Numismatics
+                current.append(TextUtils.leftPad(String.valueOf(count), '\uF017', columnWidths[countOnCurrent - 1]) + " " + coin.fontChar);
+            }
+        }
+        if (current != null)
+            components.add(current);
+
+        return components;
+    }
+
+    public List<MutableComponent> getExtendedPriceBreakdown() {
+        List<MutableComponent> components = new ArrayList<>();
+        for (int i = Coin.values().length - 1; i >= 0; i--) {
+            Coin coin = Coin.values()[i];
+            int count = prices.getOrDefault(coin, 0);
+            if (count > 0) {
+                components.add(Components.literal(count + " ")
+                    .append(Components.translatable(coin.getTranslationKey()))
+                    .append(" " + coin.fontChar)
+                );
+            }
+        }
+        return components;
     }
 }

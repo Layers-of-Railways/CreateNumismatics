@@ -107,4 +107,9 @@ public class TextUtils {
         }
         return out.toString();
     }
+
+    public static String leftPad(String s, char c, int width) {
+        if (s.length() >= width) return s;
+        return String.valueOf(c).repeat(width - s.length()) + s;
+    }
 }

@@ -8,6 +8,7 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,7 +44,10 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         Coin coin = getCoin();
         Lang.builder()
             .add(Components.translatable("block.numismatics.andesite_depositor.tooltip.price",
-                    1, Components.translatable(coin.getTranslationKey()), coin.value
+                    1,
+                Components.translatable(coin.getTranslationKey())
+                    .append(Components.literal(" " + coin.fontChar).withStyle(ChatFormatting.WHITE)),
+                coin.value
                 ).withStyle(coin.rarity.color)
             )
             .forGoggles(tooltip);

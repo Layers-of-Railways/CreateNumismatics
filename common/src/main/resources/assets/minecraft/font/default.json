@@ -53,6 +53,12 @@
       "chars": [
         "\uF016"
       ]
+    },
+    {
+      "type": "space",
+      "advances": {
+        "\uF017": 6
+      }
     }
   ]
 }
