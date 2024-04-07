@@ -2,11 +2,15 @@ package dev.ithundxr.createnumismatics.base.data.fabric;
 
 import com.simibubi.create.Create;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
+import net.minecraft.world.item.BlockItem;
 
 public class BuilderTransformersImpl {
     public static <B extends AbstractDepositorBlock<?>, P> NonNullUnaryOperator<BlockBuilder<B, P>> depositor(String material) {
@@ -46,5 +50,20 @@ public class BuilderTransformersImpl {
                 .getExistingFile(Create.asResource("block/blaze_burner/block"))
             )
         );
+    }
+
+    public static <B extends VendorBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> vendor(boolean creative) {
+        return a -> a
+            .blockstate((c, p) -> p.horizontalBlock(c.getEntry(), p.models()
+                .getExistingFile(Numismatics.asResource("block/"+(creative?"creative_":"")+"display_case"))
+            ));
+    }
+
+    public static <I extends BlockItem, P> NonNullUnaryOperator<ItemBuilder<I, P>> vendorItem(boolean creative) {
+        return a -> a
+            .model((c, p) -> p.withExistingParent(
+                c.getName(),
+                Numismatics.asResource("block/"+(creative?"creative_":"")+"display_case")
+            ));
     }
 }

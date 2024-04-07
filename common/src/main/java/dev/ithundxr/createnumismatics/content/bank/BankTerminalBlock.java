@@ -63,12 +63,13 @@ public class BankTerminalBlock extends Block {
 
         ItemStack handStack = player.getItemInHand(hand);
 
-        BankAccount account;
+        BankAccount account = null;
 
         if (NumismaticsTags.AllItemTags.CARDS.matches(handStack) && CardItem.isBound(handStack)
             && (account = Numismatics.BANK.getAccount(CardItem.get(handStack))) != null && account.isAuthorized(player)) {
             // intentionally left blank
-        } else {
+        }
+        if (account == null) {
             account = Numismatics.BANK.getAccount(player);
         }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class BankMenu extends MenuBase<BankAccount> {
     public static final int COIN_SLOTS = Coin.values().length;
@@ -75,12 +76,19 @@ public class BankMenu extends MenuBase<BankAccount> {
         addPlayerSlots(40, 152);
     }
 
-    private void switchTo(UUID otherAccount) {
+    private boolean switchTo(UUID otherAccount) {
         if (player instanceof ServerPlayer serverPlayer) {
             BankAccount account = Numismatics.BANK.getAccount(otherAccount);
-            if (account != null && account.isAuthorized(serverPlayer)) {
-                Utils.openScreen(serverPlayer, account, account::sendToMenu);
+            if (account != null) {
+                if (account.isAuthorized(serverPlayer)) {
+                    Utils.openScreen(serverPlayer, account, account::sendToMenu);
+                }
+                return true;
+            } else {
+                return false;
             }
+        } else {
+            return true; // client
         }
     }
 
@@ -131,14 +139,14 @@ public class BankMenu extends MenuBase<BankAccount> {
         return returnStack;
     }
 
-    private static class CardSwitchContainer implements Container {
+    private class CardSwitchContainer implements Container {
         private final Consumer<CardSwitchContainer> slotsChangedCallback;
-        private final Consumer<UUID> uuidChangedCallback;
+        private final Function<UUID, Boolean> uuidChangedCallback; // should return success
 
         @NotNull
         protected final List<ItemStack> stacks = new ArrayList<>();
 
-        public CardSwitchContainer(Consumer<CardSwitchContainer> slotsChangedCallback, Consumer<UUID> uuidChangedCallback) {
+        public CardSwitchContainer(Consumer<CardSwitchContainer> slotsChangedCallback, Function<UUID, Boolean> uuidChangedCallback) {
             this.slotsChangedCallback = slotsChangedCallback;
             this.uuidChangedCallback = uuidChangedCallback;
             stacks.add(ItemStack.EMPTY);
@@ -180,8 +188,13 @@ public class BankMenu extends MenuBase<BankAccount> {
         @Override
         public void setItem(int slot, @NotNull ItemStack stack) {
             this.stacks.set(0, stack);
-            if (CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack))
-                this.uuidChangedCallback.accept(CardItem.get(stack));
+            if (CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack)) {
+                if (!this.uuidChangedCallback.apply(CardItem.get(stack))) {
+                    // Non-existent account
+                    stacks.set(0, CardItem.clear(stack));
+                    BankMenu.this.clearContainer(BankMenu.this.player, this);
+                }
+            }
             this.slotsChangedCallback.accept(this);
         }
 

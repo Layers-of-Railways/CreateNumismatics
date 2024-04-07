@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "client.MixinBitmapProvider$Definition",
+    "client.MixinChatScreen",
     "client.MixinGoggleOverlayRenderer",
     "client.MixinPonderTooltipHandler"
   ],
