@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    ",": {
+      "tag": "numismatics:internal/nuggets/brass_nuggets"
+    },
+    "-": {
+      "item": "minecraft:paper"
+    },
+    "/": {
+      "tag": "numismatics:internal/dyes/light_gray_dyes"
+    },
+    "_": {
+      "tag": "numismatics:internal/plates/iron_plates"
+    }
+  },
+  "pattern": [
+    " / ",
+    "_-,"
+  ],
+  "result": {
+    "item": "numismatics:light_gray_id_card"
+  },
+  "show_notification": true
+}

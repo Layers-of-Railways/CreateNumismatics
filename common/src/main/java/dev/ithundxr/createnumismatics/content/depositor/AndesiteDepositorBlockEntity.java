@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider, WorldlyContainer {
 
-    private Coin coin;
+    private @NotNull Coin coin = Coin.SPUR;
 
     public AndesiteDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -50,11 +50,11 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         return true;
     }
 
-    public void setCoin(Coin coin) {
+    public void setCoin(@NotNull Coin coin) {
         this.coin = coin;
     }
 
-    public Coin getCoin() {
+    public @NotNull Coin getCoin() {
         return coin;
     }
 

@@ -2,17 +2,18 @@ package dev.ithundxr.createnumismatics.base.data.recipe;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -79,6 +80,10 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
 
     public static TagKey<Item> ironSheet() {
       return CommonTags.IRON_PLATES.tag;
+    }
+
+    public static TagKey<Item> dye(@NotNull DyeColor color) {
+      return CommonTags.DYES.get(color).tag;
     }
 
     public static TagKey<Item> fence() {
@@ -149,6 +154,10 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
 
     public static ItemLike paper() {
       return Items.PAPER;
+    }
+
+    public static ItemLike framedGlass() {
+        return AllPaletteBlocks.FRAMED_GLASS;
     }
   }
 }

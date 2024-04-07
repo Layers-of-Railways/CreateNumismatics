@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "create:brass_casing"
+    },
+    "I": {
+      "item": "create:electron_tube"
+    },
+    "o": {
+      "item": "create:framed_glass"
+    }
+  },
+  "pattern": [
+    "o",
+    "#",
+    "I"
+  ],
+  "result": {
+    "item": "numismatics:vendor"
+  },
+  "show_notification": true
+}

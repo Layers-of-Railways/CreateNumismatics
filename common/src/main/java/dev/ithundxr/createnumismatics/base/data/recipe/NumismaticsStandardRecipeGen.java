@@ -2,14 +2,15 @@ package dev.ithundxr.createnumismatics.base.data.recipe;
 
 import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -66,6 +67,36 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .requires(Ingredients.cogCoin())
             .requires(Ingredients.sturdySheet())
             .requires(Ingredients.paper()));
+
+    GeneratedRecipe VENDOR = create(NumismaticsBlocks.VENDOR)
+        .unlockedBy(Ingredients::brassCasing)
+        .viaShaped(b -> b
+            .pattern("o")
+            .pattern("#")
+            .pattern("I")
+            .define('o', Ingredients.framedGlass())
+            .define('#', Ingredients.brassCasing())
+            .define('I', Ingredients.electronTube()));
+
+    DyedRecipeList CARDS = new DyedRecipeList(color -> create(NumismaticsItems.CARDS.get(color))
+        .unlockedBy(Ingredients::precisionMechanism)
+        .viaShaped(b -> b
+            .pattern("@_/")
+            .define('@', Ingredients.precisionMechanism())
+            .define('_', Ingredients.ironSheet())
+            .define('/', Ingredients.dye(color)))
+    );
+
+    DyedRecipeList ID_CARDS = new DyedRecipeList(color -> create(NumismaticsItems.ID_CARDS.get(color))
+        .unlockedBy(Ingredients::precisionMechanism)
+        .viaShaped(b -> b
+            .pattern(" / ")
+            .pattern("_-,")
+            .define(',', Ingredients.brassNugget())
+            .define('-', Ingredients.paper())
+            .define('_', Ingredients.ironSheet())
+            .define('/', Ingredients.dye(color)))
+    );
 
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder("/", result);
