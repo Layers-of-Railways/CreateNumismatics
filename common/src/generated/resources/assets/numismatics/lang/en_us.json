@@ -11,6 +11,7 @@
   "block.numismatics.vendor.tooltip.price": "For: %s %s, %s¤",
   "block.numismatics.vendor.tooltip.stock": "Stock",
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
+  "block.numismatics.trustedBlock.attemptBreak": "Hold shift to break this block",
   "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
   "create.item.numismatics.bevel": "Bevel",
   "create.item.numismatics.cog": "Cog",
