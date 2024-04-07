@@ -14,6 +14,7 @@ import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
 import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
+import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
@@ -27,6 +28,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.function.BiConsumer;
 
@@ -57,6 +59,9 @@ public class Numismatics {
         if (Utils.isDevEnv() && Loader.FABRIC.isCurrent()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
         }
+
+        if (Utils.isDevEnv() && !Mods.SODIUM.isLoaded) // force all mixins to load in dev
+            MixinEnvironment.getCurrentEnvironment().audit();
     }
 
     public static void postRegistrationInit() {
