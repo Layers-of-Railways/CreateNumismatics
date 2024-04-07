@@ -1,8 +1,7 @@
 package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import dev.ithundxr.createnumismatics.content.bank.BankMenu;
-import dev.ithundxr.createnumismatics.content.bank.BankMenu.CardWritingContainer;
+import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
@@ -12,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -19,6 +20,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
     public static final int ID_CARD_SLOTS = 27;
@@ -175,5 +181,75 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
             }
         }
         return bl;
+    }
+
+    private static class CardWritingContainer implements Container {
+        private final Consumer<CardWritingContainer> slotsChangedCallback;
+        private final UUID uuid;
+
+        @NotNull
+        protected final List<ItemStack> stacks = new ArrayList<>();
+
+        public CardWritingContainer(Consumer<CardWritingContainer> slotsChangedCallback, UUID uuid) {
+            this.slotsChangedCallback = slotsChangedCallback;
+            this.uuid = uuid;
+            stacks.add(ItemStack.EMPTY);
+        }
+
+        @Override
+        public int getContainerSize() {
+            return 1;
+        }
+
+        protected ItemStack getStack() {
+            return stacks.get(0);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return getStack().isEmpty();
+        }
+
+        @Override
+        public @NotNull ItemStack getItem(int slot) {
+            return getStack();
+        }
+
+        @Override
+        public @NotNull ItemStack removeItem(int slot, int amount) {
+            ItemStack stack = ContainerHelper.removeItem(this.stacks, 0, amount);
+            if (!stack.isEmpty()) {
+                this.slotsChangedCallback.accept(this);
+            }
+            return stack;
+        }
+
+        @Override
+        public @NotNull ItemStack removeItemNoUpdate(int slot) {
+            return ContainerHelper.takeItem(this.stacks, 0);
+        }
+
+        @Override
+        public void setItem(int slot, @NotNull ItemStack stack) {
+            this.stacks.set(0, stack);
+            if (!CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack))
+                CardItem.set(stack, uuid);
+            this.slotsChangedCallback.accept(this);
+        }
+
+        @Override
+        public void setChanged() {
+
+        }
+
+        @Override
+        public boolean stillValid(@NotNull Player player) {
+            return true;
+        }
+
+        @Override
+        public void clearContent() {
+            this.stacks.set(0, ItemStack.EMPTY);
+        }
     }
 }

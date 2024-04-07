@@ -1,12 +1,14 @@
 package dev.ithundxr.createnumismatics.content.bank;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.SlotInputMergingCoinBag;
 import dev.ithundxr.createnumismatics.content.coins.SlotOutputMergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -32,7 +34,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
     protected ContainerData dataAccess;
-    private CardWritingContainer cardWritingContainer;
+    private CardSwitchContainer cardSwitchContainer;
     public BankMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
@@ -56,8 +58,8 @@ public class BankMenu extends MenuBase<BankAccount> {
 
     @Override
     protected void addSlots() {
-        if (cardWritingContainer == null)
-            cardWritingContainer = new CardWritingContainer(this::slotsChanged, contentHolder.id);
+        if (cardSwitchContainer == null)
+            cardSwitchContainer = new CardSwitchContainer(this::slotsChanged, this::switchTo);
         int x = 13;
         int y = 71;
 
@@ -68,9 +70,18 @@ public class BankMenu extends MenuBase<BankAccount> {
 
         addSlot(new SlotInputMergingCoinBag(contentHolder.linkedCoinBag, null, 159, y));
 
-        addSlot(new CardSlot.UnboundCardSlot(cardWritingContainer, 0, 8, 109));
+        addSlot(new CardSlot.BoundCardSlot(cardSwitchContainer, 0, 8, 109));
 
         addPlayerSlots(40, 152);
+    }
+
+    private void switchTo(UUID otherAccount) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            BankAccount account = Numismatics.BANK.getAccount(otherAccount);
+            if (account != null && account.isAuthorized(serverPlayer)) {
+                Utils.openScreen(serverPlayer, account, account::sendToMenu);
+            }
+        }
     }
 
     @Override
@@ -80,7 +91,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     public void removed(Player playerIn) {
         super.removed(playerIn);
         if (playerIn instanceof ServerPlayer) {
-            clearContainer(player, cardWritingContainer);
+            clearContainer(player, cardSwitchContainer);
         }
     }
 
@@ -120,16 +131,16 @@ public class BankMenu extends MenuBase<BankAccount> {
         return returnStack;
     }
 
-    public static class CardWritingContainer implements Container {
-        private final Consumer<CardWritingContainer> slotsChangedCallback;
-        private final UUID uuid;
+    private static class CardSwitchContainer implements Container {
+        private final Consumer<CardSwitchContainer> slotsChangedCallback;
+        private final Consumer<UUID> uuidChangedCallback;
 
         @NotNull
         protected final List<ItemStack> stacks = new ArrayList<>();
 
-        public CardWritingContainer(Consumer<CardWritingContainer> slotsChangedCallback, UUID uuid) {
+        public CardSwitchContainer(Consumer<CardSwitchContainer> slotsChangedCallback, Consumer<UUID> uuidChangedCallback) {
             this.slotsChangedCallback = slotsChangedCallback;
-            this.uuid = uuid;
+            this.uuidChangedCallback = uuidChangedCallback;
             stacks.add(ItemStack.EMPTY);
         }
 
@@ -169,15 +180,13 @@ public class BankMenu extends MenuBase<BankAccount> {
         @Override
         public void setItem(int slot, @NotNull ItemStack stack) {
             this.stacks.set(0, stack);
-            if (!CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack))
-                CardItem.set(stack, uuid);
+            if (CardItem.isBound(stack) && NumismaticsTags.AllItemTags.CARDS.matches(stack))
+                this.uuidChangedCallback.accept(CardItem.get(stack));
             this.slotsChangedCallback.accept(this);
         }
 
         @Override
-        public void setChanged() {
-
-        }
+        public void setChanged() {}
 
         @Override
         public boolean stillValid(@NotNull Player player) {
