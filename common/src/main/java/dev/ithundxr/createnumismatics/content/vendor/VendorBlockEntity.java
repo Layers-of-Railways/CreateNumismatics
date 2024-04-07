@@ -72,6 +72,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         public void setChanged() {
             super.setChanged();
             VendorBlockEntity.this.setChanged();
+            correctStock();
         }
     };
 
@@ -489,6 +490,17 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         for (ItemStack stack : newItems) {
             ItemUtil.moveItemStackTo(stack, this, false);
+        }
+    }
+
+    protected void correctStock() {
+        for (int i = 0; i < items.size(); i++) {
+            if(!matchesSellingItem(items.get(i)) && !items.get(i).getItem().equals(Items.AIR)) {
+                Containers.dropItemStack(level, worldPosition.getX(),worldPosition.getY()+1,worldPosition.getZ(), items.get(i));
+                System.out.println(i);
+                System.out.println(items.get(i));
+                items.set(i, ItemStack.EMPTY);
+            }
         }
     }
 
