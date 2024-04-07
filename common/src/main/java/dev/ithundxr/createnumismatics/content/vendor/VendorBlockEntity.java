@@ -712,15 +712,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         BUY
         ;
 
-        private static final List<Component> components = ImmutableList.copyOf(
-            Arrays.stream(values())
-                .map(Mode::getTranslationKey)
-                .map(Components::translatable)
-                .iterator()
-        );
-
         public static List<Component> getComponents() {
-            return components;
+            return ImmutableList.copyOf(
+                Arrays.stream(values())
+                    .map(Mode::getTranslationKey)
+                    .map(Components::translatable)
+                    .iterator()
+            );
         }
 
         public String getTranslationKey() {

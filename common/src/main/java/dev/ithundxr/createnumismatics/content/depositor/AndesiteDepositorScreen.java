@@ -9,7 +9,6 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import com.simibubi.create.foundation.utility.Components;
-import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
@@ -73,7 +72,7 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
         coinScrollInput.calling(idx -> {
             // price will be sent when menu closed
             menu.contentHolder.setCoin(Coin.values()[idx]);
-            Numismatics.LOGGER.info("Label: " + coinLabel.text + " Index: " + idx + " Coin: " + Coin.values()[idx].name());
+            //Numismatics.LOGGER.info("Label: " + coinLabel.text + " Index: " + idx + " Coin: " + Coin.values()[idx].name());
             //coinLabel.setX(x + 84 - font.width(coinLabel.text)/2);
         });
         addRenderableWidget(coinScrollInput);

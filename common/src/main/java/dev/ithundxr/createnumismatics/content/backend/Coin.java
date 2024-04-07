@@ -46,18 +46,13 @@ public enum Coin implements INamedIconOptions {
         this.fontChar = fontChar;
     }
 
-    private static final List<Component> labeledComponents;
-    static {
+    public static List<Component> labeledComponents() {
         Component[] tmp = new Component[values().length];
         for (Coin coin : values()) {
             tmp[coin.ordinal()] = Components.literal(coin.fontChar + " "
                 + Components.translatable(coin.getTranslationKey()).getString());
         }
-        labeledComponents = ImmutableList.copyOf(tmp);
-    }
-
-    public static List<Component> labeledComponents() {
-        return labeledComponents;
+        return ImmutableList.copyOf(tmp);
     }
 
     /**
