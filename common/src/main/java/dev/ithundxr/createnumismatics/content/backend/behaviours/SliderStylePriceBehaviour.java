@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -158,9 +159,7 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
                 toPay -= count;
 
                 ItemStack stack = coin.asStack(count);
-                if (!player.getInventory().add(stack)) {
-                    player.drop(stack, false);
-                }
+                ItemUtil.givePlayerItem(player, stack);
             }
         }
     }

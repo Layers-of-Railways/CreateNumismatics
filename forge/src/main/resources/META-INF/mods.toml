@@ -1,15 +1,15 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_version},)"
-issueTrackerURL = "https://github.com/IThundxr/CreateNumismatics/issues"
-license = "BY-NC-SA"
+issueTrackerURL = "https://github.com/Layers-of-Railways/CreateNumismatics/issues"
+license = "LGPL"
 
 [[mods]]
 modId = "numismatics"
 version = "${version}"
 displayName = "Create: Numismatics"
-authors = "IThundxr, Violet, Pink, Slimeist"
+authors = "IThundxr, Violet, Pink, Slimeist, Razziel"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+A visually-pleasing and redstone-integrated Create-styled currency mod
 '''
 logoFile = "icon.png"
 

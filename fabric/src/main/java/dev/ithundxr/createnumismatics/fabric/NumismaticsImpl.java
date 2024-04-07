@@ -1,10 +1,9 @@
 package dev.ithundxr.createnumismatics.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.events.fabric.CommonEventsFabric;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
-import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
-import dev.ithundxr.createnumismatics.Numismatics;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -34,6 +33,7 @@ public class NumismaticsImpl implements ModInitializer {
 
     public static void finalizeRegistrate() {
         Numismatics.registrate().register();
+        Numismatics.postRegistrationInit();
     }
 
     public static void registerCommands(BiConsumer<CommandDispatcher<CommandSourceStack>, Boolean> consumer) {

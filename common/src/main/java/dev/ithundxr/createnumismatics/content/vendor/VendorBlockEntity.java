@@ -17,11 +17,9 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContai
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
-import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.registry.*;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -627,6 +625,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             if (price.deduct(player, hand, false)) {
                 ItemStack output = selling.copy();
                 ItemUtil.givePlayerItem(player, output);
+                giveSellingAdvancements(player);
 
                 level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
                 notifyUpdate();
@@ -642,6 +641,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     if (price.deduct(player, hand, true)) {
                         ItemStack output = stack.split(selling.getCount());
                         ItemUtil.givePlayerItem(player, output);
+                        giveSellingAdvancements(player);
 
                         level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
                         notifyUpdate();
@@ -665,6 +665,23 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock")
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+            }
+        }
+    }
+
+    private void giveSellingAdvancements(Player player) {
+        ItemStack selling = getSellingItem();
+
+        if (selling.getItem() instanceof CoinItem coin) {
+            NumismaticsAdvancements.MONEY_LAUNDERING.awardTo(player);
+
+            int soldValue = coin.coin.toSpurs(selling.getCount());
+            int paidValue = price.getTotalPrice();
+
+            if (soldValue > paidValue) {
+                NumismaticsAdvancements.IS_THIS_LEGAL.awardTo(player);
+            } else if (soldValue < paidValue) {
+                NumismaticsAdvancements.QUESTIONABLE_INVESTMENT.awardTo(player);
             }
         }
     }

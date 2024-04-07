@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.utility.FilesHelper;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -14,6 +15,7 @@ public class NumismaticsLangGen {
 
         provideDefaultLang("interface", langConsumer);
         provideDefaultLang("tooltips", langConsumer);
+        NumismaticsAdvancements.provideLang(langConsumer);
     }
 
     private static void provideDefaultLang(String fileName, BiConsumer<String, String> consumer) {

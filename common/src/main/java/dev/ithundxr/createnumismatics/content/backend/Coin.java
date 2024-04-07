@@ -106,6 +106,10 @@ public enum Coin implements INamedIconOptions {
         };
     }
 
+    public ItemStack asStack() {
+        return asStack(1);
+    }
+
     public ItemStack asStack(int amount) {
         return NumismaticsItems.getCoin(this).asStack(amount);
     }

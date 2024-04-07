@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "numismatics:textures/gui/advancements.png",
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.numismatics.root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "numismatics:crown"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.numismatics.root"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

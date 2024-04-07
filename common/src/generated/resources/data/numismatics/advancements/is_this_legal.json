@@ -1,0 +1,31 @@
+{
+  "parent": "numismatics:money_laundering",
+  "criteria": {
+    "0": {
+      "conditions": {},
+      "trigger": "numismatics:is_this_legal_builtin"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.numismatics.is_this_legal.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "numismatics:sun"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.numismatics.is_this_legal"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

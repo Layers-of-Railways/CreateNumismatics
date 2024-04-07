@@ -1,4 +1,12 @@
 {
+  "advancement.numismatics.is_this_legal": "¿ןɐbǝꞀ sıɥ⟘ sI",
+  "advancement.numismatics.is_this_legal.desc": ")ʇuǝɯǝɔuɐʌpⱯ uǝppıH(ㄥ§\nɥʇɹoʍ ǝɹɐ ʎǝɥʇ uɐɥʇ ssǝן ɹoɟ suıoɔ ʎnᗺ",
+  "advancement.numismatics.money_laundering": "buıɹǝpunɐꞀ ʎǝuoW",
+  "advancement.numismatics.money_laundering.desc": ")ʇuǝɯǝɔuɐʌpⱯ uǝppıH(ㄥ§\nɹopuǝʌ ɐ uı suıoɔ ʎnᗺ",
+  "advancement.numismatics.questionable_investment": "ʇuǝɯʇsǝʌuI ǝןqɐuoıʇsǝnὉ",
+  "advancement.numismatics.questionable_investment.desc": ")ʇuǝɯǝɔuɐʌpⱯ uǝppıH(ㄥ§\nɥʇɹoʍ ǝɹɐ ʎǝɥʇ uɐɥʇ ǝɹoɯ ɹoɟ suıoɔ ʎnᗺ",
+  "advancement.numismatics.root": "sɔıʇɐɯsıɯnN oʇ ǝɯoɔןǝM",
+  "advancement.numismatics.root.desc": "sǝɥɔıᴚ ǝᗺ ǝɹǝH",
   "block.numismatics.andesite_depositor": "ɹoʇısodǝᗡ ǝʇısǝpuⱯ",
   "block.numismatics.andesite_depositor.tooltip.price": ")¤%s( %s %s :ǝɔıɹԀ",
   "block.numismatics.bank_terminal": "ןɐuıɯɹǝ⟘ ʞuɐᗺ",

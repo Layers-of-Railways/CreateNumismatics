@@ -3,15 +3,14 @@
   "id": "numismatics",
   "version": "${version}",
   "name": "Create: Numismatics",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "A visually-pleasing and redstone-integrated Create-styled currency mod",
   "authors": [
-    "IThundxr", "Violet", "Pink", "Slimeist"
+    "IThundxr", "Violet", "Pink", "Slimeist", "Razziel"
   ],
   "contact": {
-    "homepage": "https://ithundxr.dev",
-    "sources": "https://github.com/IThundxr/CreateNumismatics"
+    "sources": "https://github.com/Layers-of-Railways/CreateNumismatics"
   },
-  "license": "BY-NC-SA",
+  "license": "LGPL",
   "icon": "assets/numismatics/icon.png",
   "environment": "*",
   "entrypoints": {

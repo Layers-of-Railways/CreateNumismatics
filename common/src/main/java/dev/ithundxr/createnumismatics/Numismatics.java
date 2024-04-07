@@ -16,6 +16,7 @@ import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssem
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
+import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -58,6 +59,10 @@ public class Numismatics {
         }
     }
 
+    public static void postRegistrationInit() {
+        ModSetupLate.registerPostRegistration();
+    }
+
     public static CreateRegistrate registrate() {
         return REGISTRATE;
     }
@@ -79,6 +84,7 @@ public class Numismatics {
         PonderLocalization.provideRegistrateLang(REGISTRATE);
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
+        gen.addProvider(NumismaticsAdvancements::new);
     }
 
     public static ResourceLocation asResource(String path) {

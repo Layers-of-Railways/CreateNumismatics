@@ -1,4 +1,12 @@
 {
+  "advancement.numismatics.is_this_legal": "Is This Legal?",
+  "advancement.numismatics.is_this_legal.desc": "Buy coins for less than they are worth\n§7(Hidden Advancement)",
+  "advancement.numismatics.money_laundering": "Money Laundering",
+  "advancement.numismatics.money_laundering.desc": "Buy coins in a vendor\n§7(Hidden Advancement)",
+  "advancement.numismatics.questionable_investment": "Questionable Investment",
+  "advancement.numismatics.questionable_investment.desc": "Buy coins for more than they are worth\n§7(Hidden Advancement)",
+  "advancement.numismatics.root": "Welcome to Numismatics",
+  "advancement.numismatics.root.desc": "Here Be Riches",
   "block.numismatics.andesite_depositor": "Andesite Depositor",
   "block.numismatics.andesite_depositor.tooltip.price": "Price: %s %s (%s¤)",
   "block.numismatics.bank_terminal": "Bank Terminal",
