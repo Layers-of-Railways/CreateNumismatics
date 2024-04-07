@@ -1,4 +1,11 @@
-# Create Numismatics
+<div align="center">
+  <img src=".idea/icon.png" width="192" height="192">
+  <h1>Create Numismatics</h1>
+
+  <a href="https://discord.gg/create-steam-n-rails-706277846389227612">
+    <img alt="discord-plural" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg">
+  </a>
+</div>
 
 ## License
 Create Numismatics is licensed under the LGPL license. See [LICENSE](LICENSE) for more information.
