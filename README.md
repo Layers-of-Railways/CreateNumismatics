@@ -2,9 +2,7 @@
   <img src=".idea/icon.png" width="192" height="192">
   <h1>Create Numismatics</h1>
 
-  <a href="https://discord.gg/create-steam-n-rails-706277846389227612">
-    <img alt="discord-plural" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg">
-  </a>
+[![discord-plural](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/create-steam-n-rails-706277846389227612)
 </div>
 
 ## License
