@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.mixin.forge;
+package dev.ithundxr.createnumismatics.forge.mixin.client;
 
 import dev.ithundxr.createnumismatics.multiloader.PacketSet;
 import dev.ithundxr.createnumismatics.multiloader.forge.PacketSetImpl;

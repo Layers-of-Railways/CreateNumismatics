@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.mixin.forge;
+package dev.ithundxr.createnumismatics.forge.mixin;
 
 import dev.ithundxr.createnumismatics.multiloader.PacketSet;
 import dev.ithundxr.createnumismatics.multiloader.forge.PacketSetImpl;
@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerGamePacketListenerImplMixin {
-	@Shadow
-	public ServerPlayer player;
+	@Shadow public ServerPlayer player;
 
 	@Inject(
 			method = "handleCustomPayload",

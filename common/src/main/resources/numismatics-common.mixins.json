@@ -14,5 +14,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "dev.ithundxr.createnumismatics.mixin.plugin.NumismaticsMixinPlugin"
 }

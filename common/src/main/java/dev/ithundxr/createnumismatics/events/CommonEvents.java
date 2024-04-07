@@ -2,6 +2,7 @@ package dev.ithundxr.createnumismatics.events;
 
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.annotation.event.MultiLoaderEvent;
 import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
@@ -23,6 +24,7 @@ public class CommonEvents {
     /**
      * @return true if the block may be broken, false otherwise
      */
+    @MultiLoaderEvent
     public static boolean onBlockBreak(LevelAccessor level, BlockPos pos, BlockState state, Player player) {
         if (!(player instanceof ServerPlayer))
             return true;
@@ -48,6 +50,7 @@ public class CommonEvents {
         return mayBreak;
     }
 
+    @MultiLoaderEvent
     public static void onPlayerJoin(ServerPlayer player) {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
             NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));

@@ -1,6 +1,8 @@
 package dev.ithundxr.createnumismatics.mixin.compat.carryon;
 
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
+import dev.ithundxr.createnumismatics.compat.Mods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,6 +16,7 @@ import tschipp.carryon.common.carry.PickupHandler;
 
 import java.util.function.BiFunction;
 
+@ConditionalMixin(mods = Mods.CARRYON)
 @Mixin(PickupHandler.class)
 public class MixinPickupHandler {
     @Inject(method = "tryPickUpBlock", at = @At("HEAD"), cancellable = true)
