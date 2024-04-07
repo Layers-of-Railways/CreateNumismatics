@@ -76,9 +76,9 @@ public class Numismatics {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
         REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
+        PonderLocalization.provideRegistrateLang(REGISTRATE);
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
-        PonderLocalization.provideRegistrateLang(REGISTRATE);
     }
 
     public static ResourceLocation asResource(String path) {
