@@ -14,6 +14,7 @@ import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -109,6 +110,7 @@ public class NumismaticsBlocks {
 					.getExistingFile(Numismatics.asResource("block/creative_display_case"))
 			))
 			.item()
+			.properties(p -> p.rarity(Rarity.EPIC))
 			.model((c, p) -> p.withExistingParent(c.getName(), Numismatics.asResource("block/creative_display_case")))
 			.build()
 			.register();

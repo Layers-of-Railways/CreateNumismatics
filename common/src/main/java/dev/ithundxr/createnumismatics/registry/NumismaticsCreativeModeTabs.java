@@ -9,18 +9,18 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.multiloader.Env;
-import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 import net.minecraft.world.level.block.Block;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -78,6 +78,7 @@ public class NumismaticsCreativeModeTabs {
             Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
             List<ItemProviderEntry<?>> simpleExclusions = List.of(
+                NumismaticsBlocks.BLAZE_BANKER
                 //AllBlocks.REFINED_RADIANCE_CASING // just as an example
             );
 
