@@ -35,6 +35,9 @@ repositories {
     maven("https://maven.cafeteria.dev/releases") // Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
     maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
+    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
+        name = "Siphalor's Maven"
+    }
 }
 
 dependencies {
@@ -59,6 +62,12 @@ dependencies {
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
 
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
+
+    // Carry On
+    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    if ("enable_carryon"().toBoolean()) {
+        modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
 }
 
 publishMods {

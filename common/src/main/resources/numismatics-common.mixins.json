@@ -9,7 +9,8 @@
   ],
   "mixins": [
     "MixinAbstractContainerMenu",
-    "MixinServerPlayer"
+    "MixinServerPlayer",
+    "compat.carryon.MixinPickupHandler"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -22,6 +22,9 @@ repositories {
     maven("https://maven.cafeteria.dev/releases") // Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
     maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
+    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
+        name = "Siphalor's Maven"
+    }
 }
 
 dependencies {
@@ -37,6 +40,9 @@ dependencies {
 
     // required for proper remapping and compiling
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
+
+    // Carry On
+    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
 
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 }

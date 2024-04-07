@@ -62,7 +62,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
-        maven("https://maven.blamejared.com/") // JEI
+        maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
         maven("https://maven.quiltmc.org/repository/release") // Quilt Mappings
         maven("https://maven.tterrag.com/") { // Flywheel

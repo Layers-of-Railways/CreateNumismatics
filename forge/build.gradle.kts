@@ -39,6 +39,12 @@ dependencies {
 
     modLocalRuntime("dev.emi:emi-forge:${"emi_version"()}")
 
+    // Carry On
+    modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    if ("enable_carryon"().toBoolean()) {
+        modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
+
     compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
 }
