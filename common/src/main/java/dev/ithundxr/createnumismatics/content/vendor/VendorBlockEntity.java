@@ -119,7 +119,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             tag.putUUID("Owner", owner);
 
         if (!inventory.isEmpty()) {
-            tag.put("Inventory", inventory.save(new CompoundTag()));
+            tag.put("CoinInventory", inventory.save(new CompoundTag()));
         }
 
         if (!cardContainer.getItem(0).isEmpty()) {
@@ -147,8 +147,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
         inventory.clear();
-        if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
-            inventory.load(tag.getCompound("Inventory"));
+        if (tag.contains("CoinInventory", Tag.TAG_COMPOUND)) {
+            inventory.load(tag.getCompound("CoinInventory"));
         }
 
         if (tag.contains("Card", Tag.TAG_COMPOUND)) {
@@ -242,6 +242,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     int count = inventory.getDiscrete(coin);
                     inventory.subtract(coin, count);
                     account.deposit(coin, count);
+                    notifyUpdate();
                 }
             }
         }
@@ -268,6 +269,47 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (sellingStack.isEmpty())
             return false;
 
+        // Warning text if out of stock etc
+        switch (mode) {
+            case SELL -> {
+                if (!hasStock()) {
+                    Lang.builder()
+                        .add(Components.translatable("gui.numismatics.vendor.out_of_stock"))
+                        .style(ChatFormatting.DARK_RED)
+                        .forGoggles(tooltip);
+                }
+            }
+            case BUY -> {
+                if (!hasSpace()) {
+                    String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+                    if (ownerName != null) {
+                        Lang.builder()
+                            .add(Components.translatable("gui.numismatics.vendor.full.named", ownerName))
+                            .style(ChatFormatting.DARK_RED)
+                            .forGoggles(tooltip);
+                    } else {
+                        Lang.builder()
+                            .add(Components.translatable("gui.numismatics.vendor.full"))
+                            .style(ChatFormatting.DARK_RED)
+                            .forGoggles(tooltip);
+                    }
+                } else if (!hasEnoughMoney()) {
+                    String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+                    if (ownerName != null) {
+                        Lang.builder()
+                            .add(Components.translatable("gui.numismatics.vendor.insufficient_funds.named", ownerName))
+                            .style(ChatFormatting.DARK_RED)
+                            .forGoggles(tooltip);
+                    } else {
+                        Lang.builder()
+                            .add(Components.translatable("gui.numismatics.vendor.insufficient_funds"))
+                            .style(ChatFormatting.DARK_RED)
+                            .forGoggles(tooltip);
+                    }
+                }
+            }
+        }
+
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
@@ -276,7 +318,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         // Selling/Buying
         Lang.builder()
-            .add(Components.translatable(mode.getOpposite().getTranslationKey()))
+            .add(Components.translatable(mode.getOpposite().getActionTranslationKey()))
             .forGoggles(tooltip);
 
         // Item
@@ -491,6 +533,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         for (ItemStack stack : newItems) {
             ItemUtil.moveItemStackTo(stack, this, false);
         }
+        notifyUpdate();
     }
 
     protected void correctStock() {
@@ -501,6 +544,60 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 items.set(i, ItemStack.EMPTY);
             }
         }
+        notifyUpdate();
+    }
+
+    /**
+     * @return whether the vendor has enough stock for a sale when mode == SELL
+     */
+    private boolean hasStock() {
+        if (isCreativeVendor())
+            return true;
+
+        for (ItemStack stack : items) {
+            if (matchesSellingItem(stack) && stack.getCount() >= getSellingItem().getCount())
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return whether the vendor has space to accept items when mode == BUY
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean hasSpace() {
+        ItemStack buying = getSellingItem();
+        int space = 0;
+        for (ItemStack stack : items) {
+            if (stack.isEmpty()) {
+                space += buying.getMaxStackSize();
+                break;
+            }
+            if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
+                space += stack.getMaxStackSize() - stack.getCount();
+                break;
+            }
+        }
+
+        return space >= buying.getCount();
+    }
+
+    /**
+     * @return whether the vendor has enough money for a purchase when mode == BUY
+     */
+    private boolean hasEnoughMoney() {
+        if (isCreativeVendor())
+            return true;
+
+        if (price.canPayOut())
+            return true;
+
+        if (getCardId() != null) {
+            BankAccount account = Numismatics.BANK.getAccount(getCardId());
+            return account != null && account.getBalance() >= price.getTotalPrice();
+        }
+        return false;
     }
 
     public void tryTransaction(Player player, InteractionHand hand) {
@@ -511,6 +608,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     private void trySellTo(Player player, InteractionHand hand) {
+        if (level == null) return;
         // condense stock
         // (try to) charge cost
         // dispense stock
@@ -526,6 +624,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 ItemUtil.givePlayerItem(player, output);
 
                 level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+                notifyUpdate();
             } else {
                 // insufficient funds
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
@@ -540,6 +639,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                         ItemUtil.givePlayerItem(player, output);
 
                         level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+                        notifyUpdate();
                     } else {
                         // insufficient funds
                         player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
@@ -565,6 +665,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     private void tryBuyFrom(Player player, InteractionHand hand) {
+        if (level == null) return;
         ItemStack buying = getSellingItem();
         if (buying.isEmpty())
             return;
@@ -594,18 +695,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         // check if the vendor has space
-        int space = 0;
-        for (ItemStack stack : items) {
-            if (stack.isEmpty()) {
-                space += buying.getMaxStackSize();
-                break;
-            }
-            if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
-                space += stack.getMaxStackSize() - stack.getCount();
-                break;
-            }
-        }
-        if (space < buying.getCount()) {
+        if (!hasSpace()) {
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full.named", ownerName)
@@ -632,6 +722,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             price.pay(player);
 
             level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+            notifyUpdate();
 
             return;
         } else if (getCardId() != null) {
@@ -645,6 +736,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 price.pay(player);
 
                 level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+                notifyUpdate();
 
                 return;
             }
@@ -681,6 +773,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             if (stack.isEmpty())
                 break;
         }
+        notifyUpdate();
     }
 
     @Override
@@ -723,6 +816,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         public String getTranslationKey() {
             return "gui.numismatics.vendor.mode." + name().toLowerCase(Locale.ROOT);
+        }
+
+        public String getActionTranslationKey() {
+            return getTranslationKey() + ".action";
         }
 
         public Mode getOpposite() {

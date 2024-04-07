@@ -1,4 +1,4 @@
-// 1.20.1	2024-04-06T17:56:09.97651238	Create: Numismatics/Numismatics Standard Recipes
+// 1.20.1	2024-04-06T19:28:35.708905875	Create: Numismatics/Numismatics Standard Recipes
 0e1680b878cfa51c04809504b3542cb6312027a1 data/numismatics/recipes/crafting/gray_id_card.json
 20434910bb6e5fa2e8350f52b30c728b091a85d3 data/numismatics/recipes/crafting/brown_card.json
 61954216f844eecdbee266da7e517a983993d2f8 data/numismatics/advancements/recipes/misc/crafting/brown_card.json
@@ -7,16 +7,16 @@ a87641c131fe00d2ef54caed44ec741ef0dd6dee data/numismatics/recipes/crafting/magen
 ff7d6b3f21b735e3378add718c16e3c0c643f5f3 data/numismatics/recipes/crafting/pink_id_card.json
 d3d26ab5f434385090c7f3e5ba10dd874a336bdd data/numismatics/recipes/crafting/green_id_card.json
 13b984e17c52cc24968f4fd1ba67b915243a4b27 data/numismatics/recipes/crafting/vendor.json
-f2d158116054b5f0a28e2df07be3e11e5e5e74f7 data/numismatics/advancements/recipes/misc/crafting/white_id_card.json
-0000b8a2cd58843eb7cf2c0b4b7b71a07baf3652 data/numismatics/advancements/recipes/misc/crafting/magenta_card.json
 244012381f0600ab5116066948c81398dcdbd3d4 data/numismatics/advancements/recipes/misc/crafting/bank_terminal.json
+0000b8a2cd58843eb7cf2c0b4b7b71a07baf3652 data/numismatics/advancements/recipes/misc/crafting/magenta_card.json
+f2d158116054b5f0a28e2df07be3e11e5e5e74f7 data/numismatics/advancements/recipes/misc/crafting/white_id_card.json
 5c882ba48afb491eac809ad5fef36c5d419afd1f data/numismatics/recipes/crafting/purple_card.json
 156bac80f52563211c3e8625f308acc229640000 data/numismatics/recipes/crafting/blue_card.json
 a2d0106c95fb00a808af0ebb2a5c0d83a3a913a4 data/numismatics/advancements/recipes/misc/crafting/light_blue_id_card.json
 3bdee0ea570562c973144de2f27938e8018ef9b4 data/numismatics/recipes/crafting/pink_card.json
 011bfd082068cb75738cb9ea54e5f76147c0436f data/numismatics/advancements/recipes/misc/crafting/black_card.json
-9dc53a455bef89e74178737998ff8bb699974af2 data/numismatics/advancements/recipes/misc/crafting/pink_id_card.json
 adb81866fed19b22faf8aee7dff52d1294326208 data/numismatics/recipes/crafting/light_blue_id_card.json
+9dc53a455bef89e74178737998ff8bb699974af2 data/numismatics/advancements/recipes/misc/crafting/pink_id_card.json
 a9acb103fdf3c06e561b7252083fae594074ba40 data/numismatics/advancements/recipes/misc/crafting/white_card.json
 5bf1eddd9bf4c4d910728c812c392f88ce427012 data/numismatics/recipes/crafting/red_id_card.json
 29ba720cf8ae338eec2edbd997fcb3f6a8de7cd1 data/numismatics/advancements/recipes/misc/crafting/vendor.json
@@ -55,10 +55,10 @@ e4e1818714e49b1dd45c596ece3ca28042381906 data/numismatics/advancements/recipes/m
 8ebbf07d426b182d8833afb9ee3f8e3a2feb850f data/numismatics/recipes/crafting/blue_id_card.json
 39047da0807eb1054a179e6ecf63e85676a9f0a0 data/numismatics/advancements/recipes/misc/crafting/brass_depositor.json
 b33377448ad6812c10b1405051359e58172299e9 data/numismatics/advancements/recipes/misc/crafting/brown_id_card.json
-606c6054ab3ab165654c4de002c7e93d3f7fab3b data/numismatics/recipes/crafting/green_card.json
 2c923f377d0945abea77297db5f4bf08bafb824e data/numismatics/advancements/recipes/misc/crafting/cyan_card.json
-50dae4e6bc13a1e6f914fb8de99b06e807641d2a data/numismatics/advancements/recipes/misc/crafting/pink_card.json
+606c6054ab3ab165654c4de002c7e93d3f7fab3b data/numismatics/recipes/crafting/green_card.json
 f160e3f01433b3815e8734e0ae0ed7eadc19e53b data/numismatics/recipes/crafting/cyan_card.json
+50dae4e6bc13a1e6f914fb8de99b06e807641d2a data/numismatics/advancements/recipes/misc/crafting/pink_card.json
 8fd00cd399cf9329a63b6264918372ebf90ad79b data/numismatics/recipes/crafting/light_gray_id_card.json
 574d01d5616971ae92d1087f9a9d90bb93c3419e data/numismatics/recipes/crafting/black_id_card.json
 caff153f8b3751f805227c8fc20a145dae8406b6 data/numismatics/advancements/recipes/misc/crafting/light_gray_id_card.json

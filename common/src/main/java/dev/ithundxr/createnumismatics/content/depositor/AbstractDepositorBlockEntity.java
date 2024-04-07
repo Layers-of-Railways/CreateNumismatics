@@ -167,6 +167,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
                     int count = inventory.getDiscrete(coin);
                     inventory.subtract(coin, count);
                     account.deposit(coin, count);
+                    notifyUpdate();
                 }
             }
         }
