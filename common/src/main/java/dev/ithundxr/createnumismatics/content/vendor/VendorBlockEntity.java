@@ -495,10 +495,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     protected void correctStock() {
         for (int i = 0; i < items.size(); i++) {
-            if(!matchesSellingItem(items.get(i)) && !items.get(i).getItem().equals(Items.AIR)) {
-                Containers.dropItemStack(level, worldPosition.getX(),worldPosition.getY()+1,worldPosition.getZ(), items.get(i));
-                System.out.println(i);
-                System.out.println(items.get(i));
+            ItemStack stack = items.get(i);
+            if (!matchesSellingItem(stack) && !stack.isEmpty() && level != null) {
+                Containers.dropItemStack(level, getBlockPos().getX(), getBlockPos().getY()+1, getBlockPos().getZ(), stack);
                 items.set(i, ItemStack.EMPTY);
             }
         }
