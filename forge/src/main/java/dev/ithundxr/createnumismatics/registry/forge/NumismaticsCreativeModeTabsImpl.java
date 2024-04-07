@@ -17,15 +17,15 @@ import net.minecraftforge.registries.RegistryObject;
 
 @EventBusSubscriber(bus = Bus.MOD)
 public class NumismaticsCreativeModeTabsImpl {
-
     private static final DeferredRegister<CreativeModeTab> TAB_REGISTER =
         DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Numismatics.MOD_ID);
 
+    @SuppressWarnings("Convert2MethodRef")
     public static final RegistryObject<CreativeModeTab> MAIN_TAB = TAB_REGISTER.register("main",
         () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.numismatics"))
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-            .icon(NumismaticsBlocks.VENDOR::asStack)
+            .icon(() -> NumismaticsBlocks.VENDOR.asStack())
             .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
             .build());
 

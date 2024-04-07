@@ -17,11 +17,11 @@ import net.minecraft.world.item.CreativeModeTab;
 import java.util.function.Supplier;
 
 public class NumismaticsCreativeModeTabsImpl {
-
+    @SuppressWarnings("Convert2MethodRef")
     private static final TabInfo MAIN_TAB = register("main",
         () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.numismatics"))
-            .icon(NumismaticsBlocks.VENDOR::asStack)
+            .icon(() -> NumismaticsBlocks.VENDOR.asStack())
             .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
             .build());
 
