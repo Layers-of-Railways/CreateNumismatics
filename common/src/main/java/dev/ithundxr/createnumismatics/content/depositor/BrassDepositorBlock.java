@@ -70,7 +70,7 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
             return InteractionResult.SUCCESS;
 
         SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
-        if (priceBehaviour != null && priceBehaviour.deduct(player, hand)) {
+        if (priceBehaviour != null && priceBehaviour.deduct(player, hand, true)) {
             activate(state, level, pos);
         } else {
             player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")

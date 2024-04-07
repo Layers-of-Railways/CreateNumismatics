@@ -618,7 +618,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         condenseItems();
 
         if (isCreativeVendor()) {
-            if (price.deduct(player, hand)) {
+            if (price.deduct(player, hand, false)) {
                 ItemStack output = selling.copy();
                 ItemUtil.givePlayerItem(player, output);
 
@@ -633,7 +633,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         } else {
             for (ItemStack stack : items) {
                 if (matchesSellingItem(stack) && stack.getCount() >= selling.getCount()) {
-                    if (price.deduct(player, hand)) {
+                    if (price.deduct(player, hand, true)) {
                         ItemStack output = stack.split(selling.getCount());
                         ItemUtil.givePlayerItem(player, output);
 

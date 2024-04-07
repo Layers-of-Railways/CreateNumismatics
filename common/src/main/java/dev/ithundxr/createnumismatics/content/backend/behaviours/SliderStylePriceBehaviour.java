@@ -92,7 +92,7 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         calculateTotalPrice();
     }
 
-    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand) {
+    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand, Boolean AddToSource) {
         int totalPrice = getTotalPrice();
 
         ItemStack handStack = player.getItemInHand(hand);
@@ -103,8 +103,10 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
                 if (account != null && account.isAuthorized(player)) {
                     if (account.deduct(totalPrice)) {
                         //activate(state, level, pos);
-                        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                            addCoin.accept(entry.getKey(), entry.getValue());
+                        if(AddToSource) {
+                            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+                                addCoin.accept(entry.getKey(), entry.getValue());
+                            }
                         }
                         return true;
                     }
@@ -112,8 +114,10 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             }
         } else if (CoinItem.extract(player, hand, prices, false)) {
             //activate(state, level, pos);
-            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                addCoin.accept(entry.getKey(), entry.getValue());
+            if(AddToSource) {
+                for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+                    addCoin.accept(entry.getKey(), entry.getValue());
+                }
             }
             return true;
         }
