@@ -42,8 +42,6 @@ public class NumismaticsCreativeModeTabs {
 
     public enum Tabs {
         MAIN(NumismaticsCreativeModeTabs::getBaseTabKey),
-        //COMPAT(CRCreativeModeTabs::getCompatTracksTabKey),
-        //CAPS(CRCreativeModeTabs::getCapsTabKey)
         ;
 
         private final Supplier<ResourceKey<CreativeModeTab>> keySupplier;

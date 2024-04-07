@@ -1,10 +1,9 @@
 package dev.ithundxr.createnumismatics.registry.forge;
 
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.RegistrateDisplayItemsGenerator;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
-import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -26,7 +25,7 @@ public class NumismaticsCreativeModeTabsImpl {
         () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.numismatics"))
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-            .icon(() -> NumismaticsItems.getCoin(Coin.CROWN).asStack())
+            .icon(NumismaticsBlocks.VENDOR::asStack)
             .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
             .build());
 

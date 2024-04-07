@@ -1,11 +1,10 @@
 package dev.ithundxr.createnumismatics.registry.fabric;
 
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.RegistrateDisplayItemsGenerator;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.TabInfo;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
-import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +21,7 @@ public class NumismaticsCreativeModeTabsImpl {
     private static final TabInfo MAIN_TAB = register("main",
         () -> FabricItemGroup.builder()
             .title(Component.translatable("itemGroup.numismatics"))
-            .icon(() -> NumismaticsItems.getCoin(Coin.CROWN).asStack())
+            .icon(NumismaticsBlocks.VENDOR::asStack)
             .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
             .build());
 
