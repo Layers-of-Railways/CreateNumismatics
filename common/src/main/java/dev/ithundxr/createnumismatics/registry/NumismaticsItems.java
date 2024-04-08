@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.item.ItemDescription;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.item.DyedItemList;
@@ -10,6 +11,7 @@ import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BankingGuideItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.core.registries.Registries;
 
 import java.util.EnumMap;
 
@@ -44,6 +46,7 @@ public class NumismaticsItems {
 			.tag(NumismaticsTags.AllItemTags.CARDS.tag)
 			.lang(TextUtils.titleCaseConversion(color.getName()) + " Card")
 			.model((c, p) -> p.generated(c, Numismatics.asResource("item/card/"+colorName+"_card")))
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.bank_card"))
 			.register();
 	});
 
@@ -54,6 +57,7 @@ public class NumismaticsItems {
 			.tag(NumismaticsTags.AllItemTags.ID_CARDS.tag)
 			.lang(TextUtils.titleCaseConversion(color.getName()) + " ID Card")
 			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/"+colorName+"_id_card")))
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.id_card"))
 			.register();
 	});
 

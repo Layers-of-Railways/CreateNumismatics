@@ -18,6 +18,20 @@
   "item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
+  "item.numismatics.banking_card.tooltip": "BANK CARD",
+  "item.numismatics.banking_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Allows Access to the bound Bank Account when used in a _Bank Terminal_, or can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
+
+  "item.numismatics.id_card.tooltip": "ID CARD",
+  "item.numismatics.id_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Can be placed in the _Trusted Menu_ of many Numismatics blocks to give the bound player access to that block",
+
   "block.numismatics.vendor.tooltip": "VENDOR",
-  "block.numismatics.vendor.tooltip.summary": "Allows for the trading of items through player made shops. _Right click_ to trade, or _shift right click_ to configure it."
+  "block.numismatics.vendor.tooltip.summary": "Allows for the trading of items through player made shops. _Right click_ to trade, or _shift click_ to configure it.",
+  "block.numismatics.bank_terminal.tooltip": "BANK TERMINAL",
+  "block.numismatics.bank_terminal.tooltip.summary": "Allows you to access your own bank account or any account you are _Trusted_ with",
+  "block.numismatics.andesite_depositor.tooltip": "ANDESITE DEPOSITOR",
+  "block.numismatics.andesite_depositor.tooltip.summary": "_Shift click_ to configure, _right click_ to pay the given amount either with either the card or coins in your hand, at which point a redstone pulse is emmited",
+  "block.numismatics.brass_depositor.tooltip": "BRASS DEPOSITOR",
+  "block.numismatics.brass_depositor.tooltip.summary": "_Shift click_ to configure, _right click_ to pay the given amount either with either the card in your hand or the coins in your inventory, at which point a redstone pulse is emmited",
+  "block.numismatics.blaze_banker.tooltip": "BLAZE BANKER",
+  "block.numismatics.blaze_banker.tooltip.summary": "Creates a bank account in the Banker's name, useful for sharing an account with multiple people. You can assign a _Bank Card_ to the banker by placing it in the appropriate slot."
 }
