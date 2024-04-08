@@ -1,0 +1,49 @@
+{
+	"parent": "block/block",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "numismatics:block/bank_terminal/bank_terminal_drum",
+		"1": "numismatics:block/bank_terminal/bank_terminal_reading_comb",
+		"2": "numismatics:block/bank_terminal/bank_terminal_side",
+		"3": "numismatics:block/bank_terminal/bank_terminal_front",
+		"4": "numismatics:block/bank_terminal/industrial_iron_block_top",
+		"6": "numismatics:block/bank_terminal/bank_terminal_drum_endcap",
+		"7": "numismatics:block/bank_terminal/bank_terminal_back",
+		"particle": "numismatics:block/bank_terminal/bank_terminal_drum"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 8],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"east": {"uv": [0, 16, 8, 0], "rotation": 180, "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#7"},
+				"west": {"uv": [0, 0, 8, 16], "texture": "#2"},
+				"up": {"uv": [0, 8, 16, 16], "rotation": 180, "texture": "#1"},
+				"down": {"uv": [0, 8, 16, 16], "texture": "#4"}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [16, 8, 16],
+			"faces": {
+				"east": {"uv": [8, 8, 16, 16], "rotation": 180, "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 8], "texture": "#7"},
+				"west": {"uv": [0, 0, 8, 8], "rotation": 90, "texture": "#2"},
+				"up": {"uv": [0, 8, 16, 16], "texture": "#4"},
+				"down": {"uv": [0, 0, 16, 8], "texture": "#4"}
+			}
+		},
+		{
+			"from": [1, 8, 8],
+			"to": [15, 15, 15],
+			"faces": {
+				"east": {"uv": [0, 0, 7, 7], "texture": "#6"},
+				"south": {"uv": [0, 0, 14, 7], "texture": "#0"},
+				"west": {"uv": [0, 0, 7, 7], "texture": "#6"},
+				"up": {"uv": [0, 0, 14, 7], "texture": "#0"}
+			}
+		}
+	]
+}

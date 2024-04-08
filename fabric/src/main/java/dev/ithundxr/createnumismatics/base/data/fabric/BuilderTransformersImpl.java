@@ -34,10 +34,7 @@ public class BuilderTransformersImpl {
         return a -> a.blockstate((c, p) -> p.getVariantBuilder(c.get())
             .forAllStates((state) -> ConfiguredModel.builder()
                 .modelFile(p.models()
-                    .orientable(c.getName(), p.modLoc("block/bank_terminal/bank_terminal_side"),
-                        p.modLoc("block/bank_terminal/bank_terminal_front"),
-                        p.modLoc("block/bank_terminal/bank_terminal_top"))
-                    .texture("particle", p.modLoc("block/bank_terminal/bank_terminal_top"))
+                    .getExistingFile(p.modLoc("block/bank_terminal"))
                 )
                 .rotationY((int) state.getValue(BankTerminalBlock.HORIZONTAL_FACING).toYRot() + 180)
                 .build()

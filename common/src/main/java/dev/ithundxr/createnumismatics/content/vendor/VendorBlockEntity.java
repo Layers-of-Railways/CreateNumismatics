@@ -275,32 +275,40 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                         .add(Components.translatable("gui.numismatics.vendor.out_of_stock"))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(tooltip);
+
+                    String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+                    if (ownerName != null) {
+                        Lang.builder()
+                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                            .style(ChatFormatting.DARK_RED)
+                            .forGoggles(tooltip);
+                    }
                 }
             }
             case BUY -> {
                 if (!hasSpace()) {
+                    Lang.builder()
+                        .add(Components.translatable("gui.numismatics.vendor.full"))
+                        .style(ChatFormatting.DARK_RED)
+                        .forGoggles(tooltip);
+
                     String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                     if (ownerName != null) {
                         Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.full.named", ownerName))
-                            .style(ChatFormatting.DARK_RED)
-                            .forGoggles(tooltip);
-                    } else {
-                        Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.full"))
+                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
                 } else if (!hasEnoughMoney()) {
+                    Lang.builder()
+                        .add(Components.translatable("gui.numismatics.vendor.insufficient_funds"))
+                        .style(ChatFormatting.DARK_RED)
+                        .forGoggles(tooltip);
+
                     String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                     if (ownerName != null) {
                         Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.insufficient_funds.named", ownerName))
-                            .style(ChatFormatting.DARK_RED)
-                            .forGoggles(tooltip);
-                    } else {
-                        Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.insufficient_funds"))
+                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }

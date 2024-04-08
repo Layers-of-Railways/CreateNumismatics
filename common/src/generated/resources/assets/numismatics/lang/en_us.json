@@ -34,6 +34,7 @@
   "gui.numismatics.vendor.count": " (%sx)",
   "gui.numismatics.vendor.full": "Vendor is full",
   "gui.numismatics.vendor.full.named": "Vendor is full, contact %s to empty it",
+  "gui.numismatics.vendor.generic_named": "Contact %s",
   "gui.numismatics.vendor.incorrect_item": "Incorrect item",
   "gui.numismatics.vendor.insufficient_funds": "Insufficient funds",
   "gui.numismatics.vendor.insufficient_funds.named": "Insufficient funds, contact %s for a refill",

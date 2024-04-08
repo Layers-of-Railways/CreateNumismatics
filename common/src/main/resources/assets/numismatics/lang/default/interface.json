@@ -17,6 +17,7 @@
   "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
   "gui.numismatics.vendor.insufficient_funds": "Insufficient funds",
   "gui.numismatics.vendor.insufficient_funds.named": "Insufficient funds, contact %s for a refill",
+  "gui.numismatics.vendor.generic_named": "Contact %s",
   "gui.numismatics.vendor.mode.sell": "Sell",
   "gui.numismatics.vendor.mode.buy": "Buy",
   "gui.numismatics.vendor.mode.sell.action": "Use to Sell",
