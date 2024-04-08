@@ -19,5 +19,5 @@
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
   "block.numismatics.vendor.tooltip": "VENDOR",
-  "block.numismatics.vendor.tooltip.summary": "Allows for the selling or purchasing of items through player made shops. click to use it, or shift right click if you're the Owner/Trusted to configure it."
+  "block.numismatics.vendor.tooltip.summary": "Allows for the trading of items through player made shops. _Right click_ to trade, or _shift right click_ to configure it."
 }
