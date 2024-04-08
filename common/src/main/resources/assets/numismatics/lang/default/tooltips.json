@@ -18,8 +18,8 @@
   "item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
-  "item.numismatics.banking_card.tooltip": "BANK CARD",
-  "item.numismatics.banking_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Allows Access to the bound Bank Account when used in a _Bank Terminal_, or can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
+  "item.numismatics.bank_card.tooltip": "BANK CARD",
+  "item.numismatics.bank_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Allows Access to the bound Bank Account when used in a _Bank Terminal_, or can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
 
   "item.numismatics.id_card.tooltip": "ID CARD",
   "item.numismatics.id_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Can be placed in the _Trusted Menu_ of many Numismatics blocks to give the bound player access to that block.",
