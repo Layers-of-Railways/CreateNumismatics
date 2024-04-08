@@ -571,6 +571,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean hasSpace() {
+        if (isCreativeVendor())
+            return true;
+
         ItemStack buying = getSellingItem();
         int space = 0;
         for (ItemStack stack : items) {
@@ -778,6 +781,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     private void addBoughtItem(ItemStack stack) {
         if (!matchesSellingItem(stack)) return;
+        if (isCreativeVendor()) return;
 
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
