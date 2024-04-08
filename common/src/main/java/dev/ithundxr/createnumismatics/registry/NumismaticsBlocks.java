@@ -4,6 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
+import com.simibubi.create.foundation.item.ItemDescription;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.data.BuilderTransformers;
@@ -14,6 +15,7 @@ import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -93,6 +95,7 @@ public class NumismaticsBlocks {
 		.item()
 		.transform(BuilderTransformers.vendorItem(false))
 		.build()
+		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.numismatics.vendor.tooltip"))
 		.register();
 
 	public static final BlockEntry<VendorBlock> CREATIVE_VENDOR = REGISTRATE.block("creative_vendor", p -> new VendorBlock(p, true))

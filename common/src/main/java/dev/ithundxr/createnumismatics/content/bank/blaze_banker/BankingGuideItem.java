@@ -3,6 +3,8 @@ package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 import com.simibubi.create.AllBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
@@ -27,6 +29,7 @@ public class BankingGuideItem extends Item {
                 state.getBlock().setPlacedBy(level, clickedPos, state, context.getPlayer(), context.getItemInHand());
             }
             context.getItemInHand().shrink(1);
+            level.playSound(null, clickedPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
             return InteractionResult.SUCCESS;
         }
         return super.useOn(context);
