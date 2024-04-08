@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PonderTooltipHandler.class)
 public class MixinPonderTooltipHandler {
-    @Inject(method = "addToTooltip", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addToTooltip", at = @At("HEAD"), cancellable = true, remap = false)
     private static void noShowInVendor(CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
 
