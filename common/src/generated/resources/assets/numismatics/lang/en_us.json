@@ -20,7 +20,7 @@
   "block.numismatics.vendor.tooltip.mode": "Mode",
   "block.numismatics.vendor.tooltip.price": "For: %s %s, %s¤",
   "block.numismatics.vendor.tooltip.stock": "Stock",
-  "block.numismatics.vendor.tooltip.summary": "Allows for the selling or purchasing of items through player made shops. click to use it, or shift right click if you're the Owner/Trusted to configure it.",
+  "block.numismatics.vendor.tooltip.summary": "Allows for the trading of items through player made shops. _Right click_ to trade, or _shift right click_ to configure it.",
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
   "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
   "create.item.numismatics.bevel": "Bevel",
