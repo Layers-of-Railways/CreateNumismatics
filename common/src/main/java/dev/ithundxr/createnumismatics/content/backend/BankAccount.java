@@ -281,7 +281,8 @@ public class BankAccount implements MenuProvider {
         return isAuthorized(player.getUUID());
     }
 
-    public boolean isAuthorized(UUID uuid) {
+    public boolean isAuthorized(@Nullable UUID uuid) {
+        if (uuid == null) return false;
         return uuid.equals(this.id) || (this.type.useTrustList && this.trustList != null && this.trustList.contains(uuid));
     }
 

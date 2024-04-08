@@ -601,7 +601,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         if (getCardId() != null) {
             BankAccount account = Numismatics.BANK.getAccount(getCardId());
-            return account != null && account.getBalance() >= price.getTotalPrice();
+            return account != null && account.isAuthorized(owner) && account.getBalance() >= price.getTotalPrice();
         }
         return false;
     }
@@ -752,7 +752,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             return;
         } else if (getCardId() != null) {
             BankAccount account = Numismatics.BANK.getAccount(getCardId());
-            if (account != null && account.deduct(price.getTotalPrice())) {
+            if (account != null && account.isAuthorized(owner) && account.deduct(price.getTotalPrice())) {
                 handStack.shrink(buying.getCount());
                 player.setItemInHand(hand, handStack);
 
