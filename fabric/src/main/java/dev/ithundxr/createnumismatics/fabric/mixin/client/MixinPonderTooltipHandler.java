@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.mixin.client;
+package dev.ithundxr.createnumismatics.fabric.mixin.client;
 
 import com.simibubi.create.foundation.ponder.PonderTooltipHandler;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
