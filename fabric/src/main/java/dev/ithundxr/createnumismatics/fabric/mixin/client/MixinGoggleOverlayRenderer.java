@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.mixin.client;
+package dev.ithundxr.createnumismatics.fabric.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

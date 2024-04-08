@@ -4,7 +4,8 @@
   "package": "dev.ithundxr.createnumismatics.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "client.ClientPacketListenerMixin"
+    "client.ClientPacketListenerMixin",
+    "client.MixinGoggleOverlayRenderer"
   ],
   "mixins": [
     "ServerGamePacketListenerImplMixin"
