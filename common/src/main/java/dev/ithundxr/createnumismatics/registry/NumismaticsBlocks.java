@@ -95,7 +95,7 @@ public class NumismaticsBlocks {
 		.item()
 		.transform(BuilderTransformers.vendorItem(false))
 		.build()
-		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.numismatics.vendor.tooltip"))
+		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.numismatics.vendor"))
 		.register();
 
 	public static final BlockEntry<VendorBlock> CREATIVE_VENDOR = REGISTRATE.block("creative_vendor", p -> new VendorBlock(p, true))
