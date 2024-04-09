@@ -31,9 +31,9 @@
   "block.numismatics.bank_terminal.tooltip": "BANK TERMINAL",
   "block.numismatics.bank_terminal.tooltip.summary": "Allows you to access your own bank account or any account you are _Trusted_ with.",
   "block.numismatics.andesite_depositor.tooltip": "ANDESITE DEPOSITOR",
-  "block.numismatics.andesite_depositor.tooltip.summary": "_Shift click_ to configure, _right click_ to pay the given amount either with either the card or coins in your hand, at which point a redstone pulse is emmited.",
+  "block.numismatics.andesite_depositor.tooltip.summary": "_Shift click_ the _top_ to configure, _right click_ to pay the given amount either with either the card or coins in your hand, at which point a redstone pulse is emmited.",
   "block.numismatics.brass_depositor.tooltip": "BRASS DEPOSITOR",
-  "block.numismatics.brass_depositor.tooltip.summary": "_Shift click_ to configure, _right click_ to pay the given amount either with either the card in your hand or the coins in your inventory, at which point a redstone pulse is emmited.",
+  "block.numismatics.brass_depositor.tooltip.summary": "_Shift click_ the _top_ to configure, _right click_ to pay the given amount either with either the card in your hand or the coins in your inventory, at which point a redstone pulse is emmited.",
   "block.numismatics.blaze_banker.tooltip": "BLAZE BANKER",
   "block.numismatics.blaze_banker.tooltip.summary": "Creates a bank account in the Banker's name, useful for sharing an account with multiple people. You can assign a _Bank Card_ to the banker by placing it in the appropriate slot."
 }
