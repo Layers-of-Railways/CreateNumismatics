@@ -1,10 +1,10 @@
 {
   "advancement.numismatics.is_this_legal": "Это вообще законно?",
-  "advancement.numismatics.is_this_legal.desc": "Купите монетку за стоимость ниже её ценности\n§7(Hidden Advancement)",
+  "advancement.numismatics.is_this_legal.desc": "Купите монетку за стоимость ниже её ценности\n§7(Скрытое достижение)",
   "advancement.numismatics.money_laundering": "Отмывание денег",
-  "advancement.numismatics.money_laundering.desc": "Купите монетку в торговом автомате\n§7(Hidden Advancement)",
+  "advancement.numismatics.money_laundering.desc": "Купите монетку в торговом автомате\n§7(Скрытое достижение)",
   "advancement.numismatics.questionable_investment": "Сомнительное приобретение",
-  "advancement.numismatics.questionable_investment.desc": "Купите монетку за стоимость выше её ценности\n§7(Hidden Advancement)",
+  "advancement.numismatics.questionable_investment.desc": "Купите монетку за стоимость выше её ценности\n§7(Скрытое достижение)",
   "advancement.numismatics.root": "Добро пожаловать в Numismatics",
   "advancement.numismatics.root.desc": "Здесь вырастает экономика",
   "block.numismatics.andesite_depositor": "Андезитовый валидатор",
