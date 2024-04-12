@@ -25,16 +25,16 @@ public class BankingGuideItem extends Item {
         BlockPos clickedPos = context.getClickedPos();
         Level level = context.getLevel();
         BlockEntity blockEntity = level.getBlockEntity(clickedPos);
-        if (blockEntity == null)
-            return InteractionResult.FAIL;
-        if (AllBlockEntityTypes.HEATER.is(blockEntity)) {
-            BlockState state = NumismaticsBlocks.BLAZE_BANKER.getDefaultState();
-            if (level.setBlockAndUpdate(clickedPos, state)) {
-                state.getBlock().setPlacedBy(level, clickedPos, state, context.getPlayer(), context.getItemInHand());
+        if (blockEntity == null) {
+            if (AllBlockEntityTypes.HEATER.is(blockEntity)) {
+                BlockState state = NumismaticsBlocks.BLAZE_BANKER.getDefaultState();
+                if (level.setBlockAndUpdate(clickedPos, state)) {
+                    state.getBlock().setPlacedBy(level, clickedPos, state, context.getPlayer(), context.getItemInHand());
+                }
+                context.getItemInHand().shrink(1);
+                level.playSound(null, clickedPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+                return InteractionResult.SUCCESS;
             }
-            context.getItemInHand().shrink(1);
-            level.playSound(null, clickedPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
-            return InteractionResult.SUCCESS;
         }
         return super.useOn(context);
     }
