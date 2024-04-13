@@ -25,7 +25,7 @@ public class BankingGuideItem extends Item {
         BlockPos clickedPos = context.getClickedPos();
         Level level = context.getLevel();
         BlockEntity blockEntity = level.getBlockEntity(clickedPos);
-        if (blockEntity == null) {
+        if (blockEntity != null) {
             if (AllBlockEntityTypes.HEATER.is(blockEntity)) {
                 BlockState state = NumismaticsBlocks.BLAZE_BANKER.getDefaultState();
                 if (level.setBlockAndUpdate(clickedPos, state)) {
