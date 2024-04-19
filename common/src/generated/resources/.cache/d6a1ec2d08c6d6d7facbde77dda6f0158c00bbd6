@@ -1,4 +1,4 @@
-// 1.20.1	2024-04-08T12:10:04.833020489	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2024-04-19T18:54:51.676973276	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 70c481f36a9718ac48632e6939ac6ba785be4c9e assets/numismatics/models/item/black_id_card.json
 95ef415a564eba1d212053195d25b199427b94e3 assets/numismatics/blockstates/creative_vendor.json
 4458283178334ae169a7cbbd1aa09067cbb99ee7 data/numismatics/tags/items/internal/dyes/green_dyes.json
@@ -38,11 +38,11 @@ a8cb82f19034a0e724e12df45c883e9cd469c210 assets/numismatics/models/item/green_ca
 cca7e7be961c6ed6272f19211bb17707b7934155 assets/numismatics/models/item/creative_vendor.json
 9fdcd12c871f136e66973a8c02be94a675a4b727 data/numismatics/tags/items/internal/dyes/yellow_dyes.json
 dc5c60bbbaf3a5d7bc1f9bc0c9377757dbd8de49 data/numismatics/loot_tables/blocks/bank_terminal.json
-47a9ae5dafadf39ad66ec38f2b6d339ad540c620 assets/numismatics/lang/en_us.json
+bb6968537ab305ee37b6268f9037a689b8c8a9c9 assets/numismatics/lang/en_us.json
 edd6109002439af0f15959debe4cb9cca254add8 data/minecraft/tags/blocks/mineable/pickaxe.json
 facbd710d107ebc9b2c6ddfa3b59a16d5f85c992 assets/numismatics/models/item/spur.json
 d6f017479b3cc538f73d7fb0a1e65d1742bab266 assets/numismatics/models/item/light_blue_id_card.json
-375ed5320b550f49130b5b243d53f64c726629d1 assets/numismatics/lang/en_ud.json
+6dd2c5d0c4c607aa601fb66217f4f60a5c008489 assets/numismatics/lang/en_ud.json
 e62db1a880d468865769307ad19f16d9b7dac7c1 data/numismatics/tags/items/internal/dyes/light_gray_dyes.json
 c5958ebbc2782c2611690c642713cadc59656814 assets/numismatics/models/item/light_blue_card.json
 9e6e50d40e3688ae681107e60ac5ff5fc22585f9 data/numismatics/loot_tables/blocks/andesite_depositor.json
@@ -84,8 +84,8 @@ d38d7d40599c66ac84ef7dd2c1635d3ba7794871 data/numismatics/tags/items/internal/nu
 ad712dd2a2a7268dfa773f38a50d526952758d5c data/numismatics/tags/items/internal/dyes/cyan_dyes.json
 182450e6ad4229f2959e6c50e38ef6e2ff5259d0 data/numismatics/tags/items/internal/dyes/orange_dyes.json
 56973a6ce09377c8f235f46aa4d71a2a9fabf587 assets/numismatics/models/item/red_card.json
-266d9b0eb6fdecc4bcf6da465078d059009a3b54 data/numismatics/loot_tables/blocks/blaze_banker.json
 f7f43dd6d567ec8303c73b79409bc92d8b56574a assets/numismatics/blockstates/andesite_depositor.json
+266d9b0eb6fdecc4bcf6da465078d059009a3b54 data/numismatics/loot_tables/blocks/blaze_banker.json
 411b79f79547a0adcb665bf7440e8169f7dcb24e assets/numismatics/models/block/brass_depositor.json
 99e3dd233c66e14a6e572e332ac8b7af1f8ed94e assets/numismatics/models/item/orange_card.json
 83ce6c9d27970b4c643f0f9f3dfeb58668fca3d4 assets/numismatics/models/item/banking_guide.json

@@ -210,7 +210,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
     }
 
     public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
-        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("create.numismatics.trust_list.configure"), be,
+        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("numismatics.trust_list.configure"), be,
             slot, be::isTrusted) {
             @Override
             public void onShortInteract(Player player, InteractionHand hand, Direction side) {

@@ -80,8 +80,12 @@ public enum Coin implements INamedIconOptions {
         return name().toLowerCase(Locale.ROOT);
     }
 
+    public String getTranslatedName() {
+        return Components.translatable(getTranslationKey()).getString().toLowerCase(Locale.ROOT);
+    }
+
     public String getName(int amount) {
-        return getName() + (amount != 1 ? "s" : "");
+        return getTranslatedName() + (amount != 1 ? "s" : "");
     }
 
     public String getDisplayName() {
@@ -95,14 +99,13 @@ public enum Coin implements INamedIconOptions {
 
     @Override
     public String getTranslationKey() {
-        return "item.numismatics."+getName();
+        return "item.numismatics." + getName();
     }
 
     public Coin getDescription() {
         return switch (this) {
             case SPUR, BEVEL, SPROCKET -> SPUR;
-            case COG -> COG;
-            case CROWN, SUN -> COG;
+            case COG, CROWN, SUN -> COG;
         };
     }
 

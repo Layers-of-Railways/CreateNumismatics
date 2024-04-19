@@ -27,17 +27,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepositorMenu> {
-
-    private IconButton trustListButton;
-    private IconButton confirmButton;
-
-    private NumismaticsGuiTextures background = NumismaticsGuiTextures.BRASS_DEPOSITOR;
+    private final NumismaticsGuiTextures background = NumismaticsGuiTextures.BRASS_DEPOSITOR;
     private final ItemStack renderedItem = NumismaticsBlocks.BRASS_DEPOSITOR.asStack();
 
     private final int COIN_COUNT = Coin.values().length;
 
     private final Label[] coinLabels = new Label[COIN_COUNT];
-    private ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
+    private final ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
@@ -54,16 +50,14 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
         int x = leftPos;
         int y = topPos;
 
-        trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
+        IconButton trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
         trustListButton.withCallback(() -> {
             menu.contentHolder.openTrustList();
         });
         addRenderableWidget(trustListButton);
 
-        confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
-        confirmButton.withCallback(() -> {
-            onClose();
-        });
+        IconButton confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
+        confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
         for (Coin coin : Coin.values()) {

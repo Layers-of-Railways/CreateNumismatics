@@ -68,7 +68,7 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
         coinScrollInput = new SelectionScrollInput(x + 84, y + 23, 68, 18);
         coinScrollInput.forOptions(Coin.labeledComponents());
         coinScrollInput.writingTo(coinLabel);
-        coinScrollInput.titled(Components.translatable("create.numismatics.andesite_depositor.price"));
+        coinScrollInput.titled(Components.translatable("numismatics.andesite_depositor.price"));
         coinScrollInput.calling(idx -> {
             // price will be sent when menu closed
             menu.contentHolder.setCoin(Coin.values()[idx]);
