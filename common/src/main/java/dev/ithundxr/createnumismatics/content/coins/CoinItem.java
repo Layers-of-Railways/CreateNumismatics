@@ -54,8 +54,9 @@ public class CoinItem extends Item {
         DiscreteCoinBag coinBag = DiscreteCoinBag.of(coins);
 
         List<ItemStack> inventoryList = new ArrayList<>();
-        inventoryList.add(player.getItemInHand(hand));
-        if (!onlyHand)
+        if (onlyHand)
+            inventoryList.add(player.getItemInHand(hand));
+        else
             inventoryList.addAll(player.getInventory().items);
 
         return extract(inventoryList, coinBag, simulate);
