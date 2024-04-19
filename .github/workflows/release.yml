@@ -18,7 +18,7 @@ jobs:
       RELEASE_BUILD: true
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-      #MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+      MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
 
     steps:
       - name: Checkout Repository

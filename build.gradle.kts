@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     java
+    `maven-publish`
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.5-SNAPSHOT" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
@@ -82,6 +83,29 @@ subprojects {
             officialMojangMappings { nameSyntheticMembers = false }
             parchment("org.parchmentmc.data:parchment-${"minecraft_version"()}:${"parchment_version"()}@zip")
         })
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven${capitalizedName}") {
+                artifactId = "${"archives_base_name"()}-${project.name}-${"minecraft_version"()}"
+                from(components["java"])
+            }
+        }
+
+        repositories {
+            val mavenToken = System.getenv("MAVEN_TOKEN")
+            val maven = if (isRelease) "releases" else "snapshots"
+            if (mavenToken != null && mavenToken.isNotEmpty()) {
+                maven {
+                    url = uri("https://maven.ithundxr.dev/${maven}")
+                    credentials {
+                        username = "railways-github"
+                        password = mavenToken
+                    }
+                }
+            }
+        }
     }
 
     // from here down is platform configuration
@@ -189,10 +213,10 @@ fun hasUnstaged(): Boolean {
 tasks.create("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, tasks.publish, ":fabric:publishMods", ":forge:publishMods")
         }
         "fabric", "forge" -> {
-            dependsOn("${platform}:build", "${platform}:publishMods")
+            dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
         }
     }
 }
