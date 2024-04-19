@@ -74,7 +74,7 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
         boolean powered = state.getValue(POWERED);
 
         if (powered) {
-            level.setBlock(pos, state.setValue(POWERED, false), 3);
+            level.setBlock(pos, state.setValue(POWERED, false), Block.UPDATE_ALL);
         }
     }
 

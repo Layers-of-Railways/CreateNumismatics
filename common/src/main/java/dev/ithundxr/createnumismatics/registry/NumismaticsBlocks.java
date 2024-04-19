@@ -34,6 +34,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
 		.properties(p -> p.strength(1.0f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.lang("Andesite Depositor")
@@ -45,6 +46,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
 		.properties(p -> p.strength(1.4f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.lang("Brass Depositor")
