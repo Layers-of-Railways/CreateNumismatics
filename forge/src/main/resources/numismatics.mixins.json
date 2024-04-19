@@ -9,7 +9,8 @@
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
-    "ServerGamePacketListenerImplMixin"
+    "ServerGamePacketListenerImplMixin",
+    "self.VendorBlockEntityCapabilities"
   ],
   "injectors": {
     "defaultRequire": 1
