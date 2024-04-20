@@ -1,5 +1,5 @@
 ------------------------------------------------------
-Version 1.0.3
+Numismatics 1.0.3
 ------------------------------------------------------
 Additions
 - Russian translation - Thanks VladisCrafter!
@@ -11,17 +11,17 @@ Fixes
 - Funnel/Chute vendor restocking not working on forge
 - Translatability of coin names/values
 ------------------------------------------------------
-Version 1.0.2
+Numismatics 1.0.2
 ------------------------------------------------------
 Fixes
 - Fix another mixin crash
 ------------------------------------------------------
-Version 1.0.1
+Numismatics 1.0.1
 ------------------------------------------------------
 Fixes
 - Fix crash from different mixin signature on forge
 ------------------------------------------------------
-Version 1.0.0
+Numismatics 1.0.0
 ------------------------------------------------------
 Additions
 - Initial Release
