@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics;
 
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.*;
 import dev.ithundxr.createnumismatics.util.ClientUtils;
@@ -14,6 +15,8 @@ public class ModSetup {
         NumismaticsBlocks.register();
         NumismaticsMenuTypes.register();
         NumismaticsTags.register();
+
+        ComputerCraftProxy.register();
 
         GogglesItem.addIsWearingPredicate((player) -> {
             if (!new Exception().getStackTrace()[2].getClassName().equals("com.simibubi.create.content.equipment.goggles.GoggleOverlayRenderer")) // fixme getting stacktrace is slow, use mixin to improve this

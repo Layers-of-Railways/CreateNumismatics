@@ -25,6 +25,11 @@ repositories {
             includeGroup("com.simibubi.create")
         }
     }
+    maven("https://squiddev.cc/maven/") { // CC Tweaked
+        content {
+            includeGroup("cc.tweaked")
+        }
+    }
 }
 
 dependencies {
@@ -38,6 +43,13 @@ dependencies {
     modImplementation("com.jozufozu.flywheel:flywheel-forge-${"flywheel_forge_minecraft_version"()}:${"flywheel_forge_version"()}")
 
     modLocalRuntime("dev.emi:emi-forge:${"emi_version"()}")
+
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge-api:${"cc_version"()}")
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-core-api:${"cc_version"()}")
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+    }
+
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")

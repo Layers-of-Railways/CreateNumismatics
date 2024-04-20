@@ -38,6 +38,11 @@ repositories {
     maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
         name = "Siphalor's Maven"
     }
+    maven("https://squiddev.cc/maven/") {// CC Tweaked
+        content {
+            includeGroup("cc.tweaked")
+        }
+    }
 }
 
 dependencies {
@@ -62,6 +67,11 @@ dependencies {
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
 
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
+
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric-api:${"cc_version"()}")
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric:${"cc_version"()}")
+    }
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
