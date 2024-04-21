@@ -33,14 +33,6 @@
   "block.numismatics.vendor.tooltip.summary": "Дозволяє торгувати предметами через створені гравцем крамниці. Клацніть ПКМ, щоби торгувати, або ПКМ + Shift, щоби налаштувати її.",
   "block.numismatics.vendor.tooltip.trade_item": "Предмет на продаж",
   "command.numismatics.arguments.enum.invalid": "Помилка: недійсне значення %s. Дійсні значення: %s",
-  "create.item.numismatics.bevel": "Фасочка",
-  "create.item.numismatics.cog": "Шестірня",
-  "create.item.numismatics.crown": "Коронка",
-  "create.item.numismatics.sprocket": "Зірочка",
-  "create.item.numismatics.spur": "Шпорка",
-  "create.item.numismatics.sun": "Сонечко",
-  "create.numismatics.andesite_depositor.price": "Ціна",
-  "create.numismatics.trust_list.configure": "Налаштувати список довіри",
   "gui.numismatics.bank_terminal.balance": "Рахунок: %s %s, %s¤",
   "gui.numismatics.trust_list": "Список довіри",
   "gui.numismatics.vendor.count": " (%sx)",
@@ -112,5 +104,7 @@
   "item.numismatics.white_id_card": "Біла ID-картка",
   "item.numismatics.yellow_card": "Жовта картка",
   "item.numismatics.yellow_id_card": "Жовта ID-картка",
-  "itemGroup.numismatics": "Create: Монетознавство"
+  "itemGroup.numismatics": "Create: Монетознавство",
+  "numismatics.andesite_depositor.price": "Price",
+  "numismatics.trust_list.configure": "Configure Trust List"
 }
