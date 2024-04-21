@@ -35,10 +35,8 @@
   "command.numismatics.arguments.enum.invalid": "Помилка: недійсне значення %s. Дійсні значення: %s",
   "gui.numismatics.bank_terminal.balance": "Рахунок: %s %s, %s¤",
   "gui.numismatics.trust_list": "Список довіри",
-  "gui.numismatics.vendor.count": " (%sx)",
   "gui.numismatics.vendor.full": "Крамниця переповнена",
   "gui.numismatics.vendor.full.named": "Крамниця переповнена, зверніться до %s",
-  "gui.numismatics.vendor.generic_named": "Contact %s",
   "gui.numismatics.vendor.incorrect_item": "Неправильний предмет",
   "gui.numismatics.vendor.insufficient_funds": "Недостатньо коштів",
   "gui.numismatics.vendor.insufficient_funds.named": "У крамниці недостатньо коштів, зверніться до %s",
@@ -104,7 +102,5 @@
   "item.numismatics.white_id_card": "Біла ID-картка",
   "item.numismatics.yellow_card": "Жовта картка",
   "item.numismatics.yellow_id_card": "Жовта ID-картка",
-  "itemGroup.numismatics": "Create: Монетознавство",
-  "numismatics.andesite_depositor.price": "Price",
-  "numismatics.trust_list.configure": "Configure Trust List"
+  "itemGroup.numismatics": "Create: Монетознавство"
 }

@@ -35,7 +35,6 @@
   "command.numismatics.arguments.enum.invalid": "Ошибка: Недопустимое значение '%s'. Допустимые: %s",
   "gui.numismatics.bank_terminal.balance": "Баланс: %s %s, %s¤",
   "gui.numismatics.trust_list": "Список доверенных",
-  "gui.numismatics.vendor.count": " (%sx)",
   "gui.numismatics.vendor.full": "Торговый автомат переполнен",
   "gui.numismatics.vendor.full.named": "Торговый автомат переполнен, свяжитесь с %s, чтобы тот его опустошил",
   "gui.numismatics.vendor.generic_named": "Свяжитесь с %s",
@@ -104,7 +103,6 @@
   "item.numismatics.white_id_card": "Белая идентификационная карта",
   "item.numismatics.yellow_card": "Жёлтая банковская карта",
   "item.numismatics.yellow_id_card": "Жёлтая идентификационная карта",
-  "itemGroup.numismatics": "Create: Numismatics",
   "numismatics.andesite_depositor.price": "Цена",
   "numismatics.trust_list.configure": "Редактировать список доверенных"
 }
