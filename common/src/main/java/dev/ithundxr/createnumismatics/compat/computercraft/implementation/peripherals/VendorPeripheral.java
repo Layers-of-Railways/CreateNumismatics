@@ -4,7 +4,12 @@ import com.simibubi.create.compat.computercraft.implementation.peripherals.Synce
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.Map;
@@ -12,11 +17,13 @@ import java.util.Map;
 import static dev.ithundxr.createnumismatics.content.backend.Coin.getCoinFromName;
 import static dev.ithundxr.createnumismatics.content.backend.Coin.getCoinsFromSpurAmount;
 
-public class BrassDepositorPeripheral extends SyncedPeripheral<BrassDepositorBlockEntity> {
+public class VendorPeripheral extends SyncedPeripheral<VendorBlockEntity> {
 
-    public BrassDepositorPeripheral(BrassDepositorBlockEntity blockEntity) {
+    public VendorPeripheral(VendorBlockEntity blockEntity) {
         super(blockEntity);
     }
+
+
 
     @LuaFunction(mainThread = true)
     public final void setCoinAmount(String coinName, int amount) throws LuaException {
@@ -48,6 +55,6 @@ public class BrassDepositorPeripheral extends SyncedPeripheral<BrassDepositorBlo
 
     @Override
     public String getType() {
-        return "Numismatics_Depositor";
+        return "Numismatics_Vendor";
     }
 }
