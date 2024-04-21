@@ -46,6 +46,13 @@ dependencies {
 
     modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge-api:${"cc_version"()}")
     modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-core-api:${"cc_version"()}")
+
+    forgeRuntimeLibrary("cc.tweaked:cobalt:0.9.3")
+    forgeRuntimeLibrary("com.jcraft:jzlib:1.1.3")
+    forgeRuntimeLibrary("io.netty:netty-codec-http:4.1.82.Final")
+    forgeRuntimeLibrary("io.netty:netty-codec-socks:4.1.82.Final")
+    forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.82.Final")
+
     if ("enable_cc"().toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
     }
