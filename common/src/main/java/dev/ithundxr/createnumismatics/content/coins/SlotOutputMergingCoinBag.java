@@ -58,6 +58,11 @@ public class SlotOutputMergingCoinBag extends Slot {
     }
 
     @Override
+    protected void onSwapCraft(int numItemsCrafted) {
+        remove(numItemsCrafted);
+    }
+
+    @Override
     public @NotNull ItemStack remove(int amount) {
         int available = coinBag.get(coin).getFirst();
         amount = Math.min(amount, available);
