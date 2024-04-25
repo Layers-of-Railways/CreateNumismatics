@@ -23,6 +23,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -98,10 +99,18 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
         }
     }
 
-
     @Override
     @SuppressWarnings("deprecation")
     public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof VendorBlockEntity vbe) {
+                vbe.dropContents(level, pos);
+
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+        }
+
         IBE.onRemove(state, level, pos, newState);
     }
 

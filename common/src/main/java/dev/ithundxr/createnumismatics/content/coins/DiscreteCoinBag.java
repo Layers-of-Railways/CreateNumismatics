@@ -4,8 +4,12 @@ import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -118,5 +122,19 @@ public class DiscreteCoinBag implements CoinBag {
 
     public void clear() {
         coins.clear();
+    }
+
+    public void dropContents(Level level, BlockPos pos) {
+        dropContents(level, pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public void dropContents(Level level, Entity entityAt) {
+        dropContents(level, entityAt.getX(), entityAt.getY(), entityAt.getZ());
+    }
+
+    private void dropContents(Level level, double x, double y, double z) {
+        coins.forEach((coin, amount) -> {
+            Containers.dropItemStack(level, x, y, z, coin.asStack(amount));
+        });
     }
 }

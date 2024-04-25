@@ -2,11 +2,11 @@
 Numismatics 1.0.4
 ------------------------------------------------------
 Additions
+- Translations to many languages (Thank you Translators!)
 
 Fixes
-
-Removals
-
+- Dupe
+- Vendors not dropping items upon breaking
 ------------------------------------------------------
 Numismatics 1.0.3
 ------------------------------------------------------

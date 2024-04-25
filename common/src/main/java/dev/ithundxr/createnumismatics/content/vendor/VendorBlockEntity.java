@@ -48,6 +48,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Contract;
@@ -557,6 +558,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             }
         }
         notifyUpdate();
+    }
+
+    public void dropContents(Level level, BlockPos pos) {
+        Containers.dropContents(level, pos, this);
+        Containers.dropContents(level, pos, cardContainer);
+        Containers.dropContents(level, pos, sellingContainer);
+        inventory.dropContents(level, pos);
     }
 
     /**
