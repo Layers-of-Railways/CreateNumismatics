@@ -12,10 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MixinBitmapProvider$Definition {
     @WrapOperation(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/providers/BitmapProvider$Definition;getActualGlyphWidth(Lcom/mojang/blaze3d/platform/NativeImage;IIII)I"))
     private int monospaceCoins(BitmapProvider.Definition instance, NativeImage image, int width, int height, int x, int y, Operation<Integer> original) {
-        if (instance.file().getNamespace().equals(Numismatics.MOD_ID) && instance.file().getPath().startsWith("item/coin/")) {
+        if (instance.file().getNamespace().equals(Numismatics.MOD_ID) && instance.file().getPath().startsWith("item/coin/"))
             return 16;
-        } else {
-            return original.call(instance, image, width, height, x, y);
-        }
+        return original.call(instance, image, width, height, x, y);
     }
 }
