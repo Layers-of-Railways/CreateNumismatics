@@ -152,7 +152,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     @Override
     @SuppressWarnings("deprecation")
     public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter level, @NotNull BlockPos pos) {
-        if (!isTrusted(player, level, pos) || !mayBreak(player.level, pos, state, player, true)) {
+        if (!isTrusted(player, level, pos) || !mayBreak(player.level(), pos, state, player, true)) {
             return 0.0f;
         }
         return super.getDestroyProgress(state, player, level, pos);

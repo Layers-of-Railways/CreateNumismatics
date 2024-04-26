@@ -34,7 +34,7 @@ public abstract class BlockEntityConfigurationPacket<BE extends SyncedBlockEntit
     @SuppressWarnings({"ConstantValue", "unchecked"})
     @Override
     public void handle(ServerPlayer sender) {
-        Level world = sender.level;
+        Level world = sender.level();
         if (world == null || !world.isLoaded(pos))
             return;
         if (!pos.closerThan(sender.blockPosition(), maxRange()))
