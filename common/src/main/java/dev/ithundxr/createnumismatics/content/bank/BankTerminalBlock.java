@@ -67,7 +67,9 @@ public class BankTerminalBlock extends Block {
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos,
+                                          @NotNull Player player, @NotNull InteractionHand hand,
+                                          @NotNull BlockHitResult hit) {
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
@@ -75,15 +77,18 @@ public class BankTerminalBlock extends Block {
 
         BankAccount account = null;
 
-        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack) && CardItem.isBound(handStack)
-            && (account = Numismatics.BANK.getAccount(CardItem.get(handStack))) != null && account.isAuthorized(player)) {
-            // intentionally left blank
+        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack) && CardItem.isBound(handStack)) {
+            account = Numismatics.BANK.getAccount(CardItem.get(handStack));
         }
         if (account == null) {
             account = Numismatics.BANK.getAccount(player);
         }
 
-        Utils.openScreen((ServerPlayer) player, account, account::sendToMenu);
-        return InteractionResult.SUCCESS;
+        if (account.isAuthorized(player)) {
+            Utils.openScreen((ServerPlayer) player, account, account::sendToMenu);
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+        }
     }
 }

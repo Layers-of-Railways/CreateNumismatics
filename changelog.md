@@ -5,7 +5,7 @@ Additions
 - Entry
 
 Fixes
-- Entry
+- Bank terminals properly check authorization now
 
 Removals
 - Entry
