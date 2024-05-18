@@ -33,7 +33,7 @@ public class NumismaticsBlocks {
 	public static final BlockEntry<AndesiteDepositorBlock> ANDESITE_DEPOSITOR = REGISTRATE.block("andesite_depositor", AndesiteDepositorBlock::new)
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
-		.properties(p -> p.strength(1.0f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.strength(1.0F, 3600000.0F)) // explosion resistance same as bedrock
 		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
@@ -45,7 +45,7 @@ public class NumismaticsBlocks {
 	public static final BlockEntry<BrassDepositorBlock> BRASS_DEPOSITOR = REGISTRATE.block("brass_depositor", BrassDepositorBlock::new)
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
-		.properties(p -> p.strength(1.4f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.strength(1.4F, 3600000.0F)) // explosion resistance same as bedrock
 		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
@@ -58,6 +58,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.mapColor(MapColor.COLOR_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.lang("Bank Terminal")
@@ -70,6 +71,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.lightLevel(state -> 15))
+		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.transform(BuilderTransformers.blazeBanker())
@@ -89,6 +91,7 @@ public class NumismaticsBlocks {
 		.properties(BlockBehaviour.Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)
@@ -104,6 +107,7 @@ public class NumismaticsBlocks {
 		.properties(BlockBehaviour.Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(-1.0F, 3600000.0F)) // Unbreakable & Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)
