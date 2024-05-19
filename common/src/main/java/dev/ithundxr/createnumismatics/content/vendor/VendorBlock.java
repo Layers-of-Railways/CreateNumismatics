@@ -2,7 +2,6 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
-import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
@@ -37,7 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class VendorBlock extends Block implements IBE<VendorBlockEntity>, TrustedBlock, IWrenchable, NotifyFailedBreak, ForcedGoggleOverlay {
+public class VendorBlock extends Block implements IBE<VendorBlockEntity>, TrustedBlock, IWrenchable, NotifyFailedBreak {
     VoxelShape voxelShape = Shapes.or(
         Block.box(0, 0, 0, 16, 8, 16),
         Block.box(1, 8, 1, 15, 18, 15)

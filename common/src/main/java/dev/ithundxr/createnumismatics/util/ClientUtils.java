@@ -1,6 +1,5 @@
 package dev.ithundxr.createnumismatics.util;
 
-import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,19 +19,6 @@ public class ClientUtils {
     public static boolean testClientPlayer(Predicate<Player> predicate) {
         return predicate.test(Minecraft.getInstance().player);
     }
-
-    public static boolean isLookingAtForcedGoggleOverlay() {
-        HitResult hitResult = Minecraft.getInstance().hitResult;
-        if (!(hitResult instanceof BlockHitResult blockHitResult))
-            return false;
-
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return false;
-
-        return level.getBlockState(blockHitResult.getBlockPos()).getBlock() instanceof ForcedGoggleOverlay;
-    }
-
 
     private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
     public static ItemStack changeGoggleOverlayItem(Supplier<ItemStack> original) {

@@ -10,6 +10,7 @@
   "mixins": [
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
+    "client.MixinGoggleOverlayRenderer",
     "compat.carryon.MixinPickupHandler"
   ],
   "injectors": {
