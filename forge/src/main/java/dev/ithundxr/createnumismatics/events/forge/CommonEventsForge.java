@@ -2,7 +2,9 @@ package dev.ithundxr.createnumismatics.events.forge;
 
 import dev.ithundxr.createnumismatics.events.CommonEvents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,6 +27,11 @@ public class CommonEventsForge {
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer)
-        CommonEvents.onPlayerJoin(serverPlayer);
+            CommonEvents.onPlayerJoin(serverPlayer);
+    }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        CommonEvents.onUseBlock(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
     }
 }

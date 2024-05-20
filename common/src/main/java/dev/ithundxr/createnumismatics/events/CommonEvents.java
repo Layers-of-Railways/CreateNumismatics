@@ -7,14 +7,21 @@ import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class CommonEvents {
     public static void onLoadWorld(LevelAccessor world) {
@@ -55,5 +62,18 @@ public class CommonEvents {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
             NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
         }
+    }
+
+    @MultiLoaderEvent
+    public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+        BlockState state = level.getBlockState(pos);
+
+        if (!level.isClientSide() && !player.getOffhandItem().isEmpty() && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
+                hand.equals(InteractionHand.MAIN_HAND) && state.getBlock() instanceof VendorBlock vb) {
+            return vb.use(state, level, pos, player, hand, hitResult);
+        }
+
+        return InteractionResult.PASS;
     }
 }

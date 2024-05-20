@@ -1,14 +1,11 @@
 ------------------------------------------------------
 Numismatics 1.0.5
 ------------------------------------------------------
-Additions
-- Entry
-
 Fixes
 - Bank terminals properly check authorization now
-
-Removals
-- Entry
+- Creative Vendor breakable in survival
+- Numismatics blocks being explodable
+- Vendor Menu cannot be opened when an item is in the offhand (#65)
 ------------------------------------------------------
 Numismatics 1.0.4
 ------------------------------------------------------
