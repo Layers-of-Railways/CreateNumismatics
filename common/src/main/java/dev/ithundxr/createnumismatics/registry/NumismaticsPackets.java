@@ -7,7 +7,7 @@ import dev.ithundxr.createnumismatics.multiloader.PacketSet;
 import dev.ithundxr.createnumismatics.registry.packets.*;
 
 public class NumismaticsPackets {
-    public static final PacketSet PACKETS = PacketSet.builder(Numismatics.MOD_ID, 1) // increment version on changes (keep on version 1 until first release)
+    public static final PacketSet PACKETS = PacketSet.builder(Numismatics.MOD_ID, 2) // increment version on changes
 
         .c2s(SliderStylePriceConfigurationPacket.class, SliderStylePriceConfigurationPacket::new)
         .c2s(BlazeBankerEditPacket.class, BlazeBankerEditPacket::new)
@@ -17,6 +17,9 @@ public class NumismaticsPackets {
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)
+
+        .s2c(VendorContainerSetSlotPacket.class, VendorContainerSetSlotPacket::new)
+        .s2c(VendorContainerSetContentPacket.class, VendorContainerSetContentPacket::new)
 
         .build();
 }

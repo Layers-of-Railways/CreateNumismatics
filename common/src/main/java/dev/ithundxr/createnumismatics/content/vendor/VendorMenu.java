@@ -10,9 +10,11 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -157,5 +159,15 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
             return ItemStack.EMPTY;
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setSynchronizer(@NotNull ContainerSynchronizer synchronizer) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            super.setSynchronizer(new VendorContainerSynchronizer(serverPlayer));
+            return;
+        }
+
+        super.setSynchronizer(synchronizer);
     }
 }

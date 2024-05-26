@@ -6,6 +6,7 @@ Fixes
 - Creative Vendor breakable in survival
 - Numismatics blocks being explodable
 - Vendor Menu cannot be opened when an item is in the offhand (#65)
+- Fix coins stacked above 127 visually disappearing on the client in vendors (#72)
 ------------------------------------------------------
 Numismatics 1.0.4
 ------------------------------------------------------
