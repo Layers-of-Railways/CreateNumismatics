@@ -102,7 +102,7 @@ subprojects {
                 maven {
                     url = uri("https://maven.ithundxr.dev/${maven}")
                     credentials {
-                        username = "railways-github"
+                        username = "numismatics-github"
                         password = mavenToken
                     }
                 }
