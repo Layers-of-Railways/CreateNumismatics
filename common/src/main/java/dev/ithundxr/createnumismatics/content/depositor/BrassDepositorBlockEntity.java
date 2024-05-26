@@ -83,7 +83,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
     }
 
     @Override
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(price.getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();

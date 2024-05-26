@@ -2,14 +2,13 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
@@ -58,7 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveGoggleInformation, ForcedGoggleOverlay, WorldlyContainer, MenuProvider {
+public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -264,7 +263,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     @Environment(EnvType.CLIENT)
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         ItemStack sellingStack = getSellingItem();
         if (sellingStack.isEmpty())
             return false;

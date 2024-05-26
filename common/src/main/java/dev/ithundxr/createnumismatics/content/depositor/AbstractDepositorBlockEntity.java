@@ -1,10 +1,9 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.google.common.collect.ImmutableList;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.block.ForcedGoggleOverlay;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ForcedGoggleOverlay, Trusted, TrustListHolder {
+public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveHoveringInformation, Trusted, TrustListHolder {
 
     public final Container cardContainer = new SimpleContainer(1) {
         @Override

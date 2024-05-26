@@ -40,7 +40,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
 
     @Override
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         Coin coin = getCoin();
         Lang.builder()
             .add(Components.translatable("block.numismatics.andesite_depositor.tooltip.price",
