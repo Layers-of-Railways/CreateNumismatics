@@ -215,7 +215,7 @@ fun hasUnstaged(): Boolean {
 tasks.create("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, tasks.publish, ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
         }
         "fabric", "forge" -> {
             dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
