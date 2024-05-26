@@ -2,6 +2,7 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.BigStackSizeContainerSynchronizer;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
@@ -164,7 +165,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
     @Override
     public void setSynchronizer(@NotNull ContainerSynchronizer synchronizer) {
         if (player instanceof ServerPlayer serverPlayer) {
-            super.setSynchronizer(new VendorContainerSynchronizer(serverPlayer));
+            super.setSynchronizer(new BigStackSizeContainerSynchronizer(serverPlayer));
             return;
         }
 

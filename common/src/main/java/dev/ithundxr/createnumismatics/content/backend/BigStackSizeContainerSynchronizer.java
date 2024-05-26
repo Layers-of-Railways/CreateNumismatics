@@ -1,8 +1,8 @@
-package dev.ithundxr.createnumismatics.content.vendor;
+package dev.ithundxr.createnumismatics.content.backend;
 
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
-import dev.ithundxr.createnumismatics.registry.packets.VendorContainerSetContentPacket;
-import dev.ithundxr.createnumismatics.registry.packets.VendorContainerSetSlotPacket;
+import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetContentPacket;
+import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetSlotPacket;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -12,16 +12,16 @@ import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class VendorContainerSynchronizer implements ContainerSynchronizer {
+public class BigStackSizeContainerSynchronizer implements ContainerSynchronizer {
     private final ServerPlayer serverPlayer;
 
-    public VendorContainerSynchronizer(ServerPlayer serverPlayer) {
+    public BigStackSizeContainerSynchronizer(ServerPlayer serverPlayer) {
         this.serverPlayer = serverPlayer;
     }
 
     @Override
     public void sendInitialData(AbstractContainerMenu container, @NotNull NonNullList<ItemStack> items, @NotNull ItemStack carriedItem, int[] initialData) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new VendorContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
+        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new BigStackSizeContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
 
         for (int i = 0; i < initialData.length; ++i) {
             sendDataChange(container, i, initialData[i]);
@@ -30,7 +30,7 @@ public class VendorContainerSynchronizer implements ContainerSynchronizer {
 
     @Override
     public void sendSlotChange(AbstractContainerMenu container, int slot, ItemStack itemStack) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new VendorContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
+        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new BigStackSizeContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
     }
 
     @Override

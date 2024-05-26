@@ -10,7 +10,7 @@ public class PacketUtils {
     /**
      * Reads an item without the 127 count limit
      */
-    public static ItemStack readHighCountItem(FriendlyByteBuf buffer) {
+    public static ItemStack readBigStackSizeItem(FriendlyByteBuf buffer) {
         if (!buffer.readBoolean()) {
             return ItemStack.EMPTY;
         } else {
@@ -26,7 +26,7 @@ public class PacketUtils {
     /**
      * Writes an item without the 127 count limit
      */
-    public static void writeHighCountItem(FriendlyByteBuf buffer, ItemStack itemStack) {
+    public static void writeBigStackSizeItem(FriendlyByteBuf buffer, ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             buffer.writeBoolean(false);
         } else {

@@ -2,8 +2,7 @@
 Numismatics 1.0.7
 ------------------------------------------------------
 Fixes
-- example
-
+- Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------

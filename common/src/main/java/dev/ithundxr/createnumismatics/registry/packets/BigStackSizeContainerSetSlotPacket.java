@@ -10,24 +10,24 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class VendorContainerSetSlotPacket implements S2CPacket {
+public class BigStackSizeContainerSetSlotPacket implements S2CPacket {
     private final int containerId;
     private final int stateId;
     private final int slot;
     private final ItemStack itemStack;
 
-    public VendorContainerSetSlotPacket(int containerId, int stateId, int slot, ItemStack itemStack) {
+    public BigStackSizeContainerSetSlotPacket(int containerId, int stateId, int slot, ItemStack itemStack) {
         this.containerId = containerId;
         this.stateId = stateId;
         this.slot = slot;
         this.itemStack = itemStack;
     }
 
-    public VendorContainerSetSlotPacket(FriendlyByteBuf buffer) {
+    public BigStackSizeContainerSetSlotPacket(FriendlyByteBuf buffer) {
         containerId = buffer.readUnsignedByte();
         stateId = buffer.readVarInt();
         slot = buffer.readShort();
-        itemStack = PacketUtils.readHighCountItem(buffer);
+        itemStack = PacketUtils.readBigStackSizeItem(buffer);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class VendorContainerSetSlotPacket implements S2CPacket {
         buffer.writeByte(containerId);
         buffer.writeVarInt(stateId);
         buffer.writeShort(slot);
-        PacketUtils.writeHighCountItem(buffer, itemStack);
+        PacketUtils.writeBigStackSizeItem(buffer, itemStack);
     }
 
     @Override
