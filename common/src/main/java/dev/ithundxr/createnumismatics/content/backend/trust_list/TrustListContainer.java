@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.content.backend.trust_list;
 
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
+import dev.ithundxr.createnumismatics.mixin.AccessorSimpleContainer;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -22,7 +23,7 @@ public class TrustListContainer extends SimpleContainer {
     @Override
     public void setChanged() {
         trustList.clear();
-        for (ItemStack stack : items) {
+        for (ItemStack stack : ((AccessorSimpleContainer) this).numismatics$getItems()) {
             UUID id;
             if ((id = IDCardItem.get(stack)) != null)
                 trustList.add(id);
@@ -36,12 +37,12 @@ public class TrustListContainer extends SimpleContainer {
     }
 
     public CompoundTag save(CompoundTag nbt) {
-        ContainerHelper.saveAllItems(nbt, items);
+        ContainerHelper.saveAllItems(nbt, ((AccessorSimpleContainer) this).numismatics$getItems());
         return nbt;
     }
 
     public void load(CompoundTag nbt) {
-        ContainerHelper.loadAllItems(nbt, items);
+        ContainerHelper.loadAllItems(nbt, ((AccessorSimpleContainer) this).numismatics$getItems());
         setChanged();
     }
 

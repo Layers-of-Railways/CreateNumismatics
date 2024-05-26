@@ -8,6 +8,7 @@
     "client.MixinChatScreen"
   ],
   "mixins": [
+    "AccessorSimpleContainer",
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
     "compat.carryon.MixinPickupHandler"
