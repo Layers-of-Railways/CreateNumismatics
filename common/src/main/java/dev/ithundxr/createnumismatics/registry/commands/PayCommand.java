@@ -35,6 +35,12 @@ public class PayCommand {
                             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                             int amount = getInteger(ctx, "amount");
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+
+                            if (bankAct == null) {
+                                ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                return -1;
+                            }
+
                             UUID id = bankAct.getAccountUUID();
 
                             return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount);
@@ -45,6 +51,12 @@ public class PayCommand {
                                 int amount = getInteger(ctx, "amount");
                                 Coin coin = ctx.getArgument("coin", Coin.class);
                                 BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+
+                                if (bankAct == null) {
+                                    ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                    return -1;
+                                }
+
                                 UUID id = bankAct.getAccountUUID();
 
                                 return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", amount, coin);

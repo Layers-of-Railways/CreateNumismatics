@@ -7,6 +7,7 @@ Fixes
 - Numismatics blocks being explodable
 - Vendor Menu cannot be opened when an item is in the offhand (#65)
 - Fix coins stacked above 127 visually disappearing on the client in vendors (#72)
+- Fix running pay, deduct and view commands on a non-existent blaze banker throwing exceptions (#63)
 ------------------------------------------------------
 Numismatics 1.0.4
 ------------------------------------------------------
