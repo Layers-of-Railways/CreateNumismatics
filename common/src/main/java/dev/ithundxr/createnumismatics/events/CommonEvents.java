@@ -30,6 +30,8 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -60,7 +62,7 @@ public class CommonEvents {
             mayBreak = conditionalBreak.mayBreak(level, pos, state, player);
         }
 
-        if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isShiftKeyDown() && trustedBlock.isTrusted(player, level, pos)) {
+        if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isCrouching() && trustedBlock.isTrusted(player, level, pos)) {
             player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break")
                     .withStyle(ChatFormatting.DARK_RED), true);
         }

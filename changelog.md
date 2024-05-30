@@ -3,6 +3,9 @@ Numismatics 1.0.7
 ------------------------------------------------------
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
+
+Changes
+- Allow rebinding the break keybind using the crouch keybind (was previously shift + break key)
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------
