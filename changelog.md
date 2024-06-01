@@ -7,6 +7,7 @@ Fixes
 
 Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously shift + break key)
+- Redid Bank Terminal texture to match other Create textures
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------
