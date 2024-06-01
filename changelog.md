@@ -3,6 +3,7 @@ Numismatics 1.0.7
 ------------------------------------------------------
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
+- Texture inconsistency in the gui texture of blaze terminals, blaze bankers and trust lists
 
 Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously shift + break key)
