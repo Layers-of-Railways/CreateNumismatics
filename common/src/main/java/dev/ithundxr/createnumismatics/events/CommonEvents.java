@@ -63,7 +63,7 @@ public class CommonEvents {
         }
 
         if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isCrouching() && trustedBlock.isTrusted(player, level, pos)) {
-            player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break")
+            player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break", Components.keybind("key.sneak"))
                     .withStyle(ChatFormatting.DARK_RED), true);
         }
 

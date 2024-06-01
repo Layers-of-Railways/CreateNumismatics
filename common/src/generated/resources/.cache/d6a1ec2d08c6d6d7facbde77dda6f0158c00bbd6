@@ -1,4 +1,4 @@
-// 1.20.1	2024-05-30T17:23:26.206118089	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2024-06-01T10:15:46.971201845	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 70c481f36a9718ac48632e6939ac6ba785be4c9e assets/numismatics/models/item/black_id_card.json
 95ef415a564eba1d212053195d25b199427b94e3 assets/numismatics/blockstates/creative_vendor.json
 4458283178334ae169a7cbbd1aa09067cbb99ee7 data/numismatics/tags/items/internal/dyes/green_dyes.json
@@ -38,11 +38,11 @@ a8cb82f19034a0e724e12df45c883e9cd469c210 assets/numismatics/models/item/green_ca
 cca7e7be961c6ed6272f19211bb17707b7934155 assets/numismatics/models/item/creative_vendor.json
 9fdcd12c871f136e66973a8c02be94a675a4b727 data/numismatics/tags/items/internal/dyes/yellow_dyes.json
 dc5c60bbbaf3a5d7bc1f9bc0c9377757dbd8de49 data/numismatics/loot_tables/blocks/bank_terminal.json
-1cd26e33d78f7b7f93e9d7466eae50f027b34075 assets/numismatics/lang/en_us.json
+52659db3242553289a2cb1268eb469a48a477f3a assets/numismatics/lang/en_us.json
 edd6109002439af0f15959debe4cb9cca254add8 data/minecraft/tags/blocks/mineable/pickaxe.json
 facbd710d107ebc9b2c6ddfa3b59a16d5f85c992 assets/numismatics/models/item/spur.json
 d6f017479b3cc538f73d7fb0a1e65d1742bab266 assets/numismatics/models/item/light_blue_id_card.json
-9f38b4224f4986b2e40be7e68c40a0c67a866561 assets/numismatics/lang/en_ud.json
+cbbdd36d74d48d2ff03629264e405a790dd1697f assets/numismatics/lang/en_ud.json
 e62db1a880d468865769307ad19f16d9b7dac7c1 data/numismatics/tags/items/internal/dyes/light_gray_dyes.json
 c5958ebbc2782c2611690c642713cadc59656814 assets/numismatics/models/item/light_blue_card.json
 9e6e50d40e3688ae681107e60ac5ff5fc22585f9 data/numismatics/loot_tables/blocks/andesite_depositor.json
