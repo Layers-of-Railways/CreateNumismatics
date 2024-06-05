@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.authlib.GameProfile;
@@ -32,6 +50,12 @@ public class ViewCommand {
                     .executes(ctx -> {
                         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                         BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+
+                        if (bankAct == null) {
+                            ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                            return -1;
+                        }
+
                         UUID id = bankAct.getAccountUUID();
 
                         return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")");
@@ -41,6 +65,12 @@ public class ViewCommand {
                             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
                             Coin coin = ctx.getArgument("coin", Coin.class);
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
+
+                            if (bankAct == null) {
+                                ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                return -1;
+                            }
+
                             UUID id = bankAct.getAccountUUID();
 
                             return execute(ctx, id, Type.BLAZE_BANKER, false, "Blaze Banker at (" + pos.toShortString() + ")", coin);

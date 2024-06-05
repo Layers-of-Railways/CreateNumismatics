@@ -24,7 +24,7 @@
   "block.numismatics.creative_vendor": "Creative Vendor",
   "block.numismatics.creative_vendor.tooltip": "CREATIVE VENDOR",
   "block.numismatics.creative_vendor.tooltip.summary": "_Creative_ version of the vendor, once configured will never fill up or run out of stock.",
-  "block.numismatics.trusted_block.attempt_break": "Hold shift to break this block",
+  "block.numismatics.trusted_block.attempt_break": "Hold %1$s to break this block",
   "block.numismatics.vendor": "Vendor",
   "block.numismatics.vendor.tooltip": "VENDOR",
   "block.numismatics.vendor.tooltip.mode": "Mode",

@@ -7,11 +7,11 @@ import java.io.ByteArrayOutputStream
 plugins {
     java
     `maven-publish`
-    id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("dev.architectury.loom") version "1.5-SNAPSHOT" apply false
+    id("architectury-plugin") version "3.4.+"
+    id("dev.architectury.loom") version "1.6.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("dev.ithundxr.silk") version "0.11.15" // https://github.com/IThundxr/silk
+    id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
@@ -54,6 +54,8 @@ subprojects {
     loom.apply {
         silentMojangMappingsLicense()
         runs.configureEach {
+            vmArg("-XX:+AllowEnhancedClassRedefinition")
+            vmArg("-XX:+IgnoreUnrecognizedVMOptions")
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
@@ -100,7 +102,7 @@ subprojects {
                 maven {
                     url = uri("https://maven.ithundxr.dev/${maven}")
                     credentials {
-                        username = "railways-github"
+                        username = "numismatics-github"
                         password = mavenToken
                     }
                 }
@@ -213,7 +215,7 @@ fun hasUnstaged(): Boolean {
 tasks.create("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, tasks.publish, ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
         }
         "fabric", "forge" -> {
             dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")

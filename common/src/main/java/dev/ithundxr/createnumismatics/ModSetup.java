@@ -1,11 +1,24 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics;
 
-import com.simibubi.create.content.equipment.goggles.GogglesItem;
-import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
-import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.*;
-import dev.ithundxr.createnumismatics.util.ClientUtils;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 public class ModSetup {
     public static void register() {
@@ -17,13 +30,5 @@ public class ModSetup {
         NumismaticsTags.register();
 
         ComputerCraftProxy.register();
-
-        GogglesItem.addIsWearingPredicate((player) -> {
-            if (!new Exception().getStackTrace()[2].getClassName().equals("com.simibubi.create.content.equipment.goggles.GoggleOverlayRenderer")) // fixme getting stacktrace is slow, use mixin to improve this
-                return false;
-            MutableObject<Boolean> isLookingAtForced = new MutableObject<>(false);
-            Env.CLIENT.runIfCurrent(() -> () -> isLookingAtForced.setValue(ClientUtils.isLookingAtForcedGoggleOverlay()));
-            return isLookingAtForced.getValue();
-        });
     }
 }

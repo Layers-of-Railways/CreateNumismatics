@@ -7,9 +7,9 @@ on:
         type: choice
         description: Platform
         options:
+          - both
           - fabric
           - forge
-          - both
 
 jobs:
   build:
@@ -19,6 +19,7 @@ jobs:
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+      PLATFORM: ${{ inputs.platform }}
 
     steps:
       - name: Checkout Repository
@@ -36,9 +37,6 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-
-      - name: Set Platform environment variable
-        run: echo "PLATFORM=${{ inputs.platform }}" >> $GITHUB_ENV
 
       - name: Build & Publish
         run: ./gradlew numismaticsPublish

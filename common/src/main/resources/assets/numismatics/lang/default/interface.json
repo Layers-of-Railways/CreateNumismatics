@@ -28,5 +28,5 @@
   "gui.numismatics.vendor.full.named": "Vendor is full, contact %s to empty it",
   "gui.numismatics.vendor.no_item_in_hand": "Hold the stack of items you want to sell",
 
-  "block.numismatics.trusted_block.attempt_break": "Hold shift to break this block"
+  "block.numismatics.trusted_block.attempt_break": "Hold %1$s to break this block"
 }
