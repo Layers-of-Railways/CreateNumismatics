@@ -112,12 +112,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     AbstractComputerBehaviour computerBehaviour;
 
-
-
     public VendorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
-
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
