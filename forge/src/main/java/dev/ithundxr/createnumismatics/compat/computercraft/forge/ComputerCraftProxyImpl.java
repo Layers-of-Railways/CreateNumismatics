@@ -1,25 +1,36 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.compat.computercraft.forge;
 
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
 
-import java.util.function.Function;
-
-import static dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy.fallbackFactory;
-import static dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour.peripheralProvider;
-
 public class ComputerCraftProxyImpl {
-
-    public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> computerFactory;
-
     public static void registerWithDependency() {
         /* Comment if computercraft.implementation is not in the source set */
-        computerFactory = ComputerBehaviour::new;
+        ComputerCraftProxy.computerFactory = ComputerBehaviour::new;
     }
     public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
-        if (computerFactory == null)
-            return fallbackFactory.apply(sbe);
-        return computerFactory.apply(sbe);
+        if (ComputerCraftProxy.computerFactory == null)
+            return ComputerCraftProxy.fallbackFactory.apply(sbe);
+        return ComputerCraftProxy.computerFactory.apply(sbe);
     }
 }

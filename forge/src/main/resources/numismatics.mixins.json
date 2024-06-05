@@ -11,6 +11,7 @@
   "mixins": [
     "ServerGamePacketListenerImplMixin",
     "self.BrassDepositorBlockEntityCapabilities",
+    "self.ComputerBehaviourCapabilities",
     "self.VendorBlockEntityCapabilities"
   ],
   "injectors": {

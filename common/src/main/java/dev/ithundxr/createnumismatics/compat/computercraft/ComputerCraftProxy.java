@@ -27,7 +27,6 @@ import dev.ithundxr.createnumismatics.compat.Mods;
 import java.util.function.Function;
 
 public class ComputerCraftProxy {
-
     public static void register() {
         fallbackFactory = FallbackComputerBehaviour::new;
         Mods.COMPUTERCRAFT.executeIfInstalled(() -> ComputerCraftProxy::registerWithDependency);
@@ -39,10 +38,10 @@ public class ComputerCraftProxy {
     }
 
     public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> fallbackFactory;
+    public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> computerFactory;
 
     @ExpectPlatform
     public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
         throw new AssertionError();
     }
-
 }
