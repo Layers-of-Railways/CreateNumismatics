@@ -18,10 +18,12 @@
 
 package dev.ithundxr.createnumismatics.content.depositor;
 
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
@@ -47,6 +49,7 @@ import java.util.List;
 public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider {
 
     private SliderStylePriceBehaviour price;
+    public AbstractComputerBehaviour computerBehaviour;
 
     public BrassDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -55,6 +58,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
+        behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
         behaviours.add(price);
     }
 

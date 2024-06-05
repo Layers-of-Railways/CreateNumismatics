@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import com.simibubi.create.foundation.utility.Pair;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -30,8 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
 
@@ -143,5 +143,26 @@ public enum Coin implements INamedIconOptions {
                 closest = coin;
         }
         return closest;
+    }
+
+    public static List<Map.Entry<Coin, Integer>> getCoinsFromSpurAmount(int spurAmount){
+        List<Map.Entry<Coin, Integer>> coins = new ArrayList<>();
+        for(Coin coin : Arrays.stream(Coin.values()).sorted(Comparator.comparingInt(c -> -c.value)).toList()){
+            Couple<Integer> coinAmount = coin.convert(spurAmount);
+            coins.add(new AbstractMap.SimpleEntry<>(coin, coinAmount.getFirst()));
+            spurAmount = coinAmount.getSecond();
+        }
+        return coins;
+    }
+
+    public static Coin getCoinFromName(String name){
+        Coin selectedCoin = null;
+        for (Coin coin : Coin.values()){
+            if(coin.getName().equals(name)){
+                selectedCoin = coin;
+                break;
+            }
+        }
+        return selectedCoin;
     }
 }

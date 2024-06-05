@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.forge.mixin.self;
 
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -32,6 +33,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(VendorBlockEntity.class)
@@ -39,6 +41,8 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     public VendorBlockEntityCapabilities(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
+
+    @Shadow AbstractComputerBehaviour computerBehaviour;
 
     // This is actually just down + all the 5 other sides
     @Unique private static final Direction[] numismatics$DIRECTIONS = {Direction.DOWN, Direction.NORTH};
@@ -50,6 +54,10 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
             // If down return the down handler otherwise return the one for all other sides
             return facing == Direction.DOWN ? numismatics$handlers[0].cast() : numismatics$handlers[1].cast();
         }
+
+        if (computerBehaviour.isPeripheralCap(capability))
+            return computerBehaviour.getPeripheralCapability();
+
         return super.getCapability(capability, facing);
     }
 
@@ -62,6 +70,7 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
+        computerBehaviour.removePeripheral();
 
         for (LazyOptional<? extends IItemHandler> createNumismatics$handler : numismatics$handlers) {
             createNumismatics$handler.invalidate();
