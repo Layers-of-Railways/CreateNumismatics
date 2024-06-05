@@ -20,13 +20,17 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
+import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.ComputerCraftTags;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
@@ -106,15 +110,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private Mode mode = Mode.SELL;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
+    AbstractComputerBehaviour computerBehaviour;
 
     public VendorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
+        behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
         behaviours.add(price);
     }
 

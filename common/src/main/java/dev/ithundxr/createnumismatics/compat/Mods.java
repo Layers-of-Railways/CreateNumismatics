@@ -30,7 +30,8 @@ import java.util.function.Supplier;
  */
 public enum Mods {
 	CARRYON("carryon"),
-	SODIUM("sodium")
+	SODIUM("sodium"),
+	COMPUTERCRAFT("computercraft")
 	;
 
 	public final boolean isLoaded;
