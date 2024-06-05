@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "Kreatywny Automat",
   "block.numismatics.creative_vendor.tooltip": "KREATYWNY AUTOMAT",
   "block.numismatics.creative_vendor.tooltip.summary": "_Kreatywna_ wersja automatu, gdy skonfigurowana nigdy się nie wypełni lub nie zabraknie przedmiotów.",
-  "block.numismatics.trusted_block.attempt_break": "Przytrzymaj shift, aby zniszczyć ten blok",
   "block.numismatics.vendor": "Automat",
   "block.numismatics.vendor.tooltip": "AUTOMAT",
   "block.numismatics.vendor.tooltip.mode": "Tryb",

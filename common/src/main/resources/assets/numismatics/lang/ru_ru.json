@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "Творческий торговый автомат",
   "block.numismatics.creative_vendor.tooltip": "ТВОРЧЕСКИЙ ТОРГОВЫЙ АВТОМАТ",
   "block.numismatics.creative_vendor.tooltip.summary": "_Творческая_ версия торгового автомата, после настройки никогда не переполниться, а товар не закончится.",
-  "block.numismatics.trusted_block.attempt_break": "Зажмите Shift, чтобы разрушить блок",
   "block.numismatics.vendor": "Торговый автомат",
   "block.numismatics.vendor.tooltip": "ТОРГОВЫЙ АВТОМАТ",
   "block.numismatics.vendor.tooltip.mode": "Режим",

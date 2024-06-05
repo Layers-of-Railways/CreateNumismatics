@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "Kreativer Verkaufsstand",
   "block.numismatics.creative_vendor.tooltip": "KREATIVE VERKAUFSSTAND",
   "block.numismatics.creative_vendor.tooltip.summary": "_Kreative_ Version des Verkäufers, sobald diese einmal konfiguriert ist, wird niemals das Lager füllen oder ausgehen.",
-  "block.numismatics.trusted_block.attempt_break": "Shift halten, um diesen Block abzubauen",
   "block.numismatics.vendor": "Verkäufer",
   "block.numismatics.vendor.tooltip": "VERKÄUFER",
   "block.numismatics.vendor.tooltip.mode": "Modus",

@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "クリエイティブ販売機",
   "block.numismatics.creative_vendor.tooltip": "クリエイティブ販売機",
   "block.numismatics.creative_vendor.tooltip.summary": "_クリエイティブ_専用の販売機です。一度設定すると、在庫がいっぱいになったり、在庫がなくなることはありません。",
-  "block.numismatics.trusted_block.attempt_break": "Shiftを押しているときのみ破壊できます",
   "block.numismatics.vendor": "販売機",
   "block.numismatics.vendor.tooltip": "販売機",
   "block.numismatics.vendor.tooltip.mode": "モード",

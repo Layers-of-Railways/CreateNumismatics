@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "Творча крамниця",
   "block.numismatics.creative_vendor.tooltip": "ТВОРЧА КРАМНИЦЯ",
   "block.numismatics.creative_vendor.tooltip.summary": "Працює як звичайна крамниця, але предмети _ніколи не закінчуються_.",
-  "block.numismatics.trusted_block.attempt_break": "Утримуйте Shift, щоби зламати блок",
   "block.numismatics.vendor": "Крамниця",
   "block.numismatics.vendor.tooltip": "Крамниця",
   "block.numismatics.vendor.tooltip.mode": "Режим",

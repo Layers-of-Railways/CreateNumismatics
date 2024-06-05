@@ -24,7 +24,6 @@
   "block.numismatics.creative_vendor": "Boutique créative",
   "block.numismatics.creative_vendor.tooltip": "BOUTIQUE CRÉATIVE",
   "block.numismatics.creative_vendor.tooltip.summary": "La version _Créative_ de la boutique, une fois configurée ne sera jamais remplie ou à court de stock.",
-  "block.numismatics.trusted_block.attempt_break": "Maintenez Maj enfoncé pour casser ce bloc",
   "block.numismatics.vendor": "Boutique",
   "block.numismatics.vendor.tooltip": "BOUTIQUE",
   "block.numismatics.vendor.tooltip.mode": "Mode",
