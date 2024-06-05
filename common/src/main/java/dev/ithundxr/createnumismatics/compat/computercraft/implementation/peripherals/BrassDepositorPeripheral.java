@@ -44,7 +44,7 @@ public class BrassDepositorPeripheral extends SyncedPeripheral<BrassDepositorBlo
     }
 
     @LuaFunction(mainThread = true)
-    public final void setTotalPrice(int spurAmount){
+    public final void setTotalPrice(int spurAmount) {
         List<Map.Entry<Coin, Integer>> coins = getCoinsFromSpurAmount(spurAmount);
         for (Map.Entry<Coin, Integer> coin : coins) {
             blockEntity.setPrice(coin.getKey(), coin.getValue());
@@ -53,7 +53,7 @@ public class BrassDepositorPeripheral extends SyncedPeripheral<BrassDepositorBlo
     }
 
     @LuaFunction
-    public final int getTotalPrice(){
+    public final int getTotalPrice() {
         return blockEntity.getTotalPrice();
     }
 
