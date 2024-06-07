@@ -1,6 +1,9 @@
 ------------------------------------------------------
 Numismatics 1.0.7
 ------------------------------------------------------
+Additions
+- Computer Craft: Tweaked compat for vendors and brass depositors
+
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
 - Texture inconsistency in the gui texture of blaze terminals, blaze bankers and trust lists
