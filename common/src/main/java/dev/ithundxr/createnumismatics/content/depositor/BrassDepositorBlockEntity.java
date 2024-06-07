@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
+import dev.ithundxr.createnumismatics.annotation.asm.CCForgeImpl;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
@@ -46,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@CCForgeImpl
 public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider {
 
     private SliderStylePriceBehaviour price;
