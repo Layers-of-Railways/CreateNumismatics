@@ -21,7 +21,6 @@ package dev.ithundxr.createnumismatics.compat.computercraft.implementation;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.BrassDepositorPeripheral;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.VendorPeripheral;
@@ -30,8 +29,10 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+import java.util.function.Supplier;
+
 public class ComputerBehaviour extends AbstractComputerBehaviour {
-    NonNullSupplier<IPeripheral> peripheralSupplier;
+    Supplier<IPeripheral> peripheralSupplier;
 
     public static IPeripheral peripheralProvider(Level level, BlockPos blockPos) {
         AbstractComputerBehaviour behavior = BlockEntityBehaviour.get(level, blockPos, AbstractComputerBehaviour.TYPE);
@@ -45,7 +46,7 @@ public class ComputerBehaviour extends AbstractComputerBehaviour {
         this.peripheralSupplier = getPeripheralFor(te);
     }
 
-    public static NonNullSupplier<IPeripheral> getPeripheralFor(SmartBlockEntity be) {
+    public static Supplier<IPeripheral> getPeripheralFor(SmartBlockEntity be) {
         if (be instanceof BrassDepositorBlockEntity scbe)
             return () -> new BrassDepositorPeripheral(scbe);
         if (be instanceof VendorBlockEntity scbe)
