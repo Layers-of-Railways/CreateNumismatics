@@ -31,11 +31,11 @@ class NumismaticsGradleASM {
         // Get project type
         val projectType = SubprojectType.getProjectType(project)
 
-        var node = ClassNode()
+        val node = ClassNode()
         ClassReader(bytes).accept(node, 0)
 
         // Transformers
-        node = CCCapabilitiesTransformer().transform(projectType, node)
+        CCCapabilitiesTransformer().transform(projectType, node)
 
         // Verify the bytecode is valid
         val byteArray = ClassWriter(0).also { node.accept(it) }.toByteArray()

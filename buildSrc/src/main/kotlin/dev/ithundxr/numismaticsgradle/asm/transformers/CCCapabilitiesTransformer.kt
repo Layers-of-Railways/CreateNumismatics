@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.ClassNode
 
 class CCCapabilitiesTransformer {
     @Suppress("LocalVariableName")
-    fun transform(project: SubprojectType, node: ClassNode): ClassNode {
+    fun transform(project: SubprojectType, node: ClassNode) {
         if (node.invisibleAnnotations != null && project == SubprojectType.FORGE) {
             // Cache the field, so we don't CME the list during the remove
             val annotationNodes = node.invisibleAnnotations.toList()
@@ -142,7 +142,5 @@ class CCCapabilitiesTransformer {
                 }
             }
         }
-
-        return node
     }
 }
