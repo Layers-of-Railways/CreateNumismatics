@@ -18,12 +18,14 @@
 
 package dev.ithundxr.numismaticsgradle.asm.internal
 
+import org.gradle.api.Project
+
 enum class SubprojectType {
     COMMON, FABRIC, FORGE;
 
     companion object {
-        fun getProjectType(projectPath: String): SubprojectType {
-            return when (projectPath) {
+        fun getProjectType(project: Project): SubprojectType {
+            return when (project.path) {
                 ":common" -> COMMON
                 ":fabric" -> FABRIC
                 ":forge" -> FORGE

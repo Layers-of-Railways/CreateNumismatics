@@ -18,6 +18,7 @@
 
 package dev.ithundxr.numismaticsgradle
 
+import dev.ithundxr.numismaticsgradle.asm.internal.SubprojectType
 import dev.ithundxr.numismaticsgradle.transformer.PostCompileTransformer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -26,7 +27,7 @@ class NumismaticsGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.tasks.named("remapJar").configure {
             doLast {
-                PostCompileTransformer().transformJar(project.path, outputs.files.singleFile)
+                PostCompileTransformer().transformJar(project, outputs.files.singleFile)
             }
         }
     }

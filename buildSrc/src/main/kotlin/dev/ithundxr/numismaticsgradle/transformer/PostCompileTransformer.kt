@@ -21,6 +21,7 @@ package dev.ithundxr.numismaticsgradle.transformer
 import dev.ithundxr.numismaticsgradle.asm.NumismaticsGradleASM
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.gradle.api.Project
 import java.io.File
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
@@ -28,7 +29,11 @@ import java.util.jar.JarOutputStream
 import java.util.zip.Deflater
 
 class PostCompileTransformer {
-    fun transformJar(projectPath: String, jar: File) {
+    fun transformJar(project: Project, jar: File) {
+        var architecturyInjectableName = project.name
+        if (project.rootProject != project)
+            architecturyInjectableName = project.rootProject.name + "_" + architecturyInjectableName
+
         val contents = linkedMapOf<String, ByteArray>()
         JarFile(jar).use {
             it.entries().asIterator().forEach { entry ->
@@ -43,13 +48,13 @@ class PostCompileTransformer {
         JarOutputStream(jar.outputStream()).use { out ->
             out.setLevel(Deflater.BEST_COMPRESSION)
             contents.forEach { var (name, data) = it
-                if (Regex("architectury_inject_.+_common").matches(name))
+                if (name.contains("architectury_inject_${architecturyInjectableName}_common"))
                     return@forEach
 
                 if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
                     data = (JsonOutput.toJson(JsonSlurper().parse(data)).toByteArray())
                 } else if (name.endsWith(".class")) {
-                    data = NumismaticsGradleASM().transformClass(projectPath, data)
+                    data = NumismaticsGradleASM().transformClass(project, data)
                 }
 
                 out.putNextEntry(JarEntry(name))
