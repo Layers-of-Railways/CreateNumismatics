@@ -30,6 +30,7 @@ import com.simibubi.create.foundation.utility.Lang;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.ComputerCraftTags;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.annotation.asm.CCForgeImpl;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -79,6 +80,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@CCForgeImpl
 public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override

@@ -17,6 +17,7 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import dev.ithundxr.numismaticsgradle.asm.NumismaticsGradleASM
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
@@ -246,7 +247,7 @@ fun transformJar(projectPath: String, jar: File) {
             if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
                 data = (JsonOutput.toJson(JsonSlurper().parse(data)).toByteArray())
             } else if (name.endsWith(".class")) {
-                data = transformClass(projectPath, data)
+                data = NumismaticsGradleASM().transformClass(projectPath, data)
             }
 
             out.putNextEntry(JarEntry(name))
@@ -256,138 +257,6 @@ fun transformJar(projectPath: String, jar: File) {
         out.finish()
         out.close()
     }
-}
-
-@Suppress("LocalVariableName")
-fun transformClass(projectPath: String, bytes: ByteArray): ByteArray {
-    val node = ClassNode()
-    ClassReader(bytes).accept(node, 0)
-
-    if (node.invisibleAnnotations != null ) {
-        // Cache the field, so we don't CME the list during the remove
-        val annotationNodes = node.invisibleAnnotations.toList()
-        for (annotationNode in annotationNodes) {
-            if (annotationNode.desc.equals("Ldev/ithundxr/createnumismatics/annotation/asm/CCForgeImpl;")) {
-                // Remove
-                node.invisibleAnnotations.remove(annotationNode)
-
-                if (projectPath == ":forge") {
-                    // Add the interface that's needed
-                    node.interfaces.add("net/minecraftforge/common/capabilities/ICapabilityProvider")
-
-                    // getCapability method
-                    run {
-                        val mv = node.visitMethod(
-                            Opcodes.ACC_PUBLIC,
-                            "getCapability",
-                            "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/core/Direction;)Lnet/minecraftforge/common/util/LazyOptional;",
-                            null,
-                            null
-                        )
-                        mv.visitCode()
-
-                        val L1 = Label()
-
-                        // L0
-                        mv.visitLabel(Label())
-                        mv.visitVarInsn(Opcodes.ALOAD, 0)
-                        mv.visitFieldInsn(
-                            Opcodes.GETFIELD,
-                            node.name,
-                            "computerBehaviour",
-                            "Lcom/simibubi/create/compat/computercraft/AbstractComputerBehaviour;"
-                        )
-                        mv.visitVarInsn(Opcodes.ALOAD, 1)
-                        mv.visitMethodInsn(
-                            Opcodes.INVOKEVIRTUAL,
-                            "com/simibubi/create/compat/computercraft/AbstractComputerBehaviour",
-                            "isPeripheralCap",
-                            "(Lnet/minecraftforge/common/capabilities/Capability;)Z",
-                            false
-                        )
-                        mv.visitJumpInsn(Opcodes.IFEQ, L1)
-
-                        // L2
-                        mv.visitLabel(Label())
-                        mv.visitVarInsn(Opcodes.ALOAD, 0)
-                        mv.visitFieldInsn(
-                            Opcodes.GETFIELD,
-                            node.name,
-                            "computerBehaviour",
-                            "Lcom/simibubi/create/compat/computercraft/AbstractComputerBehaviour;"
-                        )
-                        mv.visitMethodInsn(
-                            Opcodes.INVOKEVIRTUAL,
-                            "com/simibubi/create/compat/computercraft/AbstractComputerBehaviour",
-                            "getPeripheralCapability",
-                            "()Lnet/minecraftforge/common/util/LazyOptional;",
-                            false
-                        )
-                        mv.visitInsn(Opcodes.ARETURN)
-
-                        // L1
-                        mv.visitLabel(L1)
-                        mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null)
-                        mv.visitVarInsn(Opcodes.ALOAD, 0)
-                        mv.visitVarInsn(Opcodes.ALOAD, 1)
-                        mv.visitVarInsn(Opcodes.ALOAD, 2)
-                        mv.visitMethodInsn(
-                            Opcodes.INVOKESPECIAL,
-                            node.name,
-                            "getCapability",
-                            "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/core/Direction;)Lnet/minecraftforge/common/util/LazyOptional;",
-                            false
-                        )
-                        mv.visitInsn(Opcodes.ARETURN)
-
-                        mv.visitEnd()
-                    }
-
-                    // invalidateCaps method
-                    run {
-                        val mv = node.visitMethod(Opcodes.ACC_PUBLIC, "invalidateCaps", "()V", null, null)
-                        mv.visitCode()
-
-                        // L0
-                        val L0 = Label()
-                        mv.visitLabel(L0)
-                        mv.visitVarInsn(Opcodes.ALOAD, 0)
-                        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, node.name, "invalidateCaps", "()V", false)
-
-                        // L1
-                        mv.visitLabel(Label())
-                        mv.visitVarInsn(Opcodes.ALOAD, 0)
-                        mv.visitFieldInsn(
-                            Opcodes.GETFIELD,
-                            node.name,
-                            "computerBehaviour",
-                            "Lcom/simibubi/create/compat/computercraft/AbstractComputerBehaviour;"
-                        )
-                        mv.visitMethodInsn(
-                            Opcodes.INVOKEVIRTUAL,
-                            "com/simibubi/create/compat/computercraft/AbstractComputerBehaviour",
-                            "removePeripheral",
-                            "()V",
-                            false
-                        )
-
-                        // L2
-                        mv.visitLabel(Label())
-                        mv.visitInsn(Opcodes.RETURN)
-
-                        mv.visitEnd()
-                    }
-                }
-            }
-        }
-    }
-
-    val byteArray = ClassWriter(0).also { node.accept(it) }.toByteArray()
-
-    // Verify the bytecode is valid
-    ClassReader(byteArray).accept(CheckClassAdapter(null), 0)
-
-    return byteArray
 }
 
 fun calculateGitHash(): String {
