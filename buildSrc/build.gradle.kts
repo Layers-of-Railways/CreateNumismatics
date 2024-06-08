@@ -27,6 +27,15 @@ repositories {
     mavenCentral()
 }
 
+gradlePlugin {
+    plugins {
+        create("numismaticsPlugin") {
+            id = "dev.ithundxr.numismatics.gradle"
+            implementationClass = "dev.ithundxr.numismaticsgradle.NumismaticsGradlePlugin"
+        }
+    }
+}
+
 dependencies {
     implementation("org.ow2.asm:asm:${"asm_version"()}")
     //implementation("org.ow2.asm:asm-analysis:${"asm_version"()}")

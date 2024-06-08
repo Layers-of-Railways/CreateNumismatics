@@ -17,24 +17,10 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import dev.ithundxr.numismaticsgradle.asm.NumismaticsGradleASM
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 import org.gradle.configurationcache.extensions.capitalized
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.Label
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.util.CheckClassAdapter
 import java.io.ByteArrayOutputStream
-import java.util.Locale
-import java.util.jar.JarEntry
-import java.util.jar.JarFile
-import java.util.jar.JarOutputStream
-import java.util.zip.Deflater
 
 plugins {
     java
@@ -44,6 +30,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
+    id("dev.ithundxr.numismatics.gradle") apply false
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
@@ -79,6 +66,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
+    apply(plugin = "dev.ithundxr.numismatics.gradle" )
 
     val capitalizedName = project.name.capitalized()
 
@@ -160,9 +148,6 @@ subprojects {
         injectAccessWidener = true
         dependsOn(shadowJar)
         archiveClassifier = null
-        doLast {
-            transformJar(project.path, outputs.files.singleFile)
-        }
     }
 
     val common: Configuration by configurations.creating
@@ -223,39 +208,6 @@ subprojects {
         withVariantsFromConfiguration(project.configurations["shadowRuntimeElements"]) {
             skip()
         }
-    }
-}
-
-fun transformJar(projectPath: String, jar: File) {
-    val contents = linkedMapOf<String, ByteArray>()
-    JarFile(jar).use {
-        it.entries().asIterator().forEach { entry ->
-            if (!entry.isDirectory) {
-                contents[entry.name] = it.getInputStream(entry).readAllBytes()
-            }
-        }
-    }
-
-    jar.delete()
-
-    JarOutputStream(jar.outputStream()).use { out ->
-        out.setLevel(Deflater.BEST_COMPRESSION)
-        contents.forEach { var (name, data) = it
-            if (name.startsWith("architectury_inject_${"archives_base_name"().lowercase(Locale.ROOT)}_common"))
-                return@forEach
-
-            if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
-                data = (JsonOutput.toJson(JsonSlurper().parse(data)).toByteArray())
-            } else if (name.endsWith(".class")) {
-                data = NumismaticsGradleASM().transformClass(projectPath, data)
-            }
-
-            out.putNextEntry(JarEntry(name))
-            out.write(data)
-            out.closeEntry()
-        }
-        out.finish()
-        out.close()
     }
 }
 
