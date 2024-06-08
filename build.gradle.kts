@@ -22,11 +22,14 @@ import groovy.json.JsonSlurper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 import org.gradle.configurationcache.extensions.capitalized
-import org.objectweb.asm.*
-import org.objectweb.asm.tree.AnnotationNode
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.Label
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.util.CheckClassAdapter
 import java.io.ByteArrayOutputStream
+import java.util.Locale
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
@@ -237,7 +240,7 @@ fun transformJar(projectPath: String, jar: File) {
     JarOutputStream(jar.outputStream()).use { out ->
         out.setLevel(Deflater.BEST_COMPRESSION)
         contents.forEach { var (name, data) = it
-            if(name.startsWith("architectury_inject_${project.name}_common"))
+            if (name.startsWith("architectury_inject_${"archives_base_name"().lowercase(Locale.ROOT)}_common"))
                 return@forEach
 
             if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
@@ -379,7 +382,12 @@ fun transformClass(projectPath: String, bytes: ByteArray): ByteArray {
         }
     }
 
-    return ClassWriter(0).also { node.accept(it) }.toByteArray()
+    val byteArray = ClassWriter(0).also { node.accept(it) }.toByteArray()
+
+    // Verify the bytecode is valid
+    ClassReader(byteArray).accept(CheckClassAdapter(null), 0)
+
+    return byteArray
 }
 
 fun calculateGitHash(): String {
