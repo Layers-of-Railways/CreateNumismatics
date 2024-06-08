@@ -19,7 +19,7 @@
 package dev.ithundxr.numismaticsgradle.asm
 
 import dev.ithundxr.numismaticsgradle.asm.internal.SubprojectType
-import dev.ithundxr.numismaticsgradle.asm.transformers.CCCapabilitiesASM
+import dev.ithundxr.numismaticsgradle.asm.transformers.CCCapabilitiesTransformer
 import org.gradle.api.Project
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -35,7 +35,7 @@ class NumismaticsGradleASM {
         ClassReader(bytes).accept(node, 0)
 
         // Transformers
-        node = CCCapabilitiesASM().transform(projectType, node)
+        node = CCCapabilitiesTransformer().transform(projectType, node)
 
         // Verify the bytecode is valid
         val byteArray = ClassWriter(0).also { node.accept(it) }.toByteArray()

@@ -143,6 +143,7 @@ subprojects {
     }
 
     tasks.named<RemapJarTask>("remapJar") {
+        from("${rootProject.projectDir}/LICENSE")
         val shadowJar = project.tasks.named<ShadowJar>("shadowJar").get()
         inputFile.set(shadowJar.archiveFile)
         injectAccessWidener = true

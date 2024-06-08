@@ -23,7 +23,7 @@ import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 
-class CCCapabilitiesASM {
+class CCCapabilitiesTransformer {
     @Suppress("LocalVariableName")
     fun transform(project: SubprojectType, node: ClassNode): ClassNode {
         if (node.invisibleAnnotations != null && project == SubprojectType.FORGE) {
