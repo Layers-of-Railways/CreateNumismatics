@@ -31,6 +31,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
     id("dev.ithundxr.numismatics.gradle") apply false
+    //id("dev.ithundxr.lotus.gradle") version "0.0.2" apply false
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
@@ -66,7 +67,8 @@ allprojects {
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
-    apply(plugin = "dev.ithundxr.numismatics.gradle" )
+    apply(plugin = "dev.ithundxr.numismatics.gradle")
+    //apply(plugin = "dev.ithundxr.lotus.gradle")
 
     val capitalizedName = project.name.capitalized()
 
