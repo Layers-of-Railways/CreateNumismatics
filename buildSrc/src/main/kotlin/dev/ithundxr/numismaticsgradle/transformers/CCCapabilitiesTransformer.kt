@@ -16,16 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.numismaticsgradle.asm.transformers
+package dev.ithundxr.numismaticsgradle.transformers
 
-import dev.ithundxr.numismaticsgradle.asm.internal.SubprojectType
+import dev.ithundxr.lotus.gradle.api.asm.util.IClassTransformer
+import dev.ithundxr.lotus.gradle.api.asm.util.SubprojectType
 import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 
-class CCCapabilitiesTransformer {
+class CCCapabilitiesTransformer : IClassTransformer {
     @Suppress("LocalVariableName")
-    fun transform(project: SubprojectType, node: ClassNode) {
+    override fun transform(project: SubprojectType, node: ClassNode) {
         if (node.invisibleAnnotations != null && project == SubprojectType.FORGE) {
             // Cache the field, so we don't CME the list during the remove
             val annotationNodes = node.invisibleAnnotations.toList()

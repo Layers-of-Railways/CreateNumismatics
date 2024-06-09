@@ -25,6 +25,7 @@ plugins {
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    maven("https://maven.ithundxr.dev/releases")
 }
 
 gradlePlugin {
@@ -38,10 +39,10 @@ gradlePlugin {
 
 dependencies {
     implementation("org.ow2.asm:asm:${"asm_version"()}")
-    //implementation("org.ow2.asm:asm-analysis:${"asm_version"()}")
-    //implementation("org.ow2.asm:asm-commons:${"asm_version"()}")
     implementation("org.ow2.asm:asm-tree:${"asm_version"()}")
     implementation("org.ow2.asm:asm-util:${"asm_version"()}")
+
+    implementation("dev.ithundxr.lotus:lotus-gradle:${"lotus_gradle_version"()}")
 }
 
 operator fun String.invoke(): String {
