@@ -57,9 +57,7 @@ public class NumismaticsTags {
 
 
   public enum AllBlockTags {
-//    SEMAPHORE_POLES(NameSpace.MOD, NameSpace.MOD.optionalDefault,false),
-//    TRACK_CASING_BLACKLIST(NameSpace.MOD, NameSpace.MOD.optionalDefault,false),
-//    CONDUCTOR_SPY_USABLE(NameSpace.MOD, NameSpace.MOD.optionalDefault,false) // so other mods / datapacks can make more blocks usable for conductor spies
+    NUMISMATICS_BLOCKS,
     ;
 
     public final TagKey<Block> tag;
@@ -105,6 +103,7 @@ public class NumismaticsTags {
   }
 
   public enum AllItemTags {
+    NUMISMATICS_ITEMS,
     COINS,
     CARDS,
     ID_CARDS

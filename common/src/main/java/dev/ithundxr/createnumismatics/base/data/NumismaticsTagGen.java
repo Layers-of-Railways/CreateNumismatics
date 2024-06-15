@@ -26,8 +26,11 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllBlockTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllItemTags;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -36,10 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Based on {@link TagGen}
@@ -50,15 +50,16 @@ public class NumismaticsTagGen {
     @SafeVarargs
     public static void addOptionalTag(ResourceLocation id, TagKey<Block>... tags) {
         for (TagKey<Block> tag : tags) {
-            OPTIONAL_TAGS.computeIfAbsent(tag, (e) -> new ArrayList<ResourceLocation>()).add(id);
+            OPTIONAL_TAGS.computeIfAbsent(tag, (e) -> new ArrayList<>()).add(id);
         }
     }
     public static void generateBlockTags(RegistrateTagsProvider<Block> tags) {
-//		tagAppender(tags, AllBlockTags.TRACKS)
-//			.add(AllBlocks.TRACK.get());
+        addTagToAllInRegistry(tags, BuiltInRegistries.BLOCK, NumismaticsTags.AllBlockTags.NUMISMATICS_BLOCKS.tag);
+        
         CommonTags.RELOCATION_NOT_SUPPORTED.generateBoth(tags, tag -> {
                 tag.addTag(CommonTags.RELOCATION_NOT_SUPPORTED.tag);
         });
+        
         for (TagKey<Block> tag : OPTIONAL_TAGS.keySet()) {
             var appender = tagAppender(tags, tag);
             for (ResourceLocation loc : OPTIONAL_TAGS.get(tag))
@@ -67,6 +68,8 @@ public class NumismaticsTagGen {
     }
 
     public static void generateItemTags(RegistrateItemTagsProvider tags) {
+        addTagToAllInRegistry(tags, BuiltInRegistries.ITEM, NumismaticsTags.AllItemTags.NUMISMATICS_ITEMS.tag);
+        
         CommonTags.DYES.values().forEach(tag -> tag.generateCommon(tags));
         CommonTags.IRON_NUGGETS.generateCommon(tags);
         CommonTags.ZINC_NUGGETS.generateCommon(tags);
@@ -95,5 +98,18 @@ public class NumismaticsTagGen {
     @ExpectPlatform
     public static <T> TagsProvider.TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
         throw new AssertionError();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> void addTagToAllInRegistry(RegistrateTagsProvider<T> prov, DefaultedRegistry<T> defaultedRegistry, TagKey<T> tagKey) {
+        T[] array = (T[]) defaultedRegistry.keySet()
+                .stream()
+                .filter(rs -> rs.getNamespace().equals(Numismatics.MOD_ID))
+                .sorted(Comparator.comparing(ResourceLocation::getPath))
+                .map(defaultedRegistry::get)
+                .toArray();
+
+        prov.addTag(tagKey)
+                .add(array);
     }
 }
