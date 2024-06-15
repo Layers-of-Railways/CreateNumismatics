@@ -67,7 +67,6 @@ allprojects {
 subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "dev.ithundxr.numismatics.gradle")
-    apply(plugin = "dev.ithundxr.lotus.gradle")
 
     val capitalizedName = project.name.capitalized()
 
