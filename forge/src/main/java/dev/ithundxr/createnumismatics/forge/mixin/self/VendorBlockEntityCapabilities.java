@@ -37,22 +37,20 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(VendorBlockEntity.class)
-public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity implements ICapabilityProvider {
+public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity implements ICapabilityProvider, WorldlyContainer {
     public VendorBlockEntityCapabilities(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Shadow AbstractComputerBehaviour computerBehaviour;
-
-    // This is actually just down + all the 5 other sides
-    @Unique private static final Direction[] numismatics$DIRECTIONS = {Direction.DOWN, Direction.NORTH};
-    @Unique LazyOptional<? extends IItemHandler>[] numismatics$handlers = SidedInvWrapper.create((WorldlyContainer) this, numismatics$DIRECTIONS);
+    
+    @Unique LazyOptional<? extends IItemHandler> numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER && facing != null && !remove) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER && !remove) {
             // If down return the down handler otherwise return the one for all other sides
-            return facing == Direction.DOWN ? numismatics$handlers[0].cast() : numismatics$handlers[1].cast();
+            return numismatics$handler.cast();
         }
 
         if (computerBehaviour.isPeripheralCap(capability))
@@ -64,16 +62,14 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     @Override
     public void reviveCaps() {
         super.reviveCaps();
-        numismatics$handlers = SidedInvWrapper.create((WorldlyContainer) this, numismatics$DIRECTIONS);
+        numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         computerBehaviour.removePeripheral();
-
-        for (LazyOptional<? extends IItemHandler> createNumismatics$handler : numismatics$handlers) {
-            createNumismatics$handler.invalidate();
-        }
+        
+        numismatics$handler.invalidate();
     }
 }

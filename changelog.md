@@ -10,8 +10,9 @@ Fixes
 - Texture inconsistency in the gui texture of blaze terminals, blaze bankers and trust lists
 
 Changes
-- Allow rebinding the break keybind using the crouch keybind (was previously shift + break key)
+- Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)
 - Redid Bank Terminal texture to match other Create textures
+- You can now insert or extract items from all sides of a vendor
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------

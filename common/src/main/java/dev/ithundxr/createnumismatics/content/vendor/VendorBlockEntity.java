@@ -422,9 +422,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
-        if (mode == Mode.BUY)
-            return side == Direction.DOWN ? new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8} : new int[0];
-        return side == Direction.DOWN ? new int[0] : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+        return new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     }
 
     @Override
@@ -434,12 +432,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-        return direction != Direction.DOWN && canPlaceItem(index, itemStack);
+        return canPlaceItem(index, itemStack);
     }
 
     @Override
     public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
-        return direction == Direction.DOWN && mode == Mode.BUY;
+        return mode == Mode.BUY;
     }
 
     @Override
