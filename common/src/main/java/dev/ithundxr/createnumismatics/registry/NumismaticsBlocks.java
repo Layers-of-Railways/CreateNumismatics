@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.redstone.displayLink.source.BoilerDisplaySource;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.item.ItemDescription;
@@ -31,6 +32,7 @@ import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
+import dev.ithundxr.createnumismatics.content.vendor.VendorDisplaySource;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
@@ -42,6 +44,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
+import static com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours.assignDataBehaviour;
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
@@ -112,6 +115,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
+			.onRegister(assignDataBehaviour(new VendorDisplaySource(), "vendor_price"))
 		.addLayer(() -> RenderType::cutout)
 		.lang("Vendor")
 		.transform(BuilderTransformers.vendor(false))
@@ -128,6 +132,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.strength(-1.0F, 3600000.0F)) // Unbreakable & Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
+		.onRegister(assignDataBehaviour(new VendorDisplaySource(), "vendor_price"))
 		.addLayer(() -> RenderType::cutout)
 		.lang("Creative Vendor")
 		.transform(BuilderTransformers.vendor(true))
