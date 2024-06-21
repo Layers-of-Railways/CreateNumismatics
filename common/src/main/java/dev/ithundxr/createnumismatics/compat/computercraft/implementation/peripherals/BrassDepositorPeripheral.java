@@ -66,6 +66,6 @@ public class BrassDepositorPeripheral extends SyncedPeripheral<BrassDepositorBlo
 
     @Override
     public String getType() {
-        return "Numismatics_Depositor";
+        return "numismatics:brass_depositor";
     }
 }

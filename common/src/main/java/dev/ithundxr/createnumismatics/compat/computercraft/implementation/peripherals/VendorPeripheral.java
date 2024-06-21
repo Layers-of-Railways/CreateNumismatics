@@ -66,6 +66,6 @@ public class VendorPeripheral extends SyncedPeripheral<VendorBlockEntity> {
 
     @Override
     public String getType() {
-        return "Numismatics_Vendor";
+        return "numismatics:vendor";
     }
 }
