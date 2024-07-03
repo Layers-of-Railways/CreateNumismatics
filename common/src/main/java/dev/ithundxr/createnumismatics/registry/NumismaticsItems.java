@@ -59,22 +59,22 @@ public class NumismaticsItems {
 
 	public static final DyedItemList<CardItem> CARDS = new DyedItemList<>(color -> {
 		String colorName = color.getSerializedName();
-		return REGISTRATE.item(colorName+"_card", p -> new CardItem(p, color))
+		return REGISTRATE.item(colorName + "_card", p -> new CardItem(p, color))
 			.properties(p -> p.stacksTo(1))
 			.tag(NumismaticsTags.AllItemTags.CARDS.tag)
-			.lang(TextUtils.titleCaseConversion(color.getName()) + " Card")
-			.model((c, p) -> p.generated(c, Numismatics.asResource("item/card/"+colorName+"_card")))
+			.lang(TextUtils.titleCaseConversion(color.getName()) + " Bank Card")
+			.model((c, p) -> p.generated(c, Numismatics.asResource("item/card/" + colorName + "_card")))
 			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.bank_card"))
 			.register();
 	});
 
 	public static final DyedItemList<IDCardItem> ID_CARDS = new DyedItemList<>(color -> {
 		String colorName = color.getSerializedName();
-		return REGISTRATE.item(colorName+"_id_card", p -> new IDCardItem(p, color))
+		return REGISTRATE.item(colorName + "_id_card", p -> new IDCardItem(p, color))
 			.properties(p -> p.stacksTo(16))
 			.tag(NumismaticsTags.AllItemTags.ID_CARDS.tag)
 			.lang(TextUtils.titleCaseConversion(color.getName()) + " ID Card")
-			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/"+colorName+"_id_card")))
+			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/" + colorName + "_id_card")))
 			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.id_card"))
 			.register();
 	});
