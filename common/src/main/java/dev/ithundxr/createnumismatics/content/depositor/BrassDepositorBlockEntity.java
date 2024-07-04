@@ -1,9 +1,29 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.content.depositor;
 
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
@@ -29,6 +49,7 @@ import java.util.List;
 public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider {
 
     private SliderStylePriceBehaviour price;
+    public AbstractComputerBehaviour computerBehaviour;
 
     public BrassDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -37,6 +58,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
+        behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
         behaviours.add(price);
     }
 
@@ -83,7 +105,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
     }
 
     @Override
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(price.getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();

@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import dev.ithundxr.silk.ChangelogText
 
 architectury.forge()
@@ -25,6 +43,11 @@ repositories {
             includeGroup("com.simibubi.create")
         }
     }
+    maven("https://squiddev.cc/maven/") { // CC Tweaked
+        content {
+            includeGroup("cc.tweaked")
+        }
+    }
 }
 
 dependencies {
@@ -38,6 +61,20 @@ dependencies {
     modImplementation("com.jozufozu.flywheel:flywheel-forge-${"flywheel_forge_minecraft_version"()}:${"flywheel_forge_version"()}")
 
     modLocalRuntime("dev.emi:emi-forge:${"emi_version"()}")
+
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge-api:${"cc_version"()}")
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-core-api:${"cc_version"()}")
+
+    forgeRuntimeLibrary("cc.tweaked:cobalt:0.9.3")
+    forgeRuntimeLibrary("com.jcraft:jzlib:1.1.3")
+    forgeRuntimeLibrary("io.netty:netty-codec-http:4.1.82.Final")
+    forgeRuntimeLibrary("io.netty:netty-codec-socks:4.1.82.Final")
+    forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.82.Final")
+
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+    }
+
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")

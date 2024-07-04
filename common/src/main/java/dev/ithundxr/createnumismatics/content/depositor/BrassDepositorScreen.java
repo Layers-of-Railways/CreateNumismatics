@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.google.common.collect.ImmutableList;
@@ -27,17 +45,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepositorMenu> {
-
-    private IconButton trustListButton;
-    private IconButton confirmButton;
-
-    private NumismaticsGuiTextures background = NumismaticsGuiTextures.BRASS_DEPOSITOR;
+    private final NumismaticsGuiTextures background = NumismaticsGuiTextures.BRASS_DEPOSITOR;
     private final ItemStack renderedItem = NumismaticsBlocks.BRASS_DEPOSITOR.asStack();
 
     private final int COIN_COUNT = Coin.values().length;
 
     private final Label[] coinLabels = new Label[COIN_COUNT];
-    private ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
+    private final ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
@@ -54,16 +68,14 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
         int x = leftPos;
         int y = topPos;
 
-        trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
+        IconButton trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
         trustListButton.withCallback(() -> {
             menu.contentHolder.openTrustList();
         });
         addRenderableWidget(trustListButton);
 
-        confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
-        confirmButton.withCallback(() -> {
-            onClose();
-        });
+        IconButton confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
+        confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
         for (Coin coin : Coin.values()) {

@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.google.common.collect.ImmutableList;
@@ -68,7 +86,7 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
         coinScrollInput = new SelectionScrollInput(x + 84, y + 23, 68, 18);
         coinScrollInput.forOptions(Coin.labeledComponents());
         coinScrollInput.writingTo(coinLabel);
-        coinScrollInput.titled(Components.translatable("create.numismatics.andesite_depositor.price"));
+        coinScrollInput.titled(Components.translatable("numismatics.andesite_depositor.price"));
         coinScrollInput.calling(idx -> {
             // price will be sent when menu closed
             menu.contentHolder.setCoin(Coin.values()[idx]);

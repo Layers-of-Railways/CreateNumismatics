@@ -6,11 +6,12 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     java
-    id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("dev.architectury.loom") version "1.5-SNAPSHOT" apply false
+    `maven-publish`
+    id("architectury-plugin") version "3.4.+"
+    id("dev.architectury.loom") version "1.6.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("dev.ithundxr.silk") version "0.11.15" // https://github.com/IThundxr/silk
+    id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
@@ -53,6 +54,8 @@ subprojects {
     loom.apply {
         silentMojangMappingsLicense()
         runs.configureEach {
+            vmArg("-XX:+AllowEnhancedClassRedefinition")
+            vmArg("-XX:+IgnoreUnrecognizedVMOptions")
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
@@ -82,6 +85,29 @@ subprojects {
             officialMojangMappings { nameSyntheticMembers = false }
             parchment("org.parchmentmc.data:parchment-${"minecraft_version"()}:${"parchment_version"()}@zip")
         })
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven${capitalizedName}") {
+                artifactId = "${"archives_base_name"()}-${project.name}-${"minecraft_version"()}"
+                from(components["java"])
+            }
+        }
+
+        repositories {
+            val mavenToken = System.getenv("MAVEN_TOKEN")
+            val maven = if (isRelease) "releases" else "snapshots"
+            if (mavenToken != null && mavenToken.isNotEmpty()) {
+                maven {
+                    url = uri("https://maven.ithundxr.dev/${maven}")
+                    credentials {
+                        username = "numismatics-github"
+                        password = mavenToken
+                    }
+                }
+            }
+        }
     }
 
     // from here down is platform configuration
@@ -189,10 +215,10 @@ fun hasUnstaged(): Boolean {
 tasks.create("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
         }
         "fabric", "forge" -> {
-            dependsOn("${platform}:build", "${platform}:publishMods")
+            dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
         }
     }
 }

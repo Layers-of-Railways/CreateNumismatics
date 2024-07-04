@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "numismatics:andesite_depositor",
+    "numismatics:bank_terminal",
+    "numismatics:blaze_banker",
+    "numismatics:brass_depositor",
+    "numismatics:creative_vendor",
+    "numismatics:vendor"
+  ]
+}

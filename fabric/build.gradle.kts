@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import dev.ithundxr.silk.ChangelogText
 
 architectury.fabric()
@@ -13,10 +31,8 @@ loom {
             name = "Minecraft Data"
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.output-dir=${common.file("src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=railways")
+            vmArg("-Dfabric-api.datagen.modid=numismatics")
             vmArg("-Dporting_lib.datagen.existing_resources=${common.file("src/main/resources")}")
-
-            environmentVariable("DATAGEN", "TRUE")
         }
 
         getByName("client") {
@@ -37,6 +53,11 @@ repositories {
     maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
     maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
         name = "Siphalor's Maven"
+    }
+    maven("https://squiddev.cc/maven/") {// CC Tweaked
+        content {
+            includeGroup("cc.tweaked")
+        }
     }
 }
 
@@ -62,6 +83,11 @@ dependencies {
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
 
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
+
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric-api:${"cc_version"()}")
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric:${"cc_version"()}")
+    }
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")

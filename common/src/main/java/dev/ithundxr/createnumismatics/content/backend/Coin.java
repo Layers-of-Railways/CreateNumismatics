@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.content.backend;
 
 import com.google.common.collect.ImmutableList;
@@ -5,6 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import com.simibubi.create.foundation.utility.Pair;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -12,8 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
 
@@ -80,8 +98,16 @@ public enum Coin implements INamedIconOptions {
         return name().toLowerCase(Locale.ROOT);
     }
 
+    public String getTranslatedName() {
+        return Components.translatable(getTranslationKey()).getString().toLowerCase(Locale.ROOT);
+    }
+
+    public String getTranslatedNamePlural() {
+        return Components.translatable(getTranslationKey()+".plural").getString().toLowerCase(Locale.ROOT);
+    }
+
     public String getName(int amount) {
-        return getName() + (amount != 1 ? "s" : "");
+        return (amount != 1 ? getTranslatedNamePlural() : getTranslatedName());
     }
 
     public String getDisplayName() {
@@ -95,14 +121,13 @@ public enum Coin implements INamedIconOptions {
 
     @Override
     public String getTranslationKey() {
-        return "item.numismatics."+getName();
+        return "item.numismatics." + getName();
     }
 
     public Coin getDescription() {
         return switch (this) {
             case SPUR, BEVEL, SPROCKET -> SPUR;
-            case COG -> COG;
-            case CROWN, SUN -> COG;
+            case COG, CROWN, SUN -> COG;
         };
     }
 
@@ -122,5 +147,26 @@ public enum Coin implements INamedIconOptions {
                 closest = coin;
         }
         return closest;
+    }
+
+    public static List<Map.Entry<Coin, Integer>> getCoinsFromSpurAmount(int spurAmount){
+        List<Map.Entry<Coin, Integer>> coins = new ArrayList<>();
+        for(Coin coin : Arrays.stream(Coin.values()).sorted(Comparator.comparingInt(c -> -c.value)).toList()){
+            Couple<Integer> coinAmount = coin.convert(spurAmount);
+            coins.add(new AbstractMap.SimpleEntry<>(coin, coinAmount.getFirst()));
+            spurAmount = coinAmount.getSecond();
+        }
+        return coins;
+    }
+
+    public static Coin getCoinFromName(String name){
+        Coin selectedCoin = null;
+        for (Coin coin : Coin.values()){
+            if(coin.getName().equals(name)){
+                selectedCoin = coin;
+                break;
+            }
+        }
+        return selectedCoin;
     }
 }

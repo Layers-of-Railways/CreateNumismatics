@@ -1,0 +1,32 @@
+"project_id_env": "CROWDIN_PROJECT_ID"
+"api_token_env": "CROWDIN_PERSONAL_TOKEN"
+"base_path": "."
+
+"preserve_hierarchy": true
+
+"files": [
+    {
+        "source": "common/src/generated/resources/assets/numismatics/lang/en_us.json",
+        "translation": "common/src/main/resources/assets/numismatics/lang/%locale_with_underscore%.json",
+        "languages_mapping": {
+            "locale_with_underscore": {
+                "de_AT": "de_at",
+                "de_DE": "de_de",
+                "es_ES": "es_es",
+                "fr_FR": "fr_fr",
+                "ja_JP": "ja_jp",
+                "ko_KR": "ko_kr",
+                "nl_NL": "nl_nl",
+                "pl_PL": "pl_pl",
+                "zh_CN": "zh_cn",
+                "da_DK": "da_dk",
+                "is_IS": "is_is",
+                "no_NO": "no_no",
+                "sv_SE": "sv_se",
+                "ru_RU": "ru_ru",
+                "uk_UA": "uk_ua",
+                "en_GB": "en_gb"
+            }
+        }
+    }
+]

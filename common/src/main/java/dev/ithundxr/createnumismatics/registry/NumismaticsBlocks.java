@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.AllBlocks;
@@ -33,7 +51,8 @@ public class NumismaticsBlocks {
 	public static final BlockEntry<AndesiteDepositorBlock> ANDESITE_DEPOSITOR = REGISTRATE.block("andesite_depositor", AndesiteDepositorBlock::new)
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
-		.properties(p -> p.strength(1.0f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.strength(1.0F, 3600000.0F)) // explosion resistance same as bedrock
+		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.lang("Andesite Depositor")
@@ -44,7 +63,8 @@ public class NumismaticsBlocks {
 	public static final BlockEntry<BrassDepositorBlock> BRASS_DEPOSITOR = REGISTRATE.block("brass_depositor", BrassDepositorBlock::new)
 		.properties(p -> p.mapColor(MapColor.PODZOL))
 		.properties(p -> p.sound(SoundType.WOOD))
-		.properties(p -> p.strength(1.4f, 3600000.0f)) // explosion resistance same as bedrock
+		.properties(p -> p.strength(1.4F, 3600000.0F)) // explosion resistance same as bedrock
+		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
 		.tag(CommonTags.RELOCATION_NOT_SUPPORTED.tag)
 		.lang("Brass Depositor")
@@ -56,6 +76,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.mapColor(MapColor.COLOR_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.lang("Bank Terminal")
@@ -68,6 +89,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.lightLevel(state -> 15))
+		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.transform(BuilderTransformers.blazeBanker())
@@ -87,6 +109,7 @@ public class NumismaticsBlocks {
 		.properties(BlockBehaviour.Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)
@@ -102,6 +125,7 @@ public class NumismaticsBlocks {
 		.properties(BlockBehaviour.Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+		.properties(p -> p.strength(-1.0F, 3600000.0F)) // Unbreakable & Unexplodable
 		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)

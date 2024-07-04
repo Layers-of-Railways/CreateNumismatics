@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2023-2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.ithundxr.createnumismatics.content.backend.trust_list;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -210,7 +228,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
     }
 
     public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
-        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("create.numismatics.trust_list.configure"), be,
+        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("numismatics.trust_list.configure"), be,
             slot, be::isTrusted) {
             @Override
             public void onShortInteract(Player player, InteractionHand hand, Direction side) {
