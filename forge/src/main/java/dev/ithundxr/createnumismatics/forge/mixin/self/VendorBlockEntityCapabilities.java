@@ -49,7 +49,6 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.ITEM_HANDLER && !remove) {
-            // If down return the down handler otherwise return the one for all other sides
             return numismatics$handler.cast();
         }
 

@@ -102,8 +102,12 @@ public enum Coin implements INamedIconOptions {
         return Components.translatable(getTranslationKey()).getString().toLowerCase(Locale.ROOT);
     }
 
+    public String getTranslatedNamePlural() {
+        return Components.translatable(getTranslationKey()+".plural").getString().toLowerCase(Locale.ROOT);
+    }
+
     public String getName(int amount) {
-        return getTranslatedName() + (amount != 1 ? "s" : "");
+        return (amount != 1 ? getTranslatedNamePlural() : getTranslatedName());
     }
 
     public String getDisplayName() {
