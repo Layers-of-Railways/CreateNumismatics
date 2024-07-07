@@ -1,0 +1,9 @@
+# Configuration file
+
+[starter]
+    spur = 0
+    bevel = 0
+    sprocket = 0
+    cog = 0
+    crown = 0
+    sun = 0

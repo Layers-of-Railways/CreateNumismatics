@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.configuration.FabricModConfig;
 import dev.ithundxr.createnumismatics.events.fabric.CommonEventsFabric;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.fabricmc.api.ModInitializer;
@@ -37,6 +38,7 @@ public class NumismaticsImpl implements ModInitializer {
     public void onInitialize() {
         Numismatics.init();
         CommonEventsFabric.init();
+        FabricModConfig.loadConfig();
         ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(Numismatics.MOD_ID, "enum"), EnumArgument.class, new EnumArgument.Info());
     }
 

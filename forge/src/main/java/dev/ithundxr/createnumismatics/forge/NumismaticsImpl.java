@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.configuration.ForgeModConfig;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import dev.ithundxr.createnumismatics.registry.forge.NumismaticsCreativeModeTabsImpl;
@@ -66,6 +67,7 @@ public class NumismaticsImpl {
     }
 
     public static void onCommonSetup(final FMLCommonSetupEvent event) {
+        ForgeModConfig.loadConfig();
         event.enqueueWork(Numismatics::postRegistrationInit);
     }
 
