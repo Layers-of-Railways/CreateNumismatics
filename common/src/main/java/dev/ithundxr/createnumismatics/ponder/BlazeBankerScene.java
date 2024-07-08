@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2023-2024 The Railways Team
+ * Copyright (c) 2024 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,18 +16,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.registry;
+package dev.ithundxr.createnumismatics.ponder;
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
+import com.simibubi.create.foundation.ponder.SceneBuilder;
+import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
+import com.simibubi.create.foundation.ponder.Selection;
+import net.minecraft.core.Direction;
 
-public class NumismaticsPonderIndex {
-    static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
-
-    public static void register() {
-        HELPER.forComponents(AllBlocks.LIT_BLAZE_BURNER)
-                .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
+public class BlazeBankerScene {
+    public static void banker(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("blaze_banker", "Banking with Blazes");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+        
+        
+        Selection litBlazeBurner = util.select.position(2, 1, 2);
+        scene.world.showSection(litBlazeBurner, Direction.DOWN);
     }
 }
