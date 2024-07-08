@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.configuration;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import dev.ithundxr.createnumismatics.config.CommonModConfig;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
@@ -48,5 +49,22 @@ public class FabricModConfig {
 		CommonModConfig.starterCog = configData.get("starter.cog");
 		CommonModConfig.starterCrown = configData.get("starter.crown");
 		CommonModConfig.starterSun = configData.get("starter.sun");
+
+		if (!configData.contains("value.spur")) configData.set("value.spur", 1);
+		if (!configData.contains("value.bevel")) configData.set("value.bevel", 8);
+		if (!configData.contains("value.sprocket")) configData.set("value.sprocket", 16);
+		if (!configData.contains("value.cog")) configData.set("value.cog", 64);
+		if (!configData.contains("value.crown")) configData.set("value.crown", 512);
+		if (!configData.contains("value.sun")) configData.set("value.sun", 4096);
+
+		Coin.SPUR.setValue(configData.get("value.spur"));
+		Coin.BEVEL.setValue(configData.get("value.bevel"));
+		Coin.SPROCKET.setValue(configData.get("value.sprocket"));
+		Coin.COG.setValue(configData.get("value.cog"));
+		Coin.CROWN.setValue(configData.get("value.crown"));
+		Coin.SUN.setValue(configData.get("value.sun"));
+
+		if (!configData.contains("general.currency")) configData.set("general.currency", "COG");
+		CommonModConfig.currency  = Coin.valueOf(configData.get("general.currency"));
 	}
 }

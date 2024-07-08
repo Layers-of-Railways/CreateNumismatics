@@ -18,6 +18,8 @@
 
 package dev.ithundxr.createnumismatics.config;
 
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+
 public class CommonModConfig {
 	public static int starterSpur = 0;
 	public static int starterBevel = 0;
@@ -25,4 +27,6 @@ public class CommonModConfig {
 	public static int starterCog = 0;
 	public static int starterCrown = 0;
 	public static int starterSun = 0;
+
+	public static Coin currency = null;
 }

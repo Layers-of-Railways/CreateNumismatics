@@ -31,6 +31,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.ComputerCraftTags;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.ithundxr.createnumismatics.config.CommonModConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
@@ -340,11 +341,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             }
         }
 
-        Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
+        Couple<Integer> cogsAndSpurs = CommonModConfig.currency.convert(getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
         MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
-            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), CommonModConfig.currency.getName(cogs), spurs);
 
         // Selling/Buying
         Lang.builder()

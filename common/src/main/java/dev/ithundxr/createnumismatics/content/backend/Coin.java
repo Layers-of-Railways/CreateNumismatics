@@ -23,7 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Pair;
+import dev.ithundxr.createnumismatics.config.CommonModConfig;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -42,6 +42,7 @@ import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
 8 cogs to a crown
 8 crowns to a sun
  */
+
 public enum Coin implements INamedIconOptions {
     SPUR(1, Rarity.COMMON, I_COIN_SPUR, "\uF011"),
     BEVEL(8, Rarity.COMMON, I_COIN_BEVEL, "\uF012"), // 8 spurs
@@ -51,7 +52,7 @@ public enum Coin implements INamedIconOptions {
     SUN(4096, Rarity.EPIC, I_COIN_SUN, "\uF016") // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
 
-    public final int value; // in terms of spurs
+    public int value; // in terms of spurs
     public final Rarity rarity;
     public final NumismaticsIcons icon;
     public final String fontChar;
@@ -62,6 +63,10 @@ public enum Coin implements INamedIconOptions {
         this.icon = icon;
         this.icon.setCoin();
         this.fontChar = fontChar;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 
     public static List<Component> labeledComponents() {
@@ -125,10 +130,8 @@ public enum Coin implements INamedIconOptions {
     }
 
     public Coin getDescription() {
-        return switch (this) {
-            case SPUR, BEVEL, SPROCKET -> SPUR;
-            case COG, CROWN, SUN -> COG;
-        };
+        if (CommonModConfig.currency == null) return SPUR;
+        return this.value < CommonModConfig.currency.value ? SPUR : CommonModConfig.currency;
     }
 
     public ItemStack asStack() {

@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.configuration;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import dev.ithundxr.createnumismatics.config.CommonModConfig;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -37,14 +38,37 @@ public class ForgeModConfig {
 	public static final ForgeConfigSpec.IntValue STARTER_CROWN;
 	public static final ForgeConfigSpec.IntValue STARTER_SUN;
 
+	public static final ForgeConfigSpec.IntValue SPUR_VALUE;
+	public static final ForgeConfigSpec.IntValue BEVEL_VALUE;
+	public static final ForgeConfigSpec.IntValue SPROCKET_VALUE;
+	public static final ForgeConfigSpec.IntValue COG_VALUE;
+	public static final ForgeConfigSpec.IntValue CROWN_VALUE;
+	public static final ForgeConfigSpec.IntValue SUN_VALUE;
+
+	public static final ForgeConfigSpec.ConfigValue<String> CURRENCY;
+
 	static {
-		COMMON_BUILDER.comment("Numismatics configuration file").push("starter");
+		COMMON_BUILDER.comment("Numismatics configuration file").push("general");
+		CURRENCY     = COMMON_BUILDER.comment("The default currency").define("currency", "COG");
+
+		COMMON_BUILDER.pop();
+		COMMON_BUILDER.comment("The number of coins added when a player first looks at their bank account").push("starter");
 		STARTER_SPUR     = COMMON_BUILDER.comment("The number of spurs added when a player first looks at their bank account").defineInRange("spur", 0, 0, Integer.MAX_VALUE);
 		STARTER_BEVEL    = COMMON_BUILDER.comment("The number of bevels added when a player first looks at their bank account").defineInRange("bevel", 0, 0, Integer.MAX_VALUE);
 		STARTER_SPROCKET = COMMON_BUILDER.comment("The number of sprockets added when a player first looks at their bank account").defineInRange("sprocket", 0, 0, Integer.MAX_VALUE);
 		STARTER_COG      = COMMON_BUILDER.comment("The number of cogs added when a player first looks at their bank account").defineInRange("cog", 0, 0, Integer.MAX_VALUE);
 		STARTER_CROWN    = COMMON_BUILDER.comment("The number of crowns added when a player first looks at their bank account").defineInRange("crown", 0, 0, Integer.MAX_VALUE);
 		STARTER_SUN      = COMMON_BUILDER.comment("The number of suns added when a player first looks at their bank account").defineInRange("sun", 0, 0, Integer.MAX_VALUE);
+
+		COMMON_BUILDER.pop();
+		COMMON_BUILDER.comment("The value of each coins in spurs").push("value");
+		SPUR_VALUE     = COMMON_BUILDER.defineInRange("spur", 1, 0, Integer.MAX_VALUE);
+		BEVEL_VALUE    = COMMON_BUILDER.defineInRange("bevel", 8, 0, Integer.MAX_VALUE);
+		SPROCKET_VALUE = COMMON_BUILDER.defineInRange("sprocket", 16, 0, Integer.MAX_VALUE);
+		COG_VALUE      = COMMON_BUILDER.defineInRange("cog", 64, 0, Integer.MAX_VALUE);
+		CROWN_VALUE    = COMMON_BUILDER.defineInRange("crown", 512, 0, Integer.MAX_VALUE);
+		SUN_VALUE      = COMMON_BUILDER.defineInRange("sun", 4096, 0, Integer.MAX_VALUE);
+
 		COMMON_BUILDER.pop();
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_BUILDER.build());
@@ -65,5 +89,14 @@ public class ForgeModConfig {
 		CommonModConfig.starterCog = STARTER_COG.get();
 		CommonModConfig.starterCrown = STARTER_CROWN.get();
 		CommonModConfig.starterSun = STARTER_SUN.get();
+
+		Coin.SPUR.setValue(SPUR_VALUE.get());
+		Coin.BEVEL.setValue(BEVEL_VALUE.get());
+		Coin.SPROCKET.setValue(SPROCKET_VALUE.get());
+		Coin.COG.setValue(COG_VALUE.get());
+		Coin.CROWN.setValue(CROWN_VALUE.get());
+		Coin.SUN.setValue(SUN_VALUE.get());
+
+		CommonModConfig.currency  = Coin.valueOf(CURRENCY.get());
 	}
 }

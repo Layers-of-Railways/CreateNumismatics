@@ -1,9 +1,18 @@
-# Configuration file
+[general]
+    currency = "COG"
 
 [starter]
-    spur = 0
-    bevel = 0
-    sprocket = 0
-    cog = 0
-    crown = 0
     sun = 0
+    crown = 0
+    cog = 0
+    sprocket = 0
+    bevel = 0
+    spur = 0
+
+[value]
+    sun = 4096
+    crown = 512
+    cog = 64
+    sprocket = 16
+    bevel = 8
+    spur = 1
