@@ -20,7 +20,11 @@ package dev.ithundxr.createnumismatics.ponder;
 
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
-import com.simibubi.create.foundation.ponder.Selection;
+import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import com.simibubi.create.foundation.utility.Pointing;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
+import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 public class BlazeBankerScene {
@@ -28,9 +32,39 @@ public class BlazeBankerScene {
         scene.title("blaze_banker", "Banking with Blazes");
         scene.configureBasePlate(0, 0, 5);
         scene.showBasePlate();
+        scene.idle(10);
+
+        BlockPos blazeBurner = util.grid.at(2, 1, 2);
+        scene.world.showSection(util.select.position(blazeBurner), Direction.DOWN);
+        scene.idle(10);
         
-        
-        Selection litBlazeBurner = util.select.position(2, 1, 2);
-        scene.world.showSection(litBlazeBurner, Direction.DOWN);
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("Create a Blaze Banker by applying a Banking Guide to a blaze burner")
+                .pointAt(util.vector.blockSurface(blazeBurner, Direction.WEST))
+                .placeNearTarget();
+        scene.idle(80);
+
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(blazeBurner), Pointing.DOWN).leftClick()
+                .withItem(NumismaticsItems.BANKING_GUIDE.asStack()), 15);
+        scene.idle(7);
+        scene.world.setBlock(blazeBurner, NumismaticsBlocks.BLAZE_BANKER.getDefaultState(), false);
+        scene.idle(20);
+
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("The Blaze Banker is a way for players to manage money without using their own account")
+                .pointAt(util.vector.blockSurface(blazeBurner, Direction.WEST))
+                .placeNearTarget();
+        scene.idle(80);
+
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("To bind a card to a Banker, place it into its card slot.")
+                .pointAt(util.vector.blockSurface(blazeBurner, Direction.WEST))
+                .placeNearTarget();
+        scene.idle(80);
+
+        scene.effects.indicateSuccess(blazeBurner);
     }
 }

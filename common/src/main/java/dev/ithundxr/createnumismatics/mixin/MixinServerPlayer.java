@@ -35,7 +35,7 @@ public class MixinServerPlayer {
     @Shadow public ServerGamePacketListenerImpl connection;
 
     @WrapOperation(method = "initMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;setSynchronizer(Lnet/minecraft/world/inventory/ContainerSynchronizer;)V"))
-    private void initMenu(AbstractContainerMenu instance, ContainerSynchronizer synchronizer, Operation<Void> original) {
+    private void numismatics$customSynchronizerForBankContainer(AbstractContainerMenu instance, ContainerSynchronizer synchronizer, Operation<Void> original) {
         if (instance instanceof BankMenu) {
             // Bank balance can easily overflow the 16-bit short limit, so we need a custom synchronizer
             // This has to be a mixin instead of overriding BankMenu#setSynchronizer because we need the context of the player

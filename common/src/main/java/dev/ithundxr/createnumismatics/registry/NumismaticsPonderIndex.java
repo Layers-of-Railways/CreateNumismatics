@@ -22,12 +22,19 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
+import dev.ithundxr.createnumismatics.ponder.DepositorScene;
 
 public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
 
     public static void register() {
-        HELPER.forComponents(AllBlocks.LIT_BLAZE_BURNER)
+        HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
+                .addStoryBoard("depositor", DepositorScene::depositor);
+    }
+
+    // Any ponders that should appear AFTER creates own ponders should go here
+    public static void registerAfterCreatePonders() {
+        HELPER.forComponents(AllBlocks.BLAZE_BURNER)
                 .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }
 }
