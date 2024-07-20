@@ -22,12 +22,9 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +35,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -116,21 +116,16 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         int totalPrice = getTotalPrice();
 
         ItemStack handStack = player.getItemInHand(hand);
-        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack)) {
-            if (CardItem.isBound(handStack)) {
-                UUID id = CardItem.get(handStack);
-                BankAccount account = Numismatics.BANK.getAccount(id);
-                if (account != null && account.isAuthorized(player)) {
-                    if (account.deduct(totalPrice)) {
-                        //activate(state, level, pos);
-                        if (addToSource) {
-                            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                                addCoin.accept(entry.getKey(), entry.getValue());
-                            }
-                        }
-                        return true;
+        IDeductable deductable = IDeductable.get(handStack, player);
+        if (deductable != null) {
+            if (deductable.deduct(totalPrice)) {
+                //activate(state, level, pos);
+                if (addToSource) {
+                    for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+                        addCoin.accept(entry.getKey(), entry.getValue());
                     }
                 }
+                return true;
             }
         } else if (CoinItem.extract(player, hand, prices, false)) {
             //activate(state, level, pos);

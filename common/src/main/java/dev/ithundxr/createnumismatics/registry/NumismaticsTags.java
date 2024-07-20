@@ -22,7 +22,6 @@ import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -106,7 +105,8 @@ public class NumismaticsTags {
     NUMISMATICS_ITEMS,
     COINS,
     CARDS,
-    ID_CARDS
+    ID_CARDS,
+    AUTHORIZED_CARDS
     ;
 
     public final TagKey<Item> tag;

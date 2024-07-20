@@ -20,18 +20,14 @@ package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.utility.Components;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,8 +38,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepositorBlockEntity> {
     public AndesiteDepositorBlock(Properties properties) {
@@ -88,16 +82,11 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
             Coin coin = andesiteDepositor.getCoin();
 
             ItemStack handStack = player.getItemInHand(hand);
-            if (NumismaticsTags.AllItemTags.CARDS.matches(handStack)) {
-                if (CardItem.isBound(handStack)) {
-                    UUID id = CardItem.get(handStack);
-                    BankAccount account = Numismatics.BANK.getAccount(id);
-                    if (account != null && account.isAuthorized(player)) {
-                        if (account.deduct(coin, 1)) {
-                            activate(state, level, pos);
-                            andesiteDepositor.addCoin(coin, 1);
-                        }
-                    }
+            IDeductable deductable = IDeductable.get(handStack, player);
+            if (deductable != null) {
+                if (deductable.deduct(coin, 1)) {
+                    activate(state, level, pos);
+                    andesiteDepositor.addCoin(coin, 1);
                 }
             } else if (CoinItem.extract(player, hand, coin, true)) {
                 activate(state, level, pos);

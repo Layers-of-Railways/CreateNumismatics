@@ -24,6 +24,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.multiloader.Env;
@@ -181,6 +182,13 @@ public class NumismaticsCreativeModeTabs {
 
             for (ItemEntry<IDCardItem> entry : NumismaticsItems.ID_CARDS) {
                 IDCardItem item = entry.get();
+                if (item.color != DyeColor.RED) {
+                    visibilities.put(item, TabVisibility.SEARCH_TAB_ONLY);
+                }
+            }
+
+            for (ItemEntry<AuthorizedCardItem> entry : NumismaticsItems.AUTHORIZED_CARDS) {
+                AuthorizedCardItem item = entry.get();
                 if (item.color != DyeColor.RED) {
                     visibilities.put(item, TabVisibility.SEARCH_TAB_ONLY);
                 }

@@ -23,8 +23,9 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.item.DyedItemList;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
+import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BankingGuideItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
@@ -39,7 +40,7 @@ public class NumismaticsItems {
 	private static ItemEntry<CoinItem> makeCoin(Coin coin) {
 		return REGISTRATE.item(coin.getName(), CoinItem.create(coin))
 			.tag(NumismaticsTags.AllItemTags.COINS.tag)
-			.lang(coin.getDisplayName())
+			.lang(coin.getDefaultLangName())
 			.properties(p -> p.rarity(coin.rarity))
 			.model((c, p) -> p.generated(c, p.modLoc("item/coin/" + coin.getName())))
 			.register();
@@ -76,6 +77,17 @@ public class NumismaticsItems {
 			.lang(TextUtils.titleCaseConversion(color.getName()) + " ID Card")
 			.model((c, p) -> p.generated(c, Numismatics.asResource("item/id_card/"+colorName+"_id_card")))
 			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.id_card"))
+			.register();
+	});
+
+	public static final DyedItemList<AuthorizedCardItem> AUTHORIZED_CARDS = new DyedItemList<>(color -> {
+		String colorName = color.getSerializedName();
+		return REGISTRATE.item(colorName+"_authorized_card", p -> new AuthorizedCardItem(p, color))
+			.properties(p -> p.stacksTo(1))
+			.tag(NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.tag)
+			.lang(TextUtils.titleCaseConversion(color.getName()) + " Authorized Card")
+			.model((c, p) -> p.generated(c, Numismatics.asResource("item/authorized_card/"+colorName+"_authorized_card")))
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.numismatics.authorized_bank_card"))
 			.register();
 	});
 

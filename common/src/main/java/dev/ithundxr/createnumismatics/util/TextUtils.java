@@ -29,6 +29,7 @@ import net.minecraft.network.chat.Style;
 import org.apache.commons.lang3.StringUtils;
 import org.joml.Matrix4f;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -129,5 +130,12 @@ public class TextUtils {
     public static String leftPad(String s, char c, int width) {
         if (s.length() >= width) return s;
         return String.valueOf(c).repeat(width - s.length()) + s;
+    }
+
+    public static boolean isLeftToRight() {
+        return Components.translatable("numismatics.special.ltr")
+            .getString()
+            .toLowerCase(Locale.ROOT)
+            .equals("true");
     }
 }

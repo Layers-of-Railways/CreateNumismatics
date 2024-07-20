@@ -163,7 +163,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         if (reverseDirection) {
             i = endIndex - 1;
         }
-        if (stack.isStackable() && startIndex >= CARD_SLOTS) {
+        if (stack.isStackable() && startIndex >= CARD_SLOTS) { // CHANGED LINE
             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 slot = this.slots.get(i);
                 itemStack = slot.getItem();

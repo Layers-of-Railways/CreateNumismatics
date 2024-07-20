@@ -25,13 +25,11 @@ import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
+import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
-import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -81,6 +79,10 @@ public class CommonEvents {
     public static void onPlayerJoin(ServerPlayer player) {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
             NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
+
+            for (SubAccount subAccount : account.getSubAccounts()) {
+                NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(subAccount));
+            }
         }
     }
 
