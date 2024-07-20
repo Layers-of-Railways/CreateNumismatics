@@ -265,9 +265,11 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
     public void removeSubAccount(@NotNull UUID subAccountID) {
         if (contentHolder == null)
             return;
-        contentHolder.removeSubAccount(subAccountID);
+        SubAccount subAccount = contentHolder.removeSubAccount(subAccountID);
 
         if (player instanceof ServerPlayer) {
+            if (subAccount != null)
+                clearContainer(player, subAccount.getTrustListContainer());
             sendUpdateToOthers();
         } else {
             NumismaticsPackets.PACKETS.send(new RemoveSubAccountPacket(subAccountID));

@@ -18,10 +18,12 @@
 
 package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
+import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -66,6 +68,9 @@ public final class SubAccount {
     }
 
     public void setLabel(@NotNull String label) {
+        if (this.label.equals(label))
+            return;
+
         this.label = label;
         markDirty();
 
@@ -99,33 +104,36 @@ public final class SubAccount {
         markDirty();
     }
 
-    public boolean spend(Authorization authorization, Coin coin, int count) {
-        return spend(authorization, coin, count, false);
+    public boolean spend(Authorization authorization, Coin coin, int count, ReasonHolder reasonHolder) {
+        return spend(authorization, coin, count, false, reasonHolder);
     }
 
-    public boolean spend(Authorization authorization, Coin coin, int count, boolean simulate) {
-        return spend(authorization, coin.toSpurs(count), simulate);
+    public boolean spend(Authorization authorization, Coin coin, int count, boolean simulate, ReasonHolder reasonHolder) {
+        return spend(authorization, coin.toSpurs(count), simulate, reasonHolder);
     }
 
-    public boolean spend(Authorization authorization, int spurs) {
-        return spend(authorization, spurs, false);
+    public boolean spend(Authorization authorization, int spurs, ReasonHolder reasonHolder) {
+        return spend(authorization, spurs, false, reasonHolder);
     }
 
-    public boolean spend(Authorization authorization, int spurs, boolean simulate) {
-        if (!isAuthorized(authorization))
+    public boolean spend(Authorization authorization, int spurs, boolean simulate, ReasonHolder reasonHolder) {
+        if (!isAuthorized(authorization)) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
             return false;
+        }
 
         if (parentAccount.getBalance() < spurs) {
             return false;
         }
 
         if (!totalLimit.spend(spurs, simulate)) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.limit_reached"));
             return false;
         }
 
         if (!simulate) {
             markDirty();
-            parentAccount.deduct(spurs);
+            parentAccount.deduct(spurs, reasonHolder);
         }
 
         return true;
@@ -259,13 +267,13 @@ public final class SubAccount {
         }
 
         @Override
-        public boolean deduct(Coin coin, int amount) {
-            return spend(authorization, coin, amount);
+        public boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder) {
+            return spend(authorization, coin, amount, reasonHolder);
         }
 
         @Override
-        public boolean deduct(int spurs) {
-            return spend(authorization, spurs);
+        public boolean deduct(int spurs, ReasonHolder reasonHolder) {
+            return spend(authorization, spurs, reasonHolder);
         }
     }
 }

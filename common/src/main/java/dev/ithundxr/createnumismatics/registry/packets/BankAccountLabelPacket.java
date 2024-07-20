@@ -42,21 +42,33 @@ public class BankAccountLabelPacket implements S2CPacket {
     private final String label;
 
     public BankAccountLabelPacket(FriendlyByteBuf buf) {
-        isSubAccount = buf.readBoolean();
-        id = buf.readUUID();
-        label = buf.readBoolean() ? buf.readUtf(256) : null;
+        this(
+            buf.readBoolean(), // isSubAccount
+            buf.readUUID(), // id
+            buf.readBoolean() ? buf.readUtf(256) : null // label
+        );
     }
 
     public BankAccountLabelPacket(BankAccount account) {
-        this.isSubAccount = false;
-        this.id = account.id;
-        this.label = account.getLabel();
+        this(false, account.id, account.getLabel());
     }
 
     public BankAccountLabelPacket(SubAccount subAccount) {
-        this.isSubAccount = true;
-        this.id = subAccount.getAuthorizationID();
-        this.label = subAccount.getLabel();
+        this(true, subAccount.getAuthorizationID(), subAccount.getLabel());
+    }
+
+    private BankAccountLabelPacket(boolean isSubAccount, @NotNull UUID id, @Nullable String label) {
+        this.isSubAccount = isSubAccount;
+        this.id = id;
+        this.label = label;
+    }
+
+    public static BankAccountLabelPacket remove(BankAccount account) {
+        return new BankAccountLabelPacket(false, account.id, null);
+    }
+
+    public static BankAccountLabelPacket remove(SubAccount subAccount) {
+        return new BankAccountLabelPacket(true, subAccount.getAuthorizationID(), null);
     }
 
     @Override

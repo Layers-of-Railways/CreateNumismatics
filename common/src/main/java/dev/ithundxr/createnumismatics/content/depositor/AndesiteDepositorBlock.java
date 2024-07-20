@@ -19,9 +19,9 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.util.Utils;
@@ -82,17 +82,16 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
             Coin coin = andesiteDepositor.getCoin();
 
             ItemStack handStack = player.getItemInHand(hand);
-            IDeductable deductable = IDeductable.get(handStack, player);
-            if (deductable != null) {
-                if (deductable.deduct(coin, 1)) {
-                    activate(state, level, pos);
-                    andesiteDepositor.addCoin(coin, 1);
-                }
+            ReasonHolder reasonHolder = new ReasonHolder();
+            IDeductable deductable = IDeductable.get(handStack, player, reasonHolder);
+            if (deductable != null && deductable.deduct(coin, 1, reasonHolder)) {
+                activate(state, level, pos);
+                andesiteDepositor.addCoin(coin, 1);
             } else if (CoinItem.extract(player, hand, coin, true)) {
                 activate(state, level, pos);
                 andesiteDepositor.addCoin(coin, 1);
             } else {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                player.displayClientMessage(reasonHolder.getMessageOrDefault()
                         .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
         }

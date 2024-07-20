@@ -24,6 +24,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -112,13 +113,13 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         calculateTotalPrice();
     }
 
-    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource) {
+    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource, ReasonHolder reasonHolder) {
         int totalPrice = getTotalPrice();
 
         ItemStack handStack = player.getItemInHand(hand);
-        IDeductable deductable = IDeductable.get(handStack, player);
+        IDeductable deductable = IDeductable.get(handStack, player, reasonHolder);
         if (deductable != null) {
-            if (deductable.deduct(totalPrice)) {
+            if (deductable.deduct(totalPrice, reasonHolder)) {
                 //activate(state, level, pos);
                 if (addToSource) {
                     for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {

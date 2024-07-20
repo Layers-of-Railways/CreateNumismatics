@@ -1,12 +1,8 @@
 {
   "numismatics.andesite_depositor.price": "Price",
-  "item.numismatics.spur": "Spur",
-  "item.numismatics.bevel": "Bevel",
-  "item.numismatics.sprocket": "Sprocket",
-  "item.numismatics.cog": "Cog",
-  "item.numismatics.crown": "Crown",
-  "item.numismatics.sun": "Sun",
+
   "gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
+
   "gui.numismatics.bank_terminal.sub_accounts": "Sub Accounts",
   "gui.numismatics.bank_terminal.sub_accounts.named": "%s: Sub Accounts",
   "gui.numismatics.bank_terminal.sub_accounts.edit": "Edit Sub Account",
@@ -17,14 +13,16 @@
   "gui.numismatics.bank_terminal.sub_accounts.name_box": "Name",
   "gui.numismatics.bank_terminal.sub_accounts.help": "No Sub Accounts",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.1": "Enter a name and then click the add",
-  "gui.numismatics.bank_terminal.sub_accounts.help.line.2": "button to create a new sub account.",
-  "gui.numismatics.bank_terminal.sub_accounts.help.line.3": "Sub accounts can be used to provide",
+  "gui.numismatics.bank_terminal.sub_accounts.help.line.2": "button to create a new Sub Account.",
+  "gui.numismatics.bank_terminal.sub_accounts.help.line.3": "Sub Accounts can be used to provide",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.4": "limited access to selected players or",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.5": "enable safer automated transactions.",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.6": "",
+
   "gui.numismatics.limit": "Spent %s of %s",
   "gui.numismatics.limit.none": "No limit",
   "gui.numismatics.limit.monetary": "Spent %s %s, %s¤ of %s %s, %s¤",
+
   "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
   "itemGroup.numismatics": "Create: Numismatics",
   "gui.numismatics.trust_list": "Trust List",
@@ -34,7 +32,8 @@
   "gui.numismatics.vendor.out_of_stock": "Out of stock",
   "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
   "gui.numismatics.vendor.insufficient_funds": "Insufficient funds",
-  "gui.numismatics.vendor.insufficient_funds.named": "Insufficient funds, contact %s for a refill",
+  "gui.numismatics.vendor.out_of_stock.funds": "Vendor has insufficient funds",
+  "gui.numismatics.vendor.out_of_stock.funds.named": "Vendor has insufficient funds, contact %s for a refill",
   "gui.numismatics.vendor.generic_named": "Contact %s",
   "gui.numismatics.vendor.mode.sell": "Sell",
   "gui.numismatics.vendor.mode.buy": "Buy",
@@ -46,5 +45,11 @@
   "gui.numismatics.vendor.full.named": "Vendor is full, contact %s to empty it",
   "gui.numismatics.vendor.no_item_in_hand": "Hold the stack of items you want to sell",
 
-  "block.numismatics.trusted_block.attempt_break": "Hold %1$s to break this block"
+  "block.numismatics.trusted_block.attempt_break": "Hold %1$s to break this block",
+
+  "error.numismatics.card.not_bound": "Card not bound",
+  "error.numismatics.card.account_not_found": "Account not found",
+  "error.numismatics.card.not_authorized": "Not authorized",
+  "error.numismatics.authorized_card.limit_reached": "Spending limit reached",
+  "error.numismatics.authorized_card.account_not_found": "Sub Account not found"
 }

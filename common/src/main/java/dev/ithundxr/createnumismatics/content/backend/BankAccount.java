@@ -214,12 +214,12 @@ public class BankAccount implements MenuProvider, IDeductable {
     }
 
     @Override
-    public boolean deduct(Coin coin, int amount) {
+    public boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder) {
         return deduct(coin, amount, false);
     }
 
     @Override
-    public boolean deduct(int amount) {
+    public boolean deduct(int amount, ReasonHolder reasonHolder) {
         return deduct(amount, false);
     }
 
@@ -371,17 +371,20 @@ public class BankAccount implements MenuProvider, IDeductable {
 
         SubAccount subAccount = new SubAccount(this, label, UUID.randomUUID());
         subAccounts.put(subAccount.getAuthorizationID(), subAccount);
+        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), new BankAccountLabelPacket(subAccount));
         markDirty();
         return subAccount.getAuthorizationID();
     }
 
-    public void removeSubAccount(UUID subAccountID) {
+    public @Nullable SubAccount removeSubAccount(UUID subAccountID) {
         if (subAccounts == null)
-            return;
+            return null;
 
         SubAccount subAccount = subAccounts.remove(subAccountID);
         subAccount.setRemoved();
+        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), BankAccountLabelPacket.remove(subAccount));
         markDirty();
+        return subAccount;
     }
 
     public boolean isClientSide() {
@@ -440,19 +443,27 @@ public class BankAccount implements MenuProvider, IDeductable {
         return subAccounts == null ? null : subAccounts.get(subAccountID);
     }
 
-    public @Nullable SubAccount getSubAccount(Authorization authorization) {
-        if (!isAuthorized(authorization.getPersonalID()))
+    public @Nullable SubAccount getSubAccount(Authorization authorization, ReasonHolder reasonHolder) {
+        if (!isAuthorized(authorization.getPersonalID())) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
             return null;
+        }
 
-        if (subAccounts == null)
+        if (subAccounts == null) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
             return null;
+        }
 
         SubAccount subAccount = subAccounts.get(authorization.getAuthorizationID());
-        if (subAccount == null)
+        if (subAccount == null) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
             return null;
+        }
 
-        if (!subAccount.isAuthorized(authorization))
+        if (!subAccount.isAuthorized(authorization)) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
             return null;
+        }
 
         return subAccount;
     }

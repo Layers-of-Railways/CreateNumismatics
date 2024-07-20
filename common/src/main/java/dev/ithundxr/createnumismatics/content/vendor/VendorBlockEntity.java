@@ -27,12 +27,11 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
-import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.ComputerCraftTags;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
@@ -325,7 +324,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     }
                 } else if (!hasEnoughMoney()) {
                     Lang.builder()
-                        .add(Components.translatable("gui.numismatics.vendor.insufficient_funds"))
+                        .add(Components.translatable("gui.numismatics.vendor.out_of_stock.funds"))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(tooltip);
 
@@ -662,7 +661,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         condenseItems();
 
         if (isCreativeVendor()) {
-            if (price.deduct(player, hand, false)) {
+            ReasonHolder reasonHolder = new ReasonHolder();
+            if (price.deduct(player, hand, false, reasonHolder)) {
                 ItemStack output = selling.copy();
                 ItemUtil.givePlayerItem(player, output);
                 giveSellingAdvancements(player);
@@ -671,14 +671,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 notifyUpdate();
             } else {
                 // insufficient funds
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                player.displayClientMessage(reasonHolder.getMessageOrDefault()
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
         } else {
             for (ItemStack stack : items) {
                 if (matchesSellingItem(stack) && stack.getCount() >= selling.getCount()) {
-                    if (price.deduct(player, hand, true)) {
+                    ReasonHolder reasonHolder = new ReasonHolder();
+                    if (price.deduct(player, hand, true, reasonHolder)) {
                         ItemStack output = stack.split(selling.getCount());
                         ItemUtil.givePlayerItem(player, output);
                         giveSellingAdvancements(player);
@@ -687,7 +688,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                         notifyUpdate();
                     } else {
                         // insufficient funds
-                        player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                        player.displayClientMessage(reasonHolder.getMessageOrDefault()
                             .withStyle(ChatFormatting.DARK_RED), true);
                         level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
                     }
@@ -789,7 +790,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             return;
         } else if (getCardId() != null) {
             BankAccount account = Numismatics.BANK.getAccount(getCardId());
-            if (account != null && account.isAuthorized(owner) && account.deduct(price.getTotalPrice())) {
+            if (account != null && account.isAuthorized(owner) && account.deduct(price.getTotalPrice(), ReasonHolder.IGNORED)) {
                 handStack.shrink(buying.getCount());
                 player.setItemInHand(hand, handStack);
 
@@ -807,10 +808,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         // insufficient funds (return early on success)
         String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
         if (ownerName != null) {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds.named", ownerName)
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.funds.named", ownerName)
                 .withStyle(ChatFormatting.DARK_RED), true);
         } else {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.funds")
                 .withStyle(ChatFormatting.DARK_RED), true);
         }
         level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);

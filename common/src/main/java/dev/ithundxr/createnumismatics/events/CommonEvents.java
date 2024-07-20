@@ -41,6 +41,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.Collection;
+
 public class CommonEvents {
     public static void onLoadWorld(LevelAccessor world) {
         Numismatics.BANK.levelLoaded(world);
@@ -80,8 +82,11 @@ public class CommonEvents {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
             NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
 
-            for (SubAccount subAccount : account.getSubAccounts()) {
-                NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(subAccount));
+            Collection<SubAccount> subAccounts = account.getSubAccounts();
+            if (subAccounts != null) {
+                for (SubAccount subAccount : subAccounts) {
+                    NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(subAccount));
+                }
             }
         }
     }
