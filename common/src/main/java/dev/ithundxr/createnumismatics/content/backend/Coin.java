@@ -23,7 +23,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Pair;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -168,5 +167,9 @@ public enum Coin implements INamedIconOptions {
             }
         }
         return selectedCoin;
+    }
+
+    public static Iterable<Coin> valuesHighToLow() {
+        return Arrays.stream(values()).sorted(Comparator.comparingInt(c -> -c.value))::iterator;
     }
 }
