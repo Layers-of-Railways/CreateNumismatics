@@ -18,15 +18,26 @@
 
 package dev.ithundxr.createnumismatics.config;
 
+import com.simibubi.create.foundation.config.ConfigBase;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 
-public class CommonModConfig {
-	public static int starterSpur = 0;
-	public static int starterBevel = 0;
-	public static int starterSprocket = 0;
-	public static int starterCog = 0;
-	public static int starterCrown = 0;
-	public static int starterSun = 0;
+@SuppressWarnings("unused")
+public class CCommon extends ConfigBase {
 
-	public static Coin currency = null;
+    public final ConfigGroup coins = group(0, "coins", Comments.coins);
+
+    public final ConfigEnum<Coin> defaultCoin = e(Coin.SPUR, "defaultCoin", Comments.defaultCoin);
+    
+    // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CCommon.java
+    
+    @Override
+    public String getName() {
+        return "common";
+    }
+
+    private static class Comments {
+        static final String coins = "Coin settings";
+
+        static final String defaultCoin = "The default coin to be used in UI related displays";
+    }
 }

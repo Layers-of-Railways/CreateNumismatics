@@ -23,7 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
-import dev.ithundxr.createnumismatics.config.CommonModConfig;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -130,8 +130,7 @@ public enum Coin implements INamedIconOptions {
     }
 
     public Coin getDescription() {
-        if (CommonModConfig.currency == null) return SPUR;
-        return this.value < CommonModConfig.currency.value ? SPUR : CommonModConfig.currency;
+        return this.value < NumismaticsConfig.common().defaultCoin.get().value ? SPUR : NumismaticsConfig.common().defaultCoin.get();
     }
 
     public ItemStack asStack() {

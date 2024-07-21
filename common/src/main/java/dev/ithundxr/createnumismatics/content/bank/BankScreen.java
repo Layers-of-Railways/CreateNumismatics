@@ -27,7 +27,7 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
-import dev.ithundxr.createnumismatics.config.CommonModConfig;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
@@ -94,11 +94,11 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         graphics.drawCenteredString(font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
 
 
-        Couple<Integer> cogsAndSpurs = CommonModConfig.currency.convert(menu.contentHolder.getBalance());
+        Couple<Integer> cogsAndSpurs = NumismaticsConfig.common().defaultCoin.get().convert(menu.contentHolder.getBalance());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
         Component balanceLabel = Components.translatable("gui.numismatics.bank_terminal.balance",
-            TextUtils.formatInt(cogs), CommonModConfig.currency.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), NumismaticsConfig.common().defaultCoin.get().getName(cogs), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }
 }

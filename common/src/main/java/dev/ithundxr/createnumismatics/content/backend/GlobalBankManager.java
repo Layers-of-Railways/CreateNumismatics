@@ -19,7 +19,7 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.config.CommonModConfig;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.server.MinecraftServer;
@@ -101,12 +101,12 @@ public class GlobalBankManager {
             BankAccount account = new BankAccount(uuid, type);
 
             if (type == Type.PLAYER) {
-                account.deposit(Coin.SPUR, CommonModConfig.starterSpur);
-                account.deposit(Coin.BEVEL, CommonModConfig.starterBevel);
-                account.deposit(Coin.SPROCKET, CommonModConfig.starterSprocket);
-                account.deposit(Coin.COG, CommonModConfig.starterCog);
-                account.deposit(Coin.CROWN, CommonModConfig.starterCrown);
-                account.deposit(Coin.SUN, CommonModConfig.starterSun);
+                account.deposit(Coin.SPUR, NumismaticsConfig.server().starter_spurs.get());
+                account.deposit(Coin.BEVEL, NumismaticsConfig.server().starter_bevels.get());
+                account.deposit(Coin.SPROCKET, NumismaticsConfig.server().starter_sprockets.get());
+                account.deposit(Coin.COG, NumismaticsConfig.server().starter_cogs.get());
+                account.deposit(Coin.CROWN, NumismaticsConfig.server().starter_crowns.get());
+                account.deposit(Coin.SUN, NumismaticsConfig.server().starter_suns.get());
             }
 
             accounts.put(uuid, account);
