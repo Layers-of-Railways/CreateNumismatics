@@ -21,7 +21,7 @@ package dev.ithundxr.createnumismatics.base.item;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
 
-public class SingleCallbackContainer extends DelegatingContainer{
+public class SingleCallbackContainer extends DelegatingContainer {
 
     private final Container container;
     private final ContainerListener onChanged;
