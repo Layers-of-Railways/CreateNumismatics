@@ -29,14 +29,13 @@ import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
-import dev.ithundxr.createnumismatics.content.backend.Trusted;
+import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.AuthorizationPair;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
@@ -126,11 +125,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return this.inventory.getDiscrete(coin);
     }
 
-    public @Nullable UUID getCardId() {
+    public @Nullable IDeductable getDeductable() {
         ItemStack card = cardContainer.getItem(0);
-        if (!(card.getItem() instanceof CardItem))
-            return null;
-        return CardItem.get(card);
+
+        return IDeductable.getAutomated(card, owner, ReasonHolder.IGNORED);
     }
 
     @Override
@@ -235,15 +233,23 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         setChanged();
     }
 
+    /**
+     * NOTE: this account is ONLY for deposits, for withdrawals, use getDeductable()
+     */
     @Nullable
     public UUID getDepositAccount() {
         ItemStack cardStack = cardContainer.getItem(0);
         if (cardStack.isEmpty())
             return null;
-        if (!NumismaticsTags.AllItemTags.CARDS.matches(cardStack))
-            return null;
 
-        return CardItem.get(cardStack);
+        if (NumismaticsTags.AllItemTags.CARDS.matches(cardStack)) {
+            return CardItem.get(cardStack);
+        } else if (NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(cardStack)) {
+            AuthorizationPair authorizationPair = AuthorizedCardItem.get(cardStack);
+            return authorizationPair == null ? null : authorizationPair.accountID();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -635,11 +641,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (price.canPayOut())
             return true;
 
-        if (getCardId() != null) {
-            BankAccount account = Numismatics.BANK.getAccount(getCardId());
-            return account != null && account.isAuthorized(owner) && account.getBalance() >= price.getTotalPrice();
-        }
-        return false;
+        IDeductable deductable = getDeductable();
+        return deductable != null && deductable.getMaxWithdrawal() >= price.getTotalPrice();
     }
 
     public void tryTransaction(Player player, InteractionHand hand) {
@@ -788,9 +791,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             notifyUpdate();
 
             return;
-        } else if (getCardId() != null) {
-            BankAccount account = Numismatics.BANK.getAccount(getCardId());
-            if (account != null && account.isAuthorized(owner) && account.deduct(price.getTotalPrice(), ReasonHolder.IGNORED)) {
+        } else {
+            IDeductable deductable = getDeductable();
+            if (deductable != null && deductable.deduct(price.getTotalPrice(), ReasonHolder.IGNORED)) {
                 handStack.shrink(buying.getCount());
                 player.setItemInHand(hand, handStack);
 

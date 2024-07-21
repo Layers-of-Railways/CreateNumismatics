@@ -54,6 +54,10 @@ public class Limit {
         return spent;
     }
 
+    public boolean hasLimit() {
+        return limit != null;
+    }
+
     public boolean spend(int amount) {
         return spend(amount, false);
     }

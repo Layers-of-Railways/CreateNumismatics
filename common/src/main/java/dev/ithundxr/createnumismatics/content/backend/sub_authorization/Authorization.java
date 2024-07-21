@@ -61,7 +61,7 @@ public interface Authorization {
         }
     }
 
-    final class Deployer implements Authorization {
+    final class Automation implements Authorization {
 
         @Nullable
         private final UUID uuid;
@@ -69,7 +69,7 @@ public interface Authorization {
         @NotNull
         private final UUID authorizationID;
 
-        public Deployer(@Nullable UUID uuid, @NotNull UUID authorizationID) {
+        public Automation(@Nullable UUID uuid, @NotNull UUID authorizationID) {
             this.uuid = uuid;
             this.authorizationID = authorizationID;
         }

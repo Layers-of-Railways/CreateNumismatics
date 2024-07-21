@@ -275,5 +275,20 @@ public final class SubAccount {
         public boolean deduct(int spurs, ReasonHolder reasonHolder) {
             return spend(authorization, spurs, reasonHolder);
         }
+
+        @Override
+        public int getMaxWithdrawal() {
+            if (!isAuthorized(authorization))
+                return 0;
+
+            int max = parentAccount.getMaxWithdrawal();
+
+            Integer limit = totalLimit.getLimit();
+            if (limit != null) {
+                max = Math.min(max, limit - totalLimit.getSpent());
+            }
+
+            return max;
+        }
     }
 }

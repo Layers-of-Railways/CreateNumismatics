@@ -223,6 +223,11 @@ public class BankAccount implements MenuProvider, IDeductable {
         return deduct(amount, false);
     }
 
+    @Override
+    public int getMaxWithdrawal() {
+        return getBalance();
+    }
+
     public boolean deduct(Coin coin, int amount, boolean force) {
         return deduct(coin.toSpurs(amount), force);
     }
@@ -444,11 +449,6 @@ public class BankAccount implements MenuProvider, IDeductable {
     }
 
     public @Nullable SubAccount getSubAccount(Authorization authorization, ReasonHolder reasonHolder) {
-        if (!isAuthorized(authorization.getPersonalID())) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
-            return null;
-        }
-
         if (subAccounts == null) {
             reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
             return null;

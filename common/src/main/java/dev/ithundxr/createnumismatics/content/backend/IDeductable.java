@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
+import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
@@ -31,26 +32,43 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface IDeductable {
     boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder);
     boolean deduct(int spurs, ReasonHolder reasonHolder);
+    int getMaxWithdrawal();
 
     @Nullable
     static IDeductable get(ItemStack stack, @Nullable Player player, ReasonHolder reasonHolder) {
+        return IDeductable.getInternal(stack, player == null ? null : Either.left(player), reasonHolder);
+    }
+
+    @Nullable
+    static IDeductable getAutomated(ItemStack stack, @Nullable UUID owningPlayer, ReasonHolder reasonHolder) {
+        return IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder);
+    }
+
+    @Nullable
+    private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder) {
         if (NumismaticsTags.AllItemTags.CARDS.matches(stack)) {
             if (player == null)
                 return null;
 
-            if (player instanceof DeployerFakePlayer)
+            Optional<Player> left = player.left();
+            if (left.isEmpty())
+                return null;
+
+            Player player$ = left.get();
+            if (player$ instanceof DeployerFakePlayer)
                 return null;
 
             if (CardItem.isBound(stack)) {
                 UUID id = CardItem.get(stack);
                 BankAccount account = Numismatics.BANK.getAccount(id);
 
-                if (account != null && account.isAuthorized(player)) {
+                if (account != null && account.isAuthorized(player$)) {
                     return account;
                 } else if (account == null) {
                     reasonHolder.setMessage(Components.translatable("error.numismatics.card.account_not_found"));
@@ -71,10 +89,13 @@ public interface IDeductable {
             Authorization authorization;
             if (player == null) {
                 authorization = new Authorization.Anonymous(authorizedPair.authorizationID());
-            } else if (player instanceof DeployerFakePlayer) {
-                authorization = new Authorization.Deployer(player.getUUID(), authorizedPair.authorizationID());
             } else {
-                authorization = new Authorization.Player(player, authorizedPair.authorizationID());
+                authorization = player.map(
+                    p -> p instanceof DeployerFakePlayer
+                        ? new Authorization.Automation(p.getUUID(), authorizedPair.authorizationID())
+                        : new Authorization.Player(p, authorizedPair.authorizationID()),
+                    uuid -> new Authorization.Automation(uuid, authorizedPair.authorizationID())
+                );
             }
 
             BankAccount account = Numismatics.BANK.getAccount(authorizedPair.accountID());
