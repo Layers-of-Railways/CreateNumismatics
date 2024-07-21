@@ -4,6 +4,7 @@
   "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "client.AccessorInputWindowElement",
     "client.MixinBitmapProvider$Definition",
     "client.MixinChatScreen",
     "client.MixinPonderIndex"

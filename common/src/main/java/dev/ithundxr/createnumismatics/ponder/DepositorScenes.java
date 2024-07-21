@@ -20,7 +20,10 @@ package dev.ithundxr.createnumismatics.ponder;
 
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
+import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
+import dev.ithundxr.createnumismatics.ponder.utils.IconInputWindowElement;
+import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
@@ -28,9 +31,9 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.RepeaterBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
-import net.minecraft.world.level.block.piston.PistonBaseBlock;
+import net.minecraft.world.level.block.state.properties.Property;
 
-public class DepositorScene {
+public class DepositorScenes {
     public static void depositor(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("depositor", "Using Depositors");
         scene.configureBasePlate(0, 0, 5);
@@ -63,20 +66,20 @@ public class DepositorScene {
                 .placeNearTarget();
         scene.idle(80);
 
-        scene.world.modifyBlock(andesiteDepositorAbove, state -> state.cycle(RedstoneLampBlock.LIT), false);
-        scene.world.modifyBlock(brassDepositorAbove, state -> state.cycle(RedstoneLampBlock.LIT), false);
+        cycleState(andesiteDepositorAbove, RedstoneLampBlock.LIT, scene);
+        cycleState(brassDepositorAbove, RedstoneLampBlock.LIT, scene);
         scene.idle(4);
 
-        scene.world.modifyBlock(andesiteDepositorAbove, state -> state.cycle(RedstoneLampBlock.LIT), false);
-        scene.world.modifyBlock(brassDepositorAbove, state -> state.cycle(RedstoneLampBlock.LIT), false);
+        cycleState(andesiteDepositorAbove, RedstoneLampBlock.LIT, scene);
+        cycleState(brassDepositorAbove, RedstoneLampBlock.LIT, scene);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay.showText(55)
                 .attachKeyFrame()
                 .text("This redstone output can be used for many things")
                 .pointAt(util.vector.topOf(middleOfLamps))
                 .placeNearTarget();
-        scene.idle(80);
+        scene.idle(40);
         
         scene.world.hideSection(util.select.position(andesiteDepositorAbove), Direction.UP);
         scene.world.hideSection(util.select.position(brassDepositorAbove), Direction.UP);
@@ -89,12 +92,12 @@ public class DepositorScene {
         scene.world.showSection(util.select.position(brassDepositorAbove), Direction.DOWN);
         scene.idle(10);
 
-        scene.world.modifyBlock(andesiteDepositorAbove, state -> state.cycle(TrapDoorBlock.OPEN), false);
-        scene.world.modifyBlock(brassDepositorAbove, state -> state.cycle(TrapDoorBlock.OPEN), false);
+        cycleState(andesiteDepositorAbove, TrapDoorBlock.OPEN, scene);
+        cycleState(brassDepositorAbove, TrapDoorBlock.OPEN, scene);
         scene.idle(8);
 
-        scene.world.modifyBlock(andesiteDepositorAbove, state -> state.cycle(TrapDoorBlock.OPEN), false);
-        scene.world.modifyBlock(brassDepositorAbove, state -> state.cycle(TrapDoorBlock.OPEN), false);
+        cycleState(andesiteDepositorAbove, TrapDoorBlock.OPEN, scene);
+        cycleState(brassDepositorAbove, TrapDoorBlock.OPEN, scene);
         scene.idle(10);
         
         scene.world.hideSection(util.select.position(andesiteDepositorAbove), Direction.UP);
@@ -132,27 +135,37 @@ public class DepositorScene {
                 .text("They can also be locked using a redstone input, preventing them from accepting money")
                 .pointAt(util.vector.topOf(middleOfLamps))
                 .placeNearTarget();
+        scene.idle(20);
+        
+        scene.overlay.showControls(new IconInputWindowElement(util.vector.topOf(andesiteDepositor), Pointing.DOWN).withIcon(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
+        scene.overlay.showControls(new IconInputWindowElement(util.vector.topOf(brassDepositor), Pointing.DOWN).withIcon(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
+        
+        cycleState(andesiteDepositorLeft, RepeaterBlock.POWERED, scene);
+        cycleState(brassDepositorRight, RepeaterBlock.POWERED, scene);
+        
+        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(brassDepositor, AbstractDepositorBlock.LOCKED, scene);
+        
         scene.idle(40);
-        
-        scene.world.modifyBlock(andesiteDepositorLeft, state -> state.cycle(RepeaterBlock.POWERED), false);
-        scene.world.modifyBlock(brassDepositorRight, state -> state.cycle(RepeaterBlock.POWERED), false);
-        
-        scene.world.modifyBlock(andesiteDepositor, state -> state.cycle(AbstractDepositorBlock.LOCKED), false);
-        scene.world.modifyBlock(brassDepositor, state -> state.cycle(AbstractDepositorBlock.LOCKED), false);
-        
-        scene.idle(30);
 
-        scene.world.modifyBlock(andesiteDepositorLeft, state -> state.cycle(RepeaterBlock.POWERED), false);
-        scene.world.modifyBlock(brassDepositorRight, state -> state.cycle(RepeaterBlock.POWERED), false);
+        cycleState(andesiteDepositorLeft, RepeaterBlock.POWERED, scene);
+        cycleState(brassDepositorRight, RepeaterBlock.POWERED, scene);
 
-        scene.world.modifyBlock(andesiteDepositor, state -> state.cycle(AbstractDepositorBlock.LOCKED), false);
-        scene.world.modifyBlock(brassDepositor, state -> state.cycle(AbstractDepositorBlock.LOCKED), false);
+        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(brassDepositor, AbstractDepositorBlock.LOCKED, scene);
+    }
+
+    public static void depositorPricing(SceneBuilder scene, SceneBuildingUtil util) {
         
-        scene.idle(10);
+    }
+    
+    // <--------------------------------------------> Utilities <-------------------------------------------->
+    private static <T extends Comparable<T>> void cycleState(BlockPos pos, Property<T> property, SceneBuilder scene) {
+        scene.world.modifyBlock(pos, state -> state.cycle(property), false);
     }
     
     private static void cycleDoorState(BlockPos doorPos, SceneBuilder scene) {
-        scene.world.modifyBlock(doorPos, state -> state.cycle(DoorBlock.OPEN), false);
-        scene.world.modifyBlock(doorPos.above(), state -> state.cycle(DoorBlock.OPEN), false);
+        cycleState(doorPos, DoorBlock.OPEN, scene);
+        cycleState(doorPos.above(), DoorBlock.OPEN, scene);
     }
 }
