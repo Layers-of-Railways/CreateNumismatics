@@ -211,7 +211,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         sliders.clear();
         removeWidget(editorConfirm);
         editorConfirm = null;
-        syncName();
+        // syncName(); - this doesn't do anything because there's no open sub account anymore by the time this gets called
 
         hasPopup = false;
         init();
@@ -537,6 +537,8 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        syncName();
+
         if (editorConfirm != null && editorConfirm.isMouseOver(pMouseX, pMouseY)) {
             editSubAccount(null);
             return true;
