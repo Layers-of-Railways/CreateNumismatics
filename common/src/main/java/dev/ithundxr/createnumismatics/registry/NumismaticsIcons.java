@@ -60,7 +60,8 @@ public class NumismaticsIcons extends AllIcons {
         I_COIN_COG = next(),
         I_COIN_CROWN = next(),
         I_COIN_SUN = next(),
-        I_HOPPER = next()
+        I_HOPPER = next(),
+        I_OPEN_SUB_LIST = next()
     ;
 
     public NumismaticsIcons(int x, int y) {

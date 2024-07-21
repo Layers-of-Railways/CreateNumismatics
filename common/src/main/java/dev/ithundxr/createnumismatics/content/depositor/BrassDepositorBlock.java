@@ -20,15 +20,9 @@ package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
-import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,16 +31,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBlockEntity> {
     public BrassDepositorBlock(Properties properties) {
@@ -87,11 +76,12 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
+        ReasonHolder reasonHolder = new ReasonHolder();
         SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
-        if (priceBehaviour != null && priceBehaviour.deduct(player, hand, true)) {
+        if (priceBehaviour != null && priceBehaviour.deduct(player, hand, true, reasonHolder)) {
             activate(state, level, pos);
         } else {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+            player.displayClientMessage(reasonHolder.getMessageOrDefault()
                     .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
         return InteractionResult.CONSUME;

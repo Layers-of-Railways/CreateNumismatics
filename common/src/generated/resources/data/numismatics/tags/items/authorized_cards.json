@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "numismatics:white_authorized_card",
+    "numismatics:orange_authorized_card",
+    "numismatics:magenta_authorized_card",
+    "numismatics:light_blue_authorized_card",
+    "numismatics:yellow_authorized_card",
+    "numismatics:lime_authorized_card",
+    "numismatics:pink_authorized_card",
+    "numismatics:gray_authorized_card",
+    "numismatics:light_gray_authorized_card",
+    "numismatics:cyan_authorized_card",
+    "numismatics:purple_authorized_card",
+    "numismatics:blue_authorized_card",
+    "numismatics:brown_authorized_card",
+    "numismatics:green_authorized_card",
+    "numismatics:red_authorized_card",
+    "numismatics:black_authorized_card"
+  ]
+}

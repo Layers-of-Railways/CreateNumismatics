@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "numismatics:item/authorized_card/lime_authorized_card"
+  }
+}

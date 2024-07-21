@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
 
@@ -93,6 +94,23 @@ public enum Coin implements INamedIconOptions {
         return Couple.create(converted, remainder);
     }
 
+    /**
+     * Convert spurs to this coin
+     * @param amount Number of spurs
+     * @param max Maximum number of this coin
+     * @return Couple of (amount of this coin, remainder of spurs)
+     */
+    public Couple<Integer> convert(int amount, int max) {
+        if (this == SPUR) return Couple.create(amount, 0);
+        int remainder = amount % value;
+        int converted = (amount - remainder) / value;
+        if (converted > max) {
+            remainder += (converted - max) * value;
+            converted = max;
+        }
+        return Couple.create(converted, remainder);
+    }
+
     public String getName() {
         return name().toLowerCase(Locale.ROOT);
     }
@@ -109,7 +127,7 @@ public enum Coin implements INamedIconOptions {
         return (amount != 1 ? getTranslatedNamePlural() : getTranslatedName());
     }
 
-    public String getDisplayName() {
+    public String getDefaultLangName() {
         return TextUtils.titleCaseConversion(getName());
     }
 
@@ -167,6 +185,12 @@ public enum Coin implements INamedIconOptions {
             }
         }
         return selectedCoin;
+    }
+
+    public static void provideLang(BiConsumer<String, String> consumer) {
+        for (Coin coin : values()) {
+            consumer.accept(coin.getTranslationKey() + ".plural", coin.getDefaultLangName()+"s");
+        }
     }
 
     public static Iterable<Coin> valuesHighToLow() {

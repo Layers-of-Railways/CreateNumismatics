@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "/": {
+      "tag": "numismatics:internal/dyes/gray_dyes"
+    },
+    "@": {
+      "item": "create:precision_mechanism"
+    },
+    "_": {
+      "tag": "numismatics:internal/plates/gold_plates"
+    }
+  },
+  "pattern": [
+    "@_/"
+  ],
+  "result": {
+    "item": "numismatics:gray_authorized_card"
+  },
+  "show_notification": true
+}

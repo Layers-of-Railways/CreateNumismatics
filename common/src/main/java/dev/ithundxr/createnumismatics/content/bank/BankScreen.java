@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.content.bank;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
@@ -30,6 +29,7 @@ import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -65,6 +65,10 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
+        IconButton openSubAccountsButton = new IconButton(x + background.width - 61, y + background.height - 24, NumismaticsIcons.I_OPEN_SUB_LIST);
+        openSubAccountsButton.withCallback(menu.contentHolder::openSubAccountsMenu);
+        addRenderableWidget(openSubAccountsButton);
+
         extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 64, 84, 74));
     }
 
@@ -75,7 +79,6 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
 
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        PoseStack ms = graphics.pose();
         int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);

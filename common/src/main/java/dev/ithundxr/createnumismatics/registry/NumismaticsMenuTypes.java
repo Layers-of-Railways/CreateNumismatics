@@ -25,6 +25,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListScreen;
+import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
+import dev.ithundxr.createnumismatics.content.bank.SubAccountListScreen;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerMenu;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerScreen;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
@@ -76,6 +78,12 @@ public class NumismaticsMenuTypes {
         "vendor",
         VendorMenu::new,
         () -> VendorScreen::new
+    );
+
+    public static final MenuEntry<SubAccountListMenu> SUB_ACCOUNT_LIST = register(
+        "sub_account_list",
+        SubAccountListMenu::new,
+        () -> SubAccountListScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

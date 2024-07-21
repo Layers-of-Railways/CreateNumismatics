@@ -116,6 +116,15 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .define('/', Ingredients.dye(color)))
     );
 
+    DyedRecipeList AUTHORIZED_CARDS = new DyedRecipeList(color -> create(NumismaticsItems.AUTHORIZED_CARDS.get(color))
+        .unlockedBy(Ingredients::precisionMechanism)
+        .viaShaped(b -> b
+            .pattern("@_/")
+            .define('@', Ingredients.precisionMechanism())
+            .define('_', Ingredients.goldSheet())
+            .define('/', Ingredients.dye(color)))
+    );
+
     GeneratedRecipeBuilder create(Supplier<ItemLike> result) {
         return new GeneratedRecipeBuilder("/", result);
     }

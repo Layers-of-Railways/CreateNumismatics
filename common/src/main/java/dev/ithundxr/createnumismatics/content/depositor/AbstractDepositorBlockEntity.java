@@ -27,6 +27,8 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.AuthorizationPair;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -77,11 +79,17 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         super(type, pos, state);
     }
 
-    public @Nullable UUID getCardId() {
+    public @Nullable UUID getDepositAccount() {
         ItemStack card = cardContainer.getItem(0);
-        if (!(card.getItem() instanceof CardItem))
+
+        if (NumismaticsTags.AllItemTags.CARDS.matches(card)) {
+            return CardItem.get(card);
+        } else if (NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(card)) {
+            AuthorizationPair authorizationPair = AuthorizedCardItem.get(card);
+            return authorizationPair == null ? null : authorizationPair.accountID();
+        } else {
             return null;
-        return CardItem.get(card);
+        }
     }
 
     public void activate() {
@@ -142,17 +150,6 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         } else {
             return owner == null || owner.equals(player.getUUID()) || trustList.contains(player.getUUID());
         }
-    }
-
-    @Nullable
-    public UUID getDepositAccount() {
-        ItemStack cardStack = cardContainer.getItem(0);
-        if (cardStack.isEmpty())
-            return null;
-        if (!NumismaticsTags.AllItemTags.CARDS.matches(cardStack))
-            return null;
-
-        return CardItem.get(cardStack);
     }
 
     public void addCoin(Coin coin, int count) {
