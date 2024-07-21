@@ -192,4 +192,8 @@ public enum Coin implements INamedIconOptions {
             consumer.accept(coin.getTranslationKey() + ".plural", coin.getDefaultLangName()+"s");
         }
     }
+
+    public static Iterable<Coin> valuesHighToLow() {
+        return Arrays.stream(values()).sorted(Comparator.comparingInt(c -> -c.value))::iterator;
+    }
 }
