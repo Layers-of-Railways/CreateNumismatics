@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:gold_plates",
+      "required": false
+    },
+    {
+      "id": "#forge:plates/gold",
+      "required": false
+    }
+  ]
+}

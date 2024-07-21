@@ -23,21 +23,29 @@ import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerEditP
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
 import dev.ithundxr.createnumismatics.multiloader.PacketSet;
 import dev.ithundxr.createnumismatics.registry.packets.*;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.*;
 
 public class NumismaticsPackets {
-    public static final PacketSet PACKETS = PacketSet.builder(Numismatics.MOD_ID, 3) // increment version on changes
+    public static final PacketSet PACKETS = PacketSet.builder(Numismatics.MOD_ID, 4) // increment version on changes
 
         .c2s(SliderStylePriceConfigurationPacket.class, SliderStylePriceConfigurationPacket::new)
         .c2s(BlazeBankerEditPacket.class, BlazeBankerEditPacket::new)
         .c2s(AndesiteDepositorConfigurationPacket.class, AndesiteDepositorConfigurationPacket::new)
         .c2s(OpenTrustListPacket.class, OpenTrustListPacket::new)
         .c2s(VendorConfigurationPacket.class, VendorConfigurationPacket::new)
+        .c2s(OpenSubAccountsMenuPacket.class, OpenSubAccountsMenuPacket::new)
+        .c2s(OpenSubAccountEditScreenPacket.class, OpenSubAccountEditScreenPacket::new)
+        .c2s(RemoveSubAccountPacket.class, RemoveSubAccountPacket::new)
+        .c2s(ResetSubAccountSpendingPacket.class, ResetSubAccountSpendingPacket::new)
+        .c2s(ConfigureSubAccountPacket.class, ConfigureSubAccountPacket::new)
+        .c2s(AddSubAccountPacket.class, AddSubAccountPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)
 
         .s2c(BigStackSizeContainerSetSlotPacket.class, BigStackSizeContainerSetSlotPacket::new)
         .s2c(BigStackSizeContainerSetContentPacket.class, BigStackSizeContainerSetContentPacket::new)
+        .s2c(UpdateSubAccountsPacket.class, UpdateSubAccountsPacket::new)
 
         .build();
 }

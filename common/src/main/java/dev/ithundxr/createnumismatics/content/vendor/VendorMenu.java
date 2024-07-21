@@ -19,9 +19,9 @@
 package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.BigStackSizeContainerSynchronizer;
-import dev.ithundxr.createnumismatics.content.bank.CardSlot;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.SlotDiscreteCoinBag;
@@ -80,7 +80,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
             x += 18;
         }
-        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 170+4, y)); // make here to preserve slot order
+        addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 170+4, y)); // make here to preserve slot order
         addSlot(new Slot(contentHolder.sellingContainer, 0, 142+5, y));
 
         for (int i = 0; i < 3; ++i) {

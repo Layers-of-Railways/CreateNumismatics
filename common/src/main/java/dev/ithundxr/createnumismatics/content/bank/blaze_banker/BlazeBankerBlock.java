@@ -133,6 +133,8 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
         if (!isTrusted(context.getPlayer(), context.getLevel(), context.getClickedPos()))
             return InteractionResult.FAIL;
+        if (!mayBreak(context.getLevel(), context.getClickedPos(), state, context.getPlayer()))
+            return InteractionResult.FAIL;
         return IWrenchable.super.onSneakWrenched(state, context);
     }
 

@@ -100,6 +100,10 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
       return CommonTags.IRON_PLATES.tag;
     }
 
+    public static TagKey<Item> goldSheet() {
+      return CommonTags.GOLD_PLATES.tag;
+    }
+
     public static TagKey<Item> dye(@NotNull DyeColor color) {
       return CommonTags.DYES.get(color).tag;
     }
