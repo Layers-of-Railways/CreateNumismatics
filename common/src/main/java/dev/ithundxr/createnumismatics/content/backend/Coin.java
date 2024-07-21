@@ -66,10 +66,6 @@ public enum Coin implements INamedIconOptions {
         this.fontChar = fontChar;
     }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
-
     public static List<Component> labeledComponents() {
         Component[] tmp = new Component[values().length];
         for (Coin coin : values()) {
