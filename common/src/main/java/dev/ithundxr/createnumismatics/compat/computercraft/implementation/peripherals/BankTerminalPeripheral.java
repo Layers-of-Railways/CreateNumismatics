@@ -32,11 +32,46 @@ import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccou
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.util.*;
 
 public enum BankTerminalPeripheral implements IPeripheral {
     INSTANCE
     ;
+
+    @LuaFunction
+    public final List<String> getAccounts() throws LuaException {
+        List<String> output = new ArrayList<String>();
+        for (UUID uuid : Numismatics.BANK.accounts.keySet()) {
+            output.add(uuid.toString());
+        }
+        return output;
+    }
+
+    @LuaFunction
+    public final List<String> getSubAccounts(String accountID) throws LuaException {
+        UUID account$;
+        try {
+            account$ = UUID.fromString(accountID);
+        } catch (IllegalArgumentException e) {
+            throw new LuaException("Invalid UUID");
+        }
+
+        BankAccount bankAccount = Numismatics.BANK.getAccount(account$);
+        if (bankAccount == null) {
+            throw new LuaException("Account not found");
+        }
+
+        List<String> output = new ArrayList<String>();
+        bankAccount.getSubAccounts().forEach((temp) -> {
+            output.add(temp.getAuthorizationID().toString());
+        });
+
+        if (output == null)
+        {
+            throw new LuaException("No sub accounts");
+        }
+        return output;
+    }
 
     @LuaFunction
     public final int getBalance(String accountID) throws LuaException {
