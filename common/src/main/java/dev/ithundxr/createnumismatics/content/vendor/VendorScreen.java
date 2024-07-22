@@ -23,10 +23,7 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.gui.widget.Label;
-import com.simibubi.create.foundation.gui.widget.ScrollInput;
-import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
+import com.simibubi.create.foundation.gui.widget.*;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
@@ -35,6 +32,7 @@ import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePric
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity.Mode;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -50,6 +48,8 @@ import java.util.List;
 
 public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
+    private Indicator extractionIndicator;
+    private IconButton extractionButton;
     private IconButton trustListButton;
     private IconButton confirmButton;
 
@@ -81,7 +81,23 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
         int x = leftPos;
         int y = topPos;
 
-        trustListButton = new IconButton(x + 7, y + 121, AllIcons.I_VIEW_SCHEDULE);
+        extractionIndicator = new Indicator(x + 29, y + background.height - 30, Components.immutableEmpty());
+        extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
+            ? Indicator.State.GREEN
+            : Indicator.State.RED;
+        addRenderableWidget(extractionIndicator);
+
+        extractionButton = new IconButton(x + 29, y + background.height - 24, NumismaticsIcons.I_HOPPER);
+        extractionButton.withCallback(() -> {
+            menu.contentHolder.toggleAutomatedExtraction();
+            extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
+                ? Indicator.State.GREEN
+                : Indicator.State.RED;
+        });
+        extractionButton.setToolTip(Components.translatable("gui.numismatics.vendor.toggle_automated_extraction"));
+        addRenderableWidget(extractionButton);
+
+        trustListButton = new IconButton(x + 7, y + background.height - 24, AllIcons.I_VIEW_SCHEDULE);
         trustListButton.withCallback(() -> {
             menu.contentHolder.openTrustList();
         });
@@ -96,7 +112,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
         for (Coin coin : Coin.values()) {
             int i = coin.ordinal();
 
-            int baseX = x + 36 + (i < 3 ? 0 : 86 + 54);
+            int baseX = x + 36 + 6 + (i < 3 ? 0 : 86 + 54 + 6);
 
             int yIncrement = 22;
             int baseY = y + 45 + (yIncrement * (i%3));
@@ -118,10 +134,10 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
             coinScrollInputs[i].onChanged();
         }
 
-        modeLabel = new Label(x + 90 + 3, y + 40 + 5, Components.immutableEmpty()).withShadow();
+        modeLabel = new Label(x + 90 + 3 + 9, y + 40 + 5, Components.immutableEmpty()).withShadow();
         addRenderableWidget(modeLabel);
 
-        modeScrollInput = new SelectionScrollInput(x + 90, y + 40, 46, 18);
+        modeScrollInput = new SelectionScrollInput(x + 90 + 9, y + 40, 46, 18);
         modeScrollInput.forOptions(Mode.getComponents());
         modeScrollInput.writingTo(modeLabel);
         modeScrollInput.titled(Components.translatable("block.numismatics.vendor.tooltip.mode"));

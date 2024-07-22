@@ -73,28 +73,28 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
 
     @Override
     protected void addSlots() {
-        int x = 14+16;
-        int y = 122;
+        int x = 14+16+4+18;
+        int y = 122+6;
 
         for (Coin coin : Coin.values()) {
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
             x += 18;
         }
-        addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 170+4, y)); // make here to preserve slot order
-        addSlot(new Slot(contentHolder.sellingContainer, 0, 142+5, y));
+        addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 170+4+18, y)); // make here to preserve slot order
+        addSlot(new Slot(contentHolder.sellingContainer, 0, 142+5+20, y));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87 + j * 18, 49 + i * 18 + 11, contentHolder::matchesSellingItem));
+                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87+9 + j * 18, 49 + i * 18 + 11, contentHolder::matchesSellingItem));
             }
         }
 
-        addPlayerSlots(58, 165);
+        addPlayerSlots(67, 171);
 
         // label coins
 
-        int labelX1 = 12;
-        int labelX2 = labelX1 + 86 + 54;
+        int labelX1 = 12+6;
+        int labelX2 = labelX1 + 86 + 54 + 6;
         int labelY = 46;
         int labelYIncrement = 22;
 
@@ -150,6 +150,8 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
         } else if (index == SELLING_SLOT_INDEX) { // removing selling item
             if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;
+            else
+                contentHolder.sellingContainer.setChanged();
         } else if (INV_START_INDEX <= index && index < INV_END_INDEX) { // removing stock
             if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;

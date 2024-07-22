@@ -73,6 +73,7 @@
   "gui.numismatics.vendor.out_of_stock.funds": "Vendor has insufficient funds",
   "gui.numismatics.vendor.out_of_stock.funds.named": "Vendor has insufficient funds, contact %s for a refill",
   "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
+  "gui.numismatics.vendor.toggle_automated_extraction": "Toggle Automated Extraction",
   "gui.numismatics.vendor.too_few_items": "Too few items",
   "item.numismatics.authorized_bank_card.tooltip": "AUTHORIZED BANK CARD",
   "item.numismatics.authorized_bank_card.tooltip.summary": "Put in Bank Terminal _Sub Account menu_ to bind, _shift click_ to clear. Allows providing limited Bank Account access to trusted players or automation. Can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
