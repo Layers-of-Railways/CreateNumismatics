@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.content.vendor;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.BigStackSizeContainerSynchronizer;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.IScrollableSlotMenu;
 import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
@@ -40,11 +41,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class VendorMenu extends MenuBase<VendorBlockEntity> {
+public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollableSlotMenu {
     public static final int COIN_SLOTS = Coin.values().length;
     public static final int CARD_SLOT_INDEX = COIN_SLOTS;
-    public static final int SELLING_SLOT_INDEX = CARD_SLOT_INDEX + 1;
-    public static final int INV_START_INDEX = SELLING_SLOT_INDEX + 1;
+    public static final int FILTER_SLOT_INDEX = CARD_SLOT_INDEX + 1;
+    public static final int INV_START_INDEX = FILTER_SLOT_INDEX + 1;
     public static final int INV_END_INDEX = INV_START_INDEX + 9; // exclusive
     public static final int PLAYER_INV_START_INDEX = INV_END_INDEX;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9; // exclusive
@@ -81,11 +82,11 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
             x += 18;
         }
         addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 170+4+18, y)); // make here to preserve slot order
-        addSlot(new Slot(contentHolder.sellingContainer, 0, 142+5+20, y));
+        addSlot(new Slot(contentHolder.filterContainer, 0, 142+5+20, y));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87+9 + j * 18, 49 + i * 18 + 11, contentHolder::matchesSellingItem));
+                addSlot(new FilteringSlot(contentHolder, j + i * 3, 87+9 + j * 18, 49 + i * 18 + 11, contentHolder::matchesFilterItem));
             }
         }
 
@@ -111,10 +112,34 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
     protected void saveData(VendorBlockEntity contentHolder) {}
 
     @Override
+    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, Slot slot) {
+        return slot.container != contentHolder.filterContainer && super.canTakeItemForPickAll(stack, slot);
+    }
+
+    @Override
     public void clicked(int slotId, int button, @NotNull ClickType clickType, @NotNull Player player) {
         //if (clickType == ClickType.THROW)
         //    return;
-        super.clicked(slotId, button, clickType, player);
+        ItemStack held = getCarried();
+        Inventory inventory = player.getInventory();
+        if (slotId == FILTER_SLOT_INDEX) {
+            if (clickType == ClickType.CLONE || contentHolder.isFilterSlotLegacy()) {
+                super.clicked(slotId, button, clickType, player);
+                return;
+            }
+
+            ItemStack insert;
+            if (clickType == ClickType.SWAP) {
+                insert = inventory.getItem(button).copy();
+            } else if (held.isEmpty()) {
+                insert = ItemStack.EMPTY;
+            } else {
+                insert = held.copy();
+            }
+            getSlot(slotId).set(insert);
+        } else {
+            super.clicked(slotId, button, clickType, player);
+        }
     }
 
     @Override
@@ -147,11 +172,15 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
         } else if (index == CARD_SLOT_INDEX) { // removing card
             if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;
-        } else if (index == SELLING_SLOT_INDEX) { // removing selling item
-            if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
-                return ItemStack.EMPTY;
-            else
-                contentHolder.sellingContainer.setChanged();
+        } else if (index == FILTER_SLOT_INDEX) { // removing filter item
+            if (contentHolder.isFilterSlotLegacy()) {
+                if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
+                    return ItemStack.EMPTY;
+                else
+                    contentHolder.filterContainer.setChanged();
+            } else {
+                clickedSlot.set(ItemStack.EMPTY);
+            }
         } else if (INV_START_INDEX <= index && index < INV_END_INDEX) { // removing stock
             if (!moveItemStackTo(stack, PLAYER_INV_START_INDEX, PLAYER_INV_END_INDEX, false))
                 return ItemStack.EMPTY;
@@ -160,7 +189,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
             priority:
             1. Coin slots
             2. Card slot
-            3. Selling slot (if empty)
+            3. Filter slot (if empty)
             4. Inventory (if accepted)
             5. Player inventory
              */
@@ -168,9 +197,11 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
                 return ItemStack.EMPTY;
             } else if (NumismaticsTags.AllItemTags.CARDS.matches(stack) && !moveItemStackTo(stack, CARD_SLOT_INDEX, CARD_SLOT_INDEX+1, false)) {
                 return ItemStack.EMPTY;
-            } else if (contentHolder.sellingContainer.isEmpty() && !moveItemStackTo(stack, SELLING_SLOT_INDEX, SELLING_SLOT_INDEX+1, false)) {
+            } else if (contentHolder.filterContainer.isEmpty()) {
+                // stack copied to prevent clearing the source (player inventory) slot
+                moveItemStackTo(stack.copy(), FILTER_SLOT_INDEX, FILTER_SLOT_INDEX +1, false);
                 return ItemStack.EMPTY;
-            } else if (contentHolder.matchesSellingItem(stack) && !moveItemStackTo(stack, INV_START_INDEX, INV_END_INDEX, false)) {
+            } else if (contentHolder.matchesFilterItem(stack) && !moveItemStackTo(stack, INV_START_INDEX, INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;
             } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_END_INDEX && !moveItemStackTo(stack, PLAYER_HOTBAR_END_INDEX, PLAYER_INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;
@@ -190,5 +221,23 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
         }
 
         super.setSynchronizer(synchronizer);
+    }
+
+    @Override
+    public void scrollSlot(int slotID, double delta, boolean shift) {
+        if (slotID == FILTER_SLOT_INDEX && !contentHolder.isFilterSlotLegacy()) {
+            Slot slot = getSlot(slotID);
+            if (!slot.hasItem())
+                return;
+
+            ItemStack stack = slot.getItem();
+            int count = stack.getCount();
+            int offset = delta > 0 ? 1 : -1;
+            if (shift)
+                offset *= 4;
+            count += offset;
+            count = Math.max(0, Math.min(count, stack.getMaxStackSize()));
+            slot.set(count == 0 ? ItemStack.EMPTY : stack.copyWithCount(count));
+        }
     }
 }

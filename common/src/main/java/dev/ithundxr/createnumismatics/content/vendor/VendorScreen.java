@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.google.common.collect.ImmutableList;
+import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
@@ -34,6 +35,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -194,7 +196,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
         super.renderTooltip(guiGraphics, x, y);
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             Component component = null;
-            if (hoveredSlot.index == VendorMenu.SELLING_SLOT_INDEX) {
+            if (hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
                 component = Components.translatable("block.numismatics.vendor.tooltip.trade_item");
             } else if (VendorMenu.INV_START_INDEX <= hoveredSlot.index && hoveredSlot.index < VendorMenu.INV_END_INDEX) {
                 component = Components.translatable("block.numismatics.vendor.tooltip.stock");
@@ -203,6 +205,16 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
                 guiGraphics.renderTooltip(font, component, x, y);
             }
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (this.hoveredSlot != null && this.hoveredSlot.hasItem() && this.hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
+            NumismaticsPackets.PACKETS.send(new ScrollSlotPacket(this.hoveredSlot.index, delta, AllKeys.shiftDown()));
+            return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

@@ -15,6 +15,8 @@ Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)
 - Redid Bank Terminal texture to match other Create textures
 - You can now insert or extract items from all sides of a vendor
+- The buying/selling item slot in the vendor gui now acts like a ghost item (does not require actual items).
+  Backwards compatible with existing vendors, so the items will remain 'real' until you remove them
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------
