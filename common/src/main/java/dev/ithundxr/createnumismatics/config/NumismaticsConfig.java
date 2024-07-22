@@ -21,12 +21,10 @@ package dev.ithundxr.createnumismatics.config;
 import com.simibubi.create.foundation.config.ConfigBase;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -87,54 +85,5 @@ public class NumismaticsConfig {
             if (config.specification == modConfig
                     .getSpec())
                 config.onReload();
-    }
-
-    private static class TomlGroup {
-        private final Map<String, TomlGroup> subgroups = new HashMap<>();
-        private final Map<String, String> entries = new HashMap<>();
-        private final String path;
-
-        private static TomlGroup root() {
-            return new TomlGroup("");
-        }
-
-        private TomlGroup(String path) {
-            this.path = path;
-        }
-
-        public boolean isRoot() {
-            return path.isEmpty();
-        }
-
-        public void add(String key, String value) {
-            if (!isRoot())
-                throw new NotImplementedException();
-
-            String[] pieces = key.split("\\.");
-            String subKey = pieces[pieces.length - 1];
-            TomlGroup targetedGroup = this;
-            for (int i = 0; i < pieces.length - 1; i++) {
-                targetedGroup = targetedGroup.getOrCreateSubGroup(pieces[i]);
-            }
-            targetedGroup.entries.put(subKey, value);
-        }
-
-        private TomlGroup getOrCreateSubGroup(String subKey) {
-            return subgroups.computeIfAbsent(subKey, (sk) -> new TomlGroup(path.isEmpty() ? sk : path + "." + sk));
-        }
-
-        private void write(StringBuilder b) {
-            if (!isRoot()) {
-                b.append("\n[").append(path).append("]");
-            }
-
-            for (Map.Entry<String, String> entry : entries.entrySet()) {
-                b.append("\n").append(entry.getKey()).append(" = ").append(entry.getValue());
-            }
-
-            for (TomlGroup subGroup : subgroups.values()) {
-                subGroup.write(b);
-            }
-        }
     }
 }

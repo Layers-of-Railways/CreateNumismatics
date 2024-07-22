@@ -19,21 +19,20 @@
 package dev.ithundxr.createnumismatics.config;
 
 import com.simibubi.create.foundation.config.ConfigBase;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
 
 @SuppressWarnings("unused")
 public class CServer extends ConfigBase {
 
     public final ConfigGroup coins = group(0, "coins", Comments.coins);
 
-    public final ConfigGroup starter_currency = group(1, "starter_currency", Comments.starterMoney);
+    public final ConfigGroup starterCurrency = group(1, "starterCurrency", Comments.starterCurrency);
     
-    public final ConfigInt starter_spurs = i(0, 0, "starter_spurs");
-    public final ConfigInt starter_bevels = i(0, 0, "starter_bevels");
-    public final ConfigInt starter_sprockets = i(0, 0, "starter_sprockets");
-    public final ConfigInt starter_cogs = i(0, 0, "starter_cogs");
-    public final ConfigInt starter_crowns = i(0, 0, "starter_crowns");
-    public final ConfigInt starter_suns = i(0, 0, "starter_suns");
+    public final ConfigInt starterSpurs = i(0, 0, "starterSpurs");
+    public final ConfigInt starterBevels = i(0, 0, "starterBevels");
+    public final ConfigInt starterSprockets = i(0, 0, "starterSprockets");
+    public final ConfigInt starterCogs = i(0, 0, "starterCogs");
+    public final ConfigInt starterCrowns = i(0, 0, "starterCrowns");
+    public final ConfigInt starterSuns = i(0, 0, "starterSuns");
     
     
     //public final ConfigGroup misc = group(0, "misc", Comments.misc);
@@ -48,7 +47,7 @@ public class CServer extends ConfigBase {
     private static class Comments {
         static final String coins = "Coin settings";
         
-        static final String starterMoney = "How much of this coin type should players receive in their bank account on first join";;
+        static final String starterCurrency = "How much of this coin type should players receive in their bank account on first join";;
         
         static final String misc = "Miscellaneous settings";
     }

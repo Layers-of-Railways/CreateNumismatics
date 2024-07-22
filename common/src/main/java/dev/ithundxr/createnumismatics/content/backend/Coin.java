@@ -53,7 +53,7 @@ public enum Coin implements INamedIconOptions {
     SUN(4096, Rarity.EPIC, I_COIN_SUN, "\uF016") // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
 
-    public int value; // in terms of spurs
+    public final int value; // in terms of spurs
     public final Rarity rarity;
     public final NumismaticsIcons icon;
     public final String fontChar;
@@ -144,7 +144,7 @@ public enum Coin implements INamedIconOptions {
     }
 
     public Coin getDescription() {
-        return this.value < NumismaticsConfig.common().defaultCoin.get().value ? SPUR : NumismaticsConfig.common().defaultCoin.get();
+        return this.value < NumismaticsConfig.common().referenceCoin.get().value ? SPUR : NumismaticsConfig.common().referenceCoin.get();
     }
 
     public ItemStack asStack() {

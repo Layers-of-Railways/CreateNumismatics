@@ -26,7 +26,7 @@ public class CCommon extends ConfigBase {
 
     public final ConfigGroup coins = group(0, "coins", Comments.coins);
 
-    public final ConfigEnum<Coin> defaultCoin = e(Coin.SPUR, "defaultCoin", Comments.defaultCoin);
+    public final ConfigEnum<Coin> referenceCoin = e(Coin.COG, "defaultCoin", Comments.referenceCoin);
     
     // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CCommon.java
     
@@ -38,6 +38,6 @@ public class CCommon extends ConfigBase {
     private static class Comments {
         static final String coins = "Coin settings";
 
-        static final String defaultCoin = "The default coin to be used in UI related displays";
+        static final String referenceCoin = "The reference coin to be used in UI related displays";
     }
 }
