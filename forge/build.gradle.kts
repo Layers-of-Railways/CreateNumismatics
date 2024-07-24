@@ -48,6 +48,20 @@ repositories {
             includeGroup("cc.tweaked")
         }
     }
+    maven("https://maven.blamejared.com/") {
+        // location of the maven that hosts JEI files since January 2023
+        name = "Jared's maven"
+        content {
+            includeGroup("mezz.jei")
+        }
+    }
+    maven("https://modmaven.dev") {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        content {
+            includeGroup("mezz.jei")
+        }
+    }
 }
 
 dependencies {
@@ -70,6 +84,12 @@ dependencies {
     forgeRuntimeLibrary("io.netty:netty-codec-http:4.1.82.Final")
     forgeRuntimeLibrary("io.netty:netty-codec-socks:4.1.82.Final")
     forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.82.Final")
+
+    // compile against the JEI API but do not include it at runtime
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-common-api:${"jei_version"()}")
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-forge-api:${"jei_version"()}")
+    // at runtime, use the full JEI jar for Forge
+    modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}")
 
     if ("enable_cc"().toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")

@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.content.vendor;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.BigStackSizeContainerSynchronizer;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.IGhostItemMenu;
 import dev.ithundxr.createnumismatics.content.backend.IScrollableSlotMenu;
 import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
@@ -41,7 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollableSlotMenu {
+public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollableSlotMenu, IGhostItemMenu {
     public static final int COIN_SLOTS = Coin.values().length;
     public static final int CARD_SLOT_INDEX = COIN_SLOTS;
     public static final int FILTER_SLOT_INDEX = CARD_SLOT_INDEX + 1;
@@ -225,7 +226,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
 
     @Override
     public void scrollSlot(int slotID, double delta, boolean shift) {
-        if (slotID == FILTER_SLOT_INDEX && !contentHolder.isFilterSlotLegacy()) {
+        if (isSlotGhost(slotID)) {
             Slot slot = getSlot(slotID);
             if (!slot.hasItem())
                 return;
@@ -239,5 +240,17 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
             count = Math.max(0, Math.min(count, stack.getMaxStackSize()));
             slot.set(count == 0 ? ItemStack.EMPTY : stack.copyWithCount(count));
         }
+    }
+
+    @Override
+    public void setGhostStackInSlot(int slotID, ItemStack stack) {
+        if (isSlotGhost(slotID)) {
+            getSlot(slotID).set(stack);
+        }
+    }
+
+    @Override
+    public boolean isSlotGhost(int slotID) {
+        return slotID == FILTER_SLOT_INDEX && !contentHolder.isFilterSlotLegacy();
     }
 }

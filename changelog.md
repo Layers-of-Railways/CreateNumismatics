@@ -16,7 +16,8 @@ Changes
 - Redid Bank Terminal texture to match other Create textures
 - You can now insert or extract items from all sides of a vendor
 - The buying/selling item slot in the vendor gui now acts like a ghost item (does not require actual items).
-  Backwards compatible with existing vendors, so the items will remain 'real' until you remove them
+  Backwards compatible with existing vendors, so the items will remain 'real' until you remove them.
+  Additionally, enchantments and dyes can be applied to some items by shift-dragging items when using EMI on fabric or JEI on forge
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------

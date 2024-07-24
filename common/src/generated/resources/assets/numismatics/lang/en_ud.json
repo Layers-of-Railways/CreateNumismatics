@@ -165,5 +165,12 @@
   "numismatics.authorization_type.trusted_players": "ʎןuO sɹǝʎɐןԀ pǝʇsnɹ⟘",
   "numismatics.authorization_type.trusted_players.description": "ʇsıן ʇsnɹʇ ǝɥʇ uo sɹǝʎɐןd ʎןuO",
   "numismatics.special.ltr": "ǝnɹʇ",
-  "numismatics.trust_list.configure": "ʇsıꞀ ʇsnɹ⟘ ǝɹnbıɟuoƆ"
+  "numismatics.trust_list.configure": "ʇsıꞀ ʇsnɹ⟘ ǝɹnbıɟuoƆ",
+  "tag.block.numismatics.numismatics_blocks": "sʞɔoןᗺ sɔıʇɐɯsıɯnN",
+  "tag.item.forge.string": "buıɹʇS",
+  "tag.item.numismatics.authorized_cards": "spɹɐƆ pǝzıɹoɥʇnⱯ",
+  "tag.item.numismatics.cards": "spɹɐƆ",
+  "tag.item.numismatics.coins": "suıoƆ",
+  "tag.item.numismatics.id_cards": "spɹɐƆ pI",
+  "tag.item.numismatics.numismatics_items": "sɯǝʇI sɔıʇɐɯsıɯnN"
 }

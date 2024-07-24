@@ -165,5 +165,12 @@
   "numismatics.authorization_type.trusted_players": "Trusted Players Only",
   "numismatics.authorization_type.trusted_players.description": "Only players on the trust list",
   "numismatics.special.ltr": "true",
-  "numismatics.trust_list.configure": "Configure Trust List"
+  "numismatics.trust_list.configure": "Configure Trust List",
+  "tag.block.numismatics.numismatics_blocks": "Numismatics Blocks",
+  "tag.item.forge.string": "String",
+  "tag.item.numismatics.authorized_cards": "Authorized Cards",
+  "tag.item.numismatics.cards": "Cards",
+  "tag.item.numismatics.coins": "Coins",
+  "tag.item.numismatics.id_cards": "Id Cards",
+  "tag.item.numismatics.numismatics_items": "Numismatics Items"
 }
