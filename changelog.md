@@ -6,6 +6,7 @@ Additions
 - Common tag that all blocks have with another tag for items to make it easier to allow use of numismatics blocks/items with claims
 - Config option to select the default coin reference type to be used in UIs (default is suns & cogs)
 - Config option to pick how much money each player should receive the first time they open their bank account
+- /payall command to pay all users
 - Toggle button to enable/disable item extraction from vendors
 - Bulk buy/sell up to a stack of items to vendors by sneaking while using the vendor
 
