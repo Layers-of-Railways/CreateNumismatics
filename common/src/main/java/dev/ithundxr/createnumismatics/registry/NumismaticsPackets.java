@@ -39,6 +39,8 @@ public class NumismaticsPackets {
         .c2s(ResetSubAccountSpendingPacket.class, ResetSubAccountSpendingPacket::new)
         .c2s(ConfigureSubAccountPacket.class, ConfigureSubAccountPacket::new)
         .c2s(AddSubAccountPacket.class, AddSubAccountPacket::new)
+        .c2s(ScrollSlotPacket.class, ScrollSlotPacket::new)
+        .c2s(GhostItemSubmitPacket.class, GhostItemSubmitPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)

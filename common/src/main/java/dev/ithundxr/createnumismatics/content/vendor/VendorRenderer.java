@@ -39,7 +39,7 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
     public void render(@NotNull VendorBlockEntity be, float partialTick, @NotNull PoseStack poseStack,
                        @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        ItemStack itemStack = be.getSellingItem();
+        ItemStack itemStack = be.getFilterItem();
         float age = AnimationTickHolder.getRenderTime();
         float yHeight = 0.65F;
 
