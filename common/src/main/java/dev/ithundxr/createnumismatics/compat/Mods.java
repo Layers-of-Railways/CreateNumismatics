@@ -31,7 +31,9 @@ import java.util.function.Supplier;
 public enum Mods {
 	CARRYON("carryon"),
 	SODIUM("sodium"),
-	COMPUTERCRAFT("computercraft")
+	COMPUTERCRAFT("computercraft"),
+	EMI("emi"),
+	JEI("jei")
 	;
 
 	public final boolean isLoaded;

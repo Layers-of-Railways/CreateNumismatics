@@ -73,6 +73,7 @@
   "gui.numismatics.vendor.out_of_stock.funds": "Vendor has insufficient funds",
   "gui.numismatics.vendor.out_of_stock.funds.named": "Vendor has insufficient funds, contact %s for a refill",
   "gui.numismatics.vendor.out_of_stock.named": "Out of stock, contact %s for a refill",
+  "gui.numismatics.vendor.toggle_automated_extraction": "Toggle Automated Extraction",
   "gui.numismatics.vendor.too_few_items": "Too few items",
   "item.numismatics.authorized_bank_card.tooltip": "AUTHORIZED BANK CARD",
   "item.numismatics.authorized_bank_card.tooltip.summary": "Put in Bank Terminal _Sub Account menu_ to bind, _shift click_ to clear. Allows providing limited Bank Account access to trusted players or automation. Can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
@@ -164,5 +165,12 @@
   "numismatics.authorization_type.trusted_players": "Trusted Players Only",
   "numismatics.authorization_type.trusted_players.description": "Only players on the trust list",
   "numismatics.special.ltr": "true",
-  "numismatics.trust_list.configure": "Configure Trust List"
+  "numismatics.trust_list.configure": "Configure Trust List",
+  "tag.block.numismatics.numismatics_blocks": "Numismatics Blocks",
+  "tag.item.forge.string": "String",
+  "tag.item.numismatics.authorized_cards": "Authorized Cards",
+  "tag.item.numismatics.cards": "Cards",
+  "tag.item.numismatics.coins": "Coins",
+  "tag.item.numismatics.id_cards": "Id Cards",
+  "tag.item.numismatics.numismatics_items": "Numismatics Items"
 }

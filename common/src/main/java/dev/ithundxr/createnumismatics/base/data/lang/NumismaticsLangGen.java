@@ -25,6 +25,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -38,6 +39,7 @@ public class NumismaticsLangGen {
         NumismaticsAdvancements.provideLang(langConsumer);
         AuthorizationType.provideLang(langConsumer);
         Coin.provideLang(langConsumer);
+        NumismaticsTags.provideLang(langConsumer);
 
         /* ================= */
         /* Special data keys */

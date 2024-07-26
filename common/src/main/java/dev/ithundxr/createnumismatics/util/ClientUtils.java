@@ -52,7 +52,7 @@ public class ClientUtils {
         if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity vendorBE) {
             // get the block entities cost and show the item for that and its cost and under
             // show what is being sold (the enchants)
-            return vendorBE.getSellingItem().isEmpty() ? BARRIER_STACK : vendorBE.getSellingItem();
+            return vendorBE.getFilterItem().isEmpty() ? BARRIER_STACK : vendorBE.getFilterItem();
         }
         return original.get();
     }

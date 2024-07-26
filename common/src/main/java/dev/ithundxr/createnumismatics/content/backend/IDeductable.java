@@ -120,4 +120,24 @@ public interface IDeductable {
 
         return null;
     }
+
+    enum Empty implements IDeductable {
+        INSTANCE
+        ;
+
+        @Override
+        public boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder) {
+            return false;
+        }
+
+        @Override
+        public boolean deduct(int spurs, ReasonHolder reasonHolder) {
+            return false;
+        }
+
+        @Override
+        public int getMaxWithdrawal() {
+            return 0;
+        }
+    }
 }

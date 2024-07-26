@@ -96,8 +96,11 @@ public class CommonEvents {
         BlockPos pos = hitResult.getBlockPos();
         BlockState state = level.getBlockState(pos);
 
-        if (!level.isClientSide() && !player.getOffhandItem().isEmpty() && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
-                hand.equals(InteractionHand.MAIN_HAND) && state.getBlock() instanceof VendorBlock vb) {
+        boolean offhandFix = !level.isClientSide()
+            && !player.getOffhandItem().isEmpty()
+            && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
+            hand.equals(InteractionHand.MAIN_HAND);
+        if ((offhandFix || player.isShiftKeyDown()) && state.getBlock() instanceof VendorBlock vb) {
             return vb.use(state, level, pos, player, hand, hitResult);
         }
 

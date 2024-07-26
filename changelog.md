@@ -4,6 +4,8 @@ Numismatics 1.0.7
 Additions
 - Computer Craft: Tweaked compat for vendors and brass depositors
 - Common tag that all blocks have with another tag for items to make it easier to allow use of numismatics blocks/items with claims
+- Toggle button to enable/disable item extraction from vendors
+- Bulk buy/sell up to a stack of items to vendors by sneaking while using the vendor
 
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
@@ -13,6 +15,9 @@ Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)
 - Redid Bank Terminal texture to match other Create textures
 - You can now insert or extract items from all sides of a vendor
+- The buying/selling item slot in the vendor gui now acts like a ghost item (does not require actual items).
+  Backwards compatible with existing vendors, so the items will remain 'real' until you remove them.
+  Additionally, enchantments and dyes can be applied to some items by shift-dragging items when using EMI on fabric or JEI on forge
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------
