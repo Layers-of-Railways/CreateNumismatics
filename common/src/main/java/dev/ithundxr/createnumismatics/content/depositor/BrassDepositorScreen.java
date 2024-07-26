@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
@@ -129,11 +130,11 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
 
         graphics.drawCenteredString(font, title, x + (background.width - 8) / 2, y + 3, 0xFFFFFF);
 
-        Couple<Integer> cogsAndSpurs = Coin.COG.convert(menu.contentHolder.getTotalPrice());
-        int cogs = cogsAndSpurs.getFirst();
-        int spurs = cogsAndSpurs.getSecond();
+        Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(menu.contentHolder.getTotalPrice());
+        int cogs = referenceAndSpurs.getFirst();
+        int spurs = referenceAndSpurs.getSecond();
         Component balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
-            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }
 

@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.config.forge.NumismaticsConfigImpl;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import dev.ithundxr.createnumismatics.registry.forge.NumismaticsCreativeModeTabsImpl;
@@ -32,6 +33,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -52,6 +54,7 @@ public class NumismaticsImpl {
         eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         NumismaticsCreativeModeTabsImpl.register(eventBus);
         Numismatics.init();
+        NumismaticsConfigImpl.register(ModLoadingContext.get());
         //noinspection Convert2MethodRef
         Env.CLIENT.runIfCurrent(() -> () -> NumismaticsClientImpl.init());
         eventBus.addListener(NumismaticsImpl::registerArgumentTypes);

@@ -29,6 +29,7 @@ import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
@@ -362,11 +363,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             }
         }
 
-        Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
-        int cogs = cogsAndSpurs.getFirst();
-        int spurs = cogsAndSpurs.getSecond();
+        Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(getTotalPrice());
+        int cogs = referenceAndSpurs.getFirst();
+        int spurs = referenceAndSpurs.getSecond();
         MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
-            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
 
         // Selling/Buying
         Lang.builder()
