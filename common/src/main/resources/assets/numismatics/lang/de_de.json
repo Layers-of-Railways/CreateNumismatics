@@ -41,7 +41,6 @@
   "gui.numismatics.vendor.generic_named": "Kontakt %s",
   "gui.numismatics.vendor.incorrect_item": "Falscher Gegenstand",
   "gui.numismatics.vendor.insufficient_funds": "Unzureichendes Guthaben",
-  "gui.numismatics.vendor.insufficient_funds.named": "Unzureichenden Kontostand, kontaktiere %s für eine Nachfüllung",
   "gui.numismatics.vendor.mode.buy": "Kaufen",
   "gui.numismatics.vendor.mode.buy.action": "Zum Kauf verwenden",
   "gui.numismatics.vendor.mode.sell": "Verkaufen",
