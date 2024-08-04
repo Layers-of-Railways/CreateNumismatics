@@ -148,7 +148,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
         Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(menu.contentHolder.getTotalPrice());
         int reference = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        Component balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
+        Component balanceLabel = Components.translatable("gui.numismatics.salepoint.price",
             TextUtils.formatInt(reference), NumismaticsConfig.common().referenceCoin.get().getName(reference), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
 

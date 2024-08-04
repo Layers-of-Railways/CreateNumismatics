@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.content.salepoint.containers;
 
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class InvalidatableWrappingItemBuffer extends InvalidatableAbstractBuffer<ItemStack> {
 
@@ -37,9 +38,23 @@ public class InvalidatableWrappingItemBuffer extends InvalidatableAbstractBuffer
 
     @Override
     protected int copyToBufferInternal(ItemStack source, boolean simulate) {
+        final SimpleContainer buffer$ = this.buffer;
         SimpleContainer buffer = this.buffer;
         if (simulate) { // lazy but it works
-            buffer = new SimpleContainer(buffer.getContainerSize());
+            buffer = new SimpleContainer(buffer.getContainerSize()) {
+                @Override
+                public @NotNull ItemStack addItem(@NotNull ItemStack stack) {
+                    if (!buffer$.canPlaceItem(0, stack))
+                        return stack;
+
+                    return super.addItem(stack);
+                }
+
+                @Override
+                public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
+                    return buffer$.canPlaceItem(index, stack);
+                }
+            };
             for (int i = 0; i < buffer.getContainerSize(); i++) {
                 buffer.setItem(i, this.buffer.getItem(i).copy());
             }

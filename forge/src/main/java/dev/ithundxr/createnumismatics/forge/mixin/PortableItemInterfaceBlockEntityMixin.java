@@ -16,83 +16,91 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.fabric.mixin;
+package dev.ithundxr.createnumismatics.forge.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.actors.psi.PortableItemInterfaceBlockEntity;
 import com.simibubi.create.content.contraptions.actors.psi.PortableStorageInterfaceBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.item.ItemHandlerWrapper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.ItemSalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.containers.fabric.InvalidatableWrappingItemBufferStorage;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingItemBufferHandler;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 @Mixin(PortableItemInterfaceBlockEntity.class)
 public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
-    @Shadow public abstract Storage<ItemVariant> getItemStorage(@Nullable Direction face);
+    @Shadow protected LazyOptional<IItemHandlerModifiable> capability;
 
     @Unique
     private ItemSalepointTargetBehaviour railway$salepointBehaviour;
 
     @Unique
     @Nullable
-    private Storage<ItemVariant> railway$contraptionStorage;
+    private IItemHandlerModifiable railway$contraptionStorage;
 
     private PortableItemInterfaceBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    @WrapOperation(
+    @Inject(
         method = "startTransferringTo",
         at = @At(
             value = "INVOKE",
-            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableItemInterfaceBlockEntity$InterfaceItemHandler;setWrapped(Lnet/fabricmc/fabric/api/transfer/v1/storage/Storage;)V"
+            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
         ),
         remap = false
     )
-    private void keepControl(@Coerce ItemHandlerWrapper instance, Storage<ItemVariant> wrapped, Operation<Void> original) {
-        Storage<ItemVariant> existingWrapped = ((ItemHandlerWrapperAccessor) instance).getWrapped();
-        if (!(existingWrapped instanceof InvalidatableWrappingItemBufferStorage)) { // don't override a controlled buffer
-            original.call(instance, wrapped);
-        }
-        railway$contraptionStorage = wrapped;
+    private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
+        railway$contraptionStorage = contraption.getSharedInventory();
+
+        oldCap.ifPresent(itemHandler -> {
+            IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
+            if (existingWrapped instanceof InvalidatableWrappingItemBufferHandler) {
+                capability.ifPresent(newItemHandler -> {
+                    ((ItemHandlerWrapperAccessor) newItemHandler).setWrapped(existingWrapped);
+                });
+            }
+        });
     }
 
-    @WrapOperation(
+    @Inject(
         method = "stopTransferring",
         at = @At(
             value = "INVOKE",
-            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableItemInterfaceBlockEntity$InterfaceItemHandler;setWrapped(Lnet/fabricmc/fabric/api/transfer/v1/storage/Storage;)V"
+            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
         ),
         remap = false
     )
-    private void keepControl2(@Coerce ItemHandlerWrapper instance, Storage<ItemVariant> wrapped, Operation<Void> original) {
-        Storage<ItemVariant> existingWrapped = ((ItemHandlerWrapperAccessor) instance).getWrapped();
-        if (!(existingWrapped instanceof InvalidatableWrappingItemBufferStorage)) { // don't override a controlled buffer
-            original.call(instance, wrapped);
-        }
+    private void keepControl2(CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
         railway$contraptionStorage = null;
+
+        oldCap.ifPresent(itemHandler -> {
+            IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
+            if (existingWrapped instanceof InvalidatableWrappingItemBufferHandler) {
+                capability.ifPresent(newItemHandler -> {
+                    ((ItemHandlerWrapperAccessor) newItemHandler).setWrapped(existingWrapped);
+                });
+            }
+        });
     }
 
     @Override
@@ -113,7 +121,9 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             protected void ensureUnderControlInternal(@NotNull ISalepointState<ItemStack> state) {
-                ((ItemHandlerWrapperAccessor) getItemStorage(null)).setWrapped((InvalidatableWrappingItemBufferStorage) state.getBuffer());
+                capability.ifPresent(itemHandler -> {
+                    ((ItemHandlerWrapperAccessor) itemHandler).setWrapped((InvalidatableWrappingItemBufferHandler) state.getBuffer());
+                });
 
                 if (!underControl) {
                     underControl = true;
@@ -124,9 +134,9 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<ItemStack> state) {
                 if (railway$contraptionStorage != null) {
-                    ((ItemHandlerWrapperAccessor) getItemStorage(null)).setWrapped(railway$contraptionStorage);
-                } else {
-                    ((ItemHandlerWrapperAccessor) getItemStorage(null)).setWrapped(Storage.empty());
+                    capability.ifPresent(itemHandler -> {
+                        ((ItemHandlerWrapperAccessor) itemHandler).setWrapped(railway$contraptionStorage);
+                    });
                 }
 
                 if (underControl) {
@@ -140,16 +150,7 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
                 if (railway$contraptionStorage == null)
                     return false;
 
-                if (!railway$contraptionStorage.supportsInsertion())
-                    return false;
-
-                try (Transaction transaction = Transaction.openOuter()) {
-                    if (railway$contraptionStorage.insert(ItemVariant.of(object), object.getCount(), transaction) != object.getCount()) {
-                        return false;
-                    }
-                }
-
-                return true;
+                return ItemHandlerHelper.insertItem(railway$contraptionStorage, object, true).isEmpty();
             }
 
             @Override
@@ -160,15 +161,12 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
                 if (!hasSpaceFor(object))
                     return false;
 
-                try (Transaction transaction = Transaction.openOuter()) {
-                    List<ItemStack> extracted = purchaseProvider.extract();
-                    for (ItemStack stack : extracted) {
-                        if (railway$contraptionStorage.insert(ItemVariant.of(stack), stack.getCount(), transaction) != stack.getCount()) {
-                            Numismatics.LOGGER.error("Failed to insert item into contraption storage, despite having space.");
-                            return false;
-                        }
+                List<ItemStack> extracted = purchaseProvider.extract();
+                for (ItemStack stack : extracted) {
+                    if (!ItemHandlerHelper.insertItem(railway$contraptionStorage, stack, false).isEmpty()) {
+                        Numismatics.LOGGER.error("Failed to insert item into contraption storage, despite having space.");
+                        return false;
                     }
-                    transaction.commit();
                 }
 
                 return true;

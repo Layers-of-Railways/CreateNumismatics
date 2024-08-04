@@ -60,6 +60,11 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
 
             return super.addItem(stack);
         }
+
+        @Override
+        public boolean canPlaceItem(int index, ItemStack stack) {
+            return super.canPlaceItem(index, stack) && VendorBlockEntity.matchesFilterItem(filter, stack);
+        }
     };
     private @NotNull InvalidatableWrappingItemBuffer bufferWrapper = createBufferWrapper(buffer);
     private @Nullable Runnable changedCallback;

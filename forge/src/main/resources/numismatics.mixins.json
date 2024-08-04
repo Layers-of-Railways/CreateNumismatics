@@ -9,6 +9,8 @@
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
+    "ItemHandlerWrapperAccessor",
+    "PortableItemInterfaceBlockEntityMixin",
     "ServerGamePacketListenerImplMixin",
     "self.BrassDepositorBlockEntityCapabilities",
     "self.ComputerBehaviourCapabilities",
