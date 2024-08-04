@@ -19,6 +19,20 @@
   "gui.numismatics.bank_terminal.sub_accounts.help.line.5": "enable safer automated transactions.",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.6": "",
 
+  "gui.numismatics.salepoint.price": "Price/Unit: %s %s, %s¤",
+  "gui.numismatics.salepoint.count": "Units",
+
+  "gui.numismatics.salepoint.go": "Start transaction",
+  "gui.numismatics.salepoint.cancel": "Cancel transaction",
+
+  "gui.numismatics.salepoint.no_card": "No card",
+  "gui.numismatics.salepoint.no_state": "Not configured",
+  "gui.numismatics.salepoint.invalid_state": "Invalid state",
+  "gui.numismatics.salepoint.no_target": "Target not found",
+  "gui.numismatics.salepoint.target_not_controlled": "Target not under salepoint control",
+  "gui.numismatics.salepoint.insufficient_space": "Target is full",
+  "gui.numismatics.salepoint.target_failed_purchase": "Target could not execute the purchase",
+
   "gui.numismatics.limit": "Spent %s of %s",
   "gui.numismatics.limit.none": "No limit",
   "gui.numismatics.limit.monetary": "Spent %s %s, %s¤ of %s %s, %s¤",

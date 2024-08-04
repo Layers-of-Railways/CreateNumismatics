@@ -134,23 +134,25 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             if (deductable.deduct(totalPrice, reasonHolder)) {
                 //activate(state, level, pos);
                 if (addToSource) {
-                    for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                        addCoin.accept(entry.getKey(), entry.getValue());
-                    }
+                    addCoinsToSelf();
                 }
                 return true;
             }
         } else if (CoinItem.extract(player, hand, prices, false)) {
             //activate(state, level, pos);
             if (addToSource) {
-                for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                    addCoin.accept(entry.getKey(), entry.getValue());
-                }
+                addCoinsToSelf();
             }
             return true;
         }
 
         return false;
+    }
+
+    public void addCoinsToSelf() {
+        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+            addCoin.accept(entry.getKey(), entry.getValue());
+        }
     }
 
     public boolean canPayOut(@Nullable IDeductable deductable) {

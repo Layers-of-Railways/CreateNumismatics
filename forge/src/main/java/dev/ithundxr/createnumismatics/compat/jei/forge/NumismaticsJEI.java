@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.compat.jei.forge;
 
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigScreen;
 import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -44,5 +45,6 @@ public class NumismaticsJEI implements IModPlugin {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGhostIngredientHandler(VendorScreen.class, new GhostIngredientHandler());
+        registration.addGhostIngredientHandler(SalepointConfigScreen.class, new GhostIngredientHandler());
     }
 }

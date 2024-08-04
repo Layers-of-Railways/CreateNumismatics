@@ -35,6 +35,10 @@ import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.BankScreen;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorScreen;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigScreen;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseMenu;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseScreen;
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
 import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -84,6 +88,18 @@ public class NumismaticsMenuTypes {
         "sub_account_list",
         SubAccountListMenu::new,
         () -> SubAccountListScreen::new
+    );
+
+    public static final MenuEntry<SalepointConfigMenu> SALEPOINT_CONFIG = register(
+        "salepoint_config",
+        SalepointConfigMenu::new,
+        () -> SalepointConfigScreen::new
+    );
+
+    public static final MenuEntry<SalepointPurchaseMenu> SALEPOINT_PURCHASE = register(
+        "salepoint_purchase",
+        SalepointPurchaseMenu::new,
+        () -> SalepointPurchaseScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

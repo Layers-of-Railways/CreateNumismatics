@@ -8,6 +8,8 @@
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
+    "ItemHandlerWrapperAccessor",
+    "PortableItemInterfaceBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

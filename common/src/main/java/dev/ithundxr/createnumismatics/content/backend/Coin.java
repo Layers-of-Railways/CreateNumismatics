@@ -55,7 +55,7 @@ public enum Coin implements INamedIconOptions {
 
     public final int value; // in terms of spurs
     public final Rarity rarity;
-    public final NumismaticsIcons icon;
+    private final NumismaticsIcons icon;
     public final String fontChar;
 
     Coin(int value, Rarity rarity, NumismaticsIcons icon, String fontChar) {

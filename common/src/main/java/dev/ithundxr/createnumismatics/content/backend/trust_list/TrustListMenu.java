@@ -227,7 +227,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         }
     }
 
-    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
+    public static <BE extends SmartBlockEntity & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
         return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("numismatics.trust_list.configure"), be,
             slot, be::isTrusted) {
             @Override
@@ -251,7 +251,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         };
     }
 
-    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
+    public static <BE extends SmartBlockEntity & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
         if (be.isTrusted(player)) {
             Utils.openScreen(player,
                 TrustListMenu.provider(be, displayStack),

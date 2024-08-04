@@ -196,11 +196,11 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
              */
             if (stack.getItem() instanceof CoinItem && !moveItemStackTo(stack, 0, COIN_SLOTS, false)) {
                 return ItemStack.EMPTY;
-            } else if (NumismaticsTags.AllItemTags.CARDS.matches(stack) && !moveItemStackTo(stack, CARD_SLOT_INDEX, CARD_SLOT_INDEX+1, false)) {
+            } else if ((NumismaticsTags.AllItemTags.CARDS.matches(stack) || NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(stack)) && !moveItemStackTo(stack, CARD_SLOT_INDEX, CARD_SLOT_INDEX+1, false)) {
                 return ItemStack.EMPTY;
             } else if (contentHolder.filterContainer.isEmpty()) {
                 // stack copied to prevent clearing the source (player inventory) slot
-                moveItemStackTo(stack.copy(), FILTER_SLOT_INDEX, FILTER_SLOT_INDEX +1, false);
+                moveItemStackTo(stack.copy(), FILTER_SLOT_INDEX, FILTER_SLOT_INDEX+1, false);
                 return ItemStack.EMPTY;
             } else if (contentHolder.matchesFilterItem(stack) && !moveItemStackTo(stack, INV_START_INDEX, INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;
@@ -225,7 +225,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
     }
 
     @Override
-    public void scrollSlot(int slotID, double delta, boolean shift) {
+    public void scrollSlot(int slotID, double delta, boolean shiftHeld) {
         if (isSlotGhost(slotID)) {
             Slot slot = getSlot(slotID);
             if (!slot.hasItem())
@@ -234,7 +234,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
             ItemStack stack = slot.getItem();
             int count = stack.getCount();
             int offset = delta > 0 ? 1 : -1;
-            if (shift)
+            if (shiftHeld)
                 offset *= 4;
             count += offset;
             count = Math.max(0, Math.min(count, stack.getMaxStackSize()));

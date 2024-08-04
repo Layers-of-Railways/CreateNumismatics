@@ -525,7 +525,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @NotNull
     @Contract("_ -> new")
-    private CompoundTag cleanTags(@NotNull CompoundTag tag) {
+    private static CompoundTag cleanTags(@NotNull CompoundTag tag) {
         tag = tag.copy();
         tag.remove("RepairCost");
         tag.remove("Count");
@@ -556,16 +556,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return tag;
     }
 
-    public boolean matchesFilterItem(@NotNull ItemStack b) {
-        ItemStack a = getFilterItem();
-        if (a.isEmpty() || b.isEmpty())
+    public static boolean matchesFilterItem(@NotNull ItemStack filterItem, @NotNull ItemStack other) {
+        if (filterItem.isEmpty() || other.isEmpty())
             return false;
 
-        if (!ItemStack.isSameItem(a, b))
+        if (!ItemStack.isSameItem(filterItem, other))
             return false;
 
-        CompoundTag an = a.getTag();
-        CompoundTag bn = b.getTag();
+        CompoundTag an = filterItem.getTag();
+        CompoundTag bn = other.getTag();
 
         if (an == null || bn == null) {
             return an == bn;
@@ -575,6 +574,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         bn = cleanTags(bn);
 
         return an.equals(bn);
+    }
+
+    public boolean matchesFilterItem(@NotNull ItemStack b) {
+        ItemStack a = getFilterItem();
+        return matchesFilterItem(a, b);
     }
 
     protected void condenseItems() {
