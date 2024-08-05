@@ -40,6 +40,10 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointPurchasePacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -107,10 +111,18 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
 
         ISalepointState<?> salepointState = getSalepointState();
         if (salepointState != null)
-            salepointState.createPurchaseWidgets(this::addRenderableWidget);
+            salepointState.createPurchaseWidgets(this::addRenderableWidgetOffset);
 
         extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 68, 84, 84));
         updateAction();
+    }
+
+    private <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidgetOffset(T widget) {
+        if (widget instanceof AbstractWidget abstractWidget) {
+            abstractWidget.setX(abstractWidget.getX() + leftPos);
+            abstractWidget.setY(abstractWidget.getY() + topPos);
+        }
+        return addRenderableWidget(widget);
     }
 
     @Override
@@ -233,7 +245,6 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
         }
     }
 
-    @SuppressWarnings("DataFlowIssue")
     private void updateAction() {
         action = Action.GO;
         Component alert = Components.translatable("gui.numismatics.salepoint.go");

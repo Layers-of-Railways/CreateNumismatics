@@ -16,28 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.content.salepoint.behaviours;
+package dev.ithundxr.createnumismatics.base.client.rendering;
 
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
-import dev.ithundxr.createnumismatics.content.salepoint.states.SalepointTypes;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public abstract class ItemSalepointTargetBehaviour extends SalepointTargetBehaviour<ItemStack> {
-
-    public ItemSalepointTargetBehaviour(SmartBlockEntity be) {
-        super(be);
-    }
-
-    @Override
-    protected @Nullable ISalepointState<?> tryBindToSalepointInternal() {
-        return SalepointTypes.ITEM.create();
-    }
-
-    @Override
-    protected @NotNull Class<ItemStack> getContentType() {
-        return ItemStack.class;
-    }
+public interface ISalepointStateUpdatingWidget {
+    void updateState(ISalepointState<?> state);
 }

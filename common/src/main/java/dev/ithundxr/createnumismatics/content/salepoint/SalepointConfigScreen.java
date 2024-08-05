@@ -29,6 +29,8 @@ import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidget;
+import dev.ithundxr.createnumismatics.base.client.rendering.ISalepointStateUpdatingWidget;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
@@ -39,6 +41,10 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -62,6 +68,8 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
     private final Label[] coinLabels = new Label[COIN_COUNT];
     private final ScrollInput[] coinScrollInputs = new ScrollInput[COIN_COUNT];
 
+    private boolean wasDragging;
+
     private List<Rect2i> extraAreas = Collections.emptyList();
 
     public SalepointConfigScreen(SalepointConfigMenu container, Inventory inv, Component title) {
@@ -82,9 +90,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
         int y = topPos;
 
         trustListButton = new IconButton(x + 16, y + background.height - 24, AllIcons.I_VIEW_SCHEDULE);
-        trustListButton.withCallback(() -> {
-            menu.contentHolder.openTrustList();
-        });
+        trustListButton.withCallback(() -> menu.contentHolder.openTrustList());
         addRenderableWidget(trustListButton);
 
         confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
@@ -118,9 +124,17 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
 
         ISalepointState<?> salepointState = getSalepointState();
         if (salepointState != null)
-            salepointState.createConfigWidgets(this::addRenderableWidget);
+            salepointState.createConfigWidgets(this::addRenderableWidgetOffset);
 
         extraAreas = ImmutableList.of(new Rect2i(x + background.width, y + background.height - 68, 84, 84));
+    }
+
+    private <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidgetOffset(T widget) {
+        if (widget instanceof AbstractWidget abstractWidget) {
+            abstractWidget.setX(abstractWidget.getX() + leftPos);
+            abstractWidget.setY(abstractWidget.getY() + topPos);
+        }
+        return addRenderableWidget(widget);
     }
 
     @Override
@@ -183,6 +197,50 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, delta);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && !menu.getCarried().isEmpty()) {
+            for (GuiEventListener widget : this.children()) {
+                if (widget.isMouseOver(mouseX, mouseY) && widget instanceof IItemApplicableWidget itemApplicableWidget) {
+                    itemApplicableWidget.onItemApplied(menu.getCarried());
+                }
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        wasDragging = true;
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0 && wasDragging && !menu.getCarried().isEmpty()) {
+            for (GuiEventListener widget : this.children()) {
+                if (widget.isMouseOver(mouseX, mouseY) && widget instanceof IItemApplicableWidget itemApplicableWidget) {
+                    itemApplicableWidget.onItemApplied(menu.getCarried());
+                }
+            }
+        }
+
+        wasDragging = false;
+
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        for (GuiEventListener widget : this.children()) {
+            if (widget instanceof ISalepointStateUpdatingWidget salepointStateUpdatingWidget) {
+                salepointStateUpdatingWidget.updateState(getSalepointState());
+            }
+        }
     }
 
     @Override

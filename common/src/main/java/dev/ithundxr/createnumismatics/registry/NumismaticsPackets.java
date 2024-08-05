@@ -42,6 +42,7 @@ public class NumismaticsPackets {
         .c2s(ScrollSlotPacket.class, ScrollSlotPacket::new)
         .c2s(GhostItemSubmitPacket.class, GhostItemSubmitPacket::new)
         .c2s(SalepointPurchasePacket.class, SalepointPurchasePacket::new)
+        .c2s(SalepointFluidFilterPacket.class, SalepointFluidFilterPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)

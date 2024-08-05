@@ -68,4 +68,14 @@ public abstract class InvalidatableAbstractBuffer<C> {
      * @return The number of elements copied.
      */
     protected abstract int copyToBufferInternal(C source, boolean simulate);
+
+    /**
+     * Remove as much as possible of the source element from the buffer, up to maxAmount, i.e. ignoring source's size.<br>
+     * <b>Note:</b> It is the caller's responsibility to modify the source,
+     * the implementor MUST NOT modify the source argument
+     * @param source The source to remove.
+     * @param simulate If true, the caller MUST NOT actually remove the element from its buffer
+     * @return The number of elements removed.
+     */
+    protected abstract int removeFromBufferInternal(C source, boolean simulate, final int maxAmount);
 }

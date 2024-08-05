@@ -67,6 +67,7 @@ public class InvalidatableWrappingItemBuffer extends InvalidatableAbstractBuffer
         return 0;
     }
 
+    @Override
     protected int removeFromBufferInternal(ItemStack source, boolean simulate, final int maxAmount) {
         SimpleContainer buffer = this.buffer;
         if (simulate) { // lazy but it works

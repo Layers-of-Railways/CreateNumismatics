@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.utility.Components;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -137,5 +138,10 @@ public class TextUtils {
             .getString()
             .toLowerCase(Locale.ROOT)
             .equals("true");
+    }
+
+    @ExpectPlatform
+    public static String formatFluid(long amount) {
+        throw new AssertionError();
     }
 }

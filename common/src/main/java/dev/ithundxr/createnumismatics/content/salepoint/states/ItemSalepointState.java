@@ -70,9 +70,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
     private @Nullable Runnable changedCallback;
 
     ItemSalepointState() {
-        buffer.addListener($ -> {
-            setChanged();
-        });
+        buffer.addListener($ -> setChanged());
     }
 
     @ExpectPlatform
@@ -139,7 +137,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
         }
         setChanged();
 
-        return false;
+        return true;
     }
 
     @Override
@@ -387,6 +385,11 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
 
         if (!behaviour.isUnderControl(this)) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_not_controlled"));
+            return false;
+        }
+
+        if (filter.isEmpty()) {
+            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_filter"));
             return false;
         }
 

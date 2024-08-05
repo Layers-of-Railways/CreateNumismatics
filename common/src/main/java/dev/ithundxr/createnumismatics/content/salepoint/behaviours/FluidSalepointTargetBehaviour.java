@@ -21,23 +21,22 @@ package dev.ithundxr.createnumismatics.content.salepoint.behaviours;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.states.SalepointTypes;
-import net.minecraft.world.item.ItemStack;
+import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ItemSalepointTargetBehaviour extends SalepointTargetBehaviour<ItemStack> {
-
-    public ItemSalepointTargetBehaviour(SmartBlockEntity be) {
+public abstract class FluidSalepointTargetBehaviour extends SalepointTargetBehaviour<MultiloaderFluidStack> {
+    public FluidSalepointTargetBehaviour(SmartBlockEntity be) {
         super(be);
     }
 
     @Override
     protected @Nullable ISalepointState<?> tryBindToSalepointInternal() {
-        return SalepointTypes.ITEM.create();
+        return SalepointTypes.FLUID.create();
     }
 
     @Override
-    protected @NotNull Class<ItemStack> getContentType() {
-        return ItemStack.class;
+    protected @NotNull Class<MultiloaderFluidStack> getContentType() {
+        return MultiloaderFluidStack.class;
     }
 }

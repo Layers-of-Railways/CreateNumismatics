@@ -81,6 +81,7 @@ dependencies {
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${"lazydfu_version"()}")
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
+    modLocalRuntime("maven.modrinth:jade:${"jade_version"()}")
 
     modCompileOnly("dev.emi:emi-fabric:${"emi_version"()}:api")
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")

@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
+import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 public enum SalepointTypes {
     ITEM(ItemSalepointState::new, ItemStack.class),
+    FLUID(FluidSalepointState::create, MultiloaderFluidStack.class),
     ;
 
     @NotNull

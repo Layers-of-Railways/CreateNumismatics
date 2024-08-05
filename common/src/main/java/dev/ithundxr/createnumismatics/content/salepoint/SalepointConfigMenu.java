@@ -61,6 +61,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
     }
 
     @Override
+    @SuppressWarnings("DataFlowIssue")
     protected SalepointBlockEntity createOnClient(FriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
@@ -122,7 +123,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, @NotNull ClickType clickType, Player player) {
         ItemStack held = getCarried();
         Inventory inventory = player.getInventory();
         ISalepointState<?> salepointState = getSalepointState();
@@ -217,7 +218,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
         super.setSynchronizer(synchronizer);
     }
 
-    protected @Nullable ISalepointState<?> getSalepointState() {
+    public @Nullable ISalepointState<?> getSalepointState() {
         if (contentHolder.salepointState == null)
             return null;
         return contentHolder.salepointState.state();

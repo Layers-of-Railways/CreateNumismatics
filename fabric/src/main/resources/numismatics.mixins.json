@@ -9,7 +9,10 @@
   ],
   "mixins": [
     "ItemHandlerWrapperAccessor",
-    "PortableItemInterfaceBlockEntityMixin"
+    "PortableFluidInterfaceBlockEntityMixin",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
+    "PortableItemInterfaceBlockEntityMixin",
+    "WrappedStorageAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
