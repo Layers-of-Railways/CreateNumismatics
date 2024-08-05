@@ -87,7 +87,7 @@ public class SalepointFluidDisplayWidget extends AbstractSimiWidget implements I
 
             if (top) {
                 yMin = y + 2;
-                yMax = y + level * (getHeight() - 4) - 2;
+                yMax = y + level * (getHeight() - 4) + 2;
             }
 
             float zMin = 1;

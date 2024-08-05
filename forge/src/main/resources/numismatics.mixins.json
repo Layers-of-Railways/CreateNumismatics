@@ -10,6 +10,9 @@
   ],
   "mixins": [
     "ItemHandlerWrapperAccessor",
+    "PortableFluidInterfaceBlockEntityMixin",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "PortableItemInterfaceBlockEntityMixin",
     "ServerGamePacketListenerImplMixin",
     "self.BrassDepositorBlockEntityCapabilities",

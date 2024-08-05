@@ -9,6 +9,7 @@
   ],
   "mixins": [
     "ItemHandlerWrapperAccessor",
+    "MixinAllFluids$CreateAttributeHandler",
     "PortableFluidInterfaceBlockEntityMixin",
     "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "PortableItemInterfaceBlockEntityMixin",

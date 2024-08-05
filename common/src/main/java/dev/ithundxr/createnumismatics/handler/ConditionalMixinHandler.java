@@ -57,6 +57,7 @@ public class ConditionalMixinHandler {
                 }
                 if (node.desc.equals(Type.getDescriptor(DevMixin.class))) {
                     shouldApply &= Utils.isDevEnv();
+                    LOGGER.debug("{} is {}being applied because we are {}in a development environment", className, shouldApply ? "" : "not ", Utils.isDevEnv() ? "" : "not ");
                 }
             }
             return shouldApply;

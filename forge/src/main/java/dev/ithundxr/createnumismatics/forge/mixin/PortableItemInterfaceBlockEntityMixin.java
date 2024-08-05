@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(PortableItemInterfaceBlockEntity.class)
 public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
@@ -133,11 +135,12 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<ItemStack> state) {
-                if (railway$contraptionStorage != null) {
-                    capability.ifPresent(itemHandler -> {
-                        ((ItemHandlerWrapperAccessor) itemHandler).setWrapped(railway$contraptionStorage);
-                    });
-                }
+                capability.ifPresent(itemHandler -> {
+                    ((ItemHandlerWrapperAccessor) itemHandler).setWrapped(Objects.requireNonNullElseGet(
+                        railway$contraptionStorage,
+                        () -> new ItemStackHandler(0)
+                    ));
+                });
 
                 if (underControl) {
                     underControl = false;
