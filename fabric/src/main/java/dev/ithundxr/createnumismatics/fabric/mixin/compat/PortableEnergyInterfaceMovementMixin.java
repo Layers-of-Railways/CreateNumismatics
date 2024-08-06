@@ -23,12 +23,13 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyInterfaceMovement;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
+import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
 import dev.ithundxr.createnumismatics.compat.Mods;
 import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-// todo report to Create Crafts and Additions
+@DevMixin
 @ConditionalMixin(mods = Mods.CREATEADDITION)
 @Mixin(PortableEnergyInterfaceMovement.class)
 public class PortableEnergyInterfaceMovementMixin {
