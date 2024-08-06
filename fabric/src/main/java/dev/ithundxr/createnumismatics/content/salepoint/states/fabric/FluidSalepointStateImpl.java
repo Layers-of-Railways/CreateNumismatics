@@ -93,11 +93,13 @@ public class FluidSalepointStateImpl extends FluidSalepointState {
     @Override
     protected List<MultiloaderFluidStack> removeBufferFluidForPurchase() {
         try (Transaction transaction = Transaction.openOuter()) {
+            FluidStack out = buffer.getFluid().copy();
+
             long amount = buffer.extract(((MultiloaderFluidStackImpl) getFilter()).getType(), getFilter().getAmount(), transaction);
             transaction.commit();
 
             return List.of(
-                new MultiloaderFluidStackImpl(buffer.getFluid().copy().setAmount(amount))
+                new MultiloaderFluidStackImpl(out.setAmount(amount))
             );
         }
     }

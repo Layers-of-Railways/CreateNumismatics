@@ -88,6 +88,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     protected final MenuProvider configMenuProvider = new ConfigMenuProvider();
     protected final MenuProvider purchaseMenuProvider = new PurchaseMenuProvider();
     private boolean delayedDataSync = false;
+    private int lastAnalogOutput = -1;
 
     private SliderStylePriceBehaviour price;
 
@@ -307,6 +308,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         if (transactionResult.shouldStop) {
             if (transactionResult == TransactionResult.SUCCESS) {
                 justCompletedMultiplier = transaction.multiplier();
+                ((SalepointBlock) getBlockState().getBlock()).startSignal(level, getBlockPos());
             }
             this.transaction = null;
         }
@@ -315,12 +317,28 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         notifyUpdate();
     }
 
+    int getTargetAnalogOutput() {
+        if (transaction == null)
+            return 0;
+
+        return Math.max(1, Math.min(transaction.progress() * 15 / transaction.multiplier(), 15));
+    }
+
     @Override
     public void tick() {
         super.tick();
 
         if (soundCooldown > 0)
             soundCooldown--;
+
+        if (level == null || level.isClientSide)
+            return;
+
+        int analogOutput = getTargetAnalogOutput();
+        if (analogOutput != lastAnalogOutput) {
+            lastAnalogOutput = analogOutput;
+            level.updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
+        }
     }
 
     @Override

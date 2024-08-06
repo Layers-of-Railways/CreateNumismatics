@@ -35,6 +35,7 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
@@ -141,6 +142,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(Properties::requiresCorrectToolForDrops)
+		.properties(p -> p.isRedstoneConductor(Blocks::never))
 		.transform(pickaxeOnly())
 		.lang("Salepoint")
 		//.transform(BuilderTransformers.salepoint())
