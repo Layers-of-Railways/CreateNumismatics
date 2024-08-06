@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.server.MinecraftServer;
@@ -98,6 +99,16 @@ public class GlobalBankManager {
             if (uuid == null)
                 throw new RuntimeException("UUID cannot be null");
             BankAccount account = new BankAccount(uuid, type);
+
+            if (type == Type.PLAYER) {
+                account.deposit(Coin.SPUR, NumismaticsConfig.server().starterSpurs.get());
+                account.deposit(Coin.BEVEL, NumismaticsConfig.server().starterBevels.get());
+                account.deposit(Coin.SPROCKET, NumismaticsConfig.server().starterSprockets.get());
+                account.deposit(Coin.COG, NumismaticsConfig.server().starterCogs.get());
+                account.deposit(Coin.CROWN, NumismaticsConfig.server().starterCrowns.get());
+                account.deposit(Coin.SUN, NumismaticsConfig.server().starterSuns.get());
+            }
+
             accounts.put(uuid, account);
             markBankDirty();
             return account;

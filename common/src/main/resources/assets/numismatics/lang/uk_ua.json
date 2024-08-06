@@ -39,7 +39,6 @@
   "gui.numismatics.vendor.full.named": "Крамниця переповнена, зверніться до %s",
   "gui.numismatics.vendor.incorrect_item": "Неправильний предмет",
   "gui.numismatics.vendor.insufficient_funds": "Недостатньо коштів",
-  "gui.numismatics.vendor.insufficient_funds.named": "У крамниці недостатньо коштів, зверніться до %s",
   "gui.numismatics.vendor.mode.buy": "Купувати",
   "gui.numismatics.vendor.mode.buy.action": "ЛКМ, щоби купити",
   "gui.numismatics.vendor.mode.sell": "Продавати",

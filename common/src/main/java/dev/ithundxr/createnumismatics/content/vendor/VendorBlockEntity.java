@@ -29,6 +29,7 @@ import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
@@ -86,10 +87,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     };
 
-    public final Container sellingContainer = new SimpleContainer(1) {
+    public final Container filterContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
             super.setChanged();
+            // Update legacy status
+            VendorBlockEntity.this.isFilterSlotLegacy();
             VendorBlockEntity.this.setChanged();
             correctStock();
         }
@@ -106,6 +109,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     private SliderStylePriceBehaviour price;
     private Mode mode = Mode.SELL;
+    private boolean enableAutomatedExtraction = true;
+    private boolean isFilterSlotLegacy = false;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
     AbstractComputerBehaviour computerBehaviour;
@@ -145,8 +150,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
         }
 
-        if (!getSellingItem().isEmpty()) {
-            tag.put("Selling", getSellingItem().save(new CompoundTag()));
+        if (!getFilterItem().isEmpty()) {
+            String filterKey = isFilterSlotLegacy() ? "Selling" : "Filter";
+            tag.put(filterKey, getFilterItem().save(new CompoundTag()));
         }
 
         if (!trustListContainer.isEmpty()) {
@@ -158,6 +164,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         tag.putInt("Mode", mode.ordinal());
+        tag.putBoolean("EnableAutomatedExtraction", enableAutomatedExtraction);
     }
 
     @Override
@@ -179,9 +186,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         if (tag.contains("Selling", Tag.TAG_COMPOUND)) {
             ItemStack sellingStack = ItemStack.of(tag.getCompound("Selling"));
-            sellingContainer.setItem(0, sellingStack);
+            filterContainer.setItem(0, sellingStack);
+            isFilterSlotLegacy = !sellingStack.isEmpty();
+        } else if (tag.contains("Filter", Tag.TAG_COMPOUND)) {
+            ItemStack filterStack = ItemStack.of(tag.getCompound("Filter"));
+            filterContainer.setItem(0, filterStack);
+            isFilterSlotLegacy = false;
         } else {
-            sellingContainer.setItem(0, ItemStack.EMPTY);
+            filterContainer.setItem(0, ItemStack.EMPTY);
+            isFilterSlotLegacy = false;
         }
 
         trustListContainer.clearContent();
@@ -196,6 +209,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         mode = Mode.values()[tag.getInt("Mode")];
+
+        if (tag.contains("EnableAutomatedExtraction", Tag.TAG_BYTE))
+            enableAutomatedExtraction = tag.getBoolean("EnableAutomatedExtraction");
+        else
+            enableAutomatedExtraction = true;
     }
 
     @Nullable
@@ -234,7 +252,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     /**
-     * NOTE: this account is ONLY for deposits, for withdrawals, use getDeductable()
+     * NOTE: this account is ONLY for deposits, for withdrawals, use {@link #getDeductable()}
      */
     @Nullable
     public UUID getDepositAccount() {
@@ -292,8 +310,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     @Override
     @Environment(EnvType.CLIENT)
     public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        ItemStack sellingStack = getSellingItem();
-        if (sellingStack.isEmpty())
+        ItemStack filterStack = getFilterItem();
+        if (filterStack.isEmpty())
             return false;
 
         // Warning text if out of stock etc
@@ -315,7 +333,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 }
             }
             case BUY -> {
-                if (!hasSpace()) {
+                if (!hasSpaceForSingleBuy()) {
                     Lang.builder()
                         .add(Components.translatable("gui.numismatics.vendor.full"))
                         .style(ChatFormatting.DARK_RED)
@@ -345,11 +363,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             }
         }
 
-        Couple<Integer> cogsAndSpurs = Coin.COG.convert(getTotalPrice());
-        int cogs = cogsAndSpurs.getFirst();
-        int spurs = cogsAndSpurs.getSecond();
+        Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(getTotalPrice());
+        int cogs = referenceAndSpurs.getFirst();
+        int spurs = referenceAndSpurs.getSecond();
         MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
-            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
 
         // Selling/Buying
         Lang.builder()
@@ -359,13 +377,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         // Item
         // ...
         boolean isFirst = true;
-        for (Component component : Screen.getTooltipFromItem(Minecraft.getInstance(), sellingStack)) {
+        for (Component component : Screen.getTooltipFromItem(Minecraft.getInstance(), filterStack)) {
             MutableComponent mutable = component.copy();
             if (isFirst) {
                 isFirst = false;
-                if (sellingStack.getCount() != 1) {
+                if (filterStack.getCount() != 1) {
                     mutable.append(
-                        Components.translatable("gui.numismatics.vendor.count", sellingStack.getCount())
+                        Components.translatable("gui.numismatics.vendor.count", filterStack.getCount())
                             .withStyle(ChatFormatting.GREEN)
                     );
                 }
@@ -416,11 +434,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         this.price.setPrice(coin, price);
     }
 
-    /**
-     * Note: if mode == BUY, then this is actually the buying item - if someone has better names, please refactor :)
-     */
-    public ItemStack getSellingItem() {
-        return sellingContainer.getItem(0);
+    public ItemStack getFilterItem() {
+        return filterContainer.getItem(0);
     }
 
     /* Begin Container */
@@ -432,7 +447,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return mode == Mode.SELL && matchesSellingItem(stack);
+        return mode == Mode.SELL && matchesFilterItem(stack);
     }
 
     @Override
@@ -442,7 +457,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
-        return mode == Mode.BUY;
+        return enableAutomatedExtraction && mode == Mode.BUY;
     }
 
     @Override
@@ -541,8 +556,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return tag;
     }
 
-    public boolean matchesSellingItem(@NotNull ItemStack b) {
-        ItemStack a = getSellingItem();
+    public boolean matchesFilterItem(@NotNull ItemStack b) {
+        ItemStack a = getFilterItem();
         if (a.isEmpty() || b.isEmpty())
             return false;
 
@@ -578,7 +593,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     protected void correctStock() {
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
-            if (!matchesSellingItem(stack) && !stack.isEmpty() && level != null) {
+            if (!matchesFilterItem(stack) && !stack.isEmpty() && level != null) {
                 Containers.dropItemStack(level, getBlockPos().getX(), getBlockPos().getY()+1, getBlockPos().getZ(), stack);
                 items.set(i, ItemStack.EMPTY);
             }
@@ -589,7 +604,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public void dropContents(Level level, BlockPos pos) {
         Containers.dropContents(level, pos, this);
         Containers.dropContents(level, pos, cardContainer);
-        Containers.dropContents(level, pos, sellingContainer);
+        Containers.dropContents(level, pos, filterContainer);
         inventory.dropContents(level, pos);
     }
 
@@ -601,7 +616,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             return true;
 
         for (ItemStack stack : items) {
-            if (matchesSellingItem(stack) && stack.getCount() >= getSellingItem().getCount())
+            if (matchesFilterItem(stack) && stack.getCount() >= getFilterItem().getCount())
                 return true;
         }
 
@@ -611,24 +626,36 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     /**
      * @return whether the vendor has space to accept items when mode == BUY
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean hasSpace() {
-        if (isCreativeVendor())
-            return true;
+    private boolean hasSpaceForSingleBuy() {
+        return getSpace(1) > 0;
+    }
 
-        ItemStack buying = getSellingItem();
+    /**
+     * @param maxCountMultiplier maximum number of times we want to buy
+     * @return how many buy counts the vendor has space to accept items when mode == BUY
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private int getSpace(int maxCountMultiplier) {
+        if (isCreativeVendor())
+            return maxCountMultiplier;
+
+        ItemStack buying = getFilterItem();
         int space = 0;
         for (ItemStack stack : items) {
             if (stack.isEmpty()) {
                 space += buying.getMaxStackSize();
                 continue;
             }
-            if (matchesSellingItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
+            if (matchesFilterItem(stack) && stack.getCount() < stack.getMaxStackSize()) {
                 space += stack.getMaxStackSize() - stack.getCount();
             }
         }
 
-        return space >= buying.getCount();
+        int countMul = maxCountMultiplier;
+        while (space < buying.getCount()*countMul)
+            countMul--;
+
+        return countMul;
     }
 
     /**
@@ -638,35 +665,42 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (isCreativeVendor())
             return true;
 
-        if (price.canPayOut())
+        if (price.canPayOut(getDeductable()))
             return true;
 
         IDeductable deductable = getDeductable();
         return deductable != null && deductable.getMaxWithdrawal() >= price.getTotalPrice();
     }
 
-    public void tryTransaction(Player player, InteractionHand hand) {
+    public void tryTransaction(Player player, InteractionHand hand, boolean bulk) {
         switch (mode) {
-            case SELL -> trySellTo(player, hand);
-            case BUY -> tryBuyFrom(player, hand);
+            case SELL -> trySellTo(player, hand, bulk);
+            case BUY -> tryBuyFrom(player, hand, bulk);
         }
     }
 
-    private void trySellTo(Player player, InteractionHand hand) {
+    private void trySellTo(Player player, InteractionHand hand, boolean bulk) {
         if (level == null) return;
         // condense stock
         // (try to) charge cost
         // dispense stock
-        ItemStack selling = getSellingItem();
+        ItemStack selling = getFilterItem();
         if (selling.isEmpty())
             return;
 
         condenseItems();
 
+        int countMultiplier = bulk ? selling.getMaxStackSize() / selling.getCount() : 1;
+
+        while (countMultiplier * selling.getCount() > selling.getMaxStackSize()) // in case there's improper flooring
+            countMultiplier--;
+
         if (isCreativeVendor()) {
             ReasonHolder reasonHolder = new ReasonHolder();
-            if (price.deduct(player, hand, false, reasonHolder)) {
+            int actualCountMultiplier = price.deduct(player, hand, false, reasonHolder, countMultiplier);
+            if (actualCountMultiplier > 0) {
                 ItemStack output = selling.copy();
+                output.setCount(output.getCount() * actualCountMultiplier);
                 ItemUtil.givePlayerItem(player, output);
                 giveSellingAdvancements(player);
 
@@ -679,24 +713,38 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
         } else {
-            for (ItemStack stack : items) {
-                if (matchesSellingItem(stack) && stack.getCount() >= selling.getCount()) {
-                    ReasonHolder reasonHolder = new ReasonHolder();
-                    if (price.deduct(player, hand, true, reasonHolder)) {
-                        ItemStack output = stack.split(selling.getCount());
-                        ItemUtil.givePlayerItem(player, output);
-                        giveSellingAdvancements(player);
-
-                        level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
-                        notifyUpdate();
-                    } else {
-                        // insufficient funds
-                        player.displayClientMessage(reasonHolder.getMessageOrDefault()
-                            .withStyle(ChatFormatting.DARK_RED), true);
-                        level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
-                    }
-                    return;
+            int highestIdx = -1;
+            int highestCount = 0;
+            for (int i = 0; i < items.size(); i++) {
+                ItemStack stack = items.get(i);
+                if (matchesFilterItem(stack) && stack.getCount() > highestCount) {
+                    highestIdx = i;
+                    highestCount = stack.getCount();
                 }
+            }
+
+            while (highestCount < selling.getCount() * countMultiplier)
+                countMultiplier--;
+
+            if (countMultiplier > 0 && highestIdx >= 0) {
+                ItemStack stack = items.get(highestIdx);
+
+                ReasonHolder reasonHolder = new ReasonHolder();
+                int actualCountMultiplier = price.deduct(player, hand, true, reasonHolder, countMultiplier);
+                if (actualCountMultiplier > 0) {
+                    ItemStack output = stack.split(selling.getCount() * actualCountMultiplier);
+                    ItemUtil.givePlayerItem(player, output);
+                    giveSellingAdvancements(player);
+
+                    level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
+                    notifyUpdate();
+                } else {
+                    // insufficient funds
+                    player.displayClientMessage(reasonHolder.getMessageOrDefault()
+                        .withStyle(ChatFormatting.DARK_RED), true);
+                    level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
+                }
+                return;
             }
 
             // out of stock
@@ -714,7 +762,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     private void giveSellingAdvancements(Player player) {
-        ItemStack selling = getSellingItem();
+        ItemStack selling = getFilterItem();
 
         if (selling.getItem() instanceof CoinItem coin) {
             NumismaticsAdvancements.MONEY_LAUNDERING.awardTo(player);
@@ -730,9 +778,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
     }
 
-    private void tryBuyFrom(Player player, InteractionHand hand) {
+    private void tryBuyFrom(Player player, InteractionHand hand, boolean bulk) {
         if (level == null) return;
-        ItemStack buying = getSellingItem();
+        ItemStack buying = getFilterItem();
         if (buying.isEmpty())
             return;
 
@@ -746,7 +794,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         // check if the held item matches our filter
-        if (!matchesSellingItem(handStack)) {
+        if (!matchesFilterItem(handStack)) {
             player.displayClientMessage(Components.translatable("gui.numismatics.vendor.incorrect_item")
                 .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
@@ -760,8 +808,17 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             return;
         }
 
+        int countMultiplier = bulk ? buying.getMaxStackSize() / buying.getCount() : 1;
+
+        while (countMultiplier * buying.getCount() > buying.getMaxStackSize()) // in case there's improper flooring
+            countMultiplier--;
+
+        while (countMultiplier * buying.getCount() > handStack.getCount())
+            countMultiplier--;
+
         // check if the vendor has space
-        if (!hasSpace()) {
+        countMultiplier = getSpace(countMultiplier);
+        if (countMultiplier <= 0) {
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
                 player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full.named", ownerName)
@@ -776,36 +833,21 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         // check if the vendor has enough money
-        if (isCreativeVendor() || price.canPayOut()) {
-            handStack.shrink(buying.getCount());
+        if (isCreativeVendor() || (countMultiplier = price.deductFromSelf(countMultiplier, getDeductable(), false, ReasonHolder.IGNORED)) > 0) {
+            handStack.shrink(buying.getCount() * countMultiplier);
             player.setItemInHand(hand, handStack);
 
-            addBoughtItem(buying.copy());
+            ItemStack bought = buying.copy();
+            bought.setCount(buying.getCount() * countMultiplier);
+            addBoughtItem(bought);
 
-            if (!isCreativeVendor())
-                price.deductFromSelf(false);
-
-            price.pay(player);
+            for (int i = 0; i < countMultiplier; i++)
+                price.pay(player);
 
             level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
             notifyUpdate();
 
             return;
-        } else {
-            IDeductable deductable = getDeductable();
-            if (deductable != null && deductable.deduct(price.getTotalPrice(), ReasonHolder.IGNORED)) {
-                handStack.shrink(buying.getCount());
-                player.setItemInHand(hand, handStack);
-
-                addBoughtItem(buying.copy());
-
-                price.pay(player);
-
-                level.playSound(null, getBlockPos(), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
-                notifyUpdate();
-
-                return;
-            }
         }
 
         // insufficient funds (return early on success)
@@ -821,18 +863,18 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     private void addBoughtItem(ItemStack stack) {
-        if (!matchesSellingItem(stack)) return;
+        if (!matchesFilterItem(stack)) return;
         if (isCreativeVendor()) return;
 
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
-            if (item.isEmpty() || matchesSellingItem(item)) {
+            if (item.isEmpty() || matchesFilterItem(item)) {
                 if (item.getCount() + stack.getCount() <= item.getMaxStackSize()) {
-                    items.set(i, getSellingItem().copyWithCount(item.getCount() + stack.getCount()));
+                    items.set(i, getFilterItem().copyWithCount(item.getCount() + stack.getCount()));
                     return;
                 } else {
                     int diff = item.getMaxStackSize() - item.getCount();
-                    items.set(i, getSellingItem().copyWithCount(item.getMaxStackSize()));
+                    items.set(i, getFilterItem().copyWithCount(item.getMaxStackSize()));
                     stack.shrink(diff);
                 }
             }
@@ -865,6 +907,34 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         this.mode = mode;
         if (level != null && !level.isClientSide)
             setChanged();
+    }
+
+    public boolean isAutomatedExtractionEnabled() {
+        return enableAutomatedExtraction;
+    }
+
+    public void setAutomatedExtractionEnabled(boolean enableAutomatedExtraction) {
+        this.enableAutomatedExtraction = enableAutomatedExtraction;
+    }
+
+    public void toggleAutomatedExtraction() {
+        setAutomatedExtractionEnabled(!isAutomatedExtractionEnabled());
+    }
+
+    /**
+     * @return whether the filter slot contains actual (as opposed to ghost) items, for legacy compat
+     */
+    public boolean isFilterSlotLegacy() {
+        if (!isFilterSlotLegacy)
+            return false;
+
+        if (filterContainer.isEmpty()) {
+            isFilterSlotLegacy = false;
+            notifyUpdate();
+            return false;
+        }
+
+        return true;
     }
 
     public enum Mode {

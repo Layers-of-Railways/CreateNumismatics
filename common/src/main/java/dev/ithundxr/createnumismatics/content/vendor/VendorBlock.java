@@ -143,24 +143,24 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                                           @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
 
-        if (player.isCrouching()) {
-            if (level.isClientSide)
-                return InteractionResult.SUCCESS;
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
+
+        boolean crouching = player.isCrouching();
+        if (crouching) {
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
-            }
-            return InteractionResult.SUCCESS;
-        }
 
-        if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
+            }
+        }
 
         /*SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
         if (priceBehaviour != null && priceBehaviour.deduct(player, hand)) {
             activate(state, level, pos);
         }*/
-        withBlockEntityDo(level, pos, be -> be.tryTransaction(player, hand));
+        withBlockEntityDo(level, pos, be -> be.tryTransaction(player, hand, crouching));
         return InteractionResult.CONSUME;
     }
 

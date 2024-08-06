@@ -22,6 +22,9 @@
     ],
     "fabric-datagen": [
       "dev.ithundxr.createnumismatics.fabric.NumismaticsDataFabric"
+    ],
+    "emi": [
+      "dev.ithundxr.createnumismatics.compat.emi.fabric.NumismaticsEmiPlugin"
     ]
   },
   "mixins": [

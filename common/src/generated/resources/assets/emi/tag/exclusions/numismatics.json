@@ -1,0 +1,31 @@
+{
+  "block": [
+    "numismatics:internal/relocation_not_supported"
+  ],
+  "item": [
+    "numismatics:internal/string",
+    "numismatics:internal/nuggets/iron_nuggets",
+    "numismatics:internal/nuggets/zinc_nuggets",
+    "numismatics:internal/nuggets/brass_nuggets",
+    "numismatics:internal/plates/iron_plates",
+    "numismatics:internal/plates/gold_plates",
+    "numismatics:internal/ingots/copper_ingots",
+    "numismatics:internal/ingots/iron_ingots",
+    "numismatics:internal/dyes/white_dyes",
+    "numismatics:internal/dyes/orange_dyes",
+    "numismatics:internal/dyes/magenta_dyes",
+    "numismatics:internal/dyes/light_blue_dyes",
+    "numismatics:internal/dyes/yellow_dyes",
+    "numismatics:internal/dyes/lime_dyes",
+    "numismatics:internal/dyes/pink_dyes",
+    "numismatics:internal/dyes/gray_dyes",
+    "numismatics:internal/dyes/light_gray_dyes",
+    "numismatics:internal/dyes/cyan_dyes",
+    "numismatics:internal/dyes/purple_dyes",
+    "numismatics:internal/dyes/blue_dyes",
+    "numismatics:internal/dyes/brown_dyes",
+    "numismatics:internal/dyes/green_dyes",
+    "numismatics:internal/dyes/red_dyes",
+    "numismatics:internal/dyes/black_dyes"
+  ]
+}

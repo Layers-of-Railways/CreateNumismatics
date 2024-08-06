@@ -39,6 +39,7 @@
   "gui.numismatics.vendor.mode.buy": "Buy",
   "gui.numismatics.vendor.mode.sell.action": "Use to Sell",
   "gui.numismatics.vendor.mode.buy.action": "Use to Buy",
+  "gui.numismatics.vendor.toggle_automated_extraction": "Toggle Automated Extraction",
   "gui.numismatics.vendor.incorrect_item": "Incorrect item",
   "gui.numismatics.vendor.too_few_items": "Too few items",
   "gui.numismatics.vendor.full": "Vendor is full",

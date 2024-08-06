@@ -23,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class VendorConfigurationPacket extends BlockEntityConfigurationPacket<VendorBlockEntity> {
     private VendorBlockEntity.Mode mode;
+    private boolean enableAutomatedExtraction;
 
     public VendorConfigurationPacket(FriendlyByteBuf buf) {
         super(buf);
@@ -31,20 +32,24 @@ public class VendorConfigurationPacket extends BlockEntityConfigurationPacket<Ve
     public VendorConfigurationPacket(VendorBlockEntity be) {
         super(be.getBlockPos());
         mode = be.getMode();
+        enableAutomatedExtraction = be.isAutomatedExtractionEnabled();
     }
 
     @Override
     protected void writeSettings(FriendlyByteBuf buffer) {
         buffer.writeEnum(mode);
+        buffer.writeBoolean(enableAutomatedExtraction);
     }
 
     @Override
     protected void readSettings(FriendlyByteBuf buf) {
         mode = buf.readEnum(VendorBlockEntity.Mode.class);
+        enableAutomatedExtraction = buf.readBoolean();
     }
 
     @Override
     protected void applySettings(VendorBlockEntity vendorBlockEntity) {
         vendorBlockEntity.setMode(mode);
+        vendorBlockEntity.setAutomatedExtractionEnabled(enableAutomatedExtraction);
     }
 }

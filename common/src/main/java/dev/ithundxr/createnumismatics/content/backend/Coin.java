@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -42,6 +43,7 @@ import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
 8 cogs to a crown
 8 crowns to a sun
  */
+
 public enum Coin implements INamedIconOptions {
     SPUR(1, Rarity.COMMON, I_COIN_SPUR, "\uF011"),
     BEVEL(8, Rarity.COMMON, I_COIN_BEVEL, "\uF012"), // 8 spurs
@@ -142,10 +144,7 @@ public enum Coin implements INamedIconOptions {
     }
 
     public Coin getDescription() {
-        return switch (this) {
-            case SPUR, BEVEL, SPROCKET -> SPUR;
-            case COG, CROWN, SUN -> COG;
-        };
+        return this.value < NumismaticsConfig.common().referenceCoin.get().value ? SPUR : NumismaticsConfig.common().referenceCoin.get();
     }
 
     public ItemStack asStack() {
