@@ -24,6 +24,7 @@
   "gui.numismatics.salepoint.fluid_filter_empty.0": "Fluid Filter",
   "gui.numismatics.salepoint.fluid_filter_empty.1": "Click with a fluid-holding item such as a bucket or a bottle",
   "gui.numismatics.salepoint.fluid_empty": "Empty",
+  "gui.numismatics.salepoint.energy": "Energy",
 
   "gui.numismatics.salepoint.go": "Start transaction",
   "gui.numismatics.salepoint.cancel": "Cancel transaction",

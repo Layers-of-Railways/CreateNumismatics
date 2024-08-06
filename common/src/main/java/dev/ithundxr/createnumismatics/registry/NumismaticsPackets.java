@@ -43,6 +43,7 @@ public class NumismaticsPackets {
         .c2s(GhostItemSubmitPacket.class, GhostItemSubmitPacket::new)
         .c2s(SalepointPurchasePacket.class, SalepointPurchasePacket::new)
         .c2s(SalepointFluidFilterPacket.class, SalepointFluidFilterPacket::new)
+        .c2s(SalepointEnergyFilterPacket.class, SalepointEnergyFilterPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)

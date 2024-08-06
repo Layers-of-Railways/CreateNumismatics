@@ -434,6 +434,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         this.price.setPrice(coin, price);
     }
 
+    public void disableClientPriceRead() {
+        price.disableClientRead();
+    }
+
     public ItemStack getFilterItem() {
         return filterContainer.getItem(0);
     }
@@ -608,7 +612,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public void dropContents(Level level, BlockPos pos) {
         Containers.dropContents(level, pos, this);
         Containers.dropContents(level, pos, cardContainer);
-        Containers.dropContents(level, pos, filterContainer);
+        if (isFilterSlotLegacy())
+            Containers.dropContents(level, pos, filterContainer);
         inventory.dropContents(level, pos);
     }
 

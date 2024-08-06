@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.utility.Color;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import net.minecraft.client.gui.GuiGraphics;
@@ -40,8 +41,26 @@ public class UIRenderHelper extends com.simibubi.create.foundation.gui.UIRenderH
 	public static void drawCropped(GuiGraphics graphics, int left, int top, int w, int h, int z, NumismaticsGuiTextures tex) {
 		tex.bind();
 		drawTexturedQuad(graphics.pose().last()
-			.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + w) / 256f,
+				.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + w) / 256f,
 			tex.startY / 256f, (tex.startY + h) / 256f);
+	}
+
+	public static void drawCropped(GuiGraphics graphics, int left, int top, int minU, int minV, int maxU, int maxV, int z, NumismaticsGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last().pose(), Color.WHITE,
+			left + minU, left + (maxU),
+			top + minV, top + (maxV), z,
+			(tex.startX + minU) / 256f, (tex.startX + maxU) / 256f,
+			(tex.startY + minV) / 256f, (tex.startY + maxV) / 256f);
+	}
+
+	public static void drawCropped(GuiGraphics graphics, int left, int top, int minU, int minV, int maxU, int maxV, int z, AllGuiTextures tex) {
+		tex.bind();
+		drawTexturedQuad(graphics.pose().last().pose(), Color.WHITE,
+			left, left + maxU - minU,
+			top, top + maxV - minV, z,
+			(tex.startX + minU) / 256f, (tex.startX + maxU) / 256f,
+			(tex.startY + minV) / 256f, (tex.startY + maxV) / 256f);
 	}
 
 	private static void drawTexturedQuad(Matrix4f m, Color c, int left, int right, int top, int bot, int z, float u1, float u2, float v1, float v2) {

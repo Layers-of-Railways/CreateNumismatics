@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 
 import static dev.ithundxr.createnumismatics.Numismatics.crashDev;
 
-public class BankAccount implements MenuProvider, IDeductable {
+public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChecker {
     public enum Type {
         PLAYER(false, false),
         BLAZE_BANKER(true, true);
@@ -418,6 +418,14 @@ public class BankAccount implements MenuProvider, IDeductable {
     public boolean isAuthorized(@Nullable UUID uuid) {
         if (uuid == null) return false;
         return uuid.equals(this.id) || (this.type.useTrustList && this.trustList != null && this.trustList.contains(uuid));
+    }
+
+    @Override
+    public boolean isAuthorized(Authorization authorization) {
+        if (!authorization.isHuman())
+            return false;
+
+        return isAuthorized(authorization.getPersonalID());
     }
 
     public void updateTrustList(Consumer<List<UUID>> updater) {

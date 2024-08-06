@@ -22,15 +22,19 @@ import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidConfigWidget;
-import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidDisplayWidget;
-import dev.ithundxr.createnumismatics.multiloader.fluid.FluidUnits;
-import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableAbstractBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingEnergyBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
+import dev.ithundxr.createnumismatics.content.salepoint.types.EnergyBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.types.SimpleEnergyBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyConfigWidget;
+import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyDisplayWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -42,15 +46,21 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class FluidSalepointState implements ISalepointState<MultiloaderFluidStack> {
+public class EnergySalepointState implements ISalepointState<Energy> {
 
     private UUID uuid;
-    private @NotNull MultiloaderFluidStack filter = MultiloaderFluidStack.EMPTY;
+    private @NotNull Energy filter = new Energy();
+    private final EnergyBuffer buffer = new SimpleEnergyBuffer(getFilterCapacity());
+    private @NotNull InvalidatableWrappingEnergyBuffer bufferWrapper = createBufferWrapper(buffer);
     private @Nullable Runnable changedCallback;
 
     @ExpectPlatform
-    public static FluidSalepointState create() {
+    private static InvalidatableWrappingEnergyBuffer createBufferWrapper(EnergyBuffer buffer) {
         throw new AssertionError();
+    }
+
+    EnergySalepointState() {
+        buffer.setOnChanged(this::setChanged);
     }
 
     @Override
@@ -59,88 +69,107 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public final SalepointTypes getType() {
-        return SalepointTypes.FLUID;
+    public SalepointTypes getType() {
+        return SalepointTypes.ENERGY;
     }
 
     @Override
-    public final UUID getId() {
+    public UUID getId() {
         return uuid;
     }
 
     @Override
-    public final boolean canChangeFilterTo(MultiloaderFluidStack filter) {
-        return (this.filter.isFluidEqual(filter) && !filter.isEmpty()) || canChangeFilterToInternal(filter);
+    public InvalidatableAbstractBuffer<Energy> getBuffer() {
+        return bufferWrapper;
     }
 
-    protected abstract boolean canChangeFilterToInternal(MultiloaderFluidStack filter);
+    @Override
+    public void onDestroy(Level level, BlockPos pos) {
+        onUnload();
+        buffer.setAmount(0);
+    }
 
     @Override
-    public final boolean setFilter(MultiloaderFluidStack filter, Level salepointLevel, BlockPos salepointPos, @Nullable Player player) {
+    public void onUnload() {
+        bufferWrapper.invalidate();
+    }
+
+    @Override
+    public void keepAlive() {
+        if (!bufferWrapper.isValid()) {
+            bufferWrapper = createBufferWrapper(buffer);
+        }
+    }
+
+    @Override
+    public boolean canChangeFilterTo(Energy filter) {
+        return filter.getAmount() <= getFilterCapacity();
+    }
+
+    @Override
+    public boolean setFilter(Energy filter, Level salepointLevel, BlockPos salepointPos, @Nullable Player player) {
         if (!canChangeFilterTo(filter))
             return false;
 
-        setFilterInternal(filter, salepointLevel, salepointPos, player);
         this.filter = filter.copy();
-
         setChanged();
 
         return true;
     }
 
-    protected abstract void setFilterInternal(MultiloaderFluidStack filter, Level salepointLevel, BlockPos salepointPos, @Nullable Player player);
-
     @Override
-    public final MultiloaderFluidStack getFilter() {
+    public Energy getFilter() {
         return filter.copy();
     }
 
     @Override
-    public boolean filterMatches(MultiloaderFluidStack object) {
-        return filter.isFluidStackIdentical(object);
+    public boolean filterMatches(Energy object) {
+        return object.getAmount() == filter.getAmount();
     }
 
     @Override
-    public final CompoundTag save() {
+    public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", getType().getId());
         tag.putUUID("UUID", uuid);
 
-        saveInternal(tag);
+        tag.put("Buffer", buffer.write());
 
-        if (!filter.isEmpty())
-            tag.put("Filter", filter.writeToNBT(new CompoundTag()));
+        tag.put("Filter", filter.write());
 
         return tag;
     }
 
-    protected abstract void saveInternal(CompoundTag tag);
-
     @Override
-    public final void load(CompoundTag tag) {
+    public void load(CompoundTag tag) {
         uuid = tag.getUUID("UUID");
 
-        loadInternal(tag);
+        buffer.setAmountNoUpdate(0);
+        if (tag.contains("Buffer", Tag.TAG_COMPOUND))
+            buffer.read(tag.getCompound("Buffer"));
 
-        if (tag.contains("Filter", CompoundTag.TAG_COMPOUND))
-            filter = MultiloaderFluidStack.loadFluidStackFromNBT(tag.getCompound("Filter"));
+        if (tag.contains("Filter", Tag.TAG_COMPOUND))
+            filter.read(tag.getCompound("Filter"));
         else
-            filter = MultiloaderFluidStack.EMPTY;
+            filter.setAmount(0);
     }
 
-    protected abstract void loadInternal(CompoundTag tag);
-
     @Override
-    public final boolean isValidForPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
-        SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(level, targetedPos);
+    public boolean isValidForPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
+        SalepointTargetBehaviour<Energy> behaviour = getBehaviour(level, targetedPos);
         return isValidForPurchase(behaviour, reasonHolder);
     }
 
-    protected abstract boolean hasBufferFluidForPurchase();
+    private boolean hasBufferEnergyForPurchase() {
+        return buffer.getAmount() >= filter.getAmount();
+    }
 
-    protected abstract List<MultiloaderFluidStack> removeBufferFluidForPurchase();
+    private List<Energy> removeBufferEnergyForPurchase() {
+        buffer.setAmount(buffer.getAmount() - filter.getAmount());
+        return List.of(filter.copy());
+    }
 
-    private boolean isValidForPurchase(@Nullable SalepointTargetBehaviour<MultiloaderFluidStack> behaviour, ReasonHolder reasonHolder) {
+    private boolean isValidForPurchase(@Nullable SalepointTargetBehaviour<Energy> behaviour, ReasonHolder reasonHolder) {
         if (behaviour == null) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
             return false;
@@ -151,12 +180,12 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
             return false;
         }
 
-        if (filter.isEmpty()) {
+        if (filter.getAmount() == 0) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_filter"));
             return false;
         }
 
-        if (!hasBufferFluidForPurchase()) {
+        if (!hasBufferEnergyForPurchase()) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.vendor.out_of_stock"));
             return false;
         }
@@ -170,8 +199,8 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public final boolean doPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
-        SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(level, targetedPos);
+    public boolean doPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
+        SalepointTargetBehaviour<Energy> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
             return false;
@@ -180,7 +209,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
         if (!isValidForPurchase(behaviour, reasonHolder))
             return false;
 
-        if (!behaviour.doPurchase(filter.copy(), this::removeBufferFluidForPurchase)) {
+        if (!behaviour.doPurchase(filter.copy(), this::removeBufferEnergyForPurchase)) {
             reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_failed_purchase"));
             return false;
         }
@@ -189,8 +218,8 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public final void ensureUnderControl(Level level, BlockPos targetedPos) {
-        SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(level, targetedPos);
+    public void ensureUnderControl(Level level, BlockPos targetedPos) {
+        SalepointTargetBehaviour<Energy> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null)
             return;
 
@@ -198,8 +227,8 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public final void relinquishControl(Level level, BlockPos targetedPos) {
-        SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(level, targetedPos);
+    public void relinquishControl(Level level, BlockPos targetedPos) {
+        SalepointTargetBehaviour<Energy> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null)
             return;
 
@@ -219,15 +248,16 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     @Override
     @Environment(EnvType.CLIENT)
     public void createConfigWidgets(WidgetConsumer widgetConsumer) {
-        widgetConsumer.addRenderableWidget(new SalepointFluidConfigWidget(100, 54, this));
+        widgetConsumer.addRenderableWidget(new SalepointEnergyConfigWidget(100, 54, this));
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void createPurchaseWidgets(WidgetConsumer widgetConsumer) {
-        widgetConsumer.addRenderableWidget(new SalepointFluidDisplayWidget(68, 55, this));
+        widgetConsumer.addRenderableWidget(new SalepointEnergyDisplayWidget(68, 55, this));
     }
 
     public static long getFilterCapacity() {
-        return FluidUnits.bucket() * 4;
+        return 1000L * 1000L; // 1 Mfe
     }
 }

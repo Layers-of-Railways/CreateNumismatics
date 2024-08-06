@@ -160,8 +160,8 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
                 if (!hasSpaceFor(object))
                     return false;
 
+                List<ItemStack> extracted = purchaseProvider.extract();
                 try (Transaction transaction = Transaction.openOuter()) {
-                    List<ItemStack> extracted = purchaseProvider.extract();
                     for (ItemStack stack : extracted) {
                         if (railway$contraptionStorage.insert(ItemVariant.of(stack), stack.getCount(), transaction) != stack.getCount()) {
                             Numismatics.LOGGER.error("Failed to insert item into contraption storage, despite having space.");

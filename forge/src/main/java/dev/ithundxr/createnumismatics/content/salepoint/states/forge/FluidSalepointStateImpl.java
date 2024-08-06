@@ -44,7 +44,7 @@ import java.util.List;
 public class FluidSalepointStateImpl extends FluidSalepointState {
 
     private final @NotNull FluidTank buffer = new SmartFluidTank((int) (4 * getFilterCapacity()), $ -> this.setChanged())
-        .setValidator(fs -> this.filterMatches(new MultiloaderFluidStackImpl(fs)));
+        .setValidator(fs -> this.getFilter().isFluidEqual(new MultiloaderFluidStackImpl(fs)));
     private @NotNull InvalidatableAbstractBuffer<MultiloaderFluidStack> bufferWrapper = createBufferWrapper(buffer);
 
     private static InvalidatableAbstractBuffer<MultiloaderFluidStack> createBufferWrapper(FluidTank buffer) {

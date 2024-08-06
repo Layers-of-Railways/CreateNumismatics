@@ -21,38 +21,29 @@ package dev.ithundxr.createnumismatics.content.salepoint.widgets;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.utility.Components;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidget;
-import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
-import dev.ithundxr.createnumismatics.multiloader.fluid.FluidUnits;
-import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
+import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
+import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
-import dev.ithundxr.createnumismatics.registry.packets.SalepointFluidFilterPacket;
+import dev.ithundxr.createnumismatics.registry.packets.SalepointEnergyFilterPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget implements IItemApplicableWidget {
+public class SalepointEnergyConfigWidget extends SalepointEnergyDisplayWidget {
 
     private boolean soundPlayed;
 
-    public SalepointFluidConfigWidget(int x, int y, @NotNull FluidSalepointState state) {
+    public SalepointEnergyConfigWidget(int x, int y, @NotNull EnergySalepointState state) {
         super(x, y, state);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        MultiloaderFluidStack filter = state.getFilter();
-        if (filter.isEmpty())
-            return false;
+        Energy filter = state.getFilter();
 
         int offset = delta > 0 ? 1 : -1;
 
@@ -62,18 +53,18 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
         else if (AllKeys.ctrlDown())
             offset *= 10;
         else if (AllKeys.shiftDown())
-            offset *= 1000;
+            offset *= 250;
         else
             offset *= 100;
 
-        offset = (int) ((long) offset * FluidUnits.bucket() / 1000);
+        offset *= 1000;
 
         long oldAmount = filter.getAmount();
         long min = 0;
-        long max = FluidSalepointState.getFilterCapacity();
+        long max = EnergySalepointState.getFilterCapacity();
         long amount = Math.max(min, Math.min(oldAmount + offset, max));
         if (oldAmount != amount) {
-            NumismaticsPackets.PACKETS.send(new SalepointFluidFilterPacket(filter.copy().setAmount(amount)));
+            NumismaticsPackets.PACKETS.send(new SalepointEnergyFilterPacket(filter.copy().setAmount(amount)));
             if (!soundPlayed) {
                 Minecraft.getInstance()
                     .getSoundManager()
@@ -94,32 +85,12 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
     }
 
     @Override
-    public void onItemApplied(ItemStack stack) {
-        MultiloaderFluidStack fluidStack = getFluidFrom(stack);
-        if (fluidStack != null) {
-            NumismaticsPackets.PACKETS.send(new SalepointFluidFilterPacket(fluidStack));
-            this.playDownSound(Minecraft.getInstance().getSoundManager());
-        }
-    }
-
-    @ExpectPlatform
-    @Environment(EnvType.CLIENT)
-    protected static @Nullable MultiloaderFluidStack getFluidFrom(@NotNull ItemStack stack) {
-        throw new AssertionError();
-    }
-
-    @Override
     public List<Component> getToolTip() {
-        MultiloaderFluidStack filter = state.getFilter();
-        if (filter.isEmpty())
-            return List.of(
-                Components.translatable("gui.numismatics.salepoint.fluid_filter_empty.0"),
-                Components.translatable("gui.numismatics.salepoint.fluid_filter_empty.1")
-            );
+        Energy filter = state.getFilter();
 
         return List.of(
-            filter.getDisplayName(),
-            Components.literal(TextUtils.formatFluid(filter.getAmount())),
+            Components.translatable("gui.numismatics.salepoint.energy"),
+            Components.literal(TextUtils.formatEnergy(filter.getAmount())),
             Components.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
             Components.translatable("create.gui.scrollInput.shiftScrollsFaster")
         );

@@ -19,17 +19,18 @@
 package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.simibubi.create.AllSoundEvents;
+import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDeductable;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 
 public class Transaction<T> {
-    private final IDeductable deductable;
+    private final IAuthorizationCheckingDeductable deductable;
     private final int multiplier;
     private final T object;
     private final int totalPrice;
     private int progress;
 
-    public Transaction(IDeductable deductable, int multiplier, T object, int totalPrice) {
+    public Transaction(IAuthorizationCheckingDeductable deductable, int multiplier, T object, int totalPrice) {
         this.deductable = deductable;
         this.multiplier = multiplier;
         this.object = object;

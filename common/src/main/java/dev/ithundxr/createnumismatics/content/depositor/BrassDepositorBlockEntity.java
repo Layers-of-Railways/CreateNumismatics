@@ -92,6 +92,10 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         this.price.setPrice(coin, price);
     }
 
+    public void disableClientPriceRead() {
+        price.disableClientRead();
+    }
+
     public void addCoins(int totalPrice) {
         MergingCoinBag coinBag = new MergingCoinBag(totalPrice);
 

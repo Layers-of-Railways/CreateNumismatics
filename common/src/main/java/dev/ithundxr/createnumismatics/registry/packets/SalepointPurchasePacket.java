@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
+import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDeductable;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
@@ -50,7 +51,7 @@ public record SalepointPurchasePacket(int multiplier) implements C2SPacket {
                 return;
             }
 
-            IDeductable deductable = IDeductable.get(salepointPurchaseMenu.getCard(), sender, ReasonHolder.IGNORED);
+            IAuthorizationCheckingDeductable deductable = IDeductable.getAuthorizationChecking(salepointPurchaseMenu.getCard(), sender, ReasonHolder.IGNORED);
             if (deductable == null)
                 return;
 

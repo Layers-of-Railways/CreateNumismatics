@@ -55,21 +55,13 @@ public class SalepointFluidDisplayWidget extends AbstractSimiWidget implements I
         this.state = state;
     }
 
-    protected NumismaticsGuiTextures getBackground() {
-        return NumismaticsGuiTextures.SALEPOINT_PURCHASE_FLUID_BG;
-    }
-
-    protected NumismaticsGuiTextures getForeground() {
-        return NumismaticsGuiTextures.SALEPOINT_PURCHASE_FLUID_FG;
-    }
-
     @Override
     protected void doRender(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         int x = getX();
         int y = getY();
         PoseStack ms = graphics.pose();
 
-        getBackground().render(graphics, x, y);
+        NumismaticsGuiTextures.SALEPOINT_FLUID_BG.render(graphics, x, y);
 
         MultiloaderFluidStack filter = state.getFilter();
         if (!filter.isEmpty()) {
@@ -136,7 +128,7 @@ public class SalepointFluidDisplayWidget extends AbstractSimiWidget implements I
             ms.pushPose();
             ms.translate(0, 0, 20);
 
-            getForeground().render(graphics, x, y);
+            NumismaticsGuiTextures.SALEPOINT_FLUID_FG.render(graphics, x, y);
 
             ms.popPose();
         }

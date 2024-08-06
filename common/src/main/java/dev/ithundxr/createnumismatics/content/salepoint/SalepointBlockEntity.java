@@ -134,7 +134,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         return transaction;
     }
 
-    public boolean startTransaction(IDeductable deductable, int multiplier) {
+    public boolean startTransaction(IAuthorizationCheckingDeductable deductable, int multiplier) {
         if (salepointState == null)
             return false;
         if (transaction != null)
@@ -402,6 +402,10 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
     public void setPrice(Coin coin, int price) {
         this.price.setPrice(coin, price);
+    }
+
+    public void disableClientPriceRead() {
+        price.disableClientRead();
     }
 
     @Override

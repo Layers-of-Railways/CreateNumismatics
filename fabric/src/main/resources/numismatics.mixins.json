@@ -13,7 +13,10 @@
     "PortableFluidInterfaceBlockEntityMixin",
     "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "PortableItemInterfaceBlockEntityMixin",
-    "WrappedStorageAccessor"
+    "WrappedStorageAccessor",
+    "compat.PortableEnergyInterfaceBlockEntityMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
+    "compat.PortableEnergyInterfaceMovementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
+import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 public enum SalepointTypes {
     ITEM(ItemSalepointState::new, ItemStack.class),
     FLUID(FluidSalepointState::create, MultiloaderFluidStack.class),
+    /** This must only be provided on forge, or on fabric if the teamreborn:energy API is available (e.g. with Create Crafts and Additions installed) */
+    ENERGY(EnergySalepointState::new, Energy.class),
     ;
 
     @NotNull

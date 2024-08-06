@@ -32,6 +32,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
 
@@ -42,6 +43,7 @@ public class ConditionalMixinHandler {
     public static final Logger LOGGER = LoggerFactory.getLogger("Numismatics/MixinPlugin");
 
     public static boolean shouldApply(String className) {
+        var logger = LOGGER.atLevel(Utils.isDevEnv() ? Level.INFO : Level.DEBUG);
         try {
             List<AnnotationNode> annotationNodes = MixinService.getService().getBytecodeProvider().getClassNode(className).visibleAnnotations;
             if (annotationNodes == null) return true;
@@ -53,11 +55,11 @@ public class ConditionalMixinHandler {
                     boolean applyIfPresent = Annotations.getValue(node, "applyIfPresent", Boolean.TRUE);
                     boolean anyModsLoaded = anyModsLoaded(mods);
                     shouldApply = anyModsLoaded == applyIfPresent;
-                    LOGGER.debug("{} is{}being applied because the mod(s) {} are{}loaded", className, shouldApply ? " " : " not ", mods, anyModsLoaded ? " " : " not ");
+                    logger.log("{} is{}being applied because the mod(s) {} are{}loaded", className, shouldApply ? " " : " not ", mods, anyModsLoaded ? " " : " not ");
                 }
                 if (node.desc.equals(Type.getDescriptor(DevMixin.class))) {
                     shouldApply &= Utils.isDevEnv();
-                    LOGGER.debug("{} is {}being applied because we are {}in a development environment", className, shouldApply ? "" : "not ", Utils.isDevEnv() ? "" : "not ");
+                    logger.log("{} is {}being applied because we are {}in a development environment", className, shouldApply ? "" : "not ", Utils.isDevEnv() ? "" : "not ");
                 }
             }
             return shouldApply;

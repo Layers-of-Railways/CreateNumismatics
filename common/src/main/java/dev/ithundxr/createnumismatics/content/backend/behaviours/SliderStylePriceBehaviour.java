@@ -47,6 +47,8 @@ import java.util.function.Function;
 
 public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
+    private boolean clientReadEnabled = true;
+
     public static final BehaviourType<SliderStylePriceBehaviour> TYPE = new BehaviourType<>("slider-style price");
 
     protected final EnumMap<Coin, Integer> prices = new EnumMap<>(Coin.class);
@@ -100,6 +102,9 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
     @Override
     public void read(CompoundTag tag, boolean clientPacket) {
+        if (clientPacket && !clientReadEnabled)
+            return;
+
         super.read(tag, clientPacket);
         this.prices.clear();
         if (tag.contains("Prices", Tag.TAG_COMPOUND)) {
@@ -113,6 +118,14 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             }
         }
         calculateTotalPrice();
+    }
+
+    public void enableClientRead() {
+        this.clientReadEnabled = true;
+    }
+
+    public void disableClientRead() {
+        this.clientReadEnabled = false;
     }
 
     public int deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource, ReasonHolder reasonHolder, int maximumCount) {
