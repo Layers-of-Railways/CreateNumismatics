@@ -36,7 +36,7 @@ public class CServer extends ConfigBase {
 
     public final ConfigGroup computerCraft = group(0, "computerCraft", Comments.computerCraft);
 
-    public final ConfigBool getSubAccountsCommand = b(false, "get_sub_accounts_command");
+    public final ConfigBool getSubAccountsCommand = b(false, "get_sub_accounts_command", Comments.getSubAccountsCommand);
     
     
     //public final ConfigGroup misc = group(0, "misc", Comments.misc);
@@ -54,6 +54,8 @@ public class CServer extends ConfigBase {
         static final String starterCurrency = "How much of this coin type should players receive in their bank account on first join";;
 
         static final String computerCraft = "Settings relating to ComputerCraft compatibility";
+
+        static final String getSubAccountsCommand = "Enables the getSubAccounts function. Disabled by default due to security concerns.";
 
         static final String misc = "Miscellaneous settings";
     }
