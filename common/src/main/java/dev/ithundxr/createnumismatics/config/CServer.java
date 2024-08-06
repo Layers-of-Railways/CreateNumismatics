@@ -33,6 +33,10 @@ public class CServer extends ConfigBase {
     public final ConfigInt starterCogs = i(0, 0, "starter_cogs");
     public final ConfigInt starterCrowns = i(0, 0, "starter_crowns");
     public final ConfigInt starterSuns = i(0, 0, "starter_suns");
+
+    public final ConfigGroup computerCraft = group(0, "computerCraft", Comments.computerCraft);
+
+    public final ConfigBool getSubAccountsCommand = b(false, "get_sub_accounts_command");
     
     
     //public final ConfigGroup misc = group(0, "misc", Comments.misc);
@@ -46,9 +50,11 @@ public class CServer extends ConfigBase {
 
     private static class Comments {
         static final String coins = "Coin settings";
-        
+
         static final String starterCurrency = "How much of this coin type should players receive in their bank account on first join";;
-        
+
+        static final String computerCraft = "Settings relating to ComputerCraft compatibility";
+
         static final String misc = "Miscellaneous settings";
     }
 }
