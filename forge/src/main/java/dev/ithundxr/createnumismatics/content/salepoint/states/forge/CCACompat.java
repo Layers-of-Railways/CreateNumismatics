@@ -18,14 +18,12 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states.forge;
 
-import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingEnergyBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingEnergyBufferStorage;
 import dev.ithundxr.createnumismatics.content.salepoint.types.EnergyBuffer;
 
-public class EnergySalepointStateImpl {
+public class CCACompat {
     public static InvalidatableWrappingEnergyBuffer createBufferWrapper(EnergyBuffer buffer) {
-        return Mods.CREATEADDITION.runIfInstalled(
-            () -> () -> CCACompat.createBufferWrapper(buffer)
-        ).orElseGet(() -> new InvalidatableWrappingEnergyBuffer(buffer));
+        return new InvalidatableWrappingEnergyBufferStorage(buffer);
     }
 }
