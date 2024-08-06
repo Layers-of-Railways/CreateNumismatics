@@ -15,6 +15,9 @@
     "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "PortableItemInterfaceBlockEntityMixin",
     "ServerGamePacketListenerImplMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerMixin",
     "self.BrassDepositorBlockEntityCapabilities",
     "self.ComputerBehaviourCapabilities",
     "self.VendorBlockEntityCapabilities"

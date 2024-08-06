@@ -21,7 +21,7 @@ package dev.ithundxr.createnumismatics.content.salepoint.types;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
-public class SimpleEnergyBuffer implements EnergyBuffer{
+public class SimpleEnergyBuffer implements EnergyBuffer {
 
     private final long capacity;
     private long amount;

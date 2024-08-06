@@ -16,87 +16,97 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.fabric.mixin.compat;
+package dev.ithundxr.createnumismatics.forge.mixin.compat;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyInterfaceBlockEntity;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyInterfaceBlockEntity.InterfaceEnergyHandler;
+import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyManager;
+import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.actors.psi.PortableStorageInterfaceBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
 import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.EnergySalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.containers.fabric.InvalidatableWrappingEnergyBufferStorage;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingEnergyBufferStorage;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
-import team.reborn.energy.api.EnergyStorage;
-import team.reborn.energy.api.base.SimpleEnergyStorage;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Objects;
 
 @ConditionalMixin(mods = Mods.CREATEADDITION)
 @Mixin(PortableEnergyInterfaceBlockEntity.class)
-@SuppressWarnings("UnstableApiUsage")
 public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
-    @Shadow
-    protected InterfaceEnergyHandler capability;
+
+    @Shadow protected LazyOptional<IEnergyStorage> capability;
 
     @Unique
     private EnergySalepointTargetBehaviour railway$salepointBehaviour;
 
     @Unique
     @Nullable
-    private EnergyStorage railway$contraptionStorage;
+    private IEnergyStorage railway$contraptionStorage;
 
     private PortableEnergyInterfaceBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    @WrapOperation(
+    @Inject(
         method = "startTransferringTo",
         at = @At(
             value = "INVOKE",
-            target = "Lcom/mrh0/createaddition/blocks/portable_energy_interface/PortableEnergyInterfaceBlockEntity$InterfaceEnergyHandler;setWrapped(Lteam/reborn/energy/api/EnergyStorage;)V"
+            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
         ),
         remap = false
     )
-    private void keepControl(InterfaceEnergyHandler instance, EnergyStorage wrapped, Operation<Void> original) {
-        EnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) instance).getWrapped();
-        if (!(existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage)) {
-            original.call(instance, wrapped);
-        }
-        railway$contraptionStorage = wrapped;
+    private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IEnergyStorage> oldcap) {
+        railway$contraptionStorage = PortableEnergyManager.get(contraption);
+
+        oldcap.ifPresent(energyHandler -> {
+            IEnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) energyHandler).getWrapped();
+            if (existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage) {
+                capability.ifPresent(newEnergyHandler -> {
+                    ((InterfaceEnergyHandlerAccessor) newEnergyHandler).setWrapped(existingWrapped);
+                });
+            }
+        });
     }
 
-    @WrapOperation(
+    @Inject(
         method = "stopTransferring",
         at = @At(
             value = "INVOKE",
-            target = "Lcom/mrh0/createaddition/blocks/portable_energy_interface/PortableEnergyInterfaceBlockEntity$InterfaceEnergyHandler;setWrapped(Lteam/reborn/energy/api/EnergyStorage;)V"
+            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
         ),
         remap = false
     )
-    private void keepControl2(InterfaceEnergyHandler instance, EnergyStorage wrapped, Operation<Void> original) {
-        EnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) instance).getWrapped();
-        if (!(existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage)) {
-            original.call(instance, wrapped);
-        }
+    private void keepControl2(CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IEnergyStorage> oldcap) {
         railway$contraptionStorage = null;
+
+        oldcap.ifPresent(energyHandler -> {
+            IEnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) energyHandler).getWrapped();
+            if (existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage) {
+                capability.ifPresent(newEnergyHandler -> {
+                    ((InterfaceEnergyHandlerAccessor) newEnergyHandler).setWrapped(existingWrapped);
+                });
+            }
+        });
     }
 
     @Override
@@ -108,9 +118,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
         railway$salepointBehaviour = new EnergySalepointTargetBehaviour(this) {
-            private boolean underControl = false;
-            @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
-            private boolean debug = false;
+            private boolean underControl;
 
             @Override
             protected boolean isUnderControlInternal(@NotNull ISalepointState<Energy> state) {
@@ -119,7 +127,9 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             protected void ensureUnderControlInternal(@NotNull ISalepointState<Energy> state) {
-                ((InterfaceEnergyHandlerAccessor) capability).setWrapped((InvalidatableWrappingEnergyBufferStorage) state.getBuffer());
+                capability.ifPresent(energyHandler -> {
+                    ((InterfaceEnergyHandlerAccessor) energyHandler).setWrapped((InvalidatableWrappingEnergyBufferStorage) state.getBuffer());
+                });
 
                 if (!underControl) {
                     underControl = true;
@@ -129,10 +139,12 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<Energy> state) {
-                ((InterfaceEnergyHandlerAccessor) capability).setWrapped(Objects.requireNonNullElseGet(
-                    railway$contraptionStorage,
-                    () -> new SimpleEnergyStorage(0, 0, 0)
-                ));
+                capability.ifPresent(energyHandler -> {
+                    ((InterfaceEnergyHandlerAccessor) energyHandler).setWrapped(Objects.requireNonNullElseGet(
+                        railway$contraptionStorage,
+                        () -> new EnergyStorage(0)
+                    ));
+                });
 
                 if (underControl) {
                     underControl = false;
@@ -142,37 +154,17 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             public boolean hasSpaceFor(@NotNull Energy object) {
-                if (railway$contraptionStorage == null) {
-                    if (debug) {
-                        Numismatics.LOGGER.error("Contraption storage is null, cannot check for space.");
-                    }
+                if (railway$contraptionStorage == null)
                     return false;
-                }
 
-                if (!railway$contraptionStorage.supportsInsertion()) {
-                    if (debug) {
-                        Numismatics.LOGGER.error("Contraption storage does not support insertion, cannot check for space.");
-                    }
+                if (!railway$contraptionStorage.canReceive())
                     return false;
-                }
 
-                try (Transaction transaction = Transaction.openOuter()) {
-                    long totalInserted = 0;
-                    while (totalInserted < object.getAmount()) {
-                        long inserted = railway$contraptionStorage.insert(object.getAmount() - totalInserted, transaction);
-                        if (inserted == 0)
-                            break;
-                        totalInserted += inserted;
-                    }
-                    if (totalInserted != object.getAmount()) {
-                        if (debug) {
-                            Numismatics.LOGGER.error("Tried to insert {} energy, managed to insert {} energy.", object.getAmount(), totalInserted);
-                        }
-                        return false;
-                    }
-                }
+                if (railway$contraptionStorage.receiveEnergy((int) object.getAmount(), true) == 0)
+                    return false;
 
-                return true;
+                int remainingCapacity = railway$contraptionStorage.getMaxEnergyStored() - railway$contraptionStorage.getEnergyStored();
+                return remainingCapacity >= object.getAmount();
             }
 
             @Override
@@ -184,21 +176,18 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
                     return false;
 
                 List<Energy> extracted = purchaseProvider.extract();
-                try (Transaction transaction = Transaction.openOuter()) {
-                    for (Energy energy : extracted) {
-                        long totalInserted = 0;
-                        while (totalInserted < energy.getAmount()) {
-                            long inserted = railway$contraptionStorage.insert(energy.getAmount() - totalInserted, transaction);
-                            if (inserted == 0)
-                                break;
-                            totalInserted += inserted;
-                        }
-                        if (totalInserted != energy.getAmount()) {
-                            Numismatics.LOGGER.error("Failed to insert energy into contraption storage, despite having space.");
-                            return false;
-                        }
+                for (Energy energy : extracted) {
+                    long totalInserted = 0;
+                    while (totalInserted < energy.getAmount()) {
+                        long inserted = railway$contraptionStorage.receiveEnergy((int) (energy.getAmount() - totalInserted), false);
+                        if (inserted == 0)
+                            break;
+                        totalInserted += inserted;
                     }
-                    transaction.commit();
+                    if (totalInserted != energy.getAmount()) {
+                        Numismatics.LOGGER.error("Failed to insert energy into contraption storage, despite having space.");
+                        return false;
+                    }
                 }
 
                 return true;
@@ -226,9 +215,19 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
     @Mixin(InterfaceEnergyHandler.class)
     private interface InterfaceEnergyHandlerAccessor {
         @Accessor("wrapped")
-        EnergyStorage getWrapped();
+        IEnergyStorage getWrapped();
 
         @Accessor("wrapped")
-        void setWrapped(EnergyStorage wrapped);
+        void setWrapped(IEnergyStorage wrapped);
+    }
+
+    @ConditionalMixin(mods = Mods.CREATEADDITION)
+    @Mixin(InterfaceEnergyHandler.class)
+    private static class InterfaceEnergyHandlerMixin {
+        @Shadow
+        @Final
+        @Mutable
+        @SuppressWarnings("unused") // Used to make mutable for the accessor above
+        private IEnergyStorage wrapped;
     }
 }
