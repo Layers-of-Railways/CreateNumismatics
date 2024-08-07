@@ -132,6 +132,11 @@ public class SalepointPeripheral extends SyncedPeripheral<SalepointBlockEntity> 
             throw new LuaException("Failed to start transaction");
     }
 
+    @LuaFunction(mainThread = true)
+    public final void cancelTransaction() {
+        blockEntity.cancelTransaction();
+    }
+
     @Override
     public String getType() {
         return "Numismatics_Salepoint";
