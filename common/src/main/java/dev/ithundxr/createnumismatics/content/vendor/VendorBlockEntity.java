@@ -227,6 +227,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean isTrustedInternal(Player player) {
+        if (isCreativeVendor() && player != null && !player.isCreative())
+            return false;
+
         if (Utils.isDevEnv()) { // easier to test this way in dev
             return player.getItemBySlot(EquipmentSlot.FEET).is(Items.GOLDEN_BOOTS);
         } else {
