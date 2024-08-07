@@ -18,11 +18,13 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.registry.NumismaticsShapes;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,36 +42,63 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, TrustedBlock, IWrenchable, NotifyFailedBreak {
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public SalepointBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(defaultBlockState()
-            .setValue(POWERED, false));
+            .setValue(POWERED, false)
+            .setValue(HORIZONTAL_FACING, Direction.NORTH));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         return defaultBlockState()
-            .setValue(POWERED, false);
+            .setValue(POWERED, false)
+            .setValue(HORIZONTAL_FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos,
+                                        @NotNull CollisionContext context) {
+        return NumismaticsShapes.SALEPOINT.get(state.getValue(HORIZONTAL_FACING));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(HORIZONTAL_FACING, rotation.rotate(state.getValue(HORIZONTAL_FACING)));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(HORIZONTAL_FACING)));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(POWERED);
+        builder.add(POWERED, HORIZONTAL_FACING);
     }
 
     @Override
@@ -128,6 +157,8 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     @Override
     @SuppressWarnings("deprecation")
     public int getSignal(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        if (direction != state.getValue(HORIZONTAL_FACING))
+            return 0;
         return state.getValue(POWERED) ? 15 : 0;
     }
 
@@ -200,6 +231,8 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     @SuppressWarnings("deprecation")
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                                           @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)))
+            return InteractionResult.PASS;
 
         if (level.isClientSide)
             return InteractionResult.SUCCESS;

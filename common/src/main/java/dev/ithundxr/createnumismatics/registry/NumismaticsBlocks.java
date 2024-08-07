@@ -145,7 +145,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.isRedstoneConductor(Blocks::never))
 		.transform(pickaxeOnly())
 		.lang("Salepoint")
-		//.transform(BuilderTransformers.salepoint())
+		.transform(BuilderTransformers.salepoint())
 		.item(SalepointBlockItem::new)
 		.build()
 		.register();

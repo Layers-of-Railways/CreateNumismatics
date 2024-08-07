@@ -26,6 +26,7 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
 import net.minecraft.world.item.BlockItem;
@@ -80,5 +81,18 @@ public class BuilderTransformersImpl {
                 c.getName(),
                 Numismatics.asResource("block/"+(creative?"creative_":"")+"display_case")
             ));
+    }
+
+    public static <B extends SalepointBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> salepoint() {
+        return a -> a.blockstate((c, p) -> p.getVariantBuilder(c.get())
+            .forAllStatesExcept((state) -> ConfiguredModel.builder()
+                .modelFile(p.models()
+                    .getExistingFile(p.modLoc("block/salepoint"))
+                )
+                .rotationY((int) state.getValue(SalepointBlock.HORIZONTAL_FACING).toYRot() + 180)
+                .build(),
+                SalepointBlock.POWERED
+            )
+        );
     }
 }

@@ -1,7 +1,20 @@
 {
   "variants": {
-    "": {
-      "model": "numismatics:block/salepoint"
+    "facing=east": {
+      "model": "numismatics:block/salepoint",
+      "y": 450
+    },
+    "facing=north": {
+      "model": "numismatics:block/salepoint",
+      "y": 360
+    },
+    "facing=south": {
+      "model": "numismatics:block/salepoint",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "numismatics:block/salepoint",
+      "y": 270
     }
   }
 }
