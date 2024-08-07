@@ -224,11 +224,13 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
                 int price = entry.getValue();
                 int count = getCount.apply(coin);
                 if (count < price) {
+                    addCoin.accept(coin, -count);
                     if (!deductable.deduct(coin, price - count, reasonHolder)) {
                         Numismatics.crashDev("Failed to deduct from self: " + coin + " " + (price - count));
                     }
+                } else {
+                    addCoin.accept(coin, -price);
                 }
-                addCoin.accept(coin, -price);
             }
         }
 

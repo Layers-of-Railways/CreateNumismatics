@@ -112,6 +112,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private boolean enableAutomatedExtraction = true;
     private boolean isFilterSlotLegacy = false;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    private boolean hasEnoughMoneyFromServer = false;
 
     AbstractComputerBehaviour computerBehaviour;
 
@@ -133,7 +134,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public @Nullable IDeductable getDeductable() {
         ItemStack card = cardContainer.getItem(0);
 
-        return IDeductable.getAutomated(card, owner, ReasonHolder.IGNORED);
+        return IDeductable.getForVendor(card, owner, ReasonHolder.IGNORED);
     }
 
     @Override
@@ -165,6 +166,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         tag.putInt("Mode", mode.ordinal());
         tag.putBoolean("EnableAutomatedExtraction", enableAutomatedExtraction);
+
+        if (clientPacket) {
+            tag.putBoolean("HasEnoughMoneyFromServer", hasEnoughMoneyFromServer);
+        }
     }
 
     @Override
@@ -214,6 +219,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             enableAutomatedExtraction = tag.getBoolean("EnableAutomatedExtraction");
         else
             enableAutomatedExtraction = true;
+
+        if (clientPacket) {
+            hasEnoughMoneyFromServer = tag.getBoolean("HasEnoughMoneyFromServer");
+        }
     }
 
     @Nullable
@@ -243,7 +252,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     public void addCoin(Coin coin, int count) {
         UUID depositAccount = getDepositAccount();
-        if (depositAccount != null) {
+        if (depositAccount != null && count >= 0) {
             BankAccount account = Numismatics.BANK.getAccount(depositAccount);
             if (account != null) {
                 account.deposit(coin, count);
@@ -292,6 +301,14 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     account.deposit(coin, count);
                     notifyUpdate();
                 }
+            }
+        }
+
+        if (getMode() == Mode.BUY) {
+            boolean hasEnoughMoney = hasEnoughMoney();
+            if (hasEnoughMoney != hasEnoughMoneyFromServer) {
+                hasEnoughMoneyFromServer = hasEnoughMoney;
+                sendData();
             }
         }
     }
@@ -349,7 +366,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
-                } else if (!hasEnoughMoney()) {
+                } else if (!hasEnoughMoneyFromServer) {
                     Lang.builder()
                         .add(Components.translatable("gui.numismatics.vendor.out_of_stock.funds"))
                         .style(ChatFormatting.DARK_RED)

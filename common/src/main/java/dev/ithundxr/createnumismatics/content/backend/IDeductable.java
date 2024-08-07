@@ -61,26 +61,41 @@ public interface IDeductable {
     }
 
     @Nullable
+    static IDeductable getForVendor(ItemStack stack, @Nullable UUID owningPlayer, ReasonHolder reasonHolder) {
+        return IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder, false, true);
+    }
+
+    @Nullable
     private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder, boolean mustBeAuthorizedDeductible) {
+        return getInternal(stack, player, reasonHolder, mustBeAuthorizedDeductible, false);
+    }
+
+    @Nullable
+    private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder, boolean mustBeAuthorizedDeductible, boolean allowNullPlayers) {
         if (NumismaticsTags.AllItemTags.CARDS.matches(stack)) {
             if (player == null)
                 return null;
 
             Optional<Player> left = player.left();
-            if (left.isEmpty())
-                return null;
-
-            Player player$ = left.get();
-            if (player$ instanceof DeployerFakePlayer)
-                return null;
+            UUID playerUUID$;
+            if (left.isEmpty()) {
+                if (!allowNullPlayers)
+                    return null;
+                playerUUID$ = player.right().get();
+            } else {
+                Player player$ = left.get();
+                if (player$ instanceof DeployerFakePlayer)
+                    return null;
+                playerUUID$ = player$.getUUID();
+            }
 
             if (CardItem.isBound(stack)) {
                 UUID id = CardItem.get(stack);
                 BankAccount account = Numismatics.BANK.getAccount(id);
 
-                if (account != null && account.isAuthorized(player$)) {
+                if (account != null && account.isAuthorized(playerUUID$)) {
                     if (mustBeAuthorizedDeductible) {
-                        return IAuthorizationCheckingDeductable.of(account, new Authorization.Player(player$, UUID.randomUUID()), account);
+                        return IAuthorizationCheckingDeductable.of(account, new Authorization.Player(playerUUID$, UUID.randomUUID()), account);
                     }
                     return account;
                 } else if (account == null) {

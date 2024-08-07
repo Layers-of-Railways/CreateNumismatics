@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +43,12 @@ public interface Authorization {
 
         public Player(@NotNull net.minecraft.world.entity.player.Player player, @NotNull UUID authorizationID) {
             this.uuid = player.getUUID();
+            this.authorizationID = authorizationID;
+        }
+
+        @ApiStatus.Internal
+        public Player(@NotNull UUID player, @NotNull UUID authorizationID) {
+            this.uuid = player;
             this.authorizationID = authorizationID;
         }
 
