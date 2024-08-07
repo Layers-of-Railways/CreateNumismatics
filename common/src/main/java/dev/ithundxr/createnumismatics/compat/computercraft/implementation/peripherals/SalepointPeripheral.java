@@ -87,7 +87,7 @@ public class SalepointPeripheral extends SyncedPeripheral<SalepointBlockEntity> 
             throw new LuaException("No transaction is currently active");
         return Map.of(
             "object", blockEntity.getSalepointState().writeForComputerCraft(),
-            "totalPrice", transaction.totalPrice(),
+            "unitPrice", transaction.totalPrice(),
             "targetCount", transaction.multiplier(),
             "currentCount", transaction.progress()
         );
