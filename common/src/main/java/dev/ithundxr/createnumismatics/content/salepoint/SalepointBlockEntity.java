@@ -20,10 +20,12 @@ package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
@@ -62,6 +64,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,6 +111,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     int clientsideMultiplier;
     int clientsideProgress;
 
+    AbstractComputerBehaviour computerBehaviour;
+
     public SalepointBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -115,7 +120,15 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinAmount);
+        behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
         behaviours.add(price);
+    }
+
+    @ApiStatus.Internal
+    public @Nullable ISalepointState<?> getSalepointState() {
+        if (salepointState == null)
+            return null;
+        return salepointState.state();
     }
 
     public @Nullable Transaction<?> getTransaction() {
@@ -139,6 +152,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         if (salepointState == null)
             return false;
         if (transaction != null)
+            return false;
+        if (!salepointState.state().isValidForPurchase(level, getTargetedPos(), ReasonHolder.IGNORED))
             return false;
         transaction = new Transaction<>(deductable, multiplier, salepointState.state.getFilter(), getTotalPrice());
         notifyUpdate();

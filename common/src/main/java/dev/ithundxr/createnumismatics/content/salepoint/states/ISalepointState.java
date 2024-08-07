@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ConcurrentModificationException;
+import java.util.Map;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -288,6 +289,8 @@ public interface ISalepointState<C> {
     void relinquishControl(Level level, BlockPos targetedPos);
 
     void setChangedCallback(Runnable callback);
+
+    Map<String, Object> writeForComputerCraft();
 
     @ApiStatus.NonExtendable
     @Nullable

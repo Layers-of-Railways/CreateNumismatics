@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -259,5 +260,13 @@ public class EnergySalepointState implements ISalepointState<Energy> {
 
     public static long getFilterCapacity() {
         return 1000L * 1000L; // 1 Mfe
+    }
+
+    @Override
+    public Map<String, Object> writeForComputerCraft() {
+        return Map.of(
+            "type", getType().getId(),
+            "filter", filter.getAmount()
+        );
     }
 }

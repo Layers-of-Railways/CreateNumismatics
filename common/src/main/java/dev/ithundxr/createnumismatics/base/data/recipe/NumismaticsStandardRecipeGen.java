@@ -96,6 +96,17 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .define('#', Ingredients.brassCasing())
             .define('I', Ingredients.electronTube()));
 
+    GeneratedRecipe SALEPOINT = create(NumismaticsBlocks.SALEPOINT)
+        .unlockedBy(Ingredients::vendor)
+        .viaShaped(b -> b
+            .pattern(" p ")
+            .pattern("IvI")
+            .pattern(" @ ")
+            .define('p', Ingredients.placard())
+            .define('I', Ingredients.electronTube())
+            .define('v', Ingredients.vendor())
+            .define('@', Ingredients.precisionMechanism()));
+
     DyedRecipeList CARDS = new DyedRecipeList(color -> create(NumismaticsItems.CARDS.get(color))
         .unlockedBy(Ingredients::precisionMechanism)
         .viaShaped(b -> b

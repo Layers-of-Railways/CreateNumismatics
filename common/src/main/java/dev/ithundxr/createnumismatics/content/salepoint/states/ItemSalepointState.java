@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.content.salepoint.states;
 
 import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableAbstractBuffer;
@@ -44,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -451,5 +453,13 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
     protected void setChanged() {
         if (changedCallback != null)
             changedCallback.run();
+    }
+
+    @Override
+    public Map<String, Object> writeForComputerCraft() {
+        return Map.of(
+            "type", getType().getId(),
+            "filter", ComputerCraftProxy.getItemDetail(filter)
+        );
     }
 }
