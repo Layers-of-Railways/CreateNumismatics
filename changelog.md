@@ -1,5 +1,5 @@
 ------------------------------------------------------
-Numismatics 1.0.7
+Numismatics 1.1.0
 ------------------------------------------------------
 Additions
 - Computer Craft: Tweaked compat for vendors and brass depositors

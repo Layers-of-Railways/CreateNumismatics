@@ -16,16 +16,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.compat.computercraft.fabric;
+package dev.ithundxr.createnumismatics.compat.computercraft.implementation;
 
-import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 
-public class ComputerCraftProxyImpl {
-    public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
-        if (ComputerCraftProxy.computerFactory == null)
-            return ComputerCraftProxy.fallbackFactory.apply(sbe);
-        return ComputerCraftProxy.computerFactory.apply(sbe);
+public class ActualComputerCraftProxy {
+    @ExpectPlatform
+    public static void registerWithDependency() {
+        throw new AssertionError();
     }
 }

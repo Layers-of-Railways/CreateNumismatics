@@ -23,6 +23,7 @@ import com.simibubi.create.compat.computercraft.FallbackComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.compat.Mods;
+import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ActualComputerCraftProxy;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.Details;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import net.minecraft.world.item.ItemStack;
@@ -33,12 +34,7 @@ import java.util.function.Function;
 public class ComputerCraftProxy {
     public static void register() {
         fallbackFactory = FallbackComputerBehaviour::new;
-        Mods.COMPUTERCRAFT.executeIfInstalled(() -> ComputerCraftProxy::registerWithDependency);
-    }
-
-    @ExpectPlatform
-    static void registerWithDependency() {
-        throw new AssertionError();
+        Mods.COMPUTERCRAFT.executeIfInstalled(() -> ActualComputerCraftProxy::registerWithDependency);
     }
 
     public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> fallbackFactory;
