@@ -387,7 +387,9 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
 
         SubAccount subAccount = subAccounts.remove(subAccountID);
         subAccount.setRemoved();
-        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), BankAccountLabelPacket.remove(subAccount));
+
+        if (!clientSide)
+            NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), BankAccountLabelPacket.remove(subAccount));
         markDirty();
         return subAccount;
     }

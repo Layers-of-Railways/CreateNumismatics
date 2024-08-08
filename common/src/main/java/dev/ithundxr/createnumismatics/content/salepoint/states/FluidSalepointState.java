@@ -225,6 +225,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void createPurchaseWidgets(WidgetConsumer widgetConsumer) {
         widgetConsumer.addRenderableWidget(new SalepointFluidDisplayWidget(68, 55, this));
     }
