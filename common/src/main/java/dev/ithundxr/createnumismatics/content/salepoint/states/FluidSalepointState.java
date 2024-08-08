@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
@@ -27,11 +28,14 @@ import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidCo
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidDisplayWidget;
 import dev.ithundxr.createnumismatics.multiloader.fluid.FluidUnits;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -240,5 +244,24 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
             "type", getType().getId(),
             "filter", ComputerCraftProxy.getFluidDetail(filter)
         );
+    }
+
+    @Override
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+        if (filter.isEmpty()) {
+            Lang.builder()
+                .add(Components.translatable("gui.numismatics.salepoint.fluid_empty"))
+                .forGoggles(tooltip);
+            return;
+        }
+
+        Lang.builder()
+            .add(filter.getDisplayName().copy())
+            .forGoggles(tooltip);
+
+        Lang.builder()
+            .add(Components.literal(TextUtils.formatFluid(filter.getAmount())))
+            .style(ChatFormatting.GREEN)
+            .forGoggles(tooltip);
     }
 }

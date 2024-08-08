@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
@@ -29,12 +30,15 @@ import dev.ithundxr.createnumismatics.content.salepoint.types.EnergyBuffer;
 import dev.ithundxr.createnumismatics.content.salepoint.types.SimpleEnergyBuffer;
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyConfigWidget;
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyDisplayWidget;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -268,5 +272,17 @@ public class EnergySalepointState implements ISalepointState<Energy> {
             "type", getType().getId(),
             "filter", filter.getAmount()
         );
+    }
+
+    @Override
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+        Lang.builder()
+            .add(Components.translatable("gui.numismatics.salepoint.energy"))
+            .forGoggles(tooltip);
+
+        Lang.builder()
+            .add(Components.literal(TextUtils.formatEnergy(filter.getAmount())))
+            .style(ChatFormatting.GREEN)
+            .forGoggles(tooltip);
     }
 }

@@ -19,11 +19,15 @@
 package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -35,7 +39,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SalepointBlockItem extends BlockItem {
     public SalepointBlockItem(Block block, Properties properties) {
@@ -138,5 +145,45 @@ public class SalepointBlockItem extends BlockItem {
         // TODO perhaps an advancement here?
 
         return super.useOn(context);
+    }
+
+    private static @Nullable BlockPos lastShownPos = null;
+    private static @Nullable AABB lastShownAABB = null;
+
+    @Environment(EnvType.CLIENT)
+    public static void clientTick() {
+        Player player = Minecraft.getInstance().player;
+        if (player == null)
+            return;
+        ItemStack heldItemMainhand = player.getMainHandItem();
+        if (!(heldItemMainhand.getItem() instanceof SalepointBlockItem))
+            return;
+        if (!heldItemMainhand.hasTag())
+            return;
+        CompoundTag stackTag = heldItemMainhand.getOrCreateTag();
+        if (!stackTag.contains("SelectedPos"))
+            return;
+
+        BlockPos selectedPos = NbtUtils.readBlockPos(stackTag.getCompound("SelectedPos"));
+
+        if (!selectedPos.equals(lastShownPos)) {
+            lastShownAABB = getBounds(selectedPos);
+            lastShownPos = selectedPos;
+        }
+
+        CreateClient.OUTLINER.showAABB("target", lastShownAABB)
+            .colored(0xffcb74)
+            .lineWidth(1 / 16f);
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static AABB getBounds(BlockPos pos) {
+        Level world = Minecraft.getInstance().level;
+
+        BlockState state = world.getBlockState(pos);
+        VoxelShape shape = state.getShape(world, pos);
+        return shape.isEmpty() ? new AABB(BlockPos.ZERO)
+            : shape.bounds()
+            .move(pos);
     }
 }

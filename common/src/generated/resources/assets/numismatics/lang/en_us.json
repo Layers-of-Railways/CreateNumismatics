@@ -71,7 +71,7 @@
   "gui.numismatics.salepoint.fluid_filter_empty.0": "Fluid Filter",
   "gui.numismatics.salepoint.fluid_filter_empty.1": "Click with a fluid-holding item such as a bucket or a bottle",
   "gui.numismatics.salepoint.go": "Start transaction",
-  "gui.numismatics.salepoint.insufficient_space": "Target is full",
+  "gui.numismatics.salepoint.insufficient_space": "Target is full/not connected",
   "gui.numismatics.salepoint.invalid_state": "Invalid state",
   "gui.numismatics.salepoint.no_card": "No card",
   "gui.numismatics.salepoint.no_filter": "No filter",

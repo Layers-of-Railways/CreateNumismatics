@@ -35,7 +35,7 @@
   "gui.numismatics.salepoint.no_target": "Target not found",
   "gui.numismatics.salepoint.target_not_controlled": "Target not under salepoint control",
   "gui.numismatics.salepoint.no_filter": "No filter",
-  "gui.numismatics.salepoint.insufficient_space": "Target is full",
+  "gui.numismatics.salepoint.insufficient_space": "Target is full/not connected",
   "gui.numismatics.salepoint.target_failed_purchase": "Target could not execute the purchase",
 
   "gui.numismatics.limit": "Spent %s of %s",

@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2023-2024 The Railways Team
+ * Copyright (c) 2024 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,16 +16,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.fabric;
+package dev.ithundxr.createnumismatics.events;
 
-import dev.ithundxr.createnumismatics.NumismaticsClient;
-import dev.ithundxr.createnumismatics.events.fabric.ClientEventsFabric;
-import net.fabricmc.api.ClientModInitializer;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockItem;
 
-public class NumismaticsClientImpl implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        NumismaticsClient.init();
-        ClientEventsFabric.register();
+public class ClientEvents {
+    public static void onTick() {
+        SalepointBlockItem.clientTick();
     }
 }

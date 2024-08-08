@@ -21,11 +21,15 @@ package dev.ithundxr.createnumismatics.content.salepoint;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
+import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.Couple;
+import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
@@ -42,14 +46,20 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
+import dev.ithundxr.createnumismatics.util.TextUtils;
+import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -72,7 +82,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder {
+public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation {
 
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
@@ -110,6 +120,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
     int clientsideMultiplier;
     int clientsideProgress;
+
+    private final List<Component> clientsideTooltip = new ArrayList<>();
 
     AbstractComputerBehaviour computerBehaviour;
 
@@ -204,6 +216,15 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             if (justCompletedMultiplier != null) {
                 tag.putInt("JustCompletedMultiplier", justCompletedMultiplier);
             }
+
+            ListTag tooltip = new ListTag();
+            for (Component component : clientsideTooltip) {
+                String json = Component.Serializer.toJson(component);
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.putString("Text", json);
+                tooltip.add(compoundTag);
+            }
+            tag.put("Tooltip", tooltip);
         }
     }
 
@@ -239,6 +260,14 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             justCompletedMultiplier = tag.contains("JustCompletedMultiplier", Tag.TAG_INT)
                 ? tag.getInt("JustCompletedMultiplier")
                 : null;
+
+            clientsideTooltip.clear();
+            ListTag tooltip = tag.getList("Tooltip", Tag.TAG_COMPOUND);
+            for (Tag t : tooltip) {
+                CompoundTag compoundTag = (CompoundTag) t;
+                String json = compoundTag.getString("Text");
+                clientsideTooltip.add(Component.Serializer.fromJson(json));
+            }
         }
     }
 
@@ -390,6 +419,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
         justCompletedMultiplier = null;
         attemptTransaction();
+        createTooltip();
     }
 
     void notifyDelayedDataSync() {
@@ -463,6 +493,77 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             salepointState.state().onDestroy(getLevel(), getBlockPos());
             salepointState.state().relinquishControl(getLevel(), getTargetedPos());
         }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if (getSalepointState() == null)
+            return false;
+
+        tooltip.addAll(clientsideTooltip);
+
+        return true;
+    }
+
+    private void createTooltip() {
+        clientsideTooltip.clear();
+        ISalepointState<?> state = getSalepointState();
+        if (state == null)
+            return;
+
+        ReasonHolder reasonHolder = new ReasonHolder();
+        if (!state.isValidForPurchase(getLevel(), getTargetedPos(), reasonHolder)) {
+            Lang.builder()
+                .add(reasonHolder.getMessageOrDefault(Components.translatable("gui.numismatics.salepoint.invalid_state")))
+                .style(ChatFormatting.DARK_RED)
+                .forGoggles(clientsideTooltip);
+
+            boolean showOwner = reasonHolder.getMessage() == null
+                || !(reasonHolder.getMessage().getContents() instanceof TranslatableContents translatableContents)
+                || !translatableContents.getKey().equals("gui.numismatics.salepoint.insufficient_space");
+
+            if (showOwner) {
+                String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
+                if (ownerName != null) {
+                    Lang.builder()
+                        .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                        .style(ChatFormatting.DARK_RED)
+                        .forGoggles(clientsideTooltip);
+                }
+            }
+        }
+
+        Coin referenceCoin = NumismaticsConfig.common().referenceCoin.get();
+        Couple<Integer> referenceAndSpurs = referenceCoin.convert(getTotalPrice());
+        int reference = referenceAndSpurs.getFirst();
+        int spurs = referenceAndSpurs.getSecond();
+        MutableComponent balanceLabel = Components.translatable("gui.numismatics.salepoint.price",
+            TextUtils.formatInt(reference), referenceCoin.getName(reference), spurs);
+
+        state.createTooltip(clientsideTooltip, getLevel(), getTargetedPos());
+
+        clientsideTooltip.add(Components.immutableEmpty());
+
+        // For: ...
+
+        Lang.builder()
+            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+            .forGoggles(clientsideTooltip);
+
+        for (MutableComponent component : price.getCondensedPriceBreakdown()) {
+            Lang.builder()
+                .add(component)
+                .forGoggles(clientsideTooltip);
+        }
+        sendData();
+    }
+
+    public ItemStack getDisplayItem() {
+        if (salepointState == null)
+            return ItemStack.EMPTY;
+
+        return salepointState.state().getDisplayItem();
     }
 
     private class ConfigMenuProvider implements MenuProvider {

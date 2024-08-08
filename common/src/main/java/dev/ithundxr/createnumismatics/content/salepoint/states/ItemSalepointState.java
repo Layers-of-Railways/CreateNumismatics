@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
 import com.simibubi.create.foundation.utility.Components;
+import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
@@ -26,18 +27,22 @@ import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTarg
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableAbstractBuffer;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingItemBuffer;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -461,5 +466,37 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
             "type", getType().getId(),
             "filter", ComputerCraftProxy.getItemDetail(filter)
         );
+    }
+
+    @Override
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+        if (filter.isEmpty()) {
+            Lang.builder()
+                .add(Components.translatable("gui.numismatics.salepoint.fluid_empty"))
+                .forGoggles(tooltip);
+            return;
+        }
+
+        boolean isFirst = true;
+        for (Component component : filter.getTooltipLines(null, TooltipFlag.ADVANCED)) {
+            MutableComponent mutable = component.copy();
+            if (isFirst) {
+                isFirst = false;
+                if (filter.getCount() != 1) {
+                    mutable.append(
+                        Components.translatable("gui.numismatics.vendor.count", filter.getCount())
+                            .withStyle(ChatFormatting.GREEN)
+                    );
+                }
+            }
+            Lang.builder()
+                .add(mutable)
+                .forGoggles(tooltip);
+        }
+    }
+
+    @Override
+    public ItemStack getDisplayItem() {
+        return filter.copy();
     }
 }

@@ -32,6 +32,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,5 +126,12 @@ public class FluidSalepointStateImpl extends FluidSalepointState {
     public void keepAlive() {
         if (!bufferWrapper.isValid())
             bufferWrapper = createBufferWrapper(buffer);
+    }
+
+    @Override
+    public ItemStack getDisplayItem() {
+        FluidStack fs = ((MultiloaderFluidStackImpl) getFilter()).getWrapped();
+        Item bucket = fs.getFluid().getBucket();
+        return new ItemStack(bucket);
     }
 }
