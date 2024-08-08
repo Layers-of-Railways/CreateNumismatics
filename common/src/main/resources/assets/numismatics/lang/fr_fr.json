@@ -41,7 +41,6 @@
   "gui.numismatics.vendor.generic_named": "Contacter %s",
   "gui.numismatics.vendor.incorrect_item": "Item incorrect",
   "gui.numismatics.vendor.insufficient_funds": "Fonds insuffisants",
-  "gui.numismatics.vendor.insufficient_funds.named": "Fonds insuffisants, contactez %s pour un réapprovisionnement",
   "gui.numismatics.vendor.mode.buy": "Acheter",
   "gui.numismatics.vendor.mode.buy.action": "Utiliser pour acheter",
   "gui.numismatics.vendor.mode.sell": "Vendre",

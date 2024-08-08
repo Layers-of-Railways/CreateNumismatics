@@ -24,6 +24,7 @@ import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
@@ -32,11 +33,54 @@ import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccou
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.util.*;
 
 public enum BankTerminalPeripheral implements IPeripheral {
     INSTANCE
     ;
+
+    @LuaFunction
+    public final List<String> getAccounts() throws LuaException {
+        List<String> output = new ArrayList<String>();
+        for (UUID uuid : Numismatics.BANK.accounts.keySet()) {
+            output.add(uuid.toString());
+        }
+        return output;
+    }
+
+    @LuaFunction
+    public final String getAccountLabel(String accountID) throws LuaException {
+        UUID account$;
+        try {
+            account$ = UUID.fromString(accountID);
+        } catch (IllegalArgumentException e) {
+            throw new LuaException("Invalid UUID");
+        }
+
+        BankAccount bankAccount = Numismatics.BANK.getAccount(account$);
+        if (bankAccount == null) {
+            throw new LuaException("Account not found");
+        }
+
+        return bankAccount.getDisplayName().getString();
+    }
+
+    @LuaFunction
+    public final boolean isPlayerOwned(String accountID) throws LuaException {
+        UUID account$;
+        try {
+            account$ = UUID.fromString(accountID);
+        } catch (IllegalArgumentException e) {
+            throw new LuaException("Invalid UUID");
+        }
+
+        BankAccount bankAccount = Numismatics.BANK.getAccount(account$);
+        if (bankAccount == null) {
+            throw new LuaException("Account not found");
+        }
+
+        return (bankAccount.type == BankAccount.Type.PLAYER);
+    }
 
     @LuaFunction
     public final int getBalance(String accountID) throws LuaException {
@@ -53,6 +97,64 @@ public enum BankTerminalPeripheral implements IPeripheral {
         }
 
         return bankAccount.getBalance();
+    }
+
+    @LuaFunction
+    public final List<String> getSubAccounts(String accountID) throws LuaException {
+        if (NumismaticsConfig.server().getSubAccountsCommand.get()) {
+            UUID account$;
+            try {
+                account$ = UUID.fromString(accountID);
+            } catch (IllegalArgumentException e) {
+                throw new LuaException("Invalid UUID");
+            }
+
+            BankAccount bankAccount = Numismatics.BANK.getAccount(account$);
+            if (bankAccount == null) {
+                throw new LuaException("Account not found");
+            }
+
+            List<String> output = new ArrayList<String>();
+            bankAccount.getSubAccounts().forEach((temp) -> {
+                output.add(temp.getAuthorizationID().toString());
+            });
+
+            if (output.isEmpty()) {
+                throw new LuaException("No sub accounts");
+            }
+            return output;
+        } else {
+            throw new LuaException("Function disabled by config");
+        }
+    }
+
+    @LuaFunction
+    public final String getSubAccountLabel(String accountID, String authorizationID) throws LuaException {
+        UUID account$, authorization$;
+        try {
+            account$ = UUID.fromString(accountID);
+            authorization$ = UUID.fromString(authorizationID);
+        } catch (IllegalArgumentException e) {
+            throw new LuaException("Invalid UUID");
+        }
+
+        Authorization authorization = new Authorization.Anonymous(authorization$);
+
+        BankAccount bankAccount = Numismatics.BANK.getAccount(account$);
+        if (bankAccount == null) {
+            throw new LuaException("Account not found");
+        }
+
+        ReasonHolder reasonHolder = new ReasonHolder();
+        SubAccount subAccount = bankAccount.getSubAccount(authorization, reasonHolder);
+
+        if (subAccount == null) {
+            Component errorMessage = reasonHolder.getMessageOrDefault(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            throw new LuaException(errorMessage.getString());
+        }
+
+
+        return subAccount.getLabel();
     }
 
     @LuaFunction
