@@ -44,6 +44,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
     public static final int CARD_SLOT_INDEX = 0;
     public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
@@ -97,6 +99,9 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
 
                     ItemStack card = getItem(0);
 
+                    Component lastServerSentCardMessage = serverSentCardMessage;
+                    int lastServerSentMaxWithdrawal = serverSentMaxWithdrawal;
+
                     serverSentCardMessage = null;
                     serverSentMaxWithdrawal = -1;
 
@@ -111,7 +116,9 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
                         }
                     }
 
-                    NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
+                    if (!Objects.equals(lastServerSentCardMessage, serverSentCardMessage) || lastServerSentMaxWithdrawal != serverSentMaxWithdrawal) {
+                        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
+                    }
                 }
             };
         }
@@ -198,6 +205,10 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
         if (!(player instanceof ServerPlayer serverPlayer))
             return;
 
+        purchaseCardContainer.setChanged();
+
+        Component lastServerSentStateMessage = serverSentStateMessage;
+
         serverSentStateMessage = null;
 
         ISalepointState<?> salepointState = getSalepointState();
@@ -210,6 +221,7 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
             }
         }
 
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
+        if (!Objects.equals(lastServerSentStateMessage, serverSentStateMessage))
+            NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
     }
 }
