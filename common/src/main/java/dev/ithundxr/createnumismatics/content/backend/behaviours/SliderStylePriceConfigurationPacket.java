@@ -41,6 +41,7 @@ public class SliderStylePriceConfigurationPacket extends BlockEntityBehaviourCon
         this.prices = new int[Coin.values().length];
 
         SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(be, getType());
+        priceBehaviour.enableClientRead();
         for (Coin coin : Coin.values()) {
             this.prices[coin.ordinal()] = priceBehaviour.getPrice(coin);
         }

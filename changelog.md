@@ -1,5 +1,5 @@
 ------------------------------------------------------
-Numismatics 1.0.7
+Numismatics 1.1.0
 ------------------------------------------------------
 Additions
 - Computer Craft: Tweaked compat for vendors and brass depositors
@@ -9,10 +9,13 @@ Additions
 - /payall command to pay all users
 - Toggle button to enable/disable item extraction from vendors
 - Bulk buy/sell up to a stack of items to vendors by sneaking while using the vendor
+- Add Sub Accounts: created in the Bank Terminal, these allow binding Authorized Cards with spending limits and separate trust lists, drawing from and depositing to the parent Bank Account
+- Salepoint: Similar to the vendor, but allows players to queue a transaction made up of multiple purchases through a Portable Item/Fluid/Energy Interface
 
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
 - Texture inconsistency in the gui texture of blaze terminals, blaze bankers and trust lists
+- Creative vendors can no longer be modified by players in survival
 
 Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)

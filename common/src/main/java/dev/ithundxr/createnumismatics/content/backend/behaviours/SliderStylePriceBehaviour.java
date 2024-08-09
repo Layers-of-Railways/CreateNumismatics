@@ -47,6 +47,8 @@ import java.util.function.Function;
 
 public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
+    private boolean clientReadEnabled = true;
+
     public static final BehaviourType<SliderStylePriceBehaviour> TYPE = new BehaviourType<>("slider-style price");
 
     protected final EnumMap<Coin, Integer> prices = new EnumMap<>(Coin.class);
@@ -100,6 +102,9 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
     @Override
     public void read(CompoundTag tag, boolean clientPacket) {
+        if (clientPacket && !clientReadEnabled)
+            return;
+
         super.read(tag, clientPacket);
         this.prices.clear();
         if (tag.contains("Prices", Tag.TAG_COMPOUND)) {
@@ -113,6 +118,14 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             }
         }
         calculateTotalPrice();
+    }
+
+    public void enableClientRead() {
+        this.clientReadEnabled = true;
+    }
+
+    public void disableClientRead() {
+        this.clientReadEnabled = false;
     }
 
     public int deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource, ReasonHolder reasonHolder, int maximumCount) {
@@ -134,23 +147,25 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             if (deductable.deduct(totalPrice, reasonHolder)) {
                 //activate(state, level, pos);
                 if (addToSource) {
-                    for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                        addCoin.accept(entry.getKey(), entry.getValue());
-                    }
+                    addCoinsToSelf();
                 }
                 return true;
             }
         } else if (CoinItem.extract(player, hand, prices, false)) {
             //activate(state, level, pos);
             if (addToSource) {
-                for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                    addCoin.accept(entry.getKey(), entry.getValue());
-                }
+                addCoinsToSelf();
             }
             return true;
         }
 
         return false;
+    }
+
+    public void addCoinsToSelf() {
+        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+            addCoin.accept(entry.getKey(), entry.getValue());
+        }
     }
 
     public boolean canPayOut(@Nullable IDeductable deductable) {
@@ -209,11 +224,13 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
                 int price = entry.getValue();
                 int count = getCount.apply(coin);
                 if (count < price) {
+                    addCoin.accept(coin, -count);
                     if (!deductable.deduct(coin, price - count, reasonHolder)) {
                         Numismatics.crashDev("Failed to deduct from self: " + coin + " " + (price - count));
                     }
+                } else {
+                    addCoin.accept(coin, -price);
                 }
-                addCoin.accept(coin, -price);
             }
         }
 

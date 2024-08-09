@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-24T07:41:10.617662486	Create: Numismatics/Numismatics Standard Recipes
+// 1.20.1	2024-08-08T14:22:14.210008775	Create: Numismatics/Numismatics Standard Recipes
 0e1680b878cfa51c04809504b3542cb6312027a1 data/numismatics/recipes/crafting/gray_id_card.json
 61954216f844eecdbee266da7e517a983993d2f8 data/numismatics/advancements/recipes/misc/crafting/brown_card.json
 2c732f9c3bc02a29a4d86a0552f4dbbae986a34a data/numismatics/recipes/crafting/blue_authorized_card.json
@@ -29,6 +29,7 @@ ce32a3a7c2a5564e84b30bb1b71007ca4adc985d data/numismatics/recipes/crafting/lime_
 e16d9a5134c226db94bb389c44e55a8b393ca6c4 data/numismatics/recipes/crafting/brass_depositor.json
 86ccf10cd1549f633f99674b002c543bd46aefd0 data/numismatics/recipes/crafting/yellow_card.json
 1d0c5ff8b555ba922b0699a93dceb4cb9d49c4f9 data/numismatics/advancements/recipes/misc/crafting/lime_card.json
+b8f2498c1400a0f96c494cdbd8824b19b8bca742 data/numismatics/advancements/recipes/misc/crafting/salepoint.json
 3cfbeee014050f945e5fa2299dbbcfbf120bf29a data/numismatics/recipes/crafting/red_authorized_card.json
 6d90141ba018612413149776136ccb11b26add7c data/numismatics/advancements/recipes/misc/crafting/light_gray_authorized_card.json
 8ae4c3c323f9b8ea0261f5e0d1fb9f7c15e9cf6b data/numismatics/recipes/crafting/light_gray_card.json
@@ -84,6 +85,7 @@ b359f00206e8522f61fa06cc6bda43142f180e30 data/numismatics/recipes/crafting/lime_
 8ede57d6fa0fb30cc5edf0eb842844071f8c2026 data/numismatics/advancements/recipes/misc/crafting/green_authorized_card.json
 cded917dee4ac35f9499992f6e0767a8638a5113 data/numismatics/recipes/crafting/orange_authorized_card.json
 fca73628e0fc837c1e8f06f0f63d4b8983651d83 data/numismatics/advancements/recipes/misc/crafting/yellow_id_card.json
+3f5ad3c091647c23017b749dc54becf6042562ab data/numismatics/recipes/crafting/salepoint.json
 0d9dc5041578195c578860f7af550cae670b1016 data/numismatics/advancements/recipes/misc/crafting/cyan_authorized_card.json
 d8a8bdef01cc07e8902c89c247da5b53c6b3cda8 data/numismatics/advancements/recipes/misc/crafting/yellow_card.json
 ba04c62863e2c847ad7ac240e282c3f6ecd85d62 data/numismatics/recipes/crafting/banking_guide.json

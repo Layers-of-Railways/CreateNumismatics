@@ -42,33 +42,61 @@ public interface IDeductable {
 
     @Nullable
     static IDeductable get(ItemStack stack, @Nullable Player player, ReasonHolder reasonHolder) {
-        return IDeductable.getInternal(stack, player == null ? null : Either.left(player), reasonHolder);
+        return IDeductable.getInternal(stack, player == null ? null : Either.left(player), reasonHolder, false);
+    }
+
+    @Nullable
+    static IAuthorizationCheckingDeductable getAuthorizationChecking(ItemStack stack, @Nullable Player player, ReasonHolder reasonHolder) {
+        return (IAuthorizationCheckingDeductable) IDeductable.getInternal(stack, player == null ? null : Either.left(player), reasonHolder, true);
     }
 
     @Nullable
     static IDeductable getAutomated(ItemStack stack, @Nullable UUID owningPlayer, ReasonHolder reasonHolder) {
-        return IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder);
+        return IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder, false);
     }
 
     @Nullable
-    private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder) {
+    static IAuthorizationCheckingDeductable getAutomatedAuthorizationChecking(ItemStack stack, @Nullable UUID owningPlayer, ReasonHolder reasonHolder) {
+        return (IAuthorizationCheckingDeductable) IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder, true);
+    }
+
+    @Nullable
+    static IDeductable getForVendor(ItemStack stack, @Nullable UUID owningPlayer, ReasonHolder reasonHolder) {
+        return IDeductable.getInternal(stack, owningPlayer == null ? null : Either.right(owningPlayer), reasonHolder, false, true);
+    }
+
+    @Nullable
+    private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder, boolean mustBeAuthorizedDeductible) {
+        return getInternal(stack, player, reasonHolder, mustBeAuthorizedDeductible, false);
+    }
+
+    @Nullable
+    private static IDeductable getInternal(ItemStack stack, @Nullable Either<Player, UUID> player, ReasonHolder reasonHolder, boolean mustBeAuthorizedDeductible, boolean allowNullPlayers) {
         if (NumismaticsTags.AllItemTags.CARDS.matches(stack)) {
             if (player == null)
                 return null;
 
             Optional<Player> left = player.left();
-            if (left.isEmpty())
-                return null;
-
-            Player player$ = left.get();
-            if (player$ instanceof DeployerFakePlayer)
-                return null;
+            UUID playerUUID$;
+            if (left.isEmpty()) {
+                if (!allowNullPlayers)
+                    return null;
+                playerUUID$ = player.right().get();
+            } else {
+                Player player$ = left.get();
+                if (player$ instanceof DeployerFakePlayer)
+                    return null;
+                playerUUID$ = player$.getUUID();
+            }
 
             if (CardItem.isBound(stack)) {
                 UUID id = CardItem.get(stack);
                 BankAccount account = Numismatics.BANK.getAccount(id);
 
-                if (account != null && account.isAuthorized(player$)) {
+                if (account != null && account.isAuthorized(playerUUID$)) {
+                    if (mustBeAuthorizedDeductible) {
+                        return IAuthorizationCheckingDeductable.of(account, new Authorization.Player(playerUUID$, UUID.randomUUID()), account);
+                    }
                     return account;
                 } else if (account == null) {
                     reasonHolder.setMessage(Components.translatable("error.numismatics.card.account_not_found"));
@@ -111,6 +139,9 @@ public interface IDeductable {
                 IDeductable deductor = subAccount.getDeductor(authorization);
                 if (deductor == null) {
                     reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+                }
+                if (mustBeAuthorizedDeductible) {
+                    return IAuthorizationCheckingDeductable.of(deductor, authorization, subAccount);
                 }
                 return deductor;
             } else if (!reasonHolder.hasMessage()) {

@@ -18,6 +18,13 @@
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
   "block.numismatics.vendor.tooltip.stock": "Stock",
 
+  "block.numismatics.salepoint.tooltip.clear": "Cleared interface selection",
+  "block.numismatics.salepoint.tooltip.set": "Interface selected",
+  "block.numismatics.salepoint.tooltip.missing": "Right-click the targeted interface first",
+  "block.numismatics.salepoint.tooltip.too_far": "Targeted interface is too far from here",
+  "block.numismatics.salepoint.tooltip.not_found": "Targeted interface not found",
+  "block.numismatics.salepoint.tooltip.success": "Successfully bound to targeted interface",
+
   "item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 

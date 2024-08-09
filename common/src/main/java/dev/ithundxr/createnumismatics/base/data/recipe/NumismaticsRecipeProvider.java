@@ -24,6 +24,7 @@ import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -180,6 +181,14 @@ public abstract class NumismaticsRecipeProvider extends RecipeProvider {
 
     public static ItemLike framedGlass() {
         return AllPaletteBlocks.FRAMED_GLASS;
+    }
+
+    public static ItemLike vendor() {
+      return NumismaticsBlocks.VENDOR.get();
+    }
+
+    public static ItemLike placard() {
+      return AllBlocks.PLACARD.get();
     }
   }
 }

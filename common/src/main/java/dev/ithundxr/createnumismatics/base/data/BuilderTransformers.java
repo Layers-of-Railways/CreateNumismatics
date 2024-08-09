@@ -25,6 +25,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import net.minecraft.world.item.BlockItem;
 
@@ -51,6 +52,11 @@ public class BuilderTransformers {
 
     @ExpectPlatform
     public static <I extends BlockItem, P> NonNullUnaryOperator<ItemBuilder<I, P>> vendorItem(boolean creative) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <B extends SalepointBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> salepoint() {
         throw new AssertionError();
     }
 }

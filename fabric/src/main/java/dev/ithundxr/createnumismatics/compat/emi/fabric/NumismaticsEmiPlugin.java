@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.compat.emi.fabric;
 
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigScreen;
 import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 
 public class NumismaticsEmiPlugin implements EmiPlugin {
@@ -27,5 +28,6 @@ public class NumismaticsEmiPlugin implements EmiPlugin {
     @SuppressWarnings({"rawtypes", "unchecked"}) // Java isn't clever enough to figure out GhostIngredientHandler
     public void register(EmiRegistry registry) {
         registry.addDragDropHandler(VendorScreen.class, new GhostIngredientHandler());
+        registry.addDragDropHandler(SalepointConfigScreen.class, new GhostIngredientHandler());
     }
 }

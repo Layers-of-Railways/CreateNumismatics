@@ -6,6 +6,7 @@
     "numismatics:blaze_banker",
     "numismatics:brass_depositor",
     "numismatics:creative_vendor",
+    "numismatics:salepoint",
     "numismatics:vendor"
   ]
 }

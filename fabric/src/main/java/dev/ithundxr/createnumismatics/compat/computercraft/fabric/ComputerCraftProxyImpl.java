@@ -18,73 +18,11 @@
 
 package dev.ithundxr.createnumismatics.compat.computercraft.fabric;
 
-import com.google.common.collect.ImmutableMap;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import dan200.computercraft.api.detail.VanillaDetailRegistries;
-import dan200.computercraft.api.peripheral.PeripheralLookup;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
-import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
-import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.BankTerminalPeripheral;
-import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
-import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
-import dev.ithundxr.createnumismatics.util.Utils;
-import net.minecraft.core.registries.Registries;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
-import java.util.UUID;
 
 public class ComputerCraftProxyImpl {
-    public static void registerWithDependency() {
-        /* Comment if computercraft.implementation is not in the source set */
-        ComputerCraftProxy.computerFactory = ComputerBehaviour::new;
-
-        PeripheralLookup.get().registerFallback((level, blockPos, blockState, blockEntity, direction) -> ComputerBehaviour.peripheralProvider(level, blockPos));
-
-        Utils.runOnceRegistered(Registries.BLOCK, () -> {
-            PeripheralLookup.get().registerForBlocks(
-                (world, pos, state, blockEntity, context) -> BankTerminalPeripheral.INSTANCE,
-                NumismaticsBlocks.BANK_TERMINAL.get()
-            );
-        });
-
-        VanillaDetailRegistries.ITEM_STACK.addProvider((detailMap, stack) -> {
-            Map<Object, @Nullable Object> cardDetails = null;
-            if (NumismaticsTags.AllItemTags.CARDS.matches(stack)) {
-                UUID accountID = CardItem.get(stack);
-                if (accountID != null) {
-                    cardDetails = Map.of(
-                        "AccountID", accountID.toString()
-                    );
-                }
-            } else if (NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(stack)) {
-                AuthorizedCardItem.AuthorizationPair authorizationPair = AuthorizedCardItem.get(stack);
-                if (authorizationPair != null) {
-                    UUID accountID = authorizationPair.accountID();
-                    UUID authorizationID = authorizationPair.authorizationID();
-                    cardDetails = Map.of(
-                        "AccountID", accountID.toString(),
-                        "AuthorizationID", authorizationID.toString()
-                    );
-                }
-            } else if (NumismaticsTags.AllItemTags.ID_CARDS.matches(stack)) {
-                UUID id = IDCardItem.get(stack);
-                if (id != null) {
-                    cardDetails = Map.of(
-                        "ID", id.toString()
-                    );
-                }
-            }
-
-            if (cardDetails != null)
-                detailMap.put("numismatics", ImmutableMap.of("card", cardDetails));
-        });
-    }
-
     public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
         if (ComputerCraftProxy.computerFactory == null)
             return ComputerCraftProxy.fallbackFactory.apply(sbe);

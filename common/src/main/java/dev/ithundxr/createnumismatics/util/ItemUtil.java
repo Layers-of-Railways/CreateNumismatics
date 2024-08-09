@@ -18,17 +18,21 @@
 
 package dev.ithundxr.createnumismatics.util;
 
+import dev.ithundxr.createnumismatics.mixin.AccessorSimpleContainer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.util.List;
 
 public class ItemUtil {
     public static Item woolByColor(DyeColor color) {
@@ -162,6 +166,35 @@ public class ItemUtil {
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
                 itementity.setTarget(player.getUUID());
+            }
+        }
+    }
+
+    public static SimpleContainer copy(SimpleContainer container) {
+        SimpleContainer copy = new SimpleContainer(container.getContainerSize());
+        copyInto(container, copy);
+        return copy;
+    }
+
+    /**
+     * @return if anything changed
+     */
+    public static boolean copyInto(SimpleContainer source, SimpleContainer target) {
+        boolean changed = false;
+        for (int i = 0; i < source.getContainerSize(); i++) {
+            if (!changed && (!ItemStack.isSameItemSameTags(source.getItem(i), target.getItem(i)) || source.getItem(i).getCount() != target.getItem(i).getCount())) {
+                changed = true;
+            }
+            target.setItem(i, source.getItem(i).copy());
+        }
+        return changed;
+    }
+
+    public static void clearListeners(SimpleContainer container) {
+        List<ContainerListener> listeners = ((AccessorSimpleContainer) container).numismatics$getListeners();
+        if (listeners != null) {
+            for (ContainerListener listener : List.copyOf(listeners)) {
+                container.removeListener(listener);
             }
         }
     }

@@ -45,6 +45,11 @@ public class ReasonHolder {
         this.message = message;
     }
 
+    @Deprecated
+    public void setMessage(@NotNull String message) {
+        this.message = Components.literal(message);
+    }
+
     public boolean hasMessage() {
         return message != null;
     }

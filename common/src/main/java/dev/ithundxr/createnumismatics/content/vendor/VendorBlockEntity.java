@@ -112,6 +112,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private boolean enableAutomatedExtraction = true;
     private boolean isFilterSlotLegacy = false;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    private boolean hasEnoughMoneyFromServer = false;
 
     AbstractComputerBehaviour computerBehaviour;
 
@@ -133,7 +134,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public @Nullable IDeductable getDeductable() {
         ItemStack card = cardContainer.getItem(0);
 
-        return IDeductable.getAutomated(card, owner, ReasonHolder.IGNORED);
+        return IDeductable.getForVendor(card, owner, ReasonHolder.IGNORED);
     }
 
     @Override
@@ -165,6 +166,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         tag.putInt("Mode", mode.ordinal());
         tag.putBoolean("EnableAutomatedExtraction", enableAutomatedExtraction);
+
+        if (clientPacket) {
+            tag.putBoolean("HasEnoughMoneyFromServer", hasEnoughMoneyFromServer);
+        }
     }
 
     @Override
@@ -214,6 +219,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             enableAutomatedExtraction = tag.getBoolean("EnableAutomatedExtraction");
         else
             enableAutomatedExtraction = true;
+
+        if (clientPacket) {
+            hasEnoughMoneyFromServer = tag.getBoolean("HasEnoughMoneyFromServer");
+        }
     }
 
     @Nullable
@@ -227,6 +236,9 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public boolean isTrustedInternal(Player player) {
+        if (isCreativeVendor() && player != null && !player.isCreative())
+            return false;
+
         if (Utils.isDevEnv()) { // easier to test this way in dev
             return player.getItemBySlot(EquipmentSlot.FEET).is(Items.GOLDEN_BOOTS);
         } else {
@@ -240,7 +252,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     public void addCoin(Coin coin, int count) {
         UUID depositAccount = getDepositAccount();
-        if (depositAccount != null) {
+        if (depositAccount != null && count >= 0) {
             BankAccount account = Numismatics.BANK.getAccount(depositAccount);
             if (account != null) {
                 account.deposit(coin, count);
@@ -289,6 +301,14 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                     account.deposit(coin, count);
                     notifyUpdate();
                 }
+            }
+        }
+
+        if (getMode() == Mode.BUY) {
+            boolean hasEnoughMoney = hasEnoughMoney();
+            if (hasEnoughMoney != hasEnoughMoneyFromServer) {
+                hasEnoughMoneyFromServer = hasEnoughMoney;
+                sendData();
             }
         }
     }
@@ -346,7 +366,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
-                } else if (!hasEnoughMoney()) {
+                } else if (!hasEnoughMoneyFromServer) {
                     Lang.builder()
                         .add(Components.translatable("gui.numismatics.vendor.out_of_stock.funds"))
                         .style(ChatFormatting.DARK_RED)
@@ -432,6 +452,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     public void setPrice(Coin coin, int price) {
         this.price.setPrice(coin, price);
+    }
+
+    public void disableClientPriceRead() {
+        price.disableClientRead();
     }
 
     public ItemStack getFilterItem() {
@@ -525,7 +549,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @NotNull
     @Contract("_ -> new")
-    private CompoundTag cleanTags(@NotNull CompoundTag tag) {
+    private static CompoundTag cleanTags(@NotNull CompoundTag tag) {
         tag = tag.copy();
         tag.remove("RepairCost");
         tag.remove("Count");
@@ -556,16 +580,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return tag;
     }
 
-    public boolean matchesFilterItem(@NotNull ItemStack b) {
-        ItemStack a = getFilterItem();
-        if (a.isEmpty() || b.isEmpty())
+    public static boolean matchesFilterItem(@NotNull ItemStack filterItem, @NotNull ItemStack other) {
+        if (filterItem.isEmpty() || other.isEmpty())
             return false;
 
-        if (!ItemStack.isSameItem(a, b))
+        if (!ItemStack.isSameItem(filterItem, other))
             return false;
 
-        CompoundTag an = a.getTag();
-        CompoundTag bn = b.getTag();
+        CompoundTag an = filterItem.getTag();
+        CompoundTag bn = other.getTag();
 
         if (an == null || bn == null) {
             return an == bn;
@@ -575,6 +598,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         bn = cleanTags(bn);
 
         return an.equals(bn);
+    }
+
+    public boolean matchesFilterItem(@NotNull ItemStack b) {
+        ItemStack a = getFilterItem();
+        return matchesFilterItem(a, b);
     }
 
     protected void condenseItems() {
@@ -604,7 +632,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public void dropContents(Level level, BlockPos pos) {
         Containers.dropContents(level, pos, this);
         Containers.dropContents(level, pos, cardContainer);
-        Containers.dropContents(level, pos, filterContainer);
+        if (isFilterSlotLegacy())
+            Containers.dropContents(level, pos, filterContainer);
         inventory.dropContents(level, pos);
     }
 

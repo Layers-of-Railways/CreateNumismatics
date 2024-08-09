@@ -20,10 +20,7 @@ package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.backend.IDeductable;
-import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
+import dev.ithundxr.createnumismatics.content.backend.*;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -38,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class SubAccount {
+public final class SubAccount implements IAuthorizationChecker {
     private final BankAccount parentAccount;
 
     @NotNull
@@ -259,7 +256,7 @@ public final class SubAccount {
         markDirty();
     }
 
-    private class PreAuthorizedDeductor implements IDeductable {
+    private class PreAuthorizedDeductor implements IAuthorizationCheckingDeductable {
         private final Authorization authorization;
 
         private PreAuthorizedDeductor(Authorization authorization) {

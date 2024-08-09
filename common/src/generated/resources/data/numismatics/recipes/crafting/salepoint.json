@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "@": {
+      "item": "create:precision_mechanism"
+    },
+    "I": {
+      "item": "create:electron_tube"
+    },
+    "p": {
+      "item": "create:placard"
+    },
+    "v": {
+      "item": "numismatics:vendor"
+    }
+  },
+  "pattern": [
+    " p ",
+    "IvI",
+    " @ "
+  ],
+  "result": {
+    "item": "numismatics:salepoint"
+  },
+  "show_notification": true
+}

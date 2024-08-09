@@ -146,7 +146,7 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        boolean crouching = player.isCrouching();
+        boolean crouching = player.isShiftKeyDown();
         if (crouching) {
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,

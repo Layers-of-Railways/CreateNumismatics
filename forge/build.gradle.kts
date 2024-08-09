@@ -34,6 +34,7 @@ loom {
 
 repositories {
     // mavens for Forge-exclusives
+    maven("https://api.modrinth.com/maven") // Create Crafts and Additions
     maven("https://maven.theillusivec4.top/") // Curios
     maven("https://maven.terraformersmc.com/releases/") // EMI
     maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
@@ -100,6 +101,12 @@ dependencies {
     modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
+
+    // Create Crafts and Additions
+    modCompileOnly("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
+    if ("enable_createaddition"().toBoolean()) {
+        modLocalRuntime("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
     }
 
     compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")

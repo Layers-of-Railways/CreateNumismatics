@@ -22,7 +22,6 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
-import com.simibubi.create.foundation.item.ItemDescription;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.data.BuilderTransformers;
@@ -30,13 +29,15 @@ import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlock;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockItem;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -77,7 +78,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.mapColor(MapColor.COLOR_GRAY))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
-		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+		.properties(Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.lang("Bank Terminal")
 		.transform(BuilderTransformers.bankTerminal())
@@ -90,7 +91,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.lightLevel(state -> 15))
 		.properties(p -> p.strength(1.0F,3600000.0F)) // Unexplodable
-		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+		.properties(Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.transform(BuilderTransformers.blazeBanker())
 		.addLayer(() -> RenderType::cutoutMipped)
@@ -106,11 +107,11 @@ public class NumismaticsBlocks {
 
 	public static final BlockEntry<VendorBlock> VENDOR = REGISTRATE.block("vendor", p -> new VendorBlock(p, false))
 		.initialProperties(SharedProperties::softMetal)
-		.properties(BlockBehaviour.Properties::noOcclusion)
+		.properties(Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
-		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+		.properties(Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)
 		.lang("Vendor")
@@ -122,11 +123,11 @@ public class NumismaticsBlocks {
 
 	public static final BlockEntry<VendorBlock> CREATIVE_VENDOR = REGISTRATE.block("creative_vendor", p -> new VendorBlock(p, true))
 		.initialProperties(SharedProperties::softMetal)
-		.properties(BlockBehaviour.Properties::noOcclusion)
+		.properties(Properties::noOcclusion)
 		.properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE))
 		.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
 		.properties(p -> p.strength(-1.0F, 3600000.0F)) // Unbreakable & Unexplodable
-		.properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+		.properties(Properties::requiresCorrectToolForDrops)
 		.transform(pickaxeOnly())
 		.addLayer(() -> RenderType::cutout)
 		.lang("Creative Vendor")
@@ -134,6 +135,18 @@ public class NumismaticsBlocks {
 		.item()
 		.properties(p -> p.rarity(Rarity.EPIC))
 		.transform(BuilderTransformers.vendorItem(true))
+		.build()
+		.register();
+
+	public static final BlockEntry<SalepointBlock> SALEPOINT = REGISTRATE.block("salepoint", SalepointBlock::new)
+		.initialProperties(SharedProperties::softMetal)
+		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
+		.properties(Properties::requiresCorrectToolForDrops)
+		.properties(p -> p.isRedstoneConductor(Blocks::never))
+		.transform(pickaxeOnly())
+		.lang("Salepoint")
+		.transform(BuilderTransformers.salepoint())
+		.item(SalepointBlockItem::new)
 		.build()
 		.register();
 

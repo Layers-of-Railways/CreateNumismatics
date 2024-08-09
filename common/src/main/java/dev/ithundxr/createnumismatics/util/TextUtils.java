@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.utility.Components;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -137,5 +138,30 @@ public class TextUtils {
             .getString()
             .toLowerCase(Locale.ROOT)
             .equals("true");
+    }
+
+    @ExpectPlatform
+    public static String formatFluid(long amount) {
+        throw new AssertionError();
+    }
+
+    public static String formatEnergy(long amount) {
+        return formatMetric(amount) + "fe";
+    }
+
+    public static String formatMetric(long n) {
+        double rounded;
+        if (n > 1000000000L) {
+            rounded = (double)Math.round((double)n / 1.0E8);
+            return rounded / 10.0 + "G";
+        } else if (n >= 1000000L) {
+            rounded = (double)Math.round((double)n / 100000.0);
+            return rounded / 10.0 + "M";
+        } else if (n >= 1000L) {
+            rounded = (double)Math.round((double)n / 100.0);
+            return rounded / 10.0 + "K";
+        } else {
+            return "" + n;
+        }
     }
 }

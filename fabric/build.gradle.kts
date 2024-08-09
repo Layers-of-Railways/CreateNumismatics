@@ -81,6 +81,7 @@ dependencies {
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${"lazydfu_version"()}")
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
+    modLocalRuntime("maven.modrinth:jade:${"jade_version"()}")
 
     modCompileOnly("dev.emi:emi-fabric:${"emi_version"()}:api")
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
@@ -94,6 +95,18 @@ dependencies {
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
+
+    // Create Crafts and Additions
+    modCompileOnly("maven.modrinth:createaddition:${"createaddition_fabric_version"()}")
+    modCompileOnly("teamreborn:energy:2.3.0") {
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+    if ("enable_createaddition"().toBoolean()) {
+        modLocalRuntime("maven.modrinth:createaddition:${"createaddition_fabric_version"()}")
+        modLocalRuntime("teamreborn:energy:2.3.0") {
+            exclude(group = "net.fabricmc.fabric-api")
+        }
     }
 }
 

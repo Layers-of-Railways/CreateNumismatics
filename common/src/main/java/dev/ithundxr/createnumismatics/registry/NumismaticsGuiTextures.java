@@ -50,6 +50,13 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     BLAZE_BANKER("blaze_banker",200, 110),
     VENDOR("vendor", 254, 151),
     CREATIVE_VENDOR("creative_vendor", 254, 151),
+    SALEPOINT_CONFIG("salepoint_config", 238, 145),
+    SALEPOINT_PURCHASE("salepoint", 226, 137),
+    SALEPOINT_PURCHASE_PROGRESS("salepoint", 53, 137, 130, 18),
+    SALEPOINT_FLUID_BG("salepoint", 18, 137, 28, 28),
+    SALEPOINT_FLUID_FG("salepoint", 18, 165, 28, 28),
+    SALEPOINT_ENERGY_BG("salepoint", 0, 193, 24, 24),
+    SALEPOINT_ENERGY_FG("salepoint", 0, 217, 22, 22),
     ;
 
     public static final int FONT_COLOR = 0x575F7A;

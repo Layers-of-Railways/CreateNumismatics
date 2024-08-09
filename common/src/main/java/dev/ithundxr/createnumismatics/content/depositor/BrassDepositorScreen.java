@@ -96,6 +96,7 @@ public class BrassDepositorScreen extends AbstractSimiContainerScreen<BrassDepos
                 .titled(Components.literal(TextUtils.titleCaseConversion(coin.getName(0))))
                 .calling((value) -> {
                     menu.contentHolder.setPrice(coin, value);
+                    menu.contentHolder.disableClientPriceRead();
                     coinLabels[i].setX(baseX + 18 - font.width(coinLabels[i].text) / 2);
                 });
             addRenderableWidget(coinScrollInputs[i]);

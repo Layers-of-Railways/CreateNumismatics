@@ -33,7 +33,8 @@ public enum Mods {
 	SODIUM("sodium"),
 	COMPUTERCRAFT("computercraft"),
 	EMI("emi"),
-	JEI("jei")
+	JEI("jei"),
+	CREATEADDITION("createaddition"),
 	;
 
 	public final boolean isLoaded;
