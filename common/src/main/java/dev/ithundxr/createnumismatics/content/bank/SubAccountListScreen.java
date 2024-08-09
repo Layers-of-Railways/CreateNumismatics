@@ -47,7 +47,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -131,6 +133,10 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         stopPopup();
     }
 
+    private void clickSound() {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+    }
+
     protected void editSubAccount(UUID subAccountID) {
         menu.openSubAccountEditScreen(subAccountID);
         NumismaticsPackets.PACKETS.send(new OpenSubAccountEditScreenPacket(subAccountID));
@@ -148,6 +154,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         hasPopup = true;
 
         editorConfirm = new IconButton(leftPos + 56 + 168 - 13, topPos + 65 + 22, AllIcons.I_CONFIRM);
+        editorConfirm.withCallback(() -> editSubAccount(null));
         addRenderableWidget(editorConfirm);
 
         int x = leftPos - 12;
@@ -455,6 +462,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
                         renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.remove")), mx, my);
                     }
                     if (click == 0) {
+                        clickSound();
                         if (ready) {
                             menu.removeSubAccount(subAccount.getAuthorizationID());
                             removeProgress.updateChaseTarget(0.0f);
@@ -474,6 +482,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
                 if (cx >= 195 && cx <= 203) {
                     renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.edit")), mx, my);
                     if (click == 0) {
+                        clickSound();
                         editSubAccount(subAccount.getAuthorizationID());
                     }
                     return true;
@@ -487,6 +496,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
                 if (cx >= 193 && cx <= 204) {
                     renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.reset_spending")), mx, my);
                     if (click == 0) {
+                        clickSound();
                         menu.resetSubAccountSpending(subAccount.getAuthorizationID());
                     }
                     return true;
@@ -538,11 +548,6 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         syncName();
-
-        if (editorConfirm != null && editorConfirm.isMouseOver(pMouseX, pMouseY)) {
-            editSubAccount(null);
-            return true;
-        }
 
         if (action(null, pMouseX, pMouseY, pButton))
             return true;
