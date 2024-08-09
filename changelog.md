@@ -9,6 +9,7 @@ Additions
 - /payall command to pay all users
 - Toggle button to enable/disable item extraction from vendors
 - Bulk buy/sell up to a stack of items to vendors by sneaking while using the vendor
+- Add Sub Accounts: created in the Bank Terminal, these allow binding Authorized Cards with spending limits and separate trust lists, drawing from and depositing to the parent Bank Account
 - Salepoint: Similar to the vendor, but allows players to queue a transaction made up of multiple purchases through a Portable Item/Fluid/Energy Interface
 
 Fixes
