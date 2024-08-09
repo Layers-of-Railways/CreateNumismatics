@@ -22,17 +22,24 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.VarIntDataContainerSynchronizer;
+import dev.ithundxr.createnumismatics.mixin_interfaces.IAdminModePlayer;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.registry.packets.SetAdminModePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerSynchronizer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerPlayer.class)
-public class MixinServerPlayer {
+public class MixinServerPlayer implements IAdminModePlayer {
     @Shadow public ServerGamePacketListenerImpl connection;
+
+    @Unique
+    private boolean numismatics$isAdminMode;
 
     @WrapOperation(method = "initMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;setSynchronizer(Lnet/minecraft/world/inventory/ContainerSynchronizer;)V"))
     private void initMenu(AbstractContainerMenu instance, ContainerSynchronizer synchronizer, Operation<Void> original) {
@@ -42,6 +49,19 @@ public class MixinServerPlayer {
             original.call(instance, new VarIntDataContainerSynchronizer(synchronizer, connection));
         } else {
             original.call(instance, synchronizer);
+        }
+    }
+
+    @Override
+    public boolean numismatics$isAdminMode() {
+        return numismatics$isAdminMode;
+    }
+
+    @Override
+    public void numismatics$setAdminMode(boolean adminMode) {
+        if (adminMode != numismatics$isAdminMode) {
+            numismatics$isAdminMode = adminMode;
+            NumismaticsPackets.PACKETS.sendTo((ServerPlayer) (Object) this, new SetAdminModePacket(adminMode));
         }
     }
 }

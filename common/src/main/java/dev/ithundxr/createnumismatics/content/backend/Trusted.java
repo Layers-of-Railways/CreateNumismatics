@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
+import dev.ithundxr.createnumismatics.mixin_interfaces.IAdminModePlayer;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +36,12 @@ public interface Trusted {
     }
 
     static boolean isForceTrusted(Player player) {
+        if (!(player instanceof IAdminModePlayer adminModePlayer))
+            return false;
+
+        if (!adminModePlayer.numismatics$isAdminMode())
+            return false;
+
         if (Utils.isDevEnv())
             return player.getItemBySlot(EquipmentSlot.LEGS).is(Items.GOLDEN_LEGGINGS);
         return player.hasPermissions(2);
