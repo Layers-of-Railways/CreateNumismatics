@@ -87,9 +87,9 @@ dependencies {
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
     // Steam 'n' Rails
-    modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}") { isTransitive = false }
     if ("enable_snr"().toBoolean()) {
-        modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}") { isTransitive = false }
     }
 
     // Carry On

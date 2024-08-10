@@ -65,7 +65,7 @@ dependencies {
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
     // Steam 'n' Rails
-    modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"()}")
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"()}") { isTransitive = false }
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")

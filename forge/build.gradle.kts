@@ -84,9 +84,9 @@ dependencies {
     modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}")
 
     // Steam 'n' Rails
-    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}") { isTransitive = false }
     if ("enable_snr"().toBoolean()) {
-        modLocalRuntime("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}") { isTransitive = false }
     }
 
     // Carry On
