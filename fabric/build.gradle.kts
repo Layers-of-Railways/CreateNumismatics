@@ -87,7 +87,7 @@ dependencies {
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
     // Steam 'n' Rails
-    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
     if ("enable_snr"().toBoolean()) {
         modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
     }
