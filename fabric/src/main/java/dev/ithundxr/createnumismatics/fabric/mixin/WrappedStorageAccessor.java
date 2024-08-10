@@ -26,9 +26,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(WrappedStorage.class)
 @SuppressWarnings("UnstableApiUsage")
 public interface WrappedStorageAccessor<T> extends Storage<T> {
-    @Accessor("wrapped")
+    @Accessor(value = "wrapped", remap = false)
     Storage<T> getWrapped();
 
-    @Accessor("wrapped")
+    @Accessor(value = "wrapped", remap = false)
     void setWrapped(Storage<T> wrapped);
 }

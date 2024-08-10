@@ -51,7 +51,7 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow protected InterfaceFluidHandler capability;
+    @Shadow(remap = false) protected InterfaceFluidHandler capability;
     @Unique
     private FluidSalepointTargetBehaviour railway$salepointBehaviour;
 

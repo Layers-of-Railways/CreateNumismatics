@@ -75,9 +75,6 @@ dependencies {
     // deprecated modules @ runtime only
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:${"fabric_api_version"()}")
 
-    // because create fabric is a bit broken I think
-    modImplementation("net.minecraftforge:forgeconfigapiport-fabric:4.2.11")
-
     // Development QOL
     modLocalRuntime("maven.modrinth:lazydfu:${"lazydfu_version"()}")
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
@@ -87,9 +84,9 @@ dependencies {
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
     // Steam 'n' Rails
-    modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}") { isTransitive = false }
     if ("enable_snr"().toBoolean()) {
-        modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}") { isTransitive = false }
     }
 
     // Carry On

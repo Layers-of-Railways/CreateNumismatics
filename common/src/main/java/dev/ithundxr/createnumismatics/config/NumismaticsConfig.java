@@ -33,13 +33,13 @@ public class NumismaticsConfig {
     @ApiStatus.Internal
     public static final Map<ModConfig.Type, ConfigBase> CONFIGS = new EnumMap<>(ModConfig.Type.class);
 
-    //private static CClient client;
+    private static CClient client;
     private static CCommon common;
     private static CServer server;
 
-//    public static CClient client() {
-//        return client;
-//    }
+    public static CClient client() {
+        return client;
+    }
 
     public static CCommon common() {
         return common;
@@ -68,7 +68,7 @@ public class NumismaticsConfig {
 
     @ApiStatus.Internal
     public static void registerCommon() {
-        //client = register(CClient::new, ModConfig.Type.CLIENT);
+        client = register(CClient::new, ModConfig.Type.CLIENT);
         common = register(CCommon::new, ModConfig.Type.COMMON);
         server = register(CServer::new, ModConfig.Type.SERVER);
     }

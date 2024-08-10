@@ -53,7 +53,7 @@ import java.util.Objects;
 @Mixin(PortableEnergyInterfaceBlockEntity.class)
 @SuppressWarnings("UnstableApiUsage")
 public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
-    @Shadow
+    @Shadow(remap = false)
     protected InterfaceEnergyHandler capability;
 
     @Unique
@@ -225,10 +225,10 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
     @ConditionalMixin(mods = Mods.CREATEADDITION)
     @Mixin(InterfaceEnergyHandler.class)
     private interface InterfaceEnergyHandlerAccessor {
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         EnergyStorage getWrapped();
 
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         void setWrapped(EnergyStorage wrapped);
     }
 }
