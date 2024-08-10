@@ -3,16 +3,16 @@
  * Copyright (c) 2024 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -86,9 +86,10 @@ dependencies {
     modCompileOnly("dev.emi:emi-fabric:${"emi_version"()}:api")
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
-    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric-api:${"cc_version"()}")
-    if ("enable_cc"().toBoolean()) {
-        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric:${"cc_version"()}")
+    // Steam 'n' Rails
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
+    if ("enable_snr"().toBoolean()) {
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"()}")
     }
 
     // Carry On
@@ -107,6 +108,12 @@ dependencies {
         modLocalRuntime("teamreborn:energy:2.3.0") {
             exclude(group = "net.fabricmc.fabric-api")
         }
+    }
+
+    // CC: Tweaked
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric-api:${"cc_version"()}")
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric:${"cc_version"()}")
     }
 }
 

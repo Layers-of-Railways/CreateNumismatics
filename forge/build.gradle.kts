@@ -49,16 +49,7 @@ repositories {
             includeGroup("cc.tweaked")
         }
     }
-    maven("https://maven.blamejared.com/") {
-        // location of the maven that hosts JEI files since January 2023
-        name = "Jared's maven"
-        content {
-            includeGroup("mezz.jei")
-        }
-    }
-    maven("https://modmaven.dev") {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
+    maven("https://maven.blamejared.com/") { // JEI
         content {
             includeGroup("mezz.jei")
         }
@@ -92,15 +83,20 @@ dependencies {
     // at runtime, use the full JEI jar for Forge
     modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}")
 
-    if ("enable_cc"().toBoolean()) {
-        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+    // Steam 'n' Rails
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
+    if ("enable_snr"().toBoolean()) {
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"()}")
     }
-
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
+    
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
     }
 
     // Create Crafts and Additions

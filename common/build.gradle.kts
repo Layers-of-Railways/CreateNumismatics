@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 architectury {
     common {
         for(p in rootProject.subprojects) {
@@ -46,14 +64,18 @@ dependencies {
     // required for proper remapping and compiling
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
+    // Steam 'n' Rails
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"()}")
+
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
 
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
-
-
+    // CC: Tweaked
     compileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-common-api:${"cc_version"()}")
+    
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 }
+    
 
 tasks.processResources {
     // don't add development or to-do files into built jar
