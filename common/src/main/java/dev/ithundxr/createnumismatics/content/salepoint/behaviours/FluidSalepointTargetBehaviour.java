@@ -25,7 +25,7 @@ import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class FluidSalepointTargetBehaviour extends SalepointTargetBehaviour<MultiloaderFluidStack> {
+public abstract class FluidSalepointTargetBehaviour extends SalepointTargetBehaviour<MultiloaderFluidStack> implements IFilteringSalepointBehaviour {
     public FluidSalepointTargetBehaviour(SmartBlockEntity be) {
         super(be);
     }

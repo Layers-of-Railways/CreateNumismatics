@@ -23,6 +23,8 @@ import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
+import dev.ithundxr.createnumismatics.content.salepoint.behaviours.IFilteringSalepointBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidConfigWidget;
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidDisplayWidget;
@@ -85,6 +87,18 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     public final boolean setFilter(MultiloaderFluidStack filter, Level salepointLevel, BlockPos salepointPos, @Nullable Player player) {
         if (!canChangeFilterTo(filter))
             return false;
+
+        if (!filter.isEmpty() && salepointLevel.getBlockEntity(salepointPos) instanceof SalepointBlockEntity salepointBE) {
+            BlockPos targetedPos = salepointBE.getTargetedPos();
+            if (targetedPos != null) {
+                var behaviour = getBehaviour(salepointLevel, targetedPos);
+                if (behaviour instanceof IFilteringSalepointBehaviour filteringSalepointBehaviour) {
+                    if (!filteringSalepointBehaviour.canSetFilter(filter)) {
+                        return false;
+                    }
+                }
+            }
+        }
 
         setFilterInternal(filter, salepointLevel, salepointPos, player);
         this.filter = filter.copy();
