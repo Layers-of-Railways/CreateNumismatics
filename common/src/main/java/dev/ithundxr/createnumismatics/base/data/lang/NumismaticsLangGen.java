@@ -20,8 +20,11 @@ package dev.ithundxr.createnumismatics.base.data.lang;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.simibubi.create.foundation.utility.FilesHelper;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.ponder.utils.NumismaticsSharedText;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 
 import java.util.Map;
@@ -34,6 +37,7 @@ public class NumismaticsLangGen {
         provideDefaultLang("interface", langConsumer);
         provideDefaultLang("tooltips", langConsumer);
         NumismaticsAdvancements.provideLang(langConsumer);
+        providePonderLang(langConsumer);
     }
 
     private static void provideDefaultLang(String fileName, BiConsumer<String, String> consumer) {
@@ -48,5 +52,11 @@ public class NumismaticsLangGen {
             String value = entry.getValue().getAsString();
             consumer.accept(key, value);
         }
+    }
+
+    private static void providePonderLang(BiConsumer<String, String> consumer) {
+        NumismaticsSharedText.gatherText();
+        
+        PonderLocalization.provideLang(Numismatics.MOD_ID, consumer);
     }
 }

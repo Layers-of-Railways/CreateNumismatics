@@ -18,11 +18,15 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
+import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
+import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import com.simibubi.create.foundation.ponder.instruction.ShowInputInstruction;
 import com.simibubi.create.foundation.utility.Pointing;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
-import dev.ithundxr.createnumismatics.ponder.utils.IconInputWindowElement;
+import dev.ithundxr.createnumismatics.mixin.client.AccessorInputWindowElement;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +36,7 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.RepeaterBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
 public class DepositorScenes {
     public static void depositor(SceneBuilder scene, SceneBuildingUtil util) {
@@ -137,8 +142,8 @@ public class DepositorScenes {
                 .placeNearTarget();
         scene.idle(20);
         
-        scene.overlay.showControls(new IconInputWindowElement(util.vector.topOf(andesiteDepositor), Pointing.DOWN).withIcon(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
-        scene.overlay.showControls(new IconInputWindowElement(util.vector.topOf(brassDepositor), Pointing.DOWN).withIcon(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(andesiteDepositor), Pointing.DOWN).showing(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(brassDepositor), Pointing.DOWN).showing(NumismaticsIcons.I_COIN_COG_RED_LINE), 40);
         
         cycleState(andesiteDepositorLeft, RepeaterBlock.POWERED, scene);
         cycleState(brassDepositorRight, RepeaterBlock.POWERED, scene);
@@ -156,6 +161,68 @@ public class DepositorScenes {
     }
 
     public static void depositorPricing(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("depositor_pricing", "Depositor Pricing");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+        scene.idle(10);
+
+        BlockPos andesiteDepositor = util.grid.at(2, 1, 2);
+
+        BlockPos redstoneLamp = util.grid.at(2, 1, 3);
+
+        scene.world.showSection(util.select.position(andesiteDepositor), Direction.DOWN);
+        scene.idle(10);
+
+        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("A depositor’s price can be set in its UI")
+                .pointAt(util.vector.topOf(andesiteDepositor))
+                .placeNearTarget();
+        scene.idle(80);
+
+        InputWindowElement element = new InputWindowElement(util.vector.topOf(andesiteDepositor), Pointing.DOWN);
+        ((AccessorInputWindowElement) element).numsismatics$setKey(Numismatics.asResource("amount_spaced_1x"));
+        scene.addInstruction(new ShowInputInstruction(element, 77));
+        
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_SPUR);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_BEVEL);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_SPROCKET);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_COG);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_CROWN);
+
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_SUN);
+
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_CROWN);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_COG);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_SPROCKET);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_BEVEL);
+        changeIcon(scene, element, NumismaticsIcons.I_COIN_SPUR);
+
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("The andesite depositor can only set a simple price in single coins, and will only check the player’s hand for a coin")
+                .pointAt(util.vector.topOf(andesiteDepositor))
+                .placeNearTarget();
+        scene.idle(80);
+
+        showIcon(scene, util.vector.topOf(andesiteDepositor), "amount1x", NumismaticsIcons.I_COIN_COG_RED_LINE, 40);
+        scene.idle(50);
+
+        showIcon(scene, util.vector.topOf(andesiteDepositor), "amount1x", NumismaticsIcons.I_COIN_SPUR, 40);
+        
+        scene.effects.indicateSuccess(andesiteDepositor);
+        
+        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
+        
+        scene.idle(50);
+
+        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
+        
         
     }
     
@@ -167,5 +234,16 @@ public class DepositorScenes {
     private static void cycleDoorState(BlockPos doorPos, SceneBuilder scene) {
         cycleState(doorPos, DoorBlock.OPEN, scene);
         cycleState(doorPos.above(), DoorBlock.OPEN, scene);
+    }
+
+    private static void showIcon(SceneBuilder scene, Vec3 sceneSpace, String sharedTextValue, AllIcons icon, int duration) {
+        InputWindowElement element = new InputWindowElement(sceneSpace, Pointing.DOWN).showing(icon);
+        ((AccessorInputWindowElement) element).numsismatics$setKey(Numismatics.asResource(sharedTextValue));
+        scene.overlay.showControls(element, duration);
+    }
+    
+    private static void changeIcon(SceneBuilder scene, InputWindowElement element, AllIcons icon) {
+        scene.addInstruction(s -> element.showing(icon));
+        scene.idle(7);
     }
 }

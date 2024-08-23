@@ -18,19 +18,24 @@
 
 package dev.ithundxr.createnumismatics.ponder.utils;
 
-import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.utility.Pointing;
-import dev.ithundxr.createnumismatics.mixin.client.AccessorInputWindowElement;
-import net.minecraft.world.phys.Vec3;
+import com.simibubi.create.foundation.ponder.PonderLocalization;
+import dev.ithundxr.createnumismatics.Numismatics;
 
-public class IconInputWindowElement extends InputWindowElement {
-    public IconInputWindowElement(Vec3 sceneSpace, Pointing direction) {
-        super(sceneSpace, direction);
+public class NumismaticsSharedText {
+    public static void gatherText() {
+        // Add entries used across several ponder scenes (Safe for hotswap)
+        
+        createNumberPonderEntries(1, 10);
     }
 
-    public InputWindowElement withIcon(AllIcons icon) {
-        ((AccessorInputWindowElement) this).numismatics$setIcon(icon);
-        return this;
+    private static void createNumberPonderEntries(int from, int to) {
+        for (int i = from; i < to; i++) {
+            add("amount" + i + "x", i + "x");
+            add("amount_spaced_" + i + "x", i + "x ");
+        }
+    }
+
+    private static void add(String k, String v) {
+        PonderLocalization.registerShared(Numismatics.asResource(k), v);
     }
 }

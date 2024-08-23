@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-03T10:53:15.136472954	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2024-08-23T18:12:57.100507436	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 70c481f36a9718ac48632e6939ac6ba785be4c9e assets/numismatics/models/item/black_id_card.json
 95ef415a564eba1d212053195d25b199427b94e3 assets/numismatics/blockstates/creative_vendor.json
 4458283178334ae169a7cbbd1aa09067cbb99ee7 data/numismatics/tags/items/internal/dyes/green_dyes.json
@@ -25,9 +25,9 @@ c1863c2bd08a5910a534aee0dcbc61a352fb9577 assets/numismatics/models/item/white_ca
 890e519d407cab18c04ee439e7d5f67eb4f76ab3 assets/numismatics/models/item/blaze_banker.json
 8fd12493390894fa5b3988f499f758c17137af16 assets/numismatics/models/item/sun.json
 27788e1854c12b323c1fe5945858fce4d1544e3c data/numismatics/tags/items/internal/dyes/white_dyes.json
-41b79e319044d6179f7757f73ef67c9acdbfe87d assets/numismatics/models/item/lime_id_card.json
-dcf8ea4cef1226fb52d84359d1d2ff403ddb556a assets/numismatics/models/item/orange_id_card.json
 36e1dad2803241c11c646b9737be8af6d67ef8fe data/c/tags/items/string.json
+dcf8ea4cef1226fb52d84359d1d2ff403ddb556a assets/numismatics/models/item/orange_id_card.json
+41b79e319044d6179f7757f73ef67c9acdbfe87d assets/numismatics/models/item/lime_id_card.json
 c1878dd808cf36e400e13885adfab22b60ac291e assets/numismatics/models/item/purple_id_card.json
 9c20dd40c03605721d0231ffde829d55e36b1c05 assets/numismatics/models/item/yellow_card.json
 c05836600bd1689f598515841869634b1d709cca assets/numismatics/models/item/yellow_id_card.json
@@ -38,11 +38,11 @@ a8cb82f19034a0e724e12df45c883e9cd469c210 assets/numismatics/models/item/green_ca
 cca7e7be961c6ed6272f19211bb17707b7934155 assets/numismatics/models/item/creative_vendor.json
 9fdcd12c871f136e66973a8c02be94a675a4b727 data/numismatics/tags/items/internal/dyes/yellow_dyes.json
 dc5c60bbbaf3a5d7bc1f9bc0c9377757dbd8de49 data/numismatics/loot_tables/blocks/bank_terminal.json
-aed88ddc55f53f022f96f0685b39d989667a2cb9 assets/numismatics/lang/en_us.json
+7859a7a5b2e54af1cfa7e917a89f931cf34409cb assets/numismatics/lang/en_us.json
 edd6109002439af0f15959debe4cb9cca254add8 data/minecraft/tags/blocks/mineable/pickaxe.json
 facbd710d107ebc9b2c6ddfa3b59a16d5f85c992 assets/numismatics/models/item/spur.json
 d6f017479b3cc538f73d7fb0a1e65d1742bab266 assets/numismatics/models/item/light_blue_id_card.json
-359ae558c1863eafeb0b0e762d472ea201473701 assets/numismatics/lang/en_ud.json
+9167f82af5b0c8020036176b36f945d4f421e4dc assets/numismatics/lang/en_ud.json
 e62db1a880d468865769307ad19f16d9b7dac7c1 data/numismatics/tags/items/internal/dyes/light_gray_dyes.json
 c5958ebbc2782c2611690c642713cadc59656814 assets/numismatics/models/item/light_blue_card.json
 9e6e50d40e3688ae681107e60ac5ff5fc22585f9 data/numismatics/loot_tables/blocks/andesite_depositor.json
@@ -86,8 +86,8 @@ ad712dd2a2a7268dfa773f38a50d526952758d5c data/numismatics/tags/items/internal/dy
 182450e6ad4229f2959e6c50e38ef6e2ff5259d0 data/numismatics/tags/items/internal/dyes/orange_dyes.json
 56973a6ce09377c8f235f46aa4d71a2a9fabf587 assets/numismatics/models/item/red_card.json
 bdf101b181fa593ac3f92224b80c8ec45b5f046a data/numismatics/tags/items/numismatics_items.json
-f7f43dd6d567ec8303c73b79409bc92d8b56574a assets/numismatics/blockstates/andesite_depositor.json
 266d9b0eb6fdecc4bcf6da465078d059009a3b54 data/numismatics/loot_tables/blocks/blaze_banker.json
+f7f43dd6d567ec8303c73b79409bc92d8b56574a assets/numismatics/blockstates/andesite_depositor.json
 411b79f79547a0adcb665bf7440e8169f7dcb24e assets/numismatics/models/block/brass_depositor.json
 99e3dd233c66e14a6e572e332ac8b7af1f8ed94e assets/numismatics/models/item/orange_card.json
 83ce6c9d27970b4c643f0f9f3dfeb58668fca3d4 assets/numismatics/models/item/banking_guide.json

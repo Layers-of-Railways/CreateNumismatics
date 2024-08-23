@@ -18,13 +18,13 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(InputWindowElement.class)
 public interface AccessorInputWindowElement {
-    @Accessor("icon")
-    void numismatics$setIcon(AllIcons icon);
+    @Accessor("key")
+    void numsismatics$setKey(ResourceLocation key);
 }
