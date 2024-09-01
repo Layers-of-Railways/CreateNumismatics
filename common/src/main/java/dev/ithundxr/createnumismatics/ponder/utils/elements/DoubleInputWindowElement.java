@@ -135,7 +135,7 @@ public class DoubleInputWindowElement extends InputWindowElement {
                     PonderPalette.WHITE.getColorObject().scaleAlpha(fade).getRGB(), false);
 
         if (hasText2)
-            graphics.drawString(font, text2, 4 + 24 + 8, (int) ((height - font.lineHeight) / 2f + 2),
+            graphics.drawString(font, text2, 36, (int) ((height - font.lineHeight) / 2f + 2),
                     PonderPalette.WHITE.getColorObject().scaleAlpha(fade).getRGB(), false);
 
         if (hasIcon1) {
@@ -164,7 +164,7 @@ public class DoubleInputWindowElement extends InputWindowElement {
 
         if (hasItem2) {
             GuiGameElement.of(item2)
-                    .<GuiGameElement.GuiRenderBuilder>at(keyWidth2 + (hasIcon2 ? 48 : 0), 0)
+                    .<GuiGameElement.GuiRenderBuilder>at(keyWidth2 + (hasIcon2 ? 60 : 36), 0)
                     .scale(1.5)
                     .render(graphics);
             RenderSystem.disableDepthTest();
