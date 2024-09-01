@@ -27,6 +27,8 @@ import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import dev.ithundxr.createnumismatics.mixin.client.AccessorInputWindowElement;
+import dev.ithundxr.createnumismatics.ponder.utils.elements.DoubleInputWindowElement;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -166,11 +168,11 @@ public class DepositorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos andesiteDepositor = util.grid.at(2, 1, 2);
+        BlockPos depositor = util.grid.at(2, 1, 2);
 
         BlockPos redstoneLamp = util.grid.at(2, 1, 3);
 
-        scene.world.showSection(util.select.position(andesiteDepositor), Direction.DOWN);
+        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
         scene.idle(10);
 
         scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
@@ -179,11 +181,11 @@ public class DepositorScenes {
         scene.overlay.showText(70)
                 .attachKeyFrame()
                 .text("A depositor’s price can be set in its UI")
-                .pointAt(util.vector.topOf(andesiteDepositor))
+                .pointAt(util.vector.topOf(depositor))
                 .placeNearTarget();
         scene.idle(80);
 
-        InputWindowElement element = new InputWindowElement(util.vector.topOf(andesiteDepositor), Pointing.DOWN);
+        InputWindowElement element = new InputWindowElement(util.vector.topOf(depositor), Pointing.DOWN);
         ((AccessorInputWindowElement) element).numsismatics$setKey(Numismatics.asResource("amount_spaced_1x"));
         scene.addInstruction(new ShowInputInstruction(element, 77));
         
@@ -204,26 +206,54 @@ public class DepositorScenes {
         scene.overlay.showText(70)
                 .attachKeyFrame()
                 .text("The andesite depositor can only set a simple price in single coins, and will only check the player’s hand for a coin")
-                .pointAt(util.vector.topOf(andesiteDepositor))
+                .pointAt(util.vector.topOf(depositor))
                 .placeNearTarget();
         scene.idle(80);
 
-        showIcon(scene, util.vector.topOf(andesiteDepositor), "amount1x", NumismaticsIcons.I_COIN_COG_RED_LINE, 40);
+        showIcon(scene, util.vector.topOf(depositor), "amount1x", NumismaticsIcons.I_COIN_COG_RED_LINE, 40);
+        scene.effects.indicateRedstone(depositor);
         scene.idle(50);
 
-        showIcon(scene, util.vector.topOf(andesiteDepositor), "amount1x", NumismaticsIcons.I_COIN_SPUR, 40);
+        showIcon(scene, util.vector.topOf(depositor), "amount1x", NumismaticsIcons.I_COIN_SPUR, 40);
+        scene.effects.indicateSuccess(depositor);
         
-        scene.effects.indicateSuccess(andesiteDepositor);
-        
-        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
         cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
-        
         scene.idle(50);
 
-        cycleState(andesiteDepositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
         cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
+        scene.idle(10);
+
+        scene.world.hideSection(util.select.position(depositor), Direction.UP);
+        scene.idle(20);
         
-        
+        scene.world.setBlock(depositor, NumismaticsBlocks.BRASS_DEPOSITOR.getDefaultState(),false);
+
+        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.idle(20);
+
+        scene.overlay.showText(70)
+                .attachKeyFrame()
+                .text("The brass depositor can accept a complex price using multiple coin values, and will check the player’s whole inventory for the appropriate change")
+                .pointAt(util.vector.topOf(depositor))
+                .placeNearTarget();
+        scene.idle(80);
+
+        showIcon(scene, util.vector.topOf(depositor),
+                "amount3x", NumismaticsIcons.I_COIN_COG,
+                "amount2x", NumismaticsIcons.I_COIN_SPROCKET,
+                40
+        );
+        scene.effects.indicateSuccess(depositor);
+
+        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
+        scene.idle(50);
+
+        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
+        scene.idle(10);
     }
     
     // <--------------------------------------------> Utilities <-------------------------------------------->
@@ -236,10 +266,26 @@ public class DepositorScenes {
         cycleState(doorPos.above(), DoorBlock.OPEN, scene);
     }
 
-    private static void showIcon(SceneBuilder scene, Vec3 sceneSpace, String sharedTextValue, AllIcons icon, int duration) {
+    private static InputWindowElement createElement(Vec3 sceneSpace, String sharedTextValue, AllIcons icon) {
         InputWindowElement element = new InputWindowElement(sceneSpace, Pointing.DOWN).showing(icon);
         ((AccessorInputWindowElement) element).numsismatics$setKey(Numismatics.asResource(sharedTextValue));
-        scene.overlay.showControls(element, duration);
+        
+        return element;
+    }
+
+    private static DoubleInputWindowElement createElement(Vec3 sceneSpace, String firstSharedTextValue, AllIcons firstIcon, String secondSharedTextValue, AllIcons secondIcon) {
+        InputWindowElement element1 = createElement(sceneSpace, firstSharedTextValue, firstIcon);
+        InputWindowElement element2 = createElement(sceneSpace, secondSharedTextValue, secondIcon);
+
+        return new DoubleInputWindowElement(sceneSpace, Pointing.DOWN, element1, element2);
+    }
+
+    private static void showIcon(SceneBuilder scene, Vec3 sceneSpace, String sharedTextValue, AllIcons icon, int duration) {
+        scene.overlay.showControls(createElement(sceneSpace, sharedTextValue, icon), duration);
+    }
+
+    private static void showIcon(SceneBuilder scene, Vec3 sceneSpace, String firstSharedTextValue, AllIcons firstIcon, String secondSharedTextValue, AllIcons secondIcon, int duration) {
+        scene.overlay.showControls(createElement(sceneSpace, firstSharedTextValue, firstIcon, secondSharedTextValue, secondIcon), duration);
     }
     
     private static void changeIcon(SceneBuilder scene, InputWindowElement element, AllIcons icon) {
