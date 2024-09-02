@@ -215,15 +215,7 @@ public class DepositorScenes {
         scene.idle(50);
 
         showIcon(scene, util.vector.topOf(depositor), "amount1x", NumismaticsIcons.I_COIN_SPUR, 40);
-        scene.effects.indicateSuccess(depositor);
-        
-        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
-        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
-        scene.idle(50);
-
-        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
-        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
-        scene.idle(10);
+        indicateSuccess(scene, depositor, redstoneLamp);
 
         scene.world.hideSection(util.select.position(depositor), Direction.UP);
         scene.idle(20);
@@ -245,17 +237,9 @@ public class DepositorScenes {
                 "amount2x", NumismaticsIcons.I_COIN_SPROCKET,
                 40
         );
-        scene.effects.indicateSuccess(depositor);
-
-        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
-        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
-        scene.idle(50);
-
-        cycleState(depositor, AbstractDepositorBlock.LOCKED, scene);
-        cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
-        scene.idle(10);
+        indicateSuccess(scene, depositor, redstoneLamp);
     }
-    
+
     // <--------------------------------------------> Utilities <-------------------------------------------->
     private static <T extends Comparable<T>> void cycleState(BlockPos pos, Property<T> property, SceneBuilder scene) {
         scene.world.modifyBlock(pos, state -> state.cycle(property), false);
@@ -264,6 +248,18 @@ public class DepositorScenes {
     private static void cycleDoorState(BlockPos doorPos, SceneBuilder scene) {
         cycleState(doorPos, DoorBlock.OPEN, scene);
         cycleState(doorPos.above(), DoorBlock.OPEN, scene);
+    }
+
+    private static void indicateSuccess(SceneBuilder scene, BlockPos depositorPos, BlockPos lampPos) {
+        scene.effects.indicateSuccess(depositorPos);
+
+        cycleState(depositorPos, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(lampPos, RedstoneLampBlock.LIT, scene);
+        scene.idle(50);
+
+        cycleState(depositorPos, AbstractDepositorBlock.LOCKED, scene);
+        cycleState(lampPos, RedstoneLampBlock.LIT, scene);
+        scene.idle(10);
     }
 
     private static InputWindowElement createElement(Vec3 sceneSpace, String sharedTextValue, AllIcons icon) {

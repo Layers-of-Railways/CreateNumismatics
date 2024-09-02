@@ -40,6 +40,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -114,7 +115,7 @@ public class Numismatics {
 
     public static void crashDev(String message) {
         if (Utils.isDevEnv()) {
-            throw new RuntimeException(message);
+            throw Util.pauseInIde(new RuntimeException(message));
         } else {
             LOGGER.error(message);
         }
