@@ -21,13 +21,8 @@ package dev.ithundxr.createnumismatics.compat.computercraft.forge;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
-import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
 
 public class ComputerCraftProxyImpl {
-    public static void registerWithDependency() {
-        /* Comment if computercraft.implementation is not in the source set */
-        ComputerCraftProxy.computerFactory = ComputerBehaviour::new;
-    }
     public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
         if (ComputerCraftProxy.computerFactory == null)
             return ComputerCraftProxy.fallbackFactory.apply(sbe);

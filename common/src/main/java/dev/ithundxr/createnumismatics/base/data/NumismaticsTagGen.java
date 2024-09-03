@@ -21,17 +21,14 @@ package dev.ithundxr.createnumismatics.base.data;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllBlockTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllItemTags;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -79,6 +76,7 @@ public class NumismaticsTagGen {
         CommonTags.STRING.generateCommon(tags)
             .generateBoth(tags, tag -> tag.add(Items.STRING.builtInRegistryHolder().key()));
         CommonTags.IRON_PLATES.generateCommon(tags);
+        CommonTags.GOLD_PLATES.generateCommon(tags);
 //			.generateBoth(tags, tag -> tag.add(AllItems.IRON_SHEET.get()));
 
         for (AllItemTags tag : AllItemTags.values()) {

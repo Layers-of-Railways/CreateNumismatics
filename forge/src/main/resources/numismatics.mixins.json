@@ -9,7 +9,18 @@
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
+    "ItemHandlerWrapperAccessor",
+    "PortableFluidInterfaceBlockEntityMixin",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
+    "PortableItemInterfaceBlockEntityMixin",
     "ServerGamePacketListenerImplMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
+    "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "self.BrassDepositorBlockEntityCapabilities",
     "self.ComputerBehaviourCapabilities",
     "self.VendorBlockEntityCapabilities"

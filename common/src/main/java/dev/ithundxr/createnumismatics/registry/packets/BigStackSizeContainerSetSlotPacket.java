@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
 import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
 import dev.ithundxr.createnumismatics.util.PacketUtils;
 import net.fabricmc.api.EnvType;
@@ -62,7 +61,7 @@ public class BigStackSizeContainerSetSlotPacket implements S2CPacket {
         Player player = mc.player;
         // IntelliJ falsely thinks that player.containerMenu is never null
         //noinspection ConstantValue,DataFlowIssue
-        if (player.containerMenu != null && player.containerMenu instanceof VendorMenu && player.containerMenu.containerId == containerId) {
+        if (player.containerMenu != null && player.containerMenu.containerId == containerId) {
             player.containerMenu.setItem(slot, stateId, itemStack);
         }
     }

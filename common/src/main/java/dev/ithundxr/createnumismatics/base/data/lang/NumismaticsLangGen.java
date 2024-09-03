@@ -23,9 +23,10 @@ import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.simibubi.create.foundation.utility.FilesHelper;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.ponder.utils.NumismaticsSharedText;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -36,8 +37,18 @@ public class NumismaticsLangGen {
 
         provideDefaultLang("interface", langConsumer);
         provideDefaultLang("tooltips", langConsumer);
-        NumismaticsAdvancements.provideLang(langConsumer);
         providePonderLang(langConsumer);
+        NumismaticsAdvancements.provideLang(langConsumer);
+        AuthorizationType.provideLang(langConsumer);
+        Coin.provideLang(langConsumer);
+        NumismaticsTags.provideLang(langConsumer);
+        
+        /* ================= */
+        /* Special data keys */
+        /* ================= */
+
+        // Is the language read left-to-right?
+        provider.add("numismatics.special.ltr", "true");
     }
 
     private static void provideDefaultLang(String fileName, BiConsumer<String, String> consumer) {

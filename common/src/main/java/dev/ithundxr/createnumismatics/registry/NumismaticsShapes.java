@@ -29,9 +29,16 @@ public class NumismaticsShapes {
 
     public static final VoxelShaper
         BANK_TERMINAL = shape(0, 0, 0, 16, 16, 8)
-        .add(0, 0, 8, 16, 8, 16)
-        .add(1, 8, 8, 15, 15, 15)
-        .forDirectional(NORTH);
+            .add(0, 0, 8, 16, 8, 16)
+            .add(1, 8, 8, 15, 15, 15)
+            .forDirectional(NORTH),
+        SALEPOINT = shape(0, 0, 11, 16, 16, 16)
+            .add(0, 15, 10, 16, 16, 11)
+            .add(0, 0, 10, 16, 1, 11)
+            .add(15, 1, 10, 16, 15, 11)
+            .add(0, 1, 10, 1, 15, 11)
+            .forDirectional(NORTH)
+    ;
 
     private static Builder shape(VoxelShape shape) {
         return new Builder(shape);

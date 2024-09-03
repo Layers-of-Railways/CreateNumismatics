@@ -36,8 +36,6 @@ import java.util.Optional;
 public class CoinDisplaySlot extends Slot {
     private static final Container emptyInventory = new SimpleContainer(0);
     private final Coin coin;
-    private final boolean canInsert = false;
-    private final boolean canExtract = false;
 
     public CoinDisplaySlot(Coin coin, int x, int y) {
         super(emptyInventory, 0, x, y);

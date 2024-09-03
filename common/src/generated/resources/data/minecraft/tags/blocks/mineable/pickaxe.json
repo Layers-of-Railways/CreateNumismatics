@@ -6,6 +6,7 @@
     "numismatics:bank_terminal",
     "numismatics:blaze_banker",
     "numismatics:vendor",
-    "numismatics:creative_vendor"
+    "numismatics:creative_vendor",
+    "numismatics:salepoint"
   ]
 }

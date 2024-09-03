@@ -96,6 +96,17 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .define('#', Ingredients.brassCasing())
             .define('I', Ingredients.electronTube()));
 
+    GeneratedRecipe SALEPOINT = create(NumismaticsBlocks.SALEPOINT)
+        .unlockedBy(Ingredients::vendor)
+        .viaShaped(b -> b
+            .pattern(" p ")
+            .pattern("IvI")
+            .pattern(" @ ")
+            .define('p', Ingredients.placard())
+            .define('I', Ingredients.electronTube())
+            .define('v', Ingredients.vendor())
+            .define('@', Ingredients.precisionMechanism()));
+
     DyedRecipeList CARDS = new DyedRecipeList(color -> create(NumismaticsItems.CARDS.get(color))
         .unlockedBy(Ingredients::precisionMechanism)
         .viaShaped(b -> b
@@ -113,6 +124,15 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             .define(',', Ingredients.brassNugget())
             .define('-', Ingredients.paper())
             .define('_', Ingredients.ironSheet())
+            .define('/', Ingredients.dye(color)))
+    );
+
+    DyedRecipeList AUTHORIZED_CARDS = new DyedRecipeList(color -> create(NumismaticsItems.AUTHORIZED_CARDS.get(color))
+        .unlockedBy(Ingredients::precisionMechanism)
+        .viaShaped(b -> b
+            .pattern("@_/")
+            .define('@', Ingredients.precisionMechanism())
+            .define('_', Ingredients.goldSheet())
             .define('/', Ingredients.dye(color)))
     );
 

@@ -23,8 +23,10 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.BrassDepositorPeripheral;
+import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.SalepointPeripheral;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.VendorPeripheral;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -51,6 +53,8 @@ public class ComputerBehaviour extends AbstractComputerBehaviour {
             return () -> new BrassDepositorPeripheral(scbe);
         if (be instanceof VendorBlockEntity scbe)
             return () -> new VendorPeripheral(scbe);
+        if (be instanceof SalepointBlockEntity sbe)
+            return () -> new SalepointPeripheral(sbe);
 
         throw new IllegalArgumentException("No peripheral available for " + be.getType());
     }

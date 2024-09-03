@@ -25,6 +25,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListScreen;
+import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
+import dev.ithundxr.createnumismatics.content.bank.SubAccountListScreen;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerMenu;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerScreen;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
@@ -33,6 +35,10 @@ import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.BankScreen;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorScreen;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigScreen;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseMenu;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseScreen;
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
 import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -76,6 +82,24 @@ public class NumismaticsMenuTypes {
         "vendor",
         VendorMenu::new,
         () -> VendorScreen::new
+    );
+
+    public static final MenuEntry<SubAccountListMenu> SUB_ACCOUNT_LIST = register(
+        "sub_account_list",
+        SubAccountListMenu::new,
+        () -> SubAccountListScreen::new
+    );
+
+    public static final MenuEntry<SalepointConfigMenu> SALEPOINT_CONFIG = register(
+        "salepoint_config",
+        SalepointConfigMenu::new,
+        () -> SalepointConfigScreen::new
+    );
+
+    public static final MenuEntry<SalepointPurchaseMenu> SALEPOINT_PURCHASE = register(
+        "salepoint_purchase",
+        SalepointPurchaseMenu::new,
+        () -> SalepointPurchaseScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

@@ -59,8 +59,14 @@ public class NumismaticsIcons extends AllIcons {
         I_COIN_SPROCKET = next(),
         I_COIN_COG = next(),
         I_COIN_CROWN = next(),
-        I_COIN_SUN = next(),
-        I_HOPPER = next()
+        I_COIN_SUN = next()
+    ;
+    public static final NumismaticsIcons
+        I_HOPPER = newRow(),
+        I_OPEN_SUB_LIST = next(),
+        I_SALE_GO = next(),
+        I_SALE_ALERT = next(),
+        I_SALE_CANCEL = next()
     ;
     
     public static final NumismaticsIcons

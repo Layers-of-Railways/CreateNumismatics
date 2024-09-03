@@ -38,6 +38,7 @@ public class NumismaticsCommands {
             .then(DeductCommand.register())
             .then(ViewCommand.register())
             .then(PayAllCommand.register())
+            .then(ToggleAdminModeCommand.register())
             //.then(ClearCasingCacheCommand.register())
             //.then(SplitTrainCommand.register())
             //.then(TrainInfoCommand.register());

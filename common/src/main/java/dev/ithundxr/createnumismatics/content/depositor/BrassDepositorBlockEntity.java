@@ -24,6 +24,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
@@ -91,6 +92,10 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         this.price.setPrice(coin, price);
     }
 
+    public void disableClientPriceRead() {
+        price.disableClientRead();
+    }
+
     public void addCoins(int totalPrice) {
         MergingCoinBag coinBag = new MergingCoinBag(totalPrice);
 
@@ -106,11 +111,11 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     @Override
     public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        Couple<Integer> cogsAndSpurs = Coin.COG.convert(price.getTotalPrice());
-        int cogs = cogsAndSpurs.getFirst();
-        int spurs = cogsAndSpurs.getSecond();
+        Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(price.getTotalPrice());
+        int cogs = referenceAndSpurs.getFirst();
+        int spurs = referenceAndSpurs.getSecond();
         MutableComponent balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
-            TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
+            TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
         Lang.builder()
             .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color))
             .forGoggles(tooltip);

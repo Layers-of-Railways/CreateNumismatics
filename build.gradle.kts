@@ -1,3 +1,21 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
@@ -68,6 +86,8 @@ subprojects {
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
         maven("https://maven.quiltmc.org/repository/release") // Quilt Mappings
+        maven("https://maven.ithundxr.dev/releases") // Steam 'n' Rails Releases
+        maven("https://maven.ithundxr.dev/snapshots") // Steam 'n' Rails Snapshots
         maven("https://maven.tterrag.com/") { // Flywheel
             content {
                 // need to be specific here due to version overlaps
@@ -156,7 +176,7 @@ subprojects {
             "fabric_loader_version" to "fabric_loader_version"(),
             "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
             "create_forge_version" to "create_forge_version"().split("-")[0], // cut off build number
-            "create_fabric_version" to "create_fabric_version"().split("+")[0] // Trim +mcX.XX.X from version string
+            "create_fabric_version" to "create_fabric_version"()
         )
 
         inputs.properties(properties)

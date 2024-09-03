@@ -25,6 +25,7 @@ import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerRenderer;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.content.depositor.BrassDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorRenderer;
 
@@ -50,9 +51,13 @@ public class NumismaticsBlockEntities {
         .register();
 
     public static final BlockEntityEntry<VendorBlockEntity> VENDOR = REGISTRATE.blockEntity("vendor", VendorBlockEntity::new)
-            .validBlocks(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
-            .renderer(() -> VendorRenderer::new)
-            .register();
+        .validBlocks(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
+        .renderer(() -> VendorRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<SalepointBlockEntity> SALEPOINT = REGISTRATE.blockEntity("salepoint", SalepointBlockEntity::new)
+        .validBlocks(NumismaticsBlocks.SALEPOINT)
+        .register();
 
     @SuppressWarnings("EmptyMethod")
     public static void register() {}

@@ -21,7 +21,7 @@ package dev.ithundxr.createnumismatics.content.depositor;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.BigStackSizeContainerSynchronizer;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.bank.CardSlot;
+import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinDisplaySlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.SlotDiscreteCoinBag;
@@ -77,7 +77,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
             x += 18;
             addSlot(new SlotDiscreteCoinBag(contentHolder.inventory, coin, x, y, true, true));
         }
-        addSlot(new CardSlot.BoundCardSlot(contentHolder.cardContainer, 0, 11+26, y)); // make here to preserve slot order
+        addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 11+26, y)); // make here to preserve slot order
 
         addPlayerSlots(31+13, 165);
 
@@ -140,7 +140,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
         } else { // player inventory
             if (stack.getItem() instanceof CoinItem && !moveItemStackTo(stack, 0, COIN_SLOTS, false)) {
                 return ItemStack.EMPTY;
-            } else if (NumismaticsTags.AllItemTags.CARDS.matches(stack) && !moveItemStackTo(stack, CARD_SLOT_INDEX, CARD_SLOT_INDEX+1, false)) {
+            } else if ((NumismaticsTags.AllItemTags.CARDS.matches(stack) || NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(stack)) && !moveItemStackTo(stack, CARD_SLOT_INDEX, CARD_SLOT_INDEX+1, false)) {
                 return ItemStack.EMPTY;
             } else if (index >= PLAYER_INV_START_INDEX && index < PLAYER_HOTBAR_END_INDEX && !moveItemStackTo(stack, PLAYER_HOTBAR_END_INDEX, PLAYER_INV_END_INDEX, false)) {
                 return ItemStack.EMPTY;

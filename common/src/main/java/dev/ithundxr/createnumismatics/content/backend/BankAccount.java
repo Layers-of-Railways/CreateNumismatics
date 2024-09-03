@@ -21,18 +21,26 @@ package dev.ithundxr.createnumismatics.content.backend;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Authorization;
+import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
+import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
 import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.OpenSubAccountsMenuPacket;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
+import dev.ithundxr.createnumismatics.util.Utils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +55,7 @@ import java.util.stream.Collectors;
 
 import static dev.ithundxr.createnumismatics.Numismatics.crashDev;
 
-public class BankAccount implements MenuProvider {
+public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChecker {
     public enum Type {
         PLAYER(false, false),
         BLAZE_BANKER(true, true);
@@ -89,6 +97,9 @@ public class BankAccount implements MenuProvider {
     private List<UUID> trustList; // only present on server
 
     @Nullable
+    private Map<UUID, SubAccount> subAccounts; // only present on server
+
+    @Nullable
     private String label;
 
     public final MergingCoinBag linkedCoinBag = new BankAccountCoinBag();
@@ -113,6 +124,8 @@ public class BankAccount implements MenuProvider {
         }
     };
 
+    private final MenuProvider subAccountsMenuProvider = new SubAccountsMenuProvider();
+
     public BankAccount(UUID id, Type type) {
         this(id, 0, type);
     }
@@ -128,10 +141,50 @@ public class BankAccount implements MenuProvider {
         this.clientSide = clientSide;
         if (type.useTrustList && !clientSide)
             trustList = new ArrayList<>();
+        if (!clientSide)
+            subAccounts = new HashMap<>();
     }
 
     public static BankAccount clientSide(FriendlyByteBuf buf) {
         return new BankAccount(buf.readUUID(), Type.read(buf), buf.readVarInt(), true);
+    }
+
+    public static BankAccount clientSideSubAccountList(FriendlyByteBuf buf) {
+        BankAccount account = clientSide(buf);
+        int subAccountCount = buf.readVarInt();
+        account.subAccounts = new HashMap<>();
+        for (int i = 0; i < subAccountCount; i++) {
+            SubAccount subAccount = SubAccount.clientSide(account, buf);
+            account.subAccounts.put(subAccount.getAuthorizationID(), subAccount);
+        }
+        return account;
+    }
+
+    public void updateSubAccountsFrom(FriendlyByteBuf buf) {
+        if (!clientSide) {
+            crashDev("updateSubAccountsFrom called on server side! (Account: "+this+")");
+            return;
+        }
+
+        Map<UUID, SubAccount> oldSubAccounts = subAccounts;
+
+        if (oldSubAccounts == null)
+            oldSubAccounts = new HashMap<>();
+
+        subAccounts = new HashMap<>();
+        int subAccountCount = buf.readVarInt();
+        for (int i = 0; i < subAccountCount; i++) {
+            SubAccount newSubAccount = SubAccount.clientSide(this, buf);
+            SubAccount existingSubAccount = oldSubAccounts.remove(newSubAccount.getAuthorizationID());
+            if (existingSubAccount == null) {
+                existingSubAccount = newSubAccount;
+            } else {
+                existingSubAccount.updateFrom(newSubAccount);
+            }
+            subAccounts.put(existingSubAccount.getAuthorizationID(), existingSubAccount);
+        }
+
+        oldSubAccounts.values().forEach(SubAccount::setRemoved);
     }
 
     public int getBalance() {
@@ -160,12 +213,19 @@ public class BankAccount implements MenuProvider {
         setBalance(getBalance() + amount);
     }
 
-    public boolean deduct(Coin coin, int amount) {
+    @Override
+    public boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder) {
         return deduct(coin, amount, false);
     }
 
-    public boolean deduct(int amount) {
+    @Override
+    public boolean deduct(int amount, ReasonHolder reasonHolder) {
         return deduct(amount, false);
+    }
+
+    @Override
+    public int getMaxWithdrawal() {
+        return getBalance();
     }
 
     public boolean deduct(Coin coin, int amount, boolean force) {
@@ -214,6 +274,16 @@ public class BankAccount implements MenuProvider {
         }
         if (account.type.hasLabel && nbt.contains("Label", Tag.TAG_STRING))
             account.label = nbt.getString("Label");
+
+        if (account.subAccounts != null && nbt.contains("SubAccounts")) {
+            account.subAccounts.clear();
+
+            NBTHelper.readCompoundList(
+                nbt.getList("SubAccounts", Tag.TAG_COMPOUND),
+                (tag) -> SubAccount.read(account, tag)
+            ).forEach(subAccount -> account.subAccounts.put(subAccount.getAuthorizationID(), subAccount));
+        }
+
         return account;
     }
 
@@ -233,6 +303,11 @@ public class BankAccount implements MenuProvider {
 
         if (type.hasLabel && label != null)
             nbt.putString("Label", label);
+
+        if (subAccounts != null) {
+            nbt.put("SubAccounts", NBTHelper.writeCompoundList(subAccounts.values(), SubAccount::write));
+        }
+
         return nbt;
     }
 
@@ -279,6 +354,46 @@ public class BankAccount implements MenuProvider {
         buf.writeVarInt(this.balance);
     }
 
+    public void sendToSubAccountsMenu(FriendlyByteBuf buf) {
+        sendToMenu(buf);
+        sendSubAccountsOnlyToMenu(buf);
+    }
+
+    public void sendSubAccountsOnlyToMenu(FriendlyByteBuf buf) {
+        if (subAccounts == null) {
+            buf.writeVarInt(0);
+        } else {
+            buf.writeVarInt(subAccounts.size());
+            for (SubAccount subAccount : subAccounts.values()) {
+                subAccount.sendToMenu(buf);
+            }
+        }
+    }
+
+    public @Nullable UUID addSubAccount(@NotNull String label) {
+        if (subAccounts == null)
+            return null;
+
+        SubAccount subAccount = new SubAccount(this, label, UUID.randomUUID());
+        subAccounts.put(subAccount.getAuthorizationID(), subAccount);
+        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), new BankAccountLabelPacket(subAccount));
+        markDirty();
+        return subAccount.getAuthorizationID();
+    }
+
+    public @Nullable SubAccount removeSubAccount(UUID subAccountID) {
+        if (subAccounts == null)
+            return null;
+
+        SubAccount subAccount = subAccounts.remove(subAccountID);
+        subAccount.setRemoved();
+
+        if (!clientSide)
+            NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), BankAccountLabelPacket.remove(subAccount));
+        markDirty();
+        return subAccount;
+    }
+
     public boolean isClientSide() {
         return clientSide;
     }
@@ -299,15 +414,108 @@ public class BankAccount implements MenuProvider {
         return isAuthorized(player.getUUID());
     }
 
+    /**
+     * If possible, use {@link #isAuthorized(Player)} instead.
+     */
     public boolean isAuthorized(@Nullable UUID uuid) {
         if (uuid == null) return false;
         return uuid.equals(this.id) || (this.type.useTrustList && this.trustList != null && this.trustList.contains(uuid));
+    }
+
+    @Override
+    public boolean isAuthorized(Authorization authorization) {
+        if (!authorization.isHuman())
+            return false;
+
+        return isAuthorized(authorization.getPersonalID());
     }
 
     public void updateTrustList(Consumer<List<UUID>> updater) {
         if (trustList != null) {
             updater.accept(trustList);
             markDirty();
+        }
+    }
+
+    public boolean hasSubAccounts() {
+        return subAccounts != null && !subAccounts.isEmpty();
+    }
+
+    public @Nullable Collection<SubAccount> getSubAccounts() {
+        return subAccounts == null ? null : subAccounts.values();
+    }
+
+    public @NotNull Collection<SubAccount> getAlphabetizedSubAccounts() {
+        if (subAccounts == null)
+            return Collections.emptyList();
+
+        return subAccounts.values().stream()
+            .sorted(Comparator.comparing(SubAccount::getLabel))
+            .collect(Collectors.toList());
+    }
+
+    public @Nullable SubAccount getSubAccountNoAuth(UUID subAccountID) {
+        return subAccounts == null ? null : subAccounts.get(subAccountID);
+    }
+
+    public @Nullable SubAccount getSubAccount(Authorization authorization, ReasonHolder reasonHolder) {
+        if (subAccounts == null) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            return null;
+        }
+
+        SubAccount subAccount = subAccounts.get(authorization.getAuthorizationID());
+        if (subAccount == null) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            return null;
+        }
+
+        if (!subAccount.isAuthorized(authorization)) {
+            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+            return null;
+        }
+
+        return subAccount;
+    }
+
+    public void openSubAccountsMenu(ServerPlayer player) {
+        Utils.openScreen(
+            player,
+            subAccountsMenuProvider,
+            this::sendToSubAccountsMenu
+        );
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void openSubAccountsMenu() {
+        NumismaticsPackets.PACKETS.send(new OpenSubAccountsMenuPacket(this));
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void openNormalMenu() {
+        NumismaticsPackets.PACKETS.send(new OpenSubAccountsMenuPacket(this, false));
+    }
+
+    private class SubAccountsMenuProvider implements MenuProvider {
+        @Override
+        public @NotNull Component getDisplayName() {
+            String for_ = getLabel();
+
+            if (for_ == null)
+                for_ = UsernameUtils.INSTANCE.getName(id, null);
+
+            if (for_ != null) {
+                return Components.translatable("gui.numismatics.bank_terminal.sub_accounts.named", for_);
+            } else {
+                return Components.translatable("gui.numismatics.bank_terminal.sub_accounts");
+            }
+        }
+
+        @Override
+        @Nullable
+        public AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+
+            return new SubAccountListMenu(NumismaticsMenuTypes.SUB_ACCOUNT_LIST.get(), i, inventory, BankAccount.this);
         }
     }
 }

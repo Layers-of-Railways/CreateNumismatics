@@ -23,11 +23,10 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
-import dev.ithundxr.createnumismatics.content.bank.CardItem;
+import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -37,12 +36,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
+
+    private boolean clientReadEnabled = true;
 
     public static final BehaviourType<SliderStylePriceBehaviour> TYPE = new BehaviourType<>("slider-style price");
 
@@ -97,6 +102,9 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
 
     @Override
     public void read(CompoundTag tag, boolean clientPacket) {
+        if (clientPacket && !clientReadEnabled)
+            return;
+
         super.read(tag, clientPacket);
         this.prices.clear();
         if (tag.contains("Prices", Tag.TAG_COMPOUND)) {
@@ -112,32 +120,41 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         calculateTotalPrice();
     }
 
-    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource) {
+    public void enableClientRead() {
+        this.clientReadEnabled = true;
+    }
+
+    public void disableClientRead() {
+        this.clientReadEnabled = false;
+    }
+
+    public int deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource, ReasonHolder reasonHolder, int maximumCount) {
+        int count = 0;
+
+        while (count < maximumCount && deduct(player, hand, addToSource, reasonHolder)) {
+            count++;
+        }
+
+        return count;
+    }
+
+    public boolean deduct(@NotNull Player player, @NotNull InteractionHand hand, boolean addToSource, ReasonHolder reasonHolder) {
         int totalPrice = getTotalPrice();
 
         ItemStack handStack = player.getItemInHand(hand);
-        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack)) {
-            if (CardItem.isBound(handStack)) {
-                UUID id = CardItem.get(handStack);
-                BankAccount account = Numismatics.BANK.getAccount(id);
-                if (account != null && account.isAuthorized(player)) {
-                    if (account.deduct(totalPrice)) {
-                        //activate(state, level, pos);
-                        if (addToSource) {
-                            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                                addCoin.accept(entry.getKey(), entry.getValue());
-                            }
-                        }
-                        return true;
-                    }
+        IDeductable deductable = IDeductable.get(handStack, player, reasonHolder);
+        if (deductable != null) {
+            if (deductable.deduct(totalPrice, reasonHolder)) {
+                //activate(state, level, pos);
+                if (addToSource) {
+                    addCoinsToSelf();
                 }
+                return true;
             }
         } else if (CoinItem.extract(player, hand, prices, false)) {
             //activate(state, level, pos);
             if (addToSource) {
-                for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-                    addCoin.accept(entry.getKey(), entry.getValue());
-                }
+                addCoinsToSelf();
             }
             return true;
         }
@@ -145,24 +162,79 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
         return false;
     }
 
-    public boolean canPayOut() {
-        return deductFromSelf(true);
+    public void addCoinsToSelf() {
+        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+            addCoin.accept(entry.getKey(), entry.getValue());
+        }
     }
 
-    public boolean deductFromSelf(boolean simulate) {
-        if (!simulate && !canPayOut())
-            return false;
+    public boolean canPayOut(@Nullable IDeductable deductable) {
+        return getMaxAvailablePayOut(1, deductable) > 0;
+    }
 
-        for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
-            Coin coin = entry.getKey();
-            int price = entry.getValue();
-            int count = getCount.apply(coin);
-            if (count < price)
-                return false;
-            if (!simulate)
-                addCoin.accept(coin, -price);
+    /**
+     * Get the maximum number of times the price can be paid out
+     * @param maxRepetitions the maximum number of times the caller is interested in
+     * @param deductable source of non-coin funds
+     * @return the actual number of times the price can be paid out
+     */
+    protected int getMaxAvailablePayOut(int maxRepetitions, @Nullable IDeductable deductable) {
+        if (deductable == null)
+            deductable = IDeductable.Empty.INSTANCE;
+
+        Map<Coin, Integer> alreadyTakenCoins = new EnumMap<>(Coin.class);
+        for (Coin coin : Coin.values())
+            alreadyTakenCoins.put(coin, 0);
+        int remainingWithdrawal = deductable.getMaxWithdrawal();
+
+        int actualRepetitions = 0;
+        for (; actualRepetitions <= maxRepetitions; actualRepetitions++) {
+            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+                Coin coin = entry.getKey();
+                int price = entry.getValue();
+                int count = getCount.apply(coin) - alreadyTakenCoins.get(coin);
+                if (count >= price) {
+                    alreadyTakenCoins.put(coin, alreadyTakenCoins.get(coin) + price);
+                } else {
+                    int remaining = price - count;
+                    if (remainingWithdrawal < remaining) {
+                        return actualRepetitions;
+                    }
+                    remainingWithdrawal -= remaining;
+                    alreadyTakenCoins.put(coin, alreadyTakenCoins.get(coin) + count);
+                }
+            }
         }
-        return true;
+
+        return maxRepetitions;
+    }
+
+    public int deductFromSelf(int maxRepetitions, @Nullable IDeductable deductable, boolean simulate, @NotNull ReasonHolder reasonHolder) {
+        if (deductable == null)
+            deductable = IDeductable.Empty.INSTANCE;
+
+        int actualRepetitions = getMaxAvailablePayOut(maxRepetitions, deductable);
+
+        if (simulate || actualRepetitions == 0)
+            return actualRepetitions;
+
+        for (int i = 0; i < actualRepetitions; i++) {
+            for (Map.Entry<Coin, Integer> entry : prices.entrySet()) {
+                Coin coin = entry.getKey();
+                int price = entry.getValue();
+                int count = getCount.apply(coin);
+                if (count < price) {
+                    addCoin.accept(coin, -count);
+                    if (!deductable.deduct(coin, price - count, reasonHolder)) {
+                        Numismatics.crashDev("Failed to deduct from self: " + coin + " " + (price - count));
+                    }
+                } else {
+                    addCoin.accept(coin, -price);
+                }
+            }
+        }
+
+        return actualRepetitions;
     }
 
     /**

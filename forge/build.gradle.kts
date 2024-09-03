@@ -34,6 +34,7 @@ loom {
 
 repositories {
     // mavens for Forge-exclusives
+    maven("https://api.modrinth.com/maven") // Create Crafts and Additions
     maven("https://maven.theillusivec4.top/") // Curios
     maven("https://maven.terraformersmc.com/releases/") // EMI
     maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
@@ -46,6 +47,11 @@ repositories {
     maven("https://squiddev.cc/maven/") { // CC Tweaked
         content {
             includeGroup("cc.tweaked")
+        }
+    }
+    maven("https://maven.blamejared.com/") { // JEI
+        content {
+            includeGroup("mezz.jei")
         }
     }
 }
@@ -71,15 +77,33 @@ dependencies {
     forgeRuntimeLibrary("io.netty:netty-codec-socks:4.1.82.Final")
     forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.82.Final")
 
-    if ("enable_cc"().toBoolean()) {
-        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
-    }
+    // compile against the JEI API but do not include it at runtime
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-common-api:${"jei_version"()}")
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-forge-api:${"jei_version"()}")
+    // at runtime, use the full JEI jar for Forge
+    modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-forge:${"jei_version"()}")
 
+    // Steam 'n' Rails
+    val buildNumber = if ("snr_build_number"() != "null") "-build." + "snr_build_number"() else ""
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
+    if ("enable_snr"().toBoolean()) {
+        modLocalRuntime("com.railwayteam.railways:Steam_Rails-forge-${"minecraft_version"()}:${"snr_version"()}+forge-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
+    }
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    }
+    
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+    }
+
+    // Create Crafts and Additions
+    modCompileOnly("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
+    if ("enable_createaddition"().toBoolean()) {
+        modLocalRuntime("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
     }
 
     compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")

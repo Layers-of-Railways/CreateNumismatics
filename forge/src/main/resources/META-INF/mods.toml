@@ -23,13 +23,13 @@ side = "BOTH"
 [[dependencies.numismatics]]
 modId = "minecraft"
 mandatory = true
-versionRange = "${minecraft_version}"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.numismatics]]
 modId="create"
 mandatory=true
-versionRange="${create_forge_version}"
+versionRange="[${create_forge_version},)"
 ordering="NONE"
 side="BOTH"

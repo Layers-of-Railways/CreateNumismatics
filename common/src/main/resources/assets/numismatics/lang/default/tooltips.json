@@ -6,6 +6,9 @@
   "item.numismatics.card.tooltip.bound": "Bound",
   "item.numismatics.card.tooltip.bound.to": "Bound to: %s",
   "item.numismatics.card.tooltip.blank": "Blank",
+  "item.numismatics.authorized_card.tooltip.bound.no_label": "Sub Account: Unknown",
+  "item.numismatics.authorized_card.tooltip.bound.with_label": "Sub Account: %s",
+  "item.numismatics.authorized_card.tooltip.hold_shift": "Hold sneak to clear. Bind in a Bank Terminal",
   "block.numismatics.brass_depositor.tooltip.price": "Price: %s %s, %s¤",
   "item.numismatics.id_card.tooltip.already_bound": "Already bound, Sneak + Use to Unbind",
   "item.numismatics.id_card.tooltip.cleared": "Cleared",
@@ -15,11 +18,21 @@
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
   "block.numismatics.vendor.tooltip.stock": "Stock",
 
+  "block.numismatics.salepoint.tooltip.clear": "Cleared interface selection",
+  "block.numismatics.salepoint.tooltip.set": "Interface selected",
+  "block.numismatics.salepoint.tooltip.missing": "Right-click the targeted interface first",
+  "block.numismatics.salepoint.tooltip.too_far": "Targeted interface is too far from here",
+  "block.numismatics.salepoint.tooltip.not_found": "Targeted interface not found",
+  "block.numismatics.salepoint.tooltip.success": "Successfully bound to targeted interface",
+
   "item.numismatics.banking_guide.tooltip": "BANKING GUIDE",
   "item.numismatics.banking_guide.tooltip.summary": "Use on a _Blaze Burner_ to convert it into a _Blaze Banker_.",
 
   "item.numismatics.bank_card.tooltip": "BANK CARD",
-  "item.numismatics.bank_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Allows Access to the bound Bank Account when used in a _Bank Terminal_, or can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
+  "item.numismatics.bank_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Allows access to the bound Bank Account when used in a _Bank Terminal_, or can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
+
+  "item.numismatics.authorized_bank_card.tooltip": "AUTHORIZED BANK CARD",
+  "item.numismatics.authorized_bank_card.tooltip.summary": "Put in Bank Terminal _Sub Account menu_ to bind, _shift click_ to clear. Allows providing limited Bank Account access to trusted players or automation. Can be placed in a _Vendor/Depositor_ to automatically collect the coins and add them to the bound account.",
 
   "item.numismatics.id_card.tooltip": "ID CARD",
   "item.numismatics.id_card.tooltip.summary": "_Right Click_ to bind, _shift click_ to clear. Can be placed in the _Trusted Menu_ of many Numismatics blocks to give the bound player access to that block.",

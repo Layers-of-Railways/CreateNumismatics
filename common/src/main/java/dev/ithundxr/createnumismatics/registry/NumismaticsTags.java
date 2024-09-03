@@ -20,9 +20,9 @@ package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -30,6 +30,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.BiConsumer;
 
 public class NumismaticsTags {
   public enum NameSpace {
@@ -106,7 +108,8 @@ public class NumismaticsTags {
     NUMISMATICS_ITEMS,
     COINS,
     CARDS,
-    ID_CARDS
+    ID_CARDS,
+    AUTHORIZED_CARDS
     ;
 
     public final TagKey<Item> tag;
@@ -156,5 +159,20 @@ public class NumismaticsTags {
   public static void register() {
     AllBlockTags.register();
     AllItemTags.register();
+  }
+
+  public static void provideLang(BiConsumer<String, String> consumer) {
+    for (AllBlockTags blockTag : AllBlockTags.values()) {
+      ResourceLocation loc = blockTag.tag.location();
+      consumer.accept("tag.block." + loc.getNamespace() + "." + loc.getPath().replace('/', '.'),
+          TextUtils.titleCaseConversion(blockTag.name()).replace('_', ' '));
+    }
+
+    for (AllItemTags itemTag : AllItemTags.values()) {
+      ResourceLocation loc = itemTag.tag.location();
+      consumer.accept("tag.item." + loc.getNamespace() + "." + loc.getPath().replace('/', '.'),
+          TextUtils.titleCaseConversion(itemTag.name().replace('_', ' ')));
+    }
+    consumer.accept("tag.item.forge.string", "String");
   }
 }

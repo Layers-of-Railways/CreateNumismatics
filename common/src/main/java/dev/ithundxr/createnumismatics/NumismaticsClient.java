@@ -28,7 +28,8 @@ import java.util.UUID;
 
 public class NumismaticsClient {
 
-    public final static Map<UUID, String> bankAccountLabels = new HashMap<>();
+    public static final Map<UUID, String> bankAccountLabels = new HashMap<>();
+    public static final Map<UUID, String> subAccountLabels = new HashMap<>();
 
     public static void init() {
         NumismaticsPackets.PACKETS.registerS2CListener();

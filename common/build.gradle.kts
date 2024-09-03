@@ -67,12 +67,19 @@ dependencies {
     // Mixin Extras
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 
+    // Steam 'n' Rails
+    val buildNumber = if ("snr_build_number"() != "null") "-build." + "snr_build_number"() else ""
+    modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
+
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
     
     // CC: Tweaked
     compileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-common-api:${"cc_version"()}")
+    
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 }
+    
 
 tasks.processResources {
     // don't add development or to-do files into built jar

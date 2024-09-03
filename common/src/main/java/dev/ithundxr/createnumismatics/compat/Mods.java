@@ -31,8 +31,11 @@ import java.util.function.Supplier;
 public enum Mods {
 	CARRYON("carryon"),
 	SODIUM("sodium"),
-	COMPUTERCRAFT("computercraft")
-	;
+	COMPUTERCRAFT("computercraft"),
+	EMI("emi"),
+	JEI("jei"),
+	CREATEADDITION("createaddition"),
+    RAILWAYS("railways");
 
 	public final boolean isLoaded;
 	public final boolean requiredForDataGen;

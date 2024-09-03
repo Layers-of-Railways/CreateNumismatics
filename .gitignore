@@ -21,3 +21,6 @@ classes/
 
 # IThundxr - I keep the wiki repo under this one to make editing easier
 wiki/
+
+# Slimeist - Just some textures for blockbench
+/common/src/main/resources/assets/create/textures/block/

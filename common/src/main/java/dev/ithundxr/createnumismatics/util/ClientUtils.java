@@ -18,7 +18,9 @@
 
 package dev.ithundxr.createnumismatics.util;
 
+import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -39,7 +41,10 @@ public class ClientUtils {
     }
 
     private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
+    private static ItemStack SALEPOINT_STACK;
     public static ItemStack changeGoggleOverlayItem(Supplier<ItemStack> original) {
+        if (SALEPOINT_STACK == null)
+            SALEPOINT_STACK = NumismaticsBlocks.SALEPOINT.asStack();
 
         HitResult hitResult = Minecraft.getInstance().hitResult;
         if (!(hitResult instanceof BlockHitResult blockHitResult))
@@ -52,7 +57,11 @@ public class ClientUtils {
         if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity vendorBE) {
             // get the block entities cost and show the item for that and its cost and under
             // show what is being sold (the enchants)
-            return vendorBE.getSellingItem().isEmpty() ? BARRIER_STACK : vendorBE.getSellingItem();
+            return vendorBE.getFilterItem().isEmpty() ? BARRIER_STACK : vendorBE.getFilterItem();
+        }
+        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof SalepointBlockEntity salepointBE) {
+            ItemStack displayItem = salepointBE.getDisplayItem();
+            return displayItem.isEmpty() ? SALEPOINT_STACK : displayItem;
         }
         return original.get();
     }

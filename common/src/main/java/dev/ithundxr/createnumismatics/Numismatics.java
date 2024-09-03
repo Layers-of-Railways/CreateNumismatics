@@ -29,6 +29,7 @@ import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
+import dev.ithundxr.createnumismatics.base.data.emi.EmiExcludedTagGen;
 import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
@@ -107,6 +108,7 @@ public class Numismatics {
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
         gen.addProvider(NumismaticsAdvancements::new);
+        gen.addProvider(EmiExcludedTagGen::new);
     }
 
     public static ResourceLocation asResource(String path) {
