@@ -2,7 +2,7 @@
 Numismatics 1.1.0
 ------------------------------------------------------
 Additions
-- Computer Craft: Tweaked compat for vendors and brass depositors
+- Computer Craft: Tweaked compat for vendors, brass depositors, salepoint's and bank terminals
 - Common tag that all blocks have with another tag for items to make it easier to allow use of numismatics blocks/items with claims
 - Config option to select the default coin reference type to be used in UIs (default is suns & cogs)
 - Config option to pick how much money each player should receive the first time they open their bank account
@@ -25,7 +25,7 @@ Changes
   Backwards compatible with existing vendors, so the items will remain 'real' until you remove them.
   Additionally, enchantments and dyes can be applied to some items by shift-dragging items when using EMI on fabric or JEI on forge
 - OP'ed players no longer automatically have access to all Numismatics blocks. Instead, they can use the command `/numismatics toggle_admin_mode` to toggle that ability
-- Update to Create 0.5.1-g
+- Update to Create 0.5.1-h
 ------------------------------------------------------
 Numismatics 1.0.6
 ------------------------------------------------------
