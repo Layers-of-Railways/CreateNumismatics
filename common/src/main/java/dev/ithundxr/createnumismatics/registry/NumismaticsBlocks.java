@@ -34,10 +34,12 @@ import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockItem;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -142,7 +144,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(Properties::requiresCorrectToolForDrops)
-		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
+		.properties(p -> p.isRedstoneConductor(NumismaticsBlocks::never))
 		.transform(pickaxeOnly())
 		.lang("Salepoint")
 		.transform(BuilderTransformers.salepoint())
@@ -153,5 +155,9 @@ public class NumismaticsBlocks {
 	public static void register() {
 		// load the class and register everything
 		Numismatics.LOGGER.info("Registering blocks for " + Numismatics.NAME);
+	}
+
+	private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+		return false;
 	}
 }

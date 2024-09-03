@@ -35,7 +35,7 @@ public enum Mods {
 	EMI("emi"),
 	JEI("jei"),
 	CREATEADDITION("createaddition"),
-	;
+    RAILWAYS("railways");
 
 	public final boolean isLoaded;
 	public final boolean requiredForDataGen;

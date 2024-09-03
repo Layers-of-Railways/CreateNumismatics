@@ -16,7 +16,9 @@
     "WrappedStorageAccessor",
     "compat.PortableEnergyInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
-    "compat.PortableEnergyInterfaceMovementMixin"
+    "compat.PortableEnergyInterfaceMovementMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

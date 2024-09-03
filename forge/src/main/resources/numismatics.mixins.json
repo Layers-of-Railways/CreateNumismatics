@@ -18,6 +18,9 @@
     "compat.PortableEnergyInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin",
+    "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
+    "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "self.BrassDepositorBlockEntityCapabilities",
     "self.ComputerBehaviourCapabilities",
     "self.VendorBlockEntityCapabilities"
