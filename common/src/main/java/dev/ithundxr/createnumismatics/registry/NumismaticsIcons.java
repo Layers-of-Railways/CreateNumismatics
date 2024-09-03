@@ -61,6 +61,16 @@ public class NumismaticsIcons extends AllIcons {
         I_COIN_CROWN = next(),
         I_COIN_SUN = next()
     ;
+
+    public static final NumismaticsIcons
+       I_COIN_SPUR_RED_LINE = newRow(),
+       I_COIN_BEVEL_RED_LINE = next(),
+       I_COIN_SPROCKET_RED_LINE = next(),
+       I_COIN_COG_RED_LINE = next(),
+       I_COIN_CROWN_RED_LINE = next(),
+       I_COIN_SUN_RED_LINE = next()
+    ;
+    
     public static final NumismaticsIcons
         I_HOPPER = newRow(),
         I_OPEN_SUB_LIST = next(),
@@ -68,14 +78,6 @@ public class NumismaticsIcons extends AllIcons {
         I_SALE_ALERT = next(),
         I_SALE_CANCEL = next()
     ;
-    
-    public static final NumismaticsIcons
-        I_COIN_SPUR_RED_LINE = newRow(),
-        I_COIN_BEVEL_RED_LINE = next(),
-        I_COIN_SPROCKET_RED_LINE = next(),
-        I_COIN_COG_RED_LINE = next(),
-        I_COIN_CROWN_RED_LINE = next(),
-        I_COIN_SUN_RED_LINE = next();
 
     public NumismaticsIcons(int x, int y) {
         super(x, y);
