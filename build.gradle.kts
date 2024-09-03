@@ -176,7 +176,7 @@ subprojects {
             "fabric_loader_version" to "fabric_loader_version"(),
             "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
             "create_forge_version" to "create_forge_version"().split("-")[0], // cut off build number
-            "create_fabric_version" to "create_fabric_version"().split("+")[0] // Trim +mcX.XX.X from version string
+            "create_fabric_version" to "create_fabric_version"()
         )
 
         inputs.properties(properties)
