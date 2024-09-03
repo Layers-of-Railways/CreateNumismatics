@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.simibubi.create.infrastructure.command.AllCommands;
@@ -32,16 +33,13 @@ import static net.minecraft.commands.Commands.literal;
 
 public class NumismaticsCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
-        var numismaticsCommand = literal("numismatics")
+        LiteralArgumentBuilder<CommandSourceStack> numismaticsCommand = literal("numismatics")
             .requires(cs -> cs.hasPermission(0))
             .then(PayCommand.register())
             .then(DeductCommand.register())
             .then(ViewCommand.register())
             .then(PayAllCommand.register())
             .then(ToggleAdminModeCommand.register())
-            //.then(ClearCasingCacheCommand.register())
-            //.then(SplitTrainCommand.register())
-            //.then(TrainInfoCommand.register());
         ;
 
         if (Utils.isDevEnv()) {

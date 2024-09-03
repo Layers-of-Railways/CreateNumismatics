@@ -50,6 +50,7 @@ public class NumismaticsTagGen {
             OPTIONAL_TAGS.computeIfAbsent(tag, (e) -> new ArrayList<>()).add(id);
         }
     }
+    
     public static void generateBlockTags(RegistrateTagsProvider<Block> tags) {
         addTagToAllInRegistry(tags, BuiltInRegistries.BLOCK, NumismaticsTags.AllBlockTags.NUMISMATICS_BLOCKS.tag);
         
@@ -58,7 +59,7 @@ public class NumismaticsTagGen {
         });
         
         for (TagKey<Block> tag : OPTIONAL_TAGS.keySet()) {
-            var appender = tagAppender(tags, tag);
+            TagsProvider.TagAppender<Block> appender = tagAppender(tags, tag);
             for (ResourceLocation loc : OPTIONAL_TAGS.get(tag))
                 appender.addOptional(loc);
         }
@@ -92,10 +93,9 @@ public class NumismaticsTagGen {
     public static TagsProvider.TagAppender<Block> tagAppender(RegistrateTagsProvider<Block> prov, AllBlockTags tag) {
         return tagAppender(prov, tag.tag);
     }
-
-    @ExpectPlatform
+    
     public static <T> TagsProvider.TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
-        throw new AssertionError();
+        return prov.addTag(tag);
     }
     
     @SuppressWarnings("unchecked")
