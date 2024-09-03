@@ -87,6 +87,7 @@ subprojects {
         maven("https://maven.parchmentmc.org") // Parchment mappings
         maven("https://maven.quiltmc.org/repository/release") // Quilt Mappings
         maven("https://maven.ithundxr.dev/releases") // Steam 'n' Rails Releases
+        maven("https://maven.ithundxr.dev/snapshots") // Steam 'n' Rails Snapshots
         maven("https://maven.tterrag.com/") { // Flywheel
             content {
                 // need to be specific here due to version overlaps

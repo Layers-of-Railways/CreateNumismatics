@@ -142,7 +142,7 @@ public class NumismaticsBlocks {
 		.initialProperties(SharedProperties::softMetal)
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // Unexplodable
 		.properties(Properties::requiresCorrectToolForDrops)
-		.properties(p -> p.isRedstoneConductor(Blocks::never))
+		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(pickaxeOnly())
 		.lang("Salepoint")
 		.transform(BuilderTransformers.salepoint())
