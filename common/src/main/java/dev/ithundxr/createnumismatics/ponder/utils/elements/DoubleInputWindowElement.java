@@ -66,12 +66,15 @@ public class DoubleInputWindowElement extends InputWindowElement {
         xFade *= 10 * (1 - fade);
         yFade *= 10 * (1 - fade);
 
-        ItemStack item1 = ((AccessorInputWindowElement) firstElement).numsismatics$getItem();
-        ResourceLocation key1 = ((AccessorInputWindowElement) firstElement).numsismaticsgetKey();
-        AllIcons icon1 = ((AccessorInputWindowElement) firstElement).numsismatics$getIcon();
-        ItemStack item2 = ((AccessorInputWindowElement) secondElement).numsismatics$getItem();
-        ResourceLocation key2 = ((AccessorInputWindowElement) secondElement).numsismaticsgetKey();
-        AllIcons icon2 = ((AccessorInputWindowElement) secondElement).numsismatics$getIcon();
+        AccessorInputWindowElement firstElementAccessor = (AccessorInputWindowElement) firstElement;
+        AccessorInputWindowElement secondElementAccessor = (AccessorInputWindowElement) secondElement;
+        
+        ItemStack item1 = firstElementAccessor.numsismatics$getItem();
+        ResourceLocation key1 = firstElementAccessor.numsismaticsgetKey();
+        AllIcons icon1 = firstElementAccessor.numsismatics$getIcon();
+        ItemStack item2 = secondElementAccessor.numsismatics$getItem();
+        ResourceLocation key2 = secondElementAccessor.numsismaticsgetKey();
+        AllIcons icon2 = secondElementAccessor.numsismatics$getIcon();
         
         boolean hasItem1 = !item1.isEmpty();
         boolean hasText1 = key1 != null;

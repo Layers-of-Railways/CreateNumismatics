@@ -54,7 +54,7 @@ import java.util.Objects;
 @Mixin(PortableEnergyInterfaceBlockEntity.class)
 public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow protected LazyOptional<IEnergyStorage> capability;
+    @Shadow(remap = false) protected LazyOptional<IEnergyStorage> capability;
 
     @Unique
     private EnergySalepointTargetBehaviour railway$salepointBehaviour;
@@ -214,20 +214,10 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
     @ConditionalMixin(mods = Mods.CREATEADDITION)
     @Mixin(InterfaceEnergyHandler.class)
     private interface InterfaceEnergyHandlerAccessor {
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped",remap = false)
         IEnergyStorage getWrapped();
 
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false) @Mutable
         void setWrapped(IEnergyStorage wrapped);
-    }
-
-    @ConditionalMixin(mods = Mods.CREATEADDITION)
-    @Mixin(InterfaceEnergyHandler.class)
-    private static class InterfaceEnergyHandlerMixin {
-        @Shadow
-        @Final
-        @Mutable
-        @SuppressWarnings("unused") // Used to make mutable for the accessor above
-        private IEnergyStorage wrapped;
     }
 }

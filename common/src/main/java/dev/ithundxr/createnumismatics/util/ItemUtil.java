@@ -189,13 +189,4 @@ public class ItemUtil {
         }
         return changed;
     }
-
-    public static void clearListeners(SimpleContainer container) {
-        List<ContainerListener> listeners = ((AccessorSimpleContainer) container).numismatics$getListeners();
-        if (listeners != null) {
-            for (ContainerListener listener : List.copyOf(listeners)) {
-                container.removeListener(listener);
-            }
-        }
-    }
 }

@@ -104,7 +104,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
         for (int i = 0; i < 6; i++) {
             Coin coin = Coin.values()[i];
             int slotX = i < 3 ? labelX1 : labelX2;
-            int slotY = labelY + ((i%3) * labelYIncrement);
+            int slotY = labelY + ((i % 3) * labelYIncrement);
 
             addSlot(new CoinDisplaySlot(coin, slotX, slotY));
         }

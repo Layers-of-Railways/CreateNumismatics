@@ -50,7 +50,7 @@ import java.util.Objects;
 
 @Mixin(PortableItemInterfaceBlockEntity.class)
 public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
-    @Shadow protected LazyOptional<IItemHandlerModifiable> capability;
+    @Shadow(remap = false) protected LazyOptional<IItemHandlerModifiable> capability;
 
     @Unique
     private ItemSalepointTargetBehaviour railway$salepointBehaviour;

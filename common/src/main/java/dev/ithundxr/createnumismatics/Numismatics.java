@@ -25,7 +25,6 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
@@ -103,8 +102,7 @@ public class Numismatics {
     public static void gatherData(DataGenerator.PackGenerator gen) {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        PonderLocalization.provideRegistrateLang(REGISTRATE);
+        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);        
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
         gen.addProvider(NumismaticsAdvancements::new);

@@ -57,7 +57,7 @@ import java.util.Objects;
 @Mixin(PortableFluidInterfaceBlockEntity.class)
 public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow protected LazyOptional<IFluidHandler> capability;
+    @Shadow(remap = false) protected LazyOptional<IFluidHandler> capability;
 
     @Unique
     private FluidSalepointTargetBehaviour railway$salepointBehaviour;
@@ -202,10 +202,10 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
 
     @Mixin(InterfaceFluidHandler.class)
     private interface InterfaceFluidHandlerAccessor {
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         IFluidHandler getWrapped();
 
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         void setWrapped(IFluidHandler wrapped);
     }
 

@@ -42,7 +42,7 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
         super(type, pos, state);
     }
 
-    @Shadow AbstractComputerBehaviour computerBehaviour;
+    @Shadow(remap = false) AbstractComputerBehaviour computerBehaviour;
     
     @Unique LazyOptional<? extends IItemHandler> numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));
 

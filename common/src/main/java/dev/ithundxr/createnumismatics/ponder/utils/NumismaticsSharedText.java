@@ -24,12 +24,8 @@ import dev.ithundxr.createnumismatics.Numismatics;
 public class NumismaticsSharedText {
     public static void gatherText() {
         // Add entries used across several ponder scenes (Safe for hotswap)
-        
-        createNumberPonderEntries(1, 10);
-    }
 
-    private static void createNumberPonderEntries(int from, int to) {
-        for (int i = from; i < to; i++) {
+        for (int i = 1; i < 10; i++) {
             add("amount" + i + "x", i + "x");
             add("amount_spaced_" + i + "x", i + "x ");
         }

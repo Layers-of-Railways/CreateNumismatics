@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ItemHandlerWrapper.class)
 public interface ItemHandlerWrapperAccessor {
-    @Accessor("wrapped")
+    @Accessor(value = "wrapped", remap = false)
     void setWrapped(IItemHandlerModifiable wrapped);
 
-    @Accessor("wrapped")
+    @Accessor(value = "wrapped", remap = false)
     IItemHandlerModifiable getWrapped();
 }

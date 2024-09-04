@@ -33,7 +33,7 @@ public interface AccessorInputWindowElement {
     @Accessor("item")
     ItemStack numsismatics$getItem();
 
-    @Accessor("icon")
+    @Accessor(value = "icon", remap = false)
     AllIcons numsismatics$getIcon();
     
     @Accessor("key")
