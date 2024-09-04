@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
 import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
+import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
 
 public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
@@ -31,6 +32,8 @@ public class NumismaticsPonderIndex {
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
                 .addStoryBoard("depositor", DepositorScenes::depositor)
                 .addStoryBoard("depositor_pricing", DepositorScenes::depositorPricing);
+        HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
+                .addStoryBoard("salepoint", SalepointScenes::item);
     }
 
     // Any ponders that should appear AFTER creates own ponders should go here
