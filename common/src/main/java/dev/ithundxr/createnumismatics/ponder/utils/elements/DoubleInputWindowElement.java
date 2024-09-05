@@ -25,7 +25,6 @@ import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.AnimatedOverlayElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import com.simibubi.create.foundation.utility.Pointing;
@@ -70,10 +69,10 @@ public class DoubleInputWindowElement extends InputWindowElement {
         AccessorInputWindowElement secondElementAccessor = (AccessorInputWindowElement) secondElement;
         
         ItemStack item1 = firstElementAccessor.numsismatics$getItem();
-        ResourceLocation key1 = firstElementAccessor.numsismaticsgetKey();
+        ResourceLocation key1 = firstElementAccessor.numsismatics$getKey();
         AllIcons icon1 = firstElementAccessor.numsismatics$getIcon();
         ItemStack item2 = secondElementAccessor.numsismatics$getItem();
-        ResourceLocation key2 = secondElementAccessor.numsismaticsgetKey();
+        ResourceLocation key2 = secondElementAccessor.numsismatics$getKey();
         AllIcons icon2 = secondElementAccessor.numsismatics$getIcon();
         
         boolean hasItem1 = !item1.isEmpty();

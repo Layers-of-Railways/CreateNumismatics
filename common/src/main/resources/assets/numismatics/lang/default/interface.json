@@ -1,4 +1,6 @@
 {
+  "numismatics.packets.mismatched_format": "%s on the client uses a different network format than the server. You should use the same version of the mod on both sides.",
+  
   "numismatics.andesite_depositor.price": "Price",
 
   "gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",

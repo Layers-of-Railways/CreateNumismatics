@@ -208,8 +208,7 @@ public abstract class PacketSet {
 		public void handle(Minecraft mc) {
 			if (NumismaticsPackets.PACKETS.version == serverVersion)
 				return;
-			Component error = Components.literal(Numismatics.NAME+" on the client uses a different network format than the server.")
-					.append(" You should use the same version of the mod on both sides.");
+			Component error = Components.translatable("numismatics.packets.mismatched_format", Numismatics.NAME);
 			mc.getConnection().onDisconnect(error);
 		}
 	}

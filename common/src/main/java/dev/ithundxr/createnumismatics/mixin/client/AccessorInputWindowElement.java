@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(InputWindowElement.class)
 public interface AccessorInputWindowElement {
     @Accessor("key")
-    ResourceLocation numsismaticsgetKey();
+    ResourceLocation numsismatics$getKey();
 
     @Accessor("item")
     ItemStack numsismatics$getItem();
