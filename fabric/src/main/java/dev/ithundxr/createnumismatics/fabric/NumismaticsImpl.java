@@ -42,15 +42,6 @@ public class NumismaticsImpl implements ModInitializer {
         ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(Numismatics.MOD_ID, "enum"), EnumArgument.class, new EnumArgument.Info());
     }
 
-    public static String findVersion() {
-        return FabricLoader.getInstance()
-                .getModContainer(Numismatics.MOD_ID)
-                .orElseThrow()
-                .getMetadata()
-                .getVersion()
-                .getFriendlyString();
-    }
-
     public static void finalizeRegistrate() {
         Numismatics.registrate().register();
         Numismatics.postRegistrationInit();

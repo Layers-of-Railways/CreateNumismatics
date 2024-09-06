@@ -30,11 +30,15 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
+    id("net.kyori.blossom") version "2.1.0" apply false // https://github.com/KyoriPowered/blossom
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
 }
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toInt()
 val gitHash = "\"${calculateGitHash() + (if (hasUnstaged()) "-modified" else "")}\""
+
+extra["gitHash"] = gitHash
 
 architectury {
     minecraft = "minecraft_version"()
@@ -65,6 +69,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
+    apply(plugin = "net.kyori.blossom")
 
     val capitalizedName = project.name.capitalized()
 
@@ -212,24 +217,32 @@ subprojects {
 }
 
 fun calculateGitHash(): String {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "rev-parse", "HEAD")
-        standardOutput = stdout
+    try {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "rev-parse", "HEAD")
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch(ignored: Throwable) {
+        return "unknown"
     }
-    return stdout.toString().trim()
 }
 
 fun hasUnstaged(): Boolean {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "status", "--porcelain")
-        standardOutput = stdout
+    try {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "status", "--porcelain")
+            standardOutput = stdout
+        }
+        val result = stdout.toString().replace("M gradlew", "").trimEnd()
+        if (result.isNotEmpty())
+            println("Found stageable results:\n${result}\n")
+        return result.isNotEmpty()
+    }  catch(ignored: Throwable) {
+        return false
     }
-    val result = stdout.toString().replace("M gradlew", "").trimEnd()
-    if (result.isNotEmpty())
-        println("Found stageable results:\n${result}\n")
-    return result.isNotEmpty()
 }
 
 tasks.create("numismaticsPublish") {

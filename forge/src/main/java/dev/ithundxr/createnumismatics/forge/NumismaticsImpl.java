@@ -72,22 +72,6 @@ public class NumismaticsImpl {
         event.enqueueWork(Numismatics::postRegistrationInit);
     }
 
-    public static String findVersion() {
-        String versionString = "UNKNOWN";
-
-        List<IModInfo> infoList = ModList.get().getModFileById(Numismatics.MOD_ID).getMods();
-        if (infoList.size() > 1) {
-            Numismatics.LOGGER.error("Multiple mods for MOD_ID: " + Numismatics.MOD_ID);
-        }
-        for (IModInfo info : infoList) {
-            if (info.getModId().equals(Numismatics.MOD_ID)) {
-                versionString = MavenVersionStringHelper.artifactVersionToString(info.getVersion());
-                break;
-            }
-        }
-        return versionString;
-    }
-
     public static void finalizeRegistrate() {
         Numismatics.registrate().registerEventListeners(eventBus);
     }

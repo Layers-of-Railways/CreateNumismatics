@@ -88,6 +88,10 @@ sourceSets.main {
         srcDir("src/generated/resources")
         exclude("src/generated/resources/.cache")
     }
+    blossom.javaSources {
+        property("version", "mod_version"())
+        property("gitCommit", rootProject.extra["gitHash"].toString())
+    }
 }
 
 operator fun String.invoke(): String {
