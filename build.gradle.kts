@@ -34,6 +34,8 @@ plugins {
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
 }
 
+println("Numismatics v${"mod_version"()}")
+
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toInt()
 val gitHash = "\"${calculateGitHash() + (if (hasUnstaged()) "-modified" else "")}\""
