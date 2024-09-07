@@ -52,7 +52,6 @@ import java.util.function.BiConsumer;
 public class Numismatics {
     public static final String MOD_ID = "numismatics";
     public static final String NAME = "Create: Numismatics";
-    public static final String VERSION = BuildParameters.VERSION;
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
 
@@ -65,7 +64,7 @@ public class Numismatics {
     }
 
     public static void init() {
-        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, VERSION, BuildParameters.GIT_COMMIT, Create.VERSION, Loader.getFormatted());
+        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, Create.VERSION, Loader.getFormatted());
 
         ModSetup.register();
         finalizeRegistrate();

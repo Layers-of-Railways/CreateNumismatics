@@ -1,6 +1,6 @@
 package dev.ithundxr.createnumismatics;
 
-public class BuildParameters {
+public class NumismaticsBuildInfo {
   public static final String VERSION = "{{ version }}";
   public static final String GIT_COMMIT = {{ gitCommit | default("unknown") }};
 }
