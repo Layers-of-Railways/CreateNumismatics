@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.multiloader;
 
-import com.railwayteam.railways.util.TextUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import java.util.Locale;
@@ -40,7 +40,7 @@ public enum Loader {
     }
 
     public static String getFormatted() {
-        return TextUtils.titleCaseConversion(com.railwayteam.railways.multiloader.Loader.CURRENT.name().toLowerCase(Locale.ROOT));
+        return TextUtils.titleCaseConversion(Loader.CURRENT.name().toLowerCase(Locale.ROOT));
     }
 
     @Internal
