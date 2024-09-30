@@ -32,7 +32,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-public class UpdateCheck {
+public class NumismaticsUpdateCheck {
     public static void execute() {
         // TODO switch to nonCriticalIoPool() in 1.21.1
         Util.ioPool().submit(() -> {
