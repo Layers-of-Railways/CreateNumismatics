@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.ponder;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.Selection;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -37,9 +38,12 @@ public class SalepointScenes {
         Selection salepoint = util.select.position(11, 3, 4);
         Selection portableInterface = util.select.position(7, 2, 4);
         Selection funnel = util.select.position(7, 2, 3);
+        Selection station = util.select.position(11, 1, 9);
 
         Selection beltIntoFunnel = util.select.fromTo(7, 1, 2, 7, 1, 3);
         Selection beltIntoBelt = util.select.fromTo(12, 1, 2, 8, 1, 2);
+        
+        BlockPos beltStart = util.grid.at(12, 1, 2);
         
         Selection gearBoxes = util.select.fromTo(8, 1, 3, 9, 1, 3);
         Selection smallCog = util.select.position(12, 1, 3);
@@ -71,5 +75,13 @@ public class SalepointScenes {
         scene.idle(10);
         scene.world.showSection(funnel, Direction.DOWN);
         scene.idle(10);
+        scene.world.showSection(station, Direction.DOWN);
+        scene.idle(10);
+
+        ItemStack stack = new ItemStack(Items.IRON_INGOT, 64);
+        for (int i = 0; i < 10; i++) {
+            scene.world.createItemOnBelt(beltStart, Direction.DOWN, stack);
+            scene.idle(10);
+        }
     }
 }

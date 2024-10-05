@@ -21,7 +21,6 @@ package dev.ithundxr.createnumismatics.base.data;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.CommonTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
@@ -50,7 +49,7 @@ public class NumismaticsTagGen {
             OPTIONAL_TAGS.computeIfAbsent(tag, (e) -> new ArrayList<>()).add(id);
         }
     }
-    
+
     public static void generateBlockTags(RegistrateTagsProvider<Block> tags) {
         addTagToAllInRegistry(tags, BuiltInRegistries.BLOCK, NumismaticsTags.AllBlockTags.NUMISMATICS_BLOCKS.tag);
         

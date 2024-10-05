@@ -73,7 +73,7 @@ subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "net.kyori.blossom")
 
-    val capitalizedName = project.name.capitalized()
+    val capitalizedName = project.name.replaceFirstChar { it.uppercase() }
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
     loom.apply {
