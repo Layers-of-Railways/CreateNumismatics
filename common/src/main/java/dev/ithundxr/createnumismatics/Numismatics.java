@@ -38,6 +38,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.util.NumismaticsUpdateCheck;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
@@ -52,7 +53,6 @@ import java.util.function.BiConsumer;
 public class Numismatics {
     public static final String MOD_ID = "numismatics";
     public static final String NAME = "Create: Numismatics";
-    public static final String VERSION = findVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
 
@@ -65,8 +65,9 @@ public class Numismatics {
     }
 
     public static void init() {
-        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, Create.VERSION, Loader.getCurrent());
-
+        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, Create.VERSION, Loader.getFormatted());
+        NumismaticsUpdateCheck.execute();
+        
         ModSetup.register();
         finalizeRegistrate();
 
@@ -87,11 +88,6 @@ public class Numismatics {
 
     public static CreateRegistrate registrate() {
         return REGISTRATE;
-    }
-
-    @ExpectPlatform
-    public static String findVersion() {
-        throw new AssertionError();
     }
 
     @ExpectPlatform

@@ -19,12 +19,15 @@
 package dev.ithundxr.createnumismatics.multiloader;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.compat.Mods;
+import dev.ithundxr.createnumismatics.util.TextUtils;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum Loader {
-    FORGE, FABRIC;
+    FORGE, NEOFORGE, FABRIC, QUILT;
 
     public static final Loader CURRENT = getCurrent();
 
@@ -37,9 +40,21 @@ public enum Loader {
             run.get().run();
     }
 
+    public static String getFormatted() {
+        return TextUtils.titleCaseConversion(getActual().name().toLowerCase(Locale.ROOT));
+    }
+    
+    // Returns the actual loader, ex: quilt on quilt instead of fabric for quilt
+    public static Loader getActual() {
+        //noinspection ConstantValue
+        if (FABRIC.isCurrent() && Mods.isModLoaded("quilt_loader"))
+            return QUILT;
+        return CURRENT;
+    }
+
     @Internal
     @ExpectPlatform
-    public static Loader getCurrent() {
+    private static Loader getCurrent() {
         throw new AssertionError();
     }
 }
