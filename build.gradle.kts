@@ -26,7 +26,7 @@ plugins {
     java
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.6.+" apply false
+    id("dev.architectury.loom") version "1.7.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
@@ -92,7 +92,6 @@ subprojects {
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://maven.quiltmc.org/repository/release") // Quilt Mappings
         maven("https://maven.ithundxr.dev/releases") // Steam 'n' Rails Releases
         maven("https://maven.ithundxr.dev/snapshots") // Steam 'n' Rails Snapshots
         maven("https://maven.tterrag.com/") { // Flywheel
@@ -106,9 +105,7 @@ subprojects {
     @Suppress("UnstableApiUsage")
     dependencies {
         "minecraft"("com.mojang:minecraft:${"minecraft_version"()}")
-        // layered mappings - Mojmap names, parchment and QM docs and parameters
         "mappings"(loom.layered {
-            mappings("org.quiltmc:quilt-mappings:${"minecraft_version"()}+build.${"qm_version"()}:intermediary-v2")
             officialMojangMappings { nameSyntheticMembers = false }
             parchment("org.parchmentmc.data:parchment-${"minecraft_version"()}:${"parchment_version"()}@zip")
         })
