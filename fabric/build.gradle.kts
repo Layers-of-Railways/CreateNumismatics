@@ -45,8 +45,6 @@ repositories {
     // mavens for Fabric-exclusives
     maven("https://api.modrinth.com/maven") // LazyDFU
     maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
-    maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
-    maven("https://mvn.devos.one/releases") // Porting Lib Releases
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
     maven("https://maven.cafeteria.dev/releases") // Fake Player API
     maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes

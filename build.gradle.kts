@@ -92,8 +92,8 @@ subprojects {
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://maven.ithundxr.dev/releases") // Steam 'n' Rails Releases
-        maven("https://maven.ithundxr.dev/snapshots") // Steam 'n' Rails Snapshots
+        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
+        maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
         maven("https://maven.tterrag.com/") { // Flywheel
             content {
                 // need to be specific here due to version overlaps
@@ -124,9 +124,9 @@ subprojects {
             val maven = if (isRelease) "releases" else "snapshots"
             if (mavenToken != null && mavenToken.isNotEmpty()) {
                 maven {
-                    url = uri("https://maven.ithundxr.dev/${maven}")
+                    url = uri("https://mvn.devos.one/${maven}")
                     credentials {
-                        username = "numismatics-github"
+                        username = "ithundxr-github"
                         password = mavenToken
                     }
                 }

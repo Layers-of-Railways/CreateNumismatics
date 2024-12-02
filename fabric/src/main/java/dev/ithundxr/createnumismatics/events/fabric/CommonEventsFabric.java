@@ -33,5 +33,6 @@ public class CommonEventsFabric {
         ServerWorldEvents.LOAD.register((server, level) -> CommonEvents.onLoadWorld(level));
         PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, entity) -> CommonEvents.onBlockBreak(level, pos, state, player));
         ServerPlayConnectionEvents.JOIN.register((connection, packetSender, server) -> CommonEvents.onPlayerJoin(connection.player));
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> CommonEvents.onUseBlock(player, world, hand, hitResult));
     }
 }

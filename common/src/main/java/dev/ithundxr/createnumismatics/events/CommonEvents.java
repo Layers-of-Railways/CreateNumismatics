@@ -90,4 +90,20 @@ public class CommonEvents {
             }
         }
     }
+
+    @MultiLoaderEvent
+    public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+        BlockState state = level.getBlockState(pos);
+
+        boolean offhandFix = !level.isClientSide()
+            && !player.getOffhandItem().isEmpty()
+            && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
+            hand.equals(InteractionHand.MAIN_HAND);
+        if ((offhandFix || player.isShiftKeyDown()) && state.getBlock() instanceof VendorBlock vb) {
+            return vb.use(state, level, pos, player, hand, hitResult);
+        }
+
+        return InteractionResult.PASS;
+    }
 }

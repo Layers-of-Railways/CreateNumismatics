@@ -47,4 +47,9 @@ public class CommonEventsForge {
         if (event.getEntity() instanceof ServerPlayer serverPlayer)
             CommonEvents.onPlayerJoin(serverPlayer);
     }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        CommonEvents.onUseBlock(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
+    }
 }

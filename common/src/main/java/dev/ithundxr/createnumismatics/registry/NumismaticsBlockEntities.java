@@ -32,6 +32,11 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorRenderer;
 public class NumismaticsBlockEntities {
     private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
 
+/*    public static final BlockEntityEntry<SemaphoreBlockEntity> SEMAPHORE = REGISTRATE.blockEntity("semaphore", SemaphoreBlockEntity::new)
+        .validBlocks(CRBlocks.SEMAPHORE)
+        .renderer(() -> SemaphoreRenderer::new)
+        .register();*/
+
     public static final BlockEntityEntry<AndesiteDepositorBlockEntity> ANDESITE_DEPOSITOR = REGISTRATE.blockEntity("andesite_depositor", AndesiteDepositorBlockEntity::new)
         .validBlocks(NumismaticsBlocks.ANDESITE_DEPOSITOR)
         .register();
