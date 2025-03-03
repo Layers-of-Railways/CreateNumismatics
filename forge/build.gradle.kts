@@ -30,6 +30,10 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
     }
+
+    runs.configureEach {
+        programArg("-mixin.config=create.mixins.json")
+    }
 }
 
 repositories {
