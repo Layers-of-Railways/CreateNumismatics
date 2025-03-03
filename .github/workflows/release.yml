@@ -33,7 +33,7 @@ jobs:
           cache: gradle
 
       - name: Validate Gradle Wrapper Integrity
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/actions/wrapper-validation-action@v3
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
