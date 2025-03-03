@@ -213,27 +213,31 @@ subprojects {
 }
 
 fun calculateGitHash(): String {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "rev-parse", "HEAD")
-        standardOutput = stdout
+    try {
+        val output = providers.exec {
+            commandLine("git", "rev-parse", "HEAD")
+        }
+        return output.standardOutput.asText.get().trim()
+    } catch (ignored: Throwable) {
+        return "unknown"
     }
-    return stdout.toString().trim()
 }
 
 fun hasUnstaged(): Boolean {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "status", "--porcelain")
-        standardOutput = stdout
+    try {
+        val output = providers.exec {
+            commandLine("git", "status", "--porcelain")
+        }
+        val result = output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
+        if (result.isNotEmpty())
+            println("Found stageable results:\n ${result}\n")
+        return result.isNotEmpty()
+    } catch (ignored: Throwable) {
+        return false
     }
-    val result = stdout.toString().replace("M gradlew", "").trimEnd()
-    if (result.isNotEmpty())
-        println("Found stageable results:\n${result}\n")
-    return result.isNotEmpty()
 }
 
-tasks.create("numismaticsPublish") {
+tasks.register("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
             dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
