@@ -1,7 +1,7 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.AllShapes.Builder;
-import com.simibubi.create.foundation.utility.VoxelShaper;
+import net.createmod.catnip.math.VoxelShaper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.VoxelShape;
 

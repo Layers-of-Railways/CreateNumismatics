@@ -1,12 +1,13 @@
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
-import dev.ithundxr.createnumismatics.Numismatics;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
 
-public class NumismaticsPonderIndex {
-    static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
-
-    public static void register() {
+public class NumismaticsPonderScenes {
+    public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 //        HELPER.forComponents(CRBlocks.SEMAPHORE)
 //                .addStoryBoard("semaphore", TrainScenes::signaling);
 //        HELPER.forComponents(CRBlocks.TRACK_COUPLER)

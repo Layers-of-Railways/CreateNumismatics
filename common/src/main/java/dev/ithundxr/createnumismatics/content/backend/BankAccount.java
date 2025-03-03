@@ -1,7 +1,5 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
@@ -11,6 +9,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -241,12 +240,12 @@ public class BankAccount implements MenuProvider {
     @Override
     public @NotNull Component getDisplayName() {
         if (getLabel() != null)
-            return Components.literal(getLabel());
+            return Component.literal(getLabel());
 
         String name = UsernameUtils.INSTANCE.getName(id, null);
         if (name != null)
-            return Components.literal(name);
-        return Components.translatable("block.numismatics.bank_terminal");
+            return Component.literal(name);
+        return Component.translatable("block.numismatics.bank_terminal");
     }
 
     @Nullable

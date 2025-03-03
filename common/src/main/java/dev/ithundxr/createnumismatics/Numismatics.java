@@ -2,12 +2,12 @@ package dev.ithundxr.createnumismatics;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.simibubi.create.Create;
+import com.simibubi.create.CreateBuildInfo;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
@@ -21,6 +21,8 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.lang.FontHelper.Palette;
+import net.createmod.ponder.foundation.registration.PonderLocalization;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
@@ -40,13 +42,13 @@ public class Numismatics {
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     static {
-        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, TooltipHelper.Palette.STANDARD_CREATE)
+        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
                 .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
         Tabs.MAIN.use();
     }
 
     public static void init() {
-        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, Create.VERSION, Loader.getCurrent());
+        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, CreateBuildInfo.VERSION, Loader.getCurrent());
 
         ModSetup.register();
         finalizeRegistrate();
@@ -84,7 +86,6 @@ public class Numismatics {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
         REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        PonderLocalization.provideRegistrateLang(REGISTRATE);
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
         gen.addProvider(NumismaticsAdvancements::new);

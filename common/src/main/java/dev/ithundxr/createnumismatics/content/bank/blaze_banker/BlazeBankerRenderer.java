@@ -1,18 +1,18 @@
 package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
-import com.jozufozu.flywheel.core.PartialModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
-import com.simibubi.create.foundation.block.render.SpriteShiftEntry;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
-import com.simibubi.create.foundation.utility.AngleHelper;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPartialModels;
+import net.createmod.catnip.animation.AnimationTickHolder;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SpriteShiftEntry;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -82,23 +82,23 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 			uScroll = uScroll - Math.floor(uScroll);
 			uScroll = uScroll * spriteWidth / 2;
 
-			SuperByteBuffer flameBuffer = CachedBufferer.partial(AllPartialModels.BLAZE_BURNER_FLAME, blockState);
+			SuperByteBuffer flameBuffer = CachedBuffers.partial(AllPartialModels.BLAZE_BURNER_FLAME, blockState);
             flameBuffer.shiftUVScrolling(spriteShift, (float) uScroll, (float) vScroll);
 			draw(flameBuffer, horizontalAngle, ms, cutout);
 		}
 
 		PartialModel blazeModel = blockAbove ? AllPartialModels.BLAZE_ACTIVE : AllPartialModels.BLAZE_IDLE;
 
-        SuperByteBuffer blazeBuffer = CachedBufferer.partial(blazeModel, blockState);
+        SuperByteBuffer blazeBuffer = CachedBuffers.partial(blazeModel, blockState);
         blazeBuffer.translate(0, headY, 0);
 		draw(blazeBuffer, horizontalAngle, ms, solid);
 
         {
-			SuperByteBuffer hatBuffer = CachedBufferer.partial(NumismaticsPartialModels.TOP_HAT, blockState);
+			SuperByteBuffer hatBuffer = CachedBuffers.partial(NumismaticsPartialModels.TOP_HAT, blockState);
             hatBuffer.translate(0, headY, 0);
             hatBuffer.translateY(0.75f);
             hatBuffer
-				.rotateCentered(Direction.UP, horizontalAngle + Mth.PI)
+				.rotateCentered(horizontalAngle + Mth.PI, Direction.UP)
 				.translate(0.5f, 0, 0.5f)
 				.light(LightTexture.FULL_BRIGHT)
 				.renderInto(ms, solid);
@@ -108,12 +108,12 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 			PartialModel rodsModel = AllPartialModels.BLAZE_BURNER_RODS;
 			PartialModel rodsModel2 = AllPartialModels.BLAZE_BURNER_RODS_2;
 
-			SuperByteBuffer rodsBuffer = CachedBufferer.partial(rodsModel, blockState);
+			SuperByteBuffer rodsBuffer = CachedBuffers.partial(rodsModel, blockState);
             rodsBuffer.translate(0, offset1 + animation + .125f, 0)
 				.light(LightTexture.FULL_BRIGHT)
 				.renderInto(ms, solid);
 
-			SuperByteBuffer rodsBuffer2 = CachedBufferer.partial(rodsModel2, blockState);
+			SuperByteBuffer rodsBuffer2 = CachedBuffers.partial(rodsModel2, blockState);
             rodsBuffer2.translate(0, offset2 + animation - 3 / 16f, 0)
 				.light(LightTexture.FULL_BRIGHT)
 				.renderInto(ms, solid);
@@ -123,7 +123,7 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 	}
 
 	private static void draw(SuperByteBuffer buffer, float horizontalAngle, PoseStack ms, VertexConsumer vc) {
-		buffer.rotateCentered(Direction.UP, horizontalAngle)
+		buffer.rotateCentered(horizontalAngle, Direction.UP)
 			.light(LightTexture.FULL_BRIGHT)
 			.renderInto(ms, vc);
 	}

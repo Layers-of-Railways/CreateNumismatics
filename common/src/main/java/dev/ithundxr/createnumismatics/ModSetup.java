@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics;
 
 import dev.ithundxr.createnumismatics.registry.*;
+import net.createmod.ponder.foundation.PonderIndex;
 
 public class ModSetup {
     public static void register() {
@@ -10,5 +11,6 @@ public class ModSetup {
         NumismaticsBlocks.register();
         NumismaticsMenuTypes.register();
         NumismaticsTags.register();
+        PonderIndex.addPlugin(new NumismaticsPonderPlugin());
     }
 }

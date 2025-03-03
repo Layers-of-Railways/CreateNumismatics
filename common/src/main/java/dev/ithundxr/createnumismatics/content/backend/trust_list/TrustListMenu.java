@@ -7,7 +7,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIc
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
@@ -30,6 +29,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class TrustListMenu extends MenuBase<TrustListHolder> {
@@ -53,7 +53,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         return new MenuProvider() {
             @Override
             public @NotNull Component getDisplayName() {
-                return Components.translatable("gui.numismatics.trust_list");
+                return Component.translatable("gui.numismatics.trust_list");
             }
 
             @Override
@@ -210,10 +210,10 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
     }
 
     public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
-        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Components.translatable("numismatics.trust_list.configure"), be,
+        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Component.translatable("numismatics.trust_list.configure"), be,
             slot, be::isTrusted) {
             @Override
-            public void onShortInteract(Player player, InteractionHand hand, Direction side) {
+            public void onShortInteract(Player player, InteractionHand hand, Direction side, BlockHitResult hitResult) {
                 if (be.isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
                     Utils.openScreen(serverPlayer,
                         TrustListMenu.provider(be, displayStack),
@@ -222,7 +222,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
                             be.sendToMenu(buf);
                         });
                 } else {
-                    super.onShortInteract(player, hand, side);
+                    super.onShortInteract(player, hand, side, hitResult);
                 }
             }
 

@@ -5,13 +5,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.simibubi.create.content.trains.station.NoShadowFontWrapper;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Indicator;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.registry.*;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -46,7 +45,7 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
 
     @Override
     protected void init() {
-        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.height);
+        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.getHeight());
         setWindowOffset(-20, 0);
         super.init();
 
@@ -55,7 +54,7 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
 
         Consumer<String> onTextChanged = s -> labelBox.setX(nameBoxX(s, labelBox));
         labelBox = new EditBox(new NoShadowFontWrapper(font), x + 23, y + 4, background.width - 20, 10,
-            Components.literal(menu.contentHolder.getLabelNonNull()));
+            Component.literal(menu.contentHolder.getLabelNonNull()));
         labelBox.setBordered(false);
         labelBox.setMaxLength(25);
         labelBox.setTextColor(0x592424);
@@ -109,7 +108,7 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
 
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
+        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.getWidth());
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);
 

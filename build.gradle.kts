@@ -1,7 +1,24 @@
+/*
+ * Numismatics
+ * Copyright (c) 2024-2025 The Railways Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import org.gradle.configurationcache.extensions.capitalized
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -48,7 +65,7 @@ allprojects {
 subprojects {
     apply(plugin = "dev.architectury.loom")
 
-    val capitalizedName = project.name.capitalized()
+    val capitalizedName = project.name.replaceFirstChar { it.titlecase() }
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
     loom.apply {
@@ -59,6 +76,9 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
+            
+            if (project.name == "forge")
+                programArg("-mixin.config=create.mixins.json")
         }
     }
 
@@ -67,12 +87,7 @@ subprojects {
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://maven.tterrag.com/") { // Flywheel
-            content {
-                // need to be specific here due to version overlaps
-                includeGroup("com.jozufozu.flywheel")
-            }
-        }
+        maven("https://maven.createmod.net") // Create, Ponder, Flywheel
     }
 
     @Suppress("UnstableApiUsage")
@@ -145,6 +160,13 @@ subprojects {
     }
 
     tasks.processResources {
+        val createForgeVersion = "create_forge_version"().split("-")[0] // cut off build number
+        val createForgeUpperBounds = {
+            val parts = createForgeVersion.split(".").map { it.toInt() }
+            val newMinor = parts[1] + 1
+            "${parts[0]}.$newMinor.0"
+        }
+        
         // set up properties for filling into metadata
         val properties = mapOf(
             "version" to version,
@@ -152,7 +174,8 @@ subprojects {
             "fabric_api_version" to "fabric_api_version"(),
             "fabric_loader_version" to "fabric_loader_version"(),
             "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
-            "create_forge_version" to "create_forge_version"().split("-")[0], // cut off build number
+            "create_forge_version" to createForgeVersion, 
+            "create_forge_upper_bounds" to createForgeUpperBounds,
             "create_fabric_version" to "create_fabric_version"().split("+")[0] // Trim +mcX.XX.X from version string
         )
 

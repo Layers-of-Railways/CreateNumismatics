@@ -2,7 +2,7 @@ package dev.ithundxr.createnumismatics;
 
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPartialModels;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderScenes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +14,6 @@ public class NumismaticsClient {
 
     public static void init() {
         NumismaticsPackets.PACKETS.registerS2CListener();
-
-        NumismaticsPonderIndex.register();
 
         NumismaticsPartialModels.init();
     }

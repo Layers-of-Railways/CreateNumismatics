@@ -9,6 +9,7 @@ import dev.ithundxr.createnumismatics.registry.commands.PayCommand;
 import dev.ithundxr.createnumismatics.registry.commands.ReloadCommandsCommand;
 import dev.ithundxr.createnumismatics.registry.commands.ViewCommand;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.command.CatnipCommands;
 import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Collections;
@@ -39,7 +40,6 @@ public class NumismaticsCommands {
         if (nm != null)
             return;
 
-        dispatcher.getRoot()
-            .addChild(AllCommands.buildRedirect("nm", numismaticsRoot));
+        CatnipCommands.createOrAddToShortcut(dispatcher, "nm", numismaticsRoot);
     }
 }

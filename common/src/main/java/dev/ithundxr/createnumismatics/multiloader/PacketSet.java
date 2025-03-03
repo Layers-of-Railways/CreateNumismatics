@@ -1,7 +1,6 @@
 package dev.ithundxr.createnumismatics.multiloader;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -190,7 +189,7 @@ public abstract class PacketSet {
 		public void handle(Minecraft mc) {
 			if (NumismaticsPackets.PACKETS.version == serverVersion)
 				return;
-			Component error = Components.literal(Numismatics.NAME+" on the client uses a different network format than the server.")
+			Component error = Component.literal(Numismatics.NAME + " on the client uses a different network format than the server.")
 					.append(" You should use the same version of the mod on both sides.");
 			mc.getConnection().onDisconnect(error);
 		}

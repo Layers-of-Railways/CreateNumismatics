@@ -1,9 +1,7 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Lang;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
@@ -11,6 +9,8 @@ import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -46,7 +46,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Components.translatable("block.numismatics.brass_depositor");
+        return Component.translatable("block.numismatics.brass_depositor");
     }
 
     @Nullable
@@ -87,14 +87,14 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(price.getTotalPrice());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
-        MutableComponent balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
+        MutableComponent balanceLabel = Component.translatable("block.numismatics.brass_depositor.tooltip.price",
             TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
-        Lang.builder()
+        Lang.builder(Numismatics.MOD_ID)
             .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color))
             .forGoggles(tooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {
-            Lang.builder()
+            Lang.builder(Numismatics.MOD_ID)
                 .add(component)
                 .forGoggles(tooltip);
         }

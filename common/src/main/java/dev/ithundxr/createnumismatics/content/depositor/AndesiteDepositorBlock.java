@@ -1,7 +1,6 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
@@ -12,6 +11,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -85,7 +85,7 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
                 activate(state, level, pos);
                 andesiteDepositor.addCoin(coin, 1);
             } else {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.insufficient_funds")
+                player.displayClientMessage(Component.translatable("gui.numismatics.vendor.insufficient_funds")
                         .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
         }

@@ -4,15 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -36,7 +35,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
 
     @Override
     protected void init() {
-        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.height);
+        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.getHeight());
         setWindowOffset(-20, 0);
         super.init();
 
@@ -58,7 +57,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         PoseStack ms = graphics.pose();
-        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
+        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.getWidth());
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);
 
@@ -78,7 +77,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         Couple<Integer> cogsAndSpurs = Coin.COG.convert(menu.contentHolder.getBalance());
         int cogs = cogsAndSpurs.getFirst();
         int spurs = cogsAndSpurs.getSecond();
-        Component balanceLabel = Components.translatable("gui.numismatics.bank_terminal.balance",
+        Component balanceLabel = Component.translatable("gui.numismatics.bank_terminal.balance",
             TextUtils.formatInt(cogs), Coin.COG.getName(cogs), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }

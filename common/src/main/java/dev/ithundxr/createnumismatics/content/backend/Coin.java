@@ -3,11 +3,10 @@ package dev.ithundxr.createnumismatics.content.backend;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -49,8 +48,8 @@ public enum Coin implements INamedIconOptions {
     public static List<Component> labeledComponents() {
         Component[] tmp = new Component[values().length];
         for (Coin coin : values()) {
-            tmp[coin.ordinal()] = Components.literal(coin.fontChar + " "
-                + Components.translatable(coin.getTranslationKey()).getString());
+            tmp[coin.ordinal()] = Component.literal(coin.fontChar + " "
+                + Component.translatable(coin.getTranslationKey()).getString());
         }
         return ImmutableList.copyOf(tmp);
     }
@@ -81,7 +80,7 @@ public enum Coin implements INamedIconOptions {
     }
 
     public String getTranslatedName() {
-        return Components.translatable(getTranslationKey()).getString().toLowerCase(Locale.ROOT);
+        return Component.translatable(getTranslationKey()).getString().toLowerCase(Locale.ROOT);
     }
 
     public String getName(int amount) {

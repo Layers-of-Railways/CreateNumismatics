@@ -4,18 +4,18 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BankAccountBehaviour;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class ViewCommand {
                         BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                         if (bankAct == null) {
-                            ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                            ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                             return -1;
                         }
 
@@ -49,7 +49,7 @@ public class ViewCommand {
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                             if (bankAct == null) {
-                                ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                                 return -1;
                             }
 
@@ -96,15 +96,15 @@ public class ViewCommand {
             int coinCount = coinAndRemainder.getFirst();
             int remainder = coinAndRemainder.getSecond();
             if (remainder == 0) {
-                ctx.getSource().sendSuccess(() -> Components.literal(name + " has " + coinCount + " "
+                ctx.getSource().sendSuccess(() -> Component.literal(name + " has " + coinCount + " "
                     + coin.getName(coinCount) + "."), true);
             } else {
-                ctx.getSource().sendSuccess(() -> Components.literal(name + " has " + coinCount + " "
+                ctx.getSource().sendSuccess(() -> Component.literal(name + " has " + coinCount + " "
                     + coin.getName(coinCount) + " and " + remainder + " " + Coin.SPUR.getName(remainder) + "."), true);
             }
             return coinCount;
         } else {
-            ctx.getSource().sendFailure(Components.literal("Could not find account for "+name+"."));
+            ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
             return -1;
         }
     }
