@@ -3,7 +3,6 @@ Numismatics 1.0.12
 ------------------------------------------------------
 Changes
 - Port to Create Update 6
-- Update localization
 
 ------------------------------------------------------
 Numismatics 1.0.11
