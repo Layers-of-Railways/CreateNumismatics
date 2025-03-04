@@ -76,6 +76,9 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
+
+            if (project.name == "forge")
+                programArg("-mixin.config=create.mixins.json")
         }
     }
 
