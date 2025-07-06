@@ -63,6 +63,8 @@ allprojects {
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
+    
+    setupRepositories()
 
     val capitalizedName = project.name.replaceFirstChar { it.titlecase() }
 
@@ -79,14 +81,6 @@ subprojects {
             if (project.name == "forge")
                 programArg("-mixin.config=create.mixins.json")
         }
-    }
-
-    repositories {
-        mavenCentral()
-        maven("https://maven.shedaniel.me/") // Cloth Config, REI
-        maven("https://maven.blamejared.com/") // JEI, Carry On
-        maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://maven.createmod.net") // Create, Ponder, Flywheel
     }
 
     @Suppress("UnstableApiUsage")
@@ -159,7 +153,7 @@ subprojects {
     }
 
     tasks.processResources {
-        val createForgeVersion = "create_forge_version"().split("-")[0] // cut off build number
+        val createForgeVersion = "create_neoforge_version"().split("-")[0] // cut off build number
         val createForgeUpperBounds = {
             val parts = createForgeVersion.split(".").map { it.toInt() }
             val newMinor = parts[1] + 1
@@ -243,6 +237,44 @@ tasks.register("numismaticsPublish") {
         }
         "fabric", "forge" -> {
             dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
+        }
+    }
+}
+
+fun Project.setupRepositories() {
+    repositories {
+        mavenCentral()
+        exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
+        maven("https://maven.neoforged.net") // NeoForge
+        exclusiveMaven( // Create, Ponder, Flywheel
+            "https://maven.createmod.net",
+            "com.simibubi.create",
+            "net.createmod.ponder",
+            "dev.engine-room.flywheel"
+        )
+        exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate")
+        exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon") // Carry On
+        exclusiveMaven( // EMI, Mod Menu
+            "https://maven.terraformersmc.com/releases", 
+            "dev.emi", "com.terraformersmc.modmenu"
+        )
+        exclusiveMaven( // Forge config api port
+            "https://raw.githubusercontent.com/Fuzss/modresources/main/maven",
+            "fuzs.forgeconfigapiport"
+        )
+        
+        //maven("https://maven.siphalor.de") // Amecs API (required by Carry On)
+        //maven("https://maven.theillusivec4.top") // Curios
+    }
+}
+
+fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            groups.forEach {
+                includeGroup(it)
+            }
         }
     }
 }

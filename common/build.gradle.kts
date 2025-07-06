@@ -12,21 +12,6 @@ loom {
     accessWidenerPath = file("src/main/resources/numismatics.accesswidener")
 }
 
-repositories {
-    // mavens for Create Fabric and dependencies
-    maven("https://api.modrinth.com/maven") // LazyDFU
-    maven("https://maven.terraformersmc.com/releases/") // Mod Menu
-    maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
-    maven("https://mvn.devos.one/releases") // Porting Lib Releases
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-    maven("https://maven.cafeteria.dev/releases") // Fake Player API
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
-        name = "Siphalor's Maven"
-    }
-}
-
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader
@@ -36,13 +21,21 @@ dependencies {
     // dependencies must also be pulled in to minimize problems, from remapping issues to compile errors.
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
-    modCompileOnly("com.simibubi.create:create-fabric-${"minecraft_version"()}:${"create_fabric_version"()}")
+    //modCompileOnly("com.simibubi.create:create-fabric-${"minecraft_version"()}:${"create_fabric_version"()}")
+
+    // Create and its dependencies
+    modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_neoforge_version"()}:slim") { isTransitive = false }
+    modImplementation("net.createmod.ponder:Ponder-NeoForge-${"minecraft_version"()}:${"ponder_version"()}")
+    modImplementation("com.tterrag.registrate:Registrate:${"registrate_neoforge_version"()}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${"minecraft_version"()}:${"flywheel_version"()}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
 
     // required for proper remapping and compiling
-    modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
+    //modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
     // Carry On
-    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
+    //modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
+    modCompileOnly("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
 }
 
 tasks.processResources {

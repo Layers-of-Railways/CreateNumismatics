@@ -63,9 +63,9 @@ dependencies {
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
     // Carry On
-    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
     if ("enable_carryon"().toBoolean()) {
-        modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+        modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
     }
 }
 

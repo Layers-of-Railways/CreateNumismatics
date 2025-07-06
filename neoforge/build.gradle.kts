@@ -18,51 +18,39 @@
 
 import dev.ithundxr.silk.ChangelogText
 
-architectury.forge()
+architectury.neoForge()
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    forge {
-        mixinConfig("numismatics-common.mixins.json")
-        mixinConfig("numismatics.mixins.json")
+    neoForge {
+        // TODO
+        //mixinConfig("numismatics-common.mixins.json")
+        //mixinConfig("numismatics.mixins.json")
 
-        convertAccessWideners = true
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-    }
-}
-
-repositories {
-    // mavens for Forge-exclusives
-    maven("https://maven.theillusivec4.top/") // Curios
-    maven("https://maven.terraformersmc.com/releases/") // EMI
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.tterrag.com/") { // Create Forge and Registrate Forge
-        content {
-            includeGroup("com.tterrag.registrate")
-            includeGroup("com.simibubi.create")
-        }
+        //convertAccessWideners = true
+        //extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
     }
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${"minecraft_version"()}-${"neoforge_version"()}")
+    neoForge("net.neoforged:neoforge:${"neoforge_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
 
     // Create and its dependencies
-    modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_forge_version"()}:slim") { isTransitive = false }
-    modImplementation("net.createmod.ponder:Ponder-Forge-${"minecraft_version"()}:${"ponder_version"()}")
-    modImplementation("com.tterrag.registrate:Registrate:${"registrate_forge_version"()}")
-    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${"minecraft_version"()}:${"flywheel_version"()}")
-    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${"minecraft_version"()}:${"flywheel_version"()}")
+    modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_neoforge_version"()}:slim") { isTransitive = false }
+    modImplementation("net.createmod.ponder:Ponder-NeoForge-${"minecraft_version"()}:${"ponder_version"()}")
+    modImplementation("com.tterrag.registrate:Registrate:${"registrate_neoforge_version"()}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${"minecraft_version"()}:${"flywheel_version"()}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
 
-    modLocalRuntime("dev.emi:emi-forge:${"emi_version"()}")
+    modLocalRuntime("dev.emi:emi-neoforge:${"emi_version"()}")
 
     // Carry On
-    modCompileOnly("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    modCompileOnly("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
     if ("enable_carryon"().toBoolean()) {
-        modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
+        modLocalRuntime("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
     }
 }
 
