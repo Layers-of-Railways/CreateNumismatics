@@ -19,7 +19,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import java.io.ByteArrayOutputStream
 
 plugins {
     java
@@ -165,7 +164,7 @@ subprojects {
             val parts = createForgeVersion.split(".").map { it.toInt() }
             val newMinor = parts[1] + 1
             "${parts[0]}.$newMinor.0"
-        }
+        }()
         
         // set up properties for filling into metadata
         val properties = mapOf(
@@ -173,9 +172,9 @@ subprojects {
             "minecraft_version" to "minecraft_version"(),
             "fabric_api_version" to "fabric_api_version"(),
             "fabric_loader_version" to "fabric_loader_version"(),
-            "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
+            "forge_version" to "neoforge_version"().split(".")[0], // only specify major version of forge
             "create_forge_version" to createForgeVersion, 
-            "create_forge_upper_bounds" to createForgeUpperBounds.invoke(),
+            "create_forge_upper_bounds" to createForgeUpperBounds,
             "create_fabric_version" to "create_fabric_version"().split("+")[0], // Trim +mcX.XX.X from version string
             "create_fabric_version_range" to "create_fabric_version_range"()
         )

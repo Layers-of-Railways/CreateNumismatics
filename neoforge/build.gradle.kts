@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${"minecraft_version"()}-${"forge_version"()}")
+    forge("net.minecraftforge:forge:${"minecraft_version"()}-${"neoforge_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
     shadowCommon(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
 
@@ -64,9 +64,6 @@ dependencies {
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
     }
-
-    compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
 }
 
 publishMods {

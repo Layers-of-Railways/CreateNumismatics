@@ -58,7 +58,6 @@ dependencies {
     modImplementation("net.minecraftforge:forgeconfigapiport-fabric:4.2.11")
 
     // Development QOL
-    modLocalRuntime("maven.modrinth:lazydfu:${"lazydfu_version"()}")
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
 
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")

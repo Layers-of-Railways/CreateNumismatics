@@ -8,7 +8,7 @@ pluginManagement {
 }
 
 include("common")
-include("fabric")
-include("forge")
+//include("fabric")
+include("neoforge")
 
 rootProject.name = "create-numismatics"
