@@ -106,7 +106,7 @@ public class NumismaticsStandardRecipeGen extends BaseRecipeProvider {
     }
 
     public NumismaticsStandardRecipeGen(PackOutput output, CompletableFuture<Provider> registries) {
-        super(output, registries, Create.ID);
+        super(output, registries, Numismatics.MOD_ID);
     }
 
     @Override

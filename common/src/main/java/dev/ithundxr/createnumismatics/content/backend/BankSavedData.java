@@ -20,7 +20,8 @@ public class BankSavedData extends SavedData {
     private Map<UUID, BankAccount> accounts = new HashMap<>();
 
     public static SavedData.Factory<BankSavedData> factory() {
-        return new SavedData.Factory<>(BankSavedData::new, BankSavedData::load, DataFixTypes.SAVED_DATA_RANDOM_SEQUENCES);
+		//noinspection DataFlowIssue
+		return new SavedData.Factory<>(BankSavedData::new, BankSavedData::load, null);
     }
     
     @Override
