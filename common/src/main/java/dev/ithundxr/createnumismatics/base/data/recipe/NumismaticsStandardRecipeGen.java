@@ -1,11 +1,15 @@
 package dev.ithundxr.createnumismatics.base.data.recipe;
 
+import com.simibubi.create.Create;
+import com.simibubi.create.api.data.recipe.BaseRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.data.recipe.Ingredients;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
-import net.createmod.catnip.platform.CatnipServices;
+import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -15,31 +19,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
-public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
-
-    /*GeneratedRecipe TRACK_COUPLER = create(CRBlocks.TRACK_COUPLER)
-        .unlockedBy(Ingredients::railwayCasing)
-        .viaShaped(b -> b.define('=', Ingredients.ironSheet())
-            .define('#', Ingredients.redstone())
-            .define('T', Ingredients.railwayCasing())
-            .pattern("=")
-            .pattern("#")
-            .pattern("T"));
-
-    GeneratedRecipe CONDUCTOR_WHISTLE = create(CRBlocks.CONDUCTOR_WHISTLE_FLAG)
-        .unlockedByTag(() -> CRTags.AllItemTags.CONDUCTOR_CAPS.tag)
-        .viaShapeless(b -> b
-            .requires(Ingredients.copperIngot())
-            .requires(Ingredients.brassNugget()));*/
+public class NumismaticsStandardRecipeGen extends BaseRecipeProvider {
 
     GeneratedRecipe ANDESITE_DEPOSITOR = create(NumismaticsBlocks.ANDESITE_DEPOSITOR)
         .unlockedBy(Ingredients::andesiteCasing)
@@ -106,12 +101,12 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
         return new GeneratedRecipeBuilder("/", result);
     }
 
-    GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike> result) {
+    GeneratedRecipeBuilder create(ItemProviderEntry<? extends ItemLike, ?> result) {
         return create(result::get);
     }
 
-    public NumismaticsStandardRecipeGen(PackOutput pOutput) {
-        super(pOutput);
+    public NumismaticsStandardRecipeGen(PackOutput output, CompletableFuture<Provider> registries) {
+        super(output, registries, Create.ID);
     }
 
     @Override
@@ -196,7 +191,7 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
         }
 
         private ResourceLocation getRegistryName() {
-            return compatDatagenOutput == null ? CatnipServices.REGISTRIES.getKeyOrThrow(result.get()
+            return compatDatagenOutput == null ? RegisteredObjectsHelper.getKeyOrThrow(result.get()
                 .asItem()) : compatDatagenOutput;
         }
 
@@ -243,7 +238,7 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             }
 
             GeneratedRecipe inFurnace(UnaryOperator<SimpleCookingRecipeBuilder> builder) {
-                return create(FURNACE, builder, 1);
+                return create(RecipeSerializer.SMELTING_RECIPE, builder, SmeltingRecipe::new, 1);
             }
 
             GeneratedRecipe inSmoker() {
@@ -251,9 +246,9 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             }
 
             GeneratedRecipe inSmoker(UnaryOperator<SimpleCookingRecipeBuilder> builder) {
-                create(FURNACE, builder, 1);
-                create(CAMPFIRE, builder, 3);
-                return create(SMOKER, builder, .5f);
+                create(RecipeSerializer.SMELTING_RECIPE, builder, SmeltingRecipe::new, 1);
+                create(RecipeSerializer.CAMPFIRE_COOKING_RECIPE, builder, CampfireCookingRecipe::new, 3);
+                return create(RecipeSerializer.SMOKING_RECIPE, builder, SmokingRecipe::new, .5f);
             }
 
             GeneratedRecipe inBlastFurnace() {
@@ -261,21 +256,21 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
             }
 
             GeneratedRecipe inBlastFurnace(UnaryOperator<SimpleCookingRecipeBuilder> builder) {
-                create(FURNACE, builder, 1);
-                return create(BLAST, builder, .5f);
+                create(RecipeSerializer.SMELTING_RECIPE, builder, SmeltingRecipe::new, 1);
+                return create(RecipeSerializer.BLASTING_RECIPE, builder, BlastingRecipe::new, .5f);
             }
 
-            private GeneratedRecipe create(SimpleCookingSerializer<?> serializer,
-                                           UnaryOperator<SimpleCookingRecipeBuilder> builder, float cookingTimeModifier) {
+            private <T extends AbstractCookingRecipe> GeneratedRecipe create(RecipeSerializer<T> serializer,
+                                           UnaryOperator<SimpleCookingRecipeBuilder> builder, AbstractCookingRecipe.Factory<T> factory,  float cookingTimeModifier) {
                 return register(consumer -> {
                     boolean isOtherMod = compatDatagenOutput != null;
 
-                    SimpleCookingRecipeBuilder b = builder.apply(
-                        SimpleCookingRecipeBuilder.generic(ingredient.get(), RecipeCategory.MISC, isOtherMod ? Items.DIRT : result.get(),
-                            exp, (int) (cookingTime * cookingTimeModifier), serializer));
+                    SimpleCookingRecipeBuilder b = builder.apply(SimpleCookingRecipeBuilder.generic(ingredient.get(),
+                            RecipeCategory.MISC, isOtherMod ? Items.DIRT : result.get(), exp,
+                            (int) (cookingTime * cookingTimeModifier), serializer, factory));
                     if (unlockedBy != null)
                         b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
-                    b.save(consumer, createSimpleLocation(CatnipServices.REGISTRIES.getKeyOrThrow(serializer)
+                    b.save(consumer, createSimpleLocation(RegisteredObjectsHelper.getKeyOrThrow(serializer)
                         .getPath()));
                 });
             }

@@ -14,7 +14,6 @@ public class ReloadCommandsCommand {
         return literal("reload_commands")
             .requires(cs -> cs.hasPermission(2))
             .executes(ctx -> {
-
                 for (ServerPlayer player : ctx.getSource().getServer().getPlayerList().getPlayers()) {
                     ctx.getSource().getServer().getCommands().sendCommands(player);
                 }

@@ -22,8 +22,11 @@ import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.lang.Lang;
+import net.createmod.catnip.platform.CatnipServices;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -31,13 +34,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -48,6 +56,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -112,8 +121,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries,boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         if (owner != null)
             tag.putUUID("Owner", owner);
 
@@ -122,27 +131,27 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         }
 
         if (!cardContainer.getItem(0).isEmpty()) {
-            tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
+            tag.put("Card", cardContainer.getItem(0).save(registries));
         }
 
         if (!getSellingItem().isEmpty()) {
-            tag.put("Selling", getSellingItem().save(new CompoundTag()));
+            tag.put("Selling", getSellingItem().save(registries));
         }
 
         if (!trustListContainer.isEmpty()) {
-            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag(), registries));
         }
 
         if (!items.isEmpty()) {
-            tag.put("Inventory", ContainerHelper.saveAllItems(new CompoundTag(), items));
+            tag.put("Inventory", ContainerHelper.saveAllItems(new CompoundTag(), items, registries));
         }
 
         tag.putInt("Mode", mode.ordinal());
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
         inventory.clear();
@@ -150,29 +159,18 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             inventory.load(tag.getCompound("CoinInventory"));
         }
 
-        if (tag.contains("Card", Tag.TAG_COMPOUND)) {
-            ItemStack cardStack = ItemStack.of(tag.getCompound("Card"));
-            cardContainer.setItem(0, cardStack);
-        } else {
-            cardContainer.setItem(0, ItemStack.EMPTY);
-        }
-
-        if (tag.contains("Selling", Tag.TAG_COMPOUND)) {
-            ItemStack sellingStack = ItemStack.of(tag.getCompound("Selling"));
-            sellingContainer.setItem(0, sellingStack);
-        } else {
-            sellingContainer.setItem(0, ItemStack.EMPTY);
-        }
+        cardContainer.setItem(0, ItemStack.parseOptional(registries, tag.getCompound("Card")));
+        sellingContainer.setItem(0, ItemStack.parseOptional(registries, tag.getCompound("Selling")));
 
         trustListContainer.clearContent();
         trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
-            trustListContainer.load(tag.getCompound("TrustListInv"));
+            trustListContainer.load(tag.getCompound("TrustListInv"), registries);
         }
 
         items.clear();
         if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
-            ContainerHelper.loadAllItems(tag.getCompound("Inventory"), items);
+            ContainerHelper.loadAllItems(tag.getCompound("Inventory"), items, registries);
         }
 
         mode = Mode.values()[tag.getInt("Mode")];
@@ -352,7 +350,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         // For: ...
 
         Lang.builder(Numismatics.MOD_ID)
-            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color()))
             .forGoggles(tooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {
@@ -482,35 +480,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @NotNull
     @Contract("_ -> new")
-    private CompoundTag cleanTags(@NotNull CompoundTag tag) {
-        tag = tag.copy();
-        tag.remove("RepairCost");
-        tag.remove("Count");
-
-        // sort enchants
-        ListTag enchants = tag.getList("Enchantments", Tag.TAG_COMPOUND);
-        if (!enchants.isEmpty()) {
-            ArrayList<Tag> tags = new ArrayList<>(enchants);
-            tags.sort((a, b) -> {
-                if (a.equals(b))
-                    return 0;
-                if (a instanceof CompoundTag ca && b instanceof CompoundTag cb) {
-                    if (ca.contains("id", Tag.TAG_STRING) && cb.contains("id", Tag.TAG_STRING)) {
-                        int comp = ca.getString("id").compareTo(cb.getString("id"));
-                        if (comp != 0) return comp;
-                    }
-
-                    return ca.getShort("lvl") - cb.getShort("lvl");
-                }
-                return 0;
-            });
-
-            enchants = new ListTag();
-            enchants.addAll(tags);
-            tag.put("Enchantments", enchants);
-        }
-
-        return tag;
+    private PatchedDataComponentMap cleanComponents(@NotNull DataComponentMap dataComponents) {
+        PatchedDataComponentMap map = new PatchedDataComponentMap(dataComponents);
+        map.remove(DataComponents.REPAIR_COST);
+        return map;
     }
 
     public boolean matchesSellingItem(@NotNull ItemStack b) {
@@ -521,15 +494,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (!ItemStack.isSameItem(a, b))
             return false;
 
-        CompoundTag an = a.getTag();
-        CompoundTag bn = b.getTag();
+        DataComponentMap an = a.getComponents();
+        DataComponentMap bn = b.getComponents();
 
-        if (an == null || bn == null) {
-            return an == bn;
-        }
-
-        an = cleanTags(an);
-        bn = cleanTags(bn);
+		an = cleanComponents(an);
+        bn = cleanComponents(bn);
 
         return an.equals(bn);
     }
@@ -827,7 +796,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public void openTrustList() {
         if (level == null || !level.isClientSide)
             return;
-        NumismaticsPackets.PACKETS.send(new OpenTrustListPacket<>(this));
+        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(getBlockPos()));
     }
 
     public Mode getMode() {
@@ -844,6 +813,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         SELL,
         BUY
         ;
+        
+        public static final StreamCodec<ByteBuf, Mode> STREAM_CODEC = CatnipStreamCodecBuilders.ofEnum(Mode.class);
 
         public static List<Component> getComponents() {
             return ImmutableList.copyOf(

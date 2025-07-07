@@ -1,31 +1,21 @@
 package dev.ithundxr.createnumismatics;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.simibubi.create.Create;
 import com.simibubi.create.CreateBuildInfo;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
-import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
-import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.lang.FontHelper.Palette;
-import net.createmod.ponder.foundation.registration.PonderLocalization;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +44,7 @@ public class Numismatics {
         finalizeRegistrate();
 
         registerCommands(NumismaticsCommands::register);
-        NumismaticsPackets.PACKETS.registerC2SListener();
+        NumismaticsPackets.register();
 
         if (Utils.isDevEnv() && Loader.FABRIC.isCurrent()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
@@ -62,10 +52,6 @@ public class Numismatics {
 
         //if (Utils.isDevEnv() && !Mods.SODIUM.isLoaded) // force all mixins to load in dev - this breaks model loading, only use sporadically to test
         //    MixinEnvironment.getCurrentEnvironment().audit();
-    }
-
-    public static void postRegistrationInit() {
-        ModSetupLate.registerPostRegistration();
     }
 
     public static CreateRegistrate registrate() {
@@ -82,17 +68,8 @@ public class Numismatics {
         throw new AssertionError();
     }
 
-    public static void gatherData(DataGenerator.PackGenerator gen) {
-        REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
-        REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
-        gen.addProvider(NumismaticsStandardRecipeGen::new);
-        gen.addProvider(NumismaticsAdvancements::new);
-    }
-
     public static ResourceLocation asResource(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static void crashDev(String message) {

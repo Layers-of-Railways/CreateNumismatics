@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -46,28 +47,25 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-                                          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-
-        if (hit.getDirection().getAxis().isVertical()) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (hitResult.getDirection().getAxis().isVertical()) {
             if (level.isClientSide)
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        if (state.getValue(HORIZONTAL_FACING) != hit.getDirection())
-            return InteractionResult.PASS;
+        if (state.getValue(HORIZONTAL_FACING) != hitResult.getDirection())
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (state.getValue(POWERED) || state.getValue(LOCKED))
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
 
         if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
 
         SliderStylePriceBehaviour priceBehaviour = BlockEntityBehaviour.get(level, pos, SliderStylePriceBehaviour.TYPE);
         if (priceBehaviour != null && priceBehaviour.deduct(player, hand, true)) {
@@ -76,6 +74,6 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
             player.displayClientMessage(Component.translatable("gui.numismatics.vendor.insufficient_funds")
                     .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
-        return InteractionResult.CONSUME;
+        return ItemInteractionResult.CONSUME;
     }
 }

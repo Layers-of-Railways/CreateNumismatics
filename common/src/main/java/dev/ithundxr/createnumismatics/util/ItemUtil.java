@@ -68,7 +68,7 @@ public class ItemUtil {
             while(!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 //Slot slot = this.slots.get(i);
                 ItemStack itemStack = target.getItem(i);
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack)) {
+                if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack)) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxStackSize()) {
                         stack.setCount(0);

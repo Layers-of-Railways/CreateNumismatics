@@ -3,6 +3,8 @@ package dev.ithundxr.createnumismatics.registry;
 import dev.ithundxr.createnumismatics.registry.advancement.CriterionTriggerBase;
 import dev.ithundxr.createnumismatics.registry.advancement.SimpleNumismaticsTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class NumismaticsTriggers {
 	}
 
 	public static void register() {
-		triggers.forEach(CriteriaTriggers::register);
+		triggers.forEach(trigger -> 
+				Registry.register(BuiltInRegistries.TRIGGER_TYPES, trigger.getId(), trigger));
 	}
-
 }

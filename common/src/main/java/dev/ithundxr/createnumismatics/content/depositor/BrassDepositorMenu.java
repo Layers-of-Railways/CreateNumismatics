@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -25,7 +26,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
-    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -34,11 +35,11 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     }
 
     @Override
-    protected BrassDepositorBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected BrassDepositorBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof BrassDepositorBlockEntity brassDepositorBE) {
-            brassDepositorBE.readClient(extraData.readNbt());
+            brassDepositorBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return brassDepositorBE;
         }
         return null;

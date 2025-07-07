@@ -35,7 +35,8 @@ public class NumismaticsBlockEntities {
             .validBlocks(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
             .renderer(() -> VendorRenderer::new)
             .register();
-
-    @SuppressWarnings("EmptyMethod")
-    public static void register() {}
+    
+    public static void register() {
+        Numismatics.LOGGER.info("Registering block entities for " + Numismatics.NAME);
+    }
 }

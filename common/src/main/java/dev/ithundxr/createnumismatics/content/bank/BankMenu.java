@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.content.coins.SlotOutputMergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -36,7 +37,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
     protected ContainerData dataAccess;
     private CardSwitchContainer cardSwitchContainer;
-    public BankMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BankMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -47,7 +48,7 @@ public class BankMenu extends MenuBase<BankAccount> {
     }
 
     @Override
-    protected BankAccount createOnClient(FriendlyByteBuf extraData) {
+    protected BankAccount createOnClient(RegistryFriendlyByteBuf extraData) {
         BankAccount account = BankAccount.clientSide(extraData);
         this.dataAccess = account.dataAccess;
         addDataSlots(dataAccess);

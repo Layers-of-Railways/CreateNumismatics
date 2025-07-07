@@ -3,9 +3,9 @@ package dev.ithundxr.createnumismatics.content.coins;
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -13,9 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,20 +100,18 @@ public class CoinItem extends Item {
     }
 
     public static ItemStack setDisplayedCount(ItemStack stack, int amt) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("DisplayedCount", amt);
-        stack.setTag(tag);
+        stack.set(NumismaticsDataComponents.COIN_DISPLAYED_COUNT, amt);
         return stack;
     }
 
     public static ItemStack clearDisplayedCount(ItemStack stack) {
-        stack.removeTagKey("DisplayedCount");
+        stack.remove(NumismaticsDataComponents.COIN_DISPLAYED_COUNT);
         return stack;
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         Coin descriptor = coin.getDescription();
         if (descriptor == Coin.SPUR) {
             tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.value.basic", coin.value));
@@ -124,8 +120,8 @@ public class CoinItem extends Item {
             tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.value", relativeValue, descriptor.getName(relativeValue), coin.value));
         }
 
-        int displayedCount;
-        if (stack.getTag() != null && (displayedCount = stack.getTag().getInt("DisplayedCount")) > 0) {
+        int displayedCount = stack.getOrDefault(NumismaticsDataComponents.COIN_DISPLAYED_COUNT, 0);
+        if (displayedCount > 0) {
             tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.count",
                 TextUtils.formatInt(displayedCount), coin.getName(displayedCount))
                 .withStyle(ChatFormatting.GOLD));

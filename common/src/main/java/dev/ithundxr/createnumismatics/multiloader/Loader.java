@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import java.util.function.Supplier;
 
 public enum Loader {
-    FORGE, FABRIC;
+	NEOFORGE, FABRIC;
 
     public static final Loader CURRENT = getCurrent();
 

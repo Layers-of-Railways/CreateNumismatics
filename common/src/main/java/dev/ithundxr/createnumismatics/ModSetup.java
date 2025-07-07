@@ -10,5 +10,6 @@ public class ModSetup {
         NumismaticsBlocks.register();
         NumismaticsMenuTypes.register();
         NumismaticsTags.register();
+        NumismaticsDataComponents.register();
     }
 }

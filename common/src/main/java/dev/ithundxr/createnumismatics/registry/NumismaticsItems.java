@@ -66,7 +66,6 @@ public class NumismaticsItems {
 		.register();
 
 	public static void register() {
-		// load the class and register everything
 		Numismatics.LOGGER.info("Registering items for " + Numismatics.NAME);
 	}
 }

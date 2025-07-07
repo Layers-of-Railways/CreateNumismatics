@@ -1,19 +1,16 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.ithundxr.createnumismatics.forge.mixin",
+  "package": "dev.ithundxr.createnumismatics.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "client.ClientPacketListenerMixin",
     "client.MixinGoggleOverlayRenderer",
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
-    "ServerGamePacketListenerImplMixin",
-    "self.VendorBlockEntityCapabilities"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "plugin": "dev.ithundxr.createnumismatics.forge.mixin.plugin.NumismaticsMixinPlugin"
+  "plugin": "dev.ithundxr.createnumismatics.neoforge.mixin.plugin.NumismaticsMixinPlugin"
 }

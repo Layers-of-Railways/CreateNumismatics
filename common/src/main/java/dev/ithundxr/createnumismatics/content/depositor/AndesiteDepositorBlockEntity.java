@@ -11,6 +11,8 @@ import net.createmod.catnip.lang.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -48,7 +50,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
                 Component.translatable(coin.getTranslationKey())
                     .append(Component.literal(" " + coin.fontChar).withStyle(ChatFormatting.WHITE)),
                 coin.value
-                ).withStyle(coin.rarity.color)
+                ).withStyle(coin.rarity.color())
             )
             .forGoggles(tooltip);
         return true;
@@ -76,23 +78,19 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
 
         if (!inputStack.isEmpty())
-            tag.put("InputStack", inputStack.save(new CompoundTag()));
+            tag.put("InputStack", inputStack.save(registries));
         tag.putInt("Coin", coin.ordinal());
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
 
-        if (tag.contains("InputStack", Tag.TAG_COMPOUND)) {
-            inputStack = ItemStack.of(tag.getCompound("InputStack"));
-        } else {
-            inputStack = ItemStack.EMPTY;
-        }
+        inputStack = ItemStack.parseOptional(registries, tag.getCompound("InputStack"));
 
         int coinIdx = 0;
         if (tag.contains("ScrollValue", Tag.TAG_INT))

@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -37,7 +38,7 @@ public class NumismaticsCreativeModeTabs {
     }
 
     public static void register() {
-        // just to load class
+        Numismatics.LOGGER.info("Registering creative tabs for " + Numismatics.NAME);
     }
 
     public enum Tabs {
@@ -75,12 +76,12 @@ public class NumismaticsCreativeModeTabs {
         private static Predicate<Item> makeExclusionPredicate() {
             Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
-            List<ItemProviderEntry<?>> simpleExclusions = List.of(
+            List<ItemProviderEntry<?, ?>> simpleExclusions = List.of(
                 NumismaticsBlocks.BLAZE_BANKER
                 //AllBlocks.REFINED_RADIANCE_CASING // just as an example
             );
 
-            for (ItemProviderEntry<?> entry : simpleExclusions) {
+            for (ItemProviderEntry<?, ?> entry : simpleExclusions) {
                 exclusions.add(entry.asItem());
             }
 
@@ -90,12 +91,12 @@ public class NumismaticsCreativeModeTabs {
         private static List<ItemOrdering> makeOrderings() {
             List<ItemOrdering> orderings = new ReferenceArrayList<>();
 
-            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = Map.of(
+            Map<ItemProviderEntry<?, ?>, ItemProviderEntry<?, ?>> simpleBeforeOrderings = Map.of(
                 //AllItems.EMPTY_BLAZE_BURNER, AllBlocks.BLAZE_BURNER,
                 //AllItems.SCHEDULE, AllBlocks.TRACK_STATION
             );
 
-            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleAfterOrderings = Map.of(
+            Map<ItemProviderEntry<?, ?>, ItemProviderEntry<?, ?>> simpleAfterOrderings = Map.of(
                 /*CRBlocks.CONDUCTOR_WHISTLE_FLAG, CRItems.ITEM_CONDUCTOR_CAP.get(DyeColor.RED),
                 CRItems.REMOTE_LENS, CRBlocks.CONDUCTOR_WHISTLE_FLAG,
                 CRBlocks.CONDUCTOR_VENT, CRItems.REMOTE_LENS,
@@ -117,7 +118,7 @@ public class NumismaticsCreativeModeTabs {
         private static Function<Item, ItemStack> makeStackFunc() {
             Map<Item, Function<Item, ItemStack>> factories = new Reference2ReferenceOpenHashMap<>();
 
-            Map<ItemProviderEntry<?>, Function<Item, ItemStack>> simpleFactories = Map.of(
+            Map<ItemProviderEntry<?, ?>, Function<Item, ItemStack>> simpleFactories = Map.of(
                 /*AllItems.COPPER_BACKTANK, item -> {
                     ItemStack stack = new ItemStack(item);
                     stack.getOrCreateTag().putInt("Air", BacktankUtil.maxAirWithoutEnchants());
@@ -146,7 +147,7 @@ public class NumismaticsCreativeModeTabs {
         private static Function<Item, TabVisibility> makeVisibilityFunc() {
             Map<Item, TabVisibility> visibilities = new Reference2ObjectOpenHashMap<>();
 
-            Map<ItemProviderEntry<?>, TabVisibility> simpleVisibilities = Map.of(
+            Map<ItemProviderEntry<?, ?>, TabVisibility> simpleVisibilities = Map.of(
                 //AllItems.BLAZE_CAKE_BASE, TabVisibility.SEARCH_TAB_ONLY
             );
 
@@ -170,10 +171,7 @@ public class NumismaticsCreativeModeTabs {
 
             return item -> {
                 TabVisibility visibility = visibilities.get(item);
-                if (visibility != null) {
-                    return visibility;
-                }
-                return TabVisibility.PARENT_AND_SEARCH_TABS;
+                return Objects.requireNonNullElse(visibility, TabVisibility.PARENT_AND_SEARCH_TABS);
             };
         }
 
@@ -219,8 +217,8 @@ public class NumismaticsCreativeModeTabs {
 
         private List<Item> collectBlocks(ResourceKey<CreativeModeTab> tab, Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Block> entry : Numismatics.registrate().getAll(Registries.BLOCK)) {
-                if (!isInCreativeTab(entry, tab))
+            for (RegistryEntry<Block, ?> entry : Numismatics.registrate().getAll(Registries.BLOCK)) {
+                if (isInCreativeTab(entry, tab))
                     continue;
                 Item item = entry.get()
                     .asItem();
@@ -237,8 +235,8 @@ public class NumismaticsCreativeModeTabs {
                                         Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
 
-            for (RegistryEntry<Item> entry : Numismatics.registrate().getAll(Registries.ITEM)) {
-                if (!isInCreativeTab(entry, tab))
+            for (RegistryEntry<Item, ?> entry : Numismatics.registrate().getAll(Registries.ITEM)) {
+                if (isInCreativeTab(entry, tab))
                     continue;
                 Item item = entry.get();
                 if (item instanceof BlockItem)
@@ -252,7 +250,7 @@ public class NumismaticsCreativeModeTabs {
         }
 
         @ExpectPlatform
-        private static boolean isInCreativeTab(RegistryEntry<?> entry, ResourceKey<CreativeModeTab> tab) {
+        private static boolean isInCreativeTab(RegistryEntry<?, ?> entry, ResourceKey<CreativeModeTab> tab) {
             throw new AssertionError();
         }
 

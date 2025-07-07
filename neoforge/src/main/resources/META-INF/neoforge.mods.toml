@@ -1,0 +1,41 @@
+modLoader = "javafml"
+# The loader version doesn't matter. Modify the Forge and/or Minecraft version ranges instead.
+loaderVersion = "[0,)"
+issueTrackerURL = "https://github.com/Layers-of-Railways/CreateNumismatics/issues"
+license = "LGPL"
+
+[[mods]]
+modId = "numismatics"
+version = "${version}"
+displayName = "Create: Numismatics"
+authors = "IThundxr, Violet, Pink, Slimeist, Razziel"
+description = '''
+A visually-pleasing and redstone-integrated Create-styled currency mod
+'''
+logoFile = "icon.png"
+
+[[mixins]]
+config="numismatics-common.mixins.json"
+[[mixins]]
+config="numismatics.mixins.json"
+
+[[dependencies.numismatics]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.numismatics]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.numismatics]]
+modId = "create"
+type = "required"
+versionRange = "[${create_neoforge_version},${create_neoforge_upper_bounds})"
+ordering = "NONE"
+side = "BOTH"

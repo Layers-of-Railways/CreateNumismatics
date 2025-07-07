@@ -8,6 +8,7 @@ import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllItemTags;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -43,36 +45,32 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-                                          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-
-        if (hit.getDirection().getAxis().isVertical()) {
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (hitResult.getDirection().getAxis().isVertical()) {
             if (level.isClientSide)
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
-                    be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
+                        be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        if (state.getValue(HORIZONTAL_FACING) != hit.getDirection())
-            return InteractionResult.PASS;
+        if (state.getValue(HORIZONTAL_FACING) != hitResult.getDirection())
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (state.getValue(POWERED) || state.getValue(LOCKED))
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
 
         if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
 
         if (level.getBlockEntity(pos) instanceof AndesiteDepositorBlockEntity andesiteDepositor) {
             Coin coin = andesiteDepositor.getCoin();
 
-            ItemStack handStack = player.getItemInHand(hand);
-            if (NumismaticsTags.AllItemTags.CARDS.matches(handStack)) {
-                if (CardItem.isBound(handStack)) {
-                    UUID id = CardItem.get(handStack);
+            if (AllItemTags.CARDS.matches(stack)) {
+                if (CardItem.isBound(stack)) {
+                    UUID id = CardItem.get(stack);
                     BankAccount account = Numismatics.BANK.getAccount(id);
                     if (account != null && account.isAuthorized(player)) {
                         if (account.deduct(coin, 1)) {
@@ -89,6 +87,6 @@ public class AndesiteDepositorBlock extends AbstractDepositorBlock<AndesiteDepos
                         .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, pos, AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);}
         }
-        return InteractionResult.CONSUME;
+        return ItemInteractionResult.CONSUME;
     }
 }

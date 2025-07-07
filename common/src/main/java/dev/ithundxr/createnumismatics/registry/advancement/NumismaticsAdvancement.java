@@ -5,8 +5,9 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTriggers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +34,7 @@ public class NumismaticsAdvancement {
 	private SimpleNumismaticsTrigger builtinTrigger;
 	private NumismaticsAdvancement parent;
 
-	Advancement datagenResult;
+	AdvancementHolder datagenResult;
 
 	private String id;
 	private String title;
@@ -48,12 +49,12 @@ public class NumismaticsAdvancement {
 
 		if (!t.externalTrigger) {
 			builtinTrigger = NumismaticsTriggers.addSimple(id + "_builtin");
-			builder.addCriterion("0", builtinTrigger.instance());
+			builder.addCriterion("0", builtinTrigger.createCriterion(builtinTrigger.instance()));
 		}
 
 		builder.display(t.icon, Component.translatable(titleKey()),
 			Component.translatable(descriptionKey()).withStyle(s -> s.withColor(0xDBA213)),
-			id.equals("root") ? BACKGROUND : null, t.type.frame, t.type.toast, t.type.announce, t.type.hide);
+			id.equals("root") ? BACKGROUND : null, t.type.type, t.type.toast, t.type.announce, t.type.hide);
 
 		if (t.type == TaskType.SECRET)
 			description += SECRET_SUFFIX;
@@ -72,14 +73,14 @@ public class NumismaticsAdvancement {
 	public boolean isAlreadyAwardedTo(Player player) {
 		if (!(player instanceof ServerPlayer sp))
 			return true;
-		Advancement advancement = sp.getServer()
-			.getAdvancements()
-			.getAdvancement(Numismatics.asResource(id));
+		AdvancementHolder advancement = sp.getServer()
+				.getAdvancements()
+				.get(Numismatics.asResource(id));
 		if (advancement == null)
 			return true;
 		return sp.getAdvancements()
-			.getOrStartProgress(advancement)
-			.isDone();
+				.getOrStartProgress(advancement)
+				.isDone();
 	}
 
 	public void awardTo(Player player) {
@@ -92,7 +93,7 @@ public class NumismaticsAdvancement {
 	}
 
 	@ApiStatus.Internal
-	public void save(Consumer<Advancement> t) {
+	public void save(Consumer<AdvancementHolder> t) {
 		if (parent != null)
 			builder.parent(parent.datagenResult);
 		datagenResult = builder.save(t, Numismatics.asResource(id)
@@ -108,21 +109,21 @@ public class NumismaticsAdvancement {
 	@ApiStatus.Internal
 	public enum TaskType {
 
-		SILENT(FrameType.TASK, false, false, false),
-		NORMAL(FrameType.TASK, true, false, false),
-		NOISY(FrameType.TASK, true, true, false),
-		EXPERT(FrameType.GOAL, true, true, false),
-		SECRET(FrameType.GOAL, true, true, true),
+		SILENT(AdvancementType.TASK, false, false, false),
+		NORMAL(AdvancementType.TASK, true, false, false),
+		NOISY(AdvancementType.TASK, true, true, false),
+		EXPERT(AdvancementType.GOAL, true, true, false),
+		SECRET(AdvancementType.GOAL, true, true, true),
 
 		;
 
-		private FrameType frame;
+		private AdvancementType type;
 		private boolean toast;
 		private boolean announce;
 		private boolean hide;
 
-		TaskType(FrameType frame, boolean toast, boolean announce, boolean hide) {
-			this.frame = frame;
+		TaskType(AdvancementType type, boolean toast, boolean announce, boolean hide) {
+			this.type = type;
 			this.toast = toast;
 			this.announce = announce;
 			this.hide = hide;
@@ -150,7 +151,7 @@ public class NumismaticsAdvancement {
 		}
 
 		@ApiStatus.Internal
-		public Builder icon(ItemProviderEntry<?> item) {
+		public Builder icon(ItemProviderEntry<?, ?> item) {
 			return icon(item.asStack());
 		}
 
@@ -178,17 +179,17 @@ public class NumismaticsAdvancement {
 		}
 
 		@ApiStatus.Internal
-		public Builder whenBlockPlaced(Block block) {
+		Builder whenBlockPlaced(Block block) {
 			return externalTrigger(ItemUsedOnLocationTrigger.TriggerInstance.placedBlock(block));
 		}
 
 		@ApiStatus.Internal
-		public Builder whenIconCollected() {
+		Builder whenIconCollected() {
 			return externalTrigger(InventoryChangeTrigger.TriggerInstance.hasItems(icon.getItem()));
 		}
 
 		@ApiStatus.Internal
-		public Builder whenItemCollected(ItemProviderEntry<?> item) {
+		public Builder whenItemCollected(ItemProviderEntry<?, ?> item) {
 			return whenItemCollected(item.asStack()
 				.getItem());
 		}
@@ -201,8 +202,7 @@ public class NumismaticsAdvancement {
 		@ApiStatus.Internal
 		public Builder whenItemCollected(TagKey<Item> tag) {
 			return externalTrigger(InventoryChangeTrigger.TriggerInstance
-				.hasItems(new ItemPredicate(tag, null, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY,
-					EnchantmentPredicate.NONE, EnchantmentPredicate.NONE, null, NbtPredicate.ANY)));
+					.hasItems(ItemPredicate.Builder.item().of(tag).build()));
 		}
 
 		@ApiStatus.Internal
@@ -211,7 +211,7 @@ public class NumismaticsAdvancement {
 		}
 
 		@ApiStatus.Internal
-		public Builder externalTrigger(CriterionTriggerInstance trigger) {
+		public Builder externalTrigger(Criterion<?> trigger) {
 			builder.addCriterion(String.valueOf(keyIndex), trigger);
 			externalTrigger = true;
 			keyIndex++;

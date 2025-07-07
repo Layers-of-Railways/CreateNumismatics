@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +55,6 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
         IBE.onRemove(state, level, pos, newState);
     }
@@ -81,9 +79,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-                                          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
@@ -96,7 +92,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
 
         if (isTrusted(player, level, pos)) {
             withBlockEntityDo(level, pos,
-                be -> be.openTrustListMenu((ServerPlayer) player));
+                    be -> be.openTrustListMenu((ServerPlayer) player));
             return InteractionResult.SUCCESS;
         }
 
@@ -119,14 +115,12 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos,
                                         @NotNull CollisionContext context) {
         return AllShapes.HEATER_BLOCK_SHAPE;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos,
                                                  @NotNull CollisionContext context) {
         if (context == CollisionContext.empty())
@@ -135,8 +129,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos, @NotNull PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
 
@@ -150,7 +143,6 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         if (!isTrusted(player, level, pos) || !mayBreak(player.level(), pos, state, player, true)) {
             return 0.0f;

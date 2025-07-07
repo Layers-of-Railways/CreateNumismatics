@@ -25,9 +25,9 @@ public interface CoinBag {
         return getValue() == 0;
     }
 
-    CompoundTag save(CompoundTag nbt);
+    CompoundTag save(CompoundTag tag);
 
-    void load(CompoundTag nbt);
+    void load(CompoundTag tag);
 
     void clear();
 }

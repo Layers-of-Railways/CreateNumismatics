@@ -67,14 +67,14 @@ public class MergingCoinBag implements CoinBag {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
-        nbt.putInt("CoinValue", getValue());
-        return nbt;
+    public CompoundTag save(CompoundTag tag) {
+        tag.putInt("CoinValue", getValue());
+        return tag;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        setRaw(nbt.getInt("CoinValue"));
+    public void load(CompoundTag tag) {
+        setRaw(tag.getInt("CoinValue"));
     }
 
     @Override

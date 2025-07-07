@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class NumismaticsPonderScenes {
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 //        HELPER.forComponents(CRBlocks.SEMAPHORE)
 //                .addStoryBoard("semaphore", TrainScenes::signaling);
 //        HELPER.forComponents(CRBlocks.TRACK_COUPLER)

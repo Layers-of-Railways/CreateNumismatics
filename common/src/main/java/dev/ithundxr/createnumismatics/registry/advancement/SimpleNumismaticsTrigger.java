@@ -1,15 +1,16 @@
 package dev.ithundxr.createnumismatics.registry.advancement;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @MethodsReturnNonnullByDefault
@@ -20,28 +21,43 @@ public class SimpleNumismaticsTrigger extends CriterionTriggerBase<SimpleNumisma
 		super(id);
 	}
 
-	@Override
-	public SimpleNumismaticsTrigger.Instance createInstance(JsonObject json, DeserializationContext context) {
-		return new SimpleNumismaticsTrigger.Instance(getId());
-	}
-
 	public void trigger(ServerPlayer player) {
 		super.trigger(player, null);
 	}
 
 	public SimpleNumismaticsTrigger.Instance instance() {
-		return new SimpleNumismaticsTrigger.Instance(getId());
+		return new SimpleNumismaticsTrigger.Instance();
 	}
 
-	public static class Instance extends CriterionTriggerBase.Instance {
+	@Override
+	public Codec<SimpleNumismaticsTrigger.Instance> codec() {
+		return SimpleNumismaticsTrigger.Instance.CODEC;
+	}
 
-		public Instance(ResourceLocation idIn) {
-			super(idIn, ContextAwarePredicate.ANY);
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public static class Instance extends CriterionTriggerBase.Instance {
+		private static final Codec<SimpleNumismaticsTrigger.Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SimpleNumismaticsTrigger.Instance::player)
+		).apply(instance, SimpleNumismaticsTrigger.Instance::new));
+
+		private final Optional<ContextAwarePredicate> player;
+
+		public Instance() {
+			player = Optional.empty();
+		}
+
+		public Instance(Optional<ContextAwarePredicate> player) {
+			this.player = player;
 		}
 
 		@Override
 		protected boolean test(@Nullable List<Supplier<Object>> suppliers) {
 			return true;
+		}
+
+		@Override
+		public Optional<ContextAwarePredicate> player() {
+			return player;
 		}
 	}
 }

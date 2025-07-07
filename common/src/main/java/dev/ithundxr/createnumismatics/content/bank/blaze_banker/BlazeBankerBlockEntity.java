@@ -19,6 +19,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -209,13 +210,13 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         if (owner != null)
             tag.putUUID("Owner", owner);
 
         if (!trustListContainer.isEmpty()) {
-            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag(), registries));
         }
         if (getLabel() != null)
             tag.putString("Label", getLabel());
@@ -225,14 +226,14 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
         trustListContainer.clearContent();
         trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
-            trustListContainer.load(tag.getCompound("TrustListInv"));
+            trustListContainer.load(tag.getCompound("TrustListInv"), registries);
         }
 
         if (clientPacket) {

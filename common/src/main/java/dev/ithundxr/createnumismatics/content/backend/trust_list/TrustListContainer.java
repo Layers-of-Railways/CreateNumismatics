@@ -1,12 +1,13 @@
 package dev.ithundxr.createnumismatics.content.backend.trust_list;
 
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
-import dev.ithundxr.createnumismatics.mixin.AccessorSimpleContainer;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class TrustListContainer extends SimpleContainer {
     @Override
     public void setChanged() {
         trustList.clear();
-        for (ItemStack stack : ((AccessorSimpleContainer) this).numismatics$getItems()) {
+        for (ItemStack stack : items) {
             UUID id;
             if ((id = IDCardItem.get(stack)) != null)
                 trustList.add(id);
@@ -32,17 +33,17 @@ public class TrustListContainer extends SimpleContainer {
     }
 
     @Override
-    public boolean canPlaceItem(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
         return NumismaticsTags.AllItemTags.ID_CARDS.matches(stack) && IDCardItem.isBound(stack) && !trustList.contains(IDCardItem.get(stack));
     }
 
-    public CompoundTag save(CompoundTag nbt) {
-        ContainerHelper.saveAllItems(nbt, ((AccessorSimpleContainer) this).numismatics$getItems());
-        return nbt;
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        ContainerHelper.saveAllItems(tag, items, registries);
+        return tag;
     }
 
-    public void load(CompoundTag nbt) {
-        ContainerHelper.loadAllItems(nbt, ((AccessorSimpleContainer) this).numismatics$getItems());
+    public void load(CompoundTag nbt, HolderLookup.Provider registries) {
+        ContainerHelper.loadAllItems(nbt, items, registries);
         setChanged();
     }
 

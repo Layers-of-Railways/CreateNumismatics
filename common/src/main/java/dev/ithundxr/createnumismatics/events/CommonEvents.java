@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,6 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,7 +62,7 @@ public class CommonEvents {
     @MultiLoaderEvent
     public static void onPlayerJoin(ServerPlayer player) {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
-            NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
+            CatnipServices.NETWORK.sendToClient(player, new BankAccountLabelPacket(account.id, account.getLabel()));
         }
     }
 
@@ -74,7 +76,8 @@ public class CommonEvents {
                 && !(player.getOffhandItem().getItem() instanceof BlockItem) &&
                 hand.equals(InteractionHand.MAIN_HAND);
         if ((offhandFix || player.isShiftKeyDown()) && state.getBlock() instanceof VendorBlock vb) {
-            return vb.use(state, level, pos, player, hand, hitResult);
+            ItemStack stack = player.getItemInHand(hand);
+            return state.useItemOn(stack, level, player, hand, hitResult).result();
         }
 
         return InteractionResult.PASS;

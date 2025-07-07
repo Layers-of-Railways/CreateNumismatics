@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.gui.widget.Indicator;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.registry.*;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -162,7 +163,7 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
     }
 
 /*    private void toggleExtraction() {
-        NumismaticsPackets.PACKETS.send(new BlazeBankerEditPacket(menu.contentHolder.getBlockPos(), !menu.contentHolder.allowExtraction()));
+        CatnipServices.NETWORK.sendToServer(new BlazeBankerEditPacket(menu.contentHolder.getBlockPos(), !menu.contentHolder.allowExtraction()));
     }*/
 
     private void syncName() {
@@ -171,7 +172,7 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
     }
 
     private void setLabel(String label) {
-        NumismaticsPackets.PACKETS.send(new BlazeBankerEditPacket(menu.contentHolder.getBlockPos(), label));
+        CatnipServices.NETWORK.sendToServer(new BlazeBankerEditPacket(menu.contentHolder.getBlockPos(), label));
     }
 
     @Override

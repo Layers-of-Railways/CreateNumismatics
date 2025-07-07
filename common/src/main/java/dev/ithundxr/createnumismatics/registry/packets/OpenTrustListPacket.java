@@ -2,26 +2,21 @@ package dev.ithundxr.createnumismatics.registry.packets;
 
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
-public class OpenTrustListPacket<BE extends SyncedBlockEntity & TrustListHolder> extends BlockEntityConfigurationPacket<BE> {
-    public OpenTrustListPacket(FriendlyByteBuf buf) {
-        super(buf);
+public class OpenTrustListPacket<BE extends SyncedBlockEntity & TrustListHolder> extends NumismaticsBlockEntityConfigurationPacket<BE> {
+    @SuppressWarnings("rawtypes")
+	public static final StreamCodec<ByteBuf, OpenTrustListPacket> STREAM_CODEC = BlockPos.STREAM_CODEC
+            .map(OpenTrustListPacket::new, i -> i.pos);
+
+    public OpenTrustListPacket(BlockPos pos) {
+        super(pos);
     }
-
-    public OpenTrustListPacket(BE be) {
-        super(be.getBlockPos());
-    }
-
-    @Override
-    protected void writeSettings(FriendlyByteBuf buffer) {}
-
-    @Override
-    protected void readSettings(FriendlyByteBuf buf) {}
-
-    @Override
-    protected void applySettings(BE be) {}
 
     @Override
     protected void applySettings(ServerPlayer player, BE be) {
@@ -31,5 +26,10 @@ public class OpenTrustListPacket<BE extends SyncedBlockEntity & TrustListHolder>
     @Override
     protected boolean causeUpdate() {
         return false;
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.OPEN_TRUST_LIST;
     }
 }

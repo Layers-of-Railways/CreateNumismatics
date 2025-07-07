@@ -33,7 +33,8 @@ public class NumismaticsImpl implements ModInitializer {
 
     public static void finalizeRegistrate() {
         Numismatics.registrate().register();
-        Numismatics.postRegistrationInit();
+        NumismaticsAdvancements.register();
+        NumismaticsTriggers.register();
     }
 
     public static void registerCommands(BiConsumer<CommandDispatcher<CommandSourceStack>, Boolean> consumer) {

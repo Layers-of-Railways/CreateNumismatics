@@ -67,6 +67,7 @@ public class NumismaticsMenuTypes {
             .register();
     }
 
-    @SuppressWarnings("EmptyMethod")
-    public static void register() {}
+    public static void register() {
+        Numismatics.LOGGER.info("Registering menu types for " + Numismatics.NAME);
+    }
 }

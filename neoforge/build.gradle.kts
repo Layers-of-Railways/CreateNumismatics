@@ -17,26 +17,39 @@
  */
 
 import dev.ithundxr.silk.ChangelogText
+import net.fabricmc.loom.task.RemapJarTask
+import org.gradle.kotlin.dsl.named
 
 architectury.neoForge()
 
 loom {
+    val common = project(":common")
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    neoForge {
-        // TODO
-        //mixinConfig("numismatics-common.mixins.json")
-        //mixinConfig("numismatics.mixins.json")
+    if (findProject(":fabric") == null) {
+        runs {
+            create("datagen") {
+                data()
 
-        //convertAccessWideners = true
-        //extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+                name = "Minecraft Data"
+                programArgs("--all", "--mod", "railways")
+                programArgs("--output", common.file("src/generated/resources").absolutePath)
+                programArgs("--existing", common.file("src/main/resources").absolutePath)
+
+                environmentVariable("DATAGEN", "TRUE")
+            }
+        }
     }
+}
+
+tasks.named<RemapJarTask>("remapJar") {
+    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }
 
 dependencies {
     neoForge("net.neoforged:neoforge:${"neoforge_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
-    shadowCommon(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
+    shadowCommon(project(path = ":common", configuration = "transformProductionNeoForge")) { isTransitive = false }
 
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_neoforge_version"()}:slim") { isTransitive = false }
@@ -60,7 +73,6 @@ publishMods {
     changelog = ChangelogText.getChangelogText(rootProject).toString()
     type = STABLE
     displayName = "Numismatics ${"mod_version"()} Forge ${"minecraft_version"()}"
-    modLoaders.add("forge")
     modLoaders.add("neoforge")
 
     curseforge {

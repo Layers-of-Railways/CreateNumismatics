@@ -10,6 +10,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +31,8 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
     public static final int PLAYER_INV_START_INDEX = INV_END_INDEX;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9; // exclusive
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36; // exclusive
-    public VendorMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    
+    public VendorMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -39,11 +41,11 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> {
     }
 
     @Override
-    protected VendorBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected VendorBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof VendorBlockEntity vendorBE) {
-            vendorBE.readClient(extraData.readNbt());
+            vendorBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return vendorBE;
         }
         return null;

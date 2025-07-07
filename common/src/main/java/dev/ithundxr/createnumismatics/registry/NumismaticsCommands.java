@@ -30,8 +30,7 @@ public class NumismaticsCommands {
 
         if (Utils.isDevEnv()) {
             numismaticsCommand = numismaticsCommand
-                .then(ReloadCommandsCommand.register(dispatcher, dedicated))
-            ;
+                .then(ReloadCommandsCommand.register(dispatcher, dedicated));
         }
 
         LiteralCommandNode<CommandSourceStack> numismaticsRoot = dispatcher.register(numismaticsCommand);

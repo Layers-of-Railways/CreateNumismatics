@@ -34,7 +34,7 @@ public enum UsernameUtils {
         if (!uuidNameMap.containsKey(uuid)) {
             MutableObject<String> result = new MutableObject<>(null);
             Env.CLIENT.runIfCurrent(() -> () -> {
-                if (Minecraft.getInstance().getUser().getUuid().equals(uuid.toString())) {
+                if (Minecraft.getInstance().getUser().getProfileId().equals(uuid)) {
                     uuidNameMap.put(uuid, Minecraft.getInstance().getUser().getName());
                     result.setValue(uuidNameMap.get(uuid));
                 }
@@ -47,15 +47,15 @@ public enum UsernameUtils {
             }
             if (!tried.contains(uuid)) {
                 CompletableFuture.runAsync(() -> {
-                    HttpClient client = HttpClient.newHttpClient();
-                    HttpRequest request = HttpRequest.newBuilder(URI.create(url + uuid.toString().replace("-", "")))
-                        .GET()
-                        .build();
-                    try {
-                        String body = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join().body();
-                        uuidNameMap.put(uuid, JsonParser.parseString(body).getAsJsonObject().get("name").getAsString());
-                    } catch (Exception e) {
-                        //e.printStackTrace();
+                    try (HttpClient client = HttpClient.newHttpClient()) {
+                        HttpRequest request = HttpRequest.newBuilder(URI.create(url + uuid.toString().replace("-", "")))
+                                .GET()
+                                .build();
+
+                        try {
+                            String body = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join().body();
+                            uuidNameMap.put(uuid, JsonParser.parseString(body).getAsJsonObject().get("name").getAsString());
+                        } catch (Exception ignored) {}
                     }
                 });
                 tried.add(uuid);

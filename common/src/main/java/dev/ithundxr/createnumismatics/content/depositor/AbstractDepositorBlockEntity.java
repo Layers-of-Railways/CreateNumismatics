@@ -15,9 +15,11 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.platform.CatnipServices;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -75,8 +77,8 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         if (owner != null)
             tag.putUUID("Owner", owner);
 
@@ -85,35 +87,31 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
         }
 
         if (!cardContainer.getItem(0).isEmpty()) {
-            tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
+            tag.put("Card", cardContainer.getItem(0).save(registries));
         }
 
         if (!trustListContainer.isEmpty()) {
-            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag(), registries));
         }
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
         inventory.clear();
         if (tag.contains("Inventory", Tag.TAG_COMPOUND)) {
             inventory.load(tag.getCompound("Inventory"));
         }
-
-        if (tag.contains("Card", Tag.TAG_COMPOUND)) {
-            ItemStack cardStack = ItemStack.of(tag.getCompound("Card"));
-            cardContainer.setItem(0, cardStack);
-        } else {
-            cardContainer.setItem(0, ItemStack.EMPTY);
-        }
+        
+        ItemStack cardStack = ItemStack.parseOptional(registries, tag.getCompound("Card"));
+        cardContainer.setItem(0, cardStack);
 
         trustListContainer.clearContent();
         trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
-            trustListContainer.load(tag.getCompound("TrustListInv"));
+            trustListContainer.load(tag.getCompound("TrustListInv"), registries);
         }
     }
 
@@ -181,7 +179,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     public void openTrustList() {
         if (level == null || !level.isClientSide)
             return;
-        NumismaticsPackets.PACKETS.send(new OpenTrustListPacket<>(this));
+        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(getBlockPos()));
     }
 
     @Override

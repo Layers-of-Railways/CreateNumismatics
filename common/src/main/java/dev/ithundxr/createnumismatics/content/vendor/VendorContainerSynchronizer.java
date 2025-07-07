@@ -3,6 +3,7 @@ package dev.ithundxr.createnumismatics.content.vendor;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.VendorContainerSetContentPacket;
 import dev.ithundxr.createnumismatics.registry.packets.VendorContainerSetSlotPacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -21,7 +22,7 @@ public class VendorContainerSynchronizer implements ContainerSynchronizer {
 
     @Override
     public void sendInitialData(AbstractContainerMenu container, @NotNull NonNullList<ItemStack> items, @NotNull ItemStack carriedItem, int[] initialData) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new VendorContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
+        CatnipServices.NETWORK.sendToClient(serverPlayer, new VendorContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
 
         for (int i = 0; i < initialData.length; ++i) {
             sendDataChange(container, i, initialData[i]);
@@ -30,7 +31,7 @@ public class VendorContainerSynchronizer implements ContainerSynchronizer {
 
     @Override
     public void sendSlotChange(AbstractContainerMenu container, int slot, ItemStack itemStack) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new VendorContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
+        CatnipServices.NETWORK.sendToClient(serverPlayer, new VendorContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
     }
 
     @Override

@@ -24,9 +24,9 @@ plugins {
     java
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.9.+" apply false
-    id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("dev.architectury.loom") version "1.10.+" apply false
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false // https://github.com/modmuss50/mod-publish-plugin
+    id("com.gradleup.shadow") version "8.3.8" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
 }
 
@@ -66,7 +66,13 @@ subprojects {
     
     setupRepositories()
 
-    val capitalizedName = project.name.replaceFirstChar { it.titlecase() }
+    val capitalizedName = {
+        if (project.name == "neoforge") {
+            "NeoForge"
+        } else {
+            project.name.replaceFirstChar { it.titlecase() }
+        }
+    }();
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
     loom.apply {
@@ -77,9 +83,6 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
-
-            if (project.name == "forge")
-                programArg("-mixin.config=create.mixins.json")
         }
     }
 
@@ -120,7 +123,7 @@ subprojects {
         return@subprojects
     }
 
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.gradleup.shadow")
     apply(plugin = "me.modmuss50.mod-publish-plugin")
 
     architectury {
@@ -153,9 +156,9 @@ subprojects {
     }
 
     tasks.processResources {
-        val createForgeVersion = "create_neoforge_version"().split("-")[0] // cut off build number
-        val createForgeUpperBounds = {
-            val parts = createForgeVersion.split(".").map { it.toInt() }
+        val createNeoForgeVersion = "create_neoforge_version"().split("-")[0] // cut off build number
+        val createNeoForgeUpperBounds = {
+            val parts = createNeoForgeVersion.split(".").map { it.toInt() }
             val newMinor = parts[1] + 1
             "${parts[0]}.$newMinor.0"
         }()
@@ -166,16 +169,15 @@ subprojects {
             "minecraft_version" to "minecraft_version"(),
             "fabric_api_version" to "fabric_api_version"(),
             "fabric_loader_version" to "fabric_loader_version"(),
-            "forge_version" to "neoforge_version"().split(".")[0], // only specify major version of forge
-            "create_forge_version" to createForgeVersion, 
-            "create_forge_upper_bounds" to createForgeUpperBounds,
-            "create_fabric_version" to "create_fabric_version"().split("+")[0], // Trim +mcX.XX.X from version string
+            "neoforge_version" to "neoforge_version"(),
+            "create_neoforge_version" to createNeoForgeVersion, 
+            "create_neoforge_upper_bounds" to createNeoForgeUpperBounds,
             "create_fabric_version_range" to "create_fabric_version_range"()
         )
 
         inputs.properties(properties)
 
-        filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml")) {
+        filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml")) {
             expand(properties)
         }
     }
@@ -233,9 +235,9 @@ fun hasUnstaged(): Boolean {
 tasks.register("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, ":fabric:publish", ":neoforge:publish", ":common:publish", ":fabric:publishMods", ":neoforge:publishMods")
         }
-        "fabric", "forge" -> {
+        "fabric", "neoforge" -> {
             dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
         }
     }
