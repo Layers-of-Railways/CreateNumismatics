@@ -116,6 +116,7 @@ public class NumismaticsAdvancements implements DataProvider {
 			advancement.provideLang(consumer);
 	}
 
-	public static void register() {}
-
+	public static void register() {
+		
+	}
 }

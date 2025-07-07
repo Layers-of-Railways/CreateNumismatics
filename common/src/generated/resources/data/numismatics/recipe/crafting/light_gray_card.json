@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "/": {
+      "tag": "c:dyes/light_gray"
+    },
+    "@": {
+      "item": "create:precision_mechanism"
+    },
+    "_": {
+      "tag": "c:sheets/iron"
+    }
+  },
+  "pattern": [
+    "@_/"
+  ],
+  "result": {
+    "count": 1,
+    "id": "numismatics:light_gray_card"
+  }
+}

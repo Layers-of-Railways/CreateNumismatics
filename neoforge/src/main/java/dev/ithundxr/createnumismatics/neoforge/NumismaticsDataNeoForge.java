@@ -1,6 +1,7 @@
 package dev.ithundxr.createnumismatics.neoforge;
 
 import com.simibubi.create.Create;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.NumismaticsData;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.DataGenerator;
@@ -12,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class NumismaticsDataNeoForge {
 	public static void gatherDataHighPriority(GatherDataEvent event) {
-		if (event.getMods().contains(Create.ID))
+		if (event.getMods().contains(Numismatics.MOD_ID))
 			NumismaticsData.addRegistrateDataGenerators();
 	}
 

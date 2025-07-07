@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    ",": {
+      "tag": "c:nuggets/brass"
+    },
+    "-": {
+      "item": "minecraft:paper"
+    },
+    "/": {
+      "tag": "c:dyes/cyan"
+    },
+    "_": {
+      "tag": "c:sheets/iron"
+    }
+  },
+  "pattern": [
+    " / ",
+    "_-,"
+  ],
+  "result": {
+    "count": 1,
+    "id": "numismatics:cyan_id_card"
+  }
+}

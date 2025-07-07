@@ -32,9 +32,10 @@ loom {
                 data()
 
                 name = "Minecraft Data"
-                programArgs("--all", "--mod", "railways")
+                programArgs("--all", "--mod", "numismatics")
                 programArgs("--output", common.file("src/generated/resources").absolutePath)
                 programArgs("--existing", common.file("src/main/resources").absolutePath)
+                programArgs("--existing-mod", "create")
 
                 environmentVariable("DATAGEN", "TRUE")
             }

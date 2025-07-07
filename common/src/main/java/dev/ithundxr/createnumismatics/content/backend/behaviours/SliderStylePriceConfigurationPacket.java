@@ -30,7 +30,7 @@ public class SliderStylePriceConfigurationPacket extends BlockEntityBehaviourCon
 
     public SliderStylePriceConfigurationPacket(BlockPos pos, Integer[] prices) {
         super(pos);
-        this.prices = new Integer[Coin.values().length];
+        this.prices = prices;
     }
 
     public SliderStylePriceConfigurationPacket(SyncedBlockEntity be) {

@@ -1,0 +1,29 @@
+{
+  "parent": "numismatics:root",
+  "criteria": {
+    "0": {
+      "trigger": "numismatics:money_laundering_builtin"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.numismatics.money_laundering.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:water_bucket"
+    },
+    "title": {
+      "translate": "advancement.numismatics.money_laundering"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

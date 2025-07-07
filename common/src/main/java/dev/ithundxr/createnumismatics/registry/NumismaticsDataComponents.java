@@ -2,6 +2,7 @@ package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponentType.Builder;
@@ -37,5 +38,7 @@ public class NumismaticsDataComponents {
 		throw new AssertionError();
 	}
 	
-	public static void register() {}
+	public static void register() {
+		Numismatics.LOGGER.info("Registering data components for " + Numismatics.NAME);
+	}
 }
