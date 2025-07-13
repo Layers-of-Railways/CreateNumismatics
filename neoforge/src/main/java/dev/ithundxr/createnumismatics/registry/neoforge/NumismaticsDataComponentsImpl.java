@@ -1,6 +1,5 @@
 package dev.ithundxr.createnumismatics.registry.neoforge;
 
-import com.simibubi.create.Create;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;

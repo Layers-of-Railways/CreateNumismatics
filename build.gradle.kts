@@ -17,6 +17,9 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import dev.ithundxr.silk.ChangelogText
+import me.modmuss50.mpp.ModPublishExtension
+import me.modmuss50.mpp.ReleaseType
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 
@@ -130,7 +133,7 @@ subprojects {
         platformSetupLoomIde()
     }
 
-    tasks.named<RemapJarTask>("remapJar") {
+    val remapJar = tasks.named<RemapJarTask>("remapJar") {
         val shadowJar = project.tasks.named<ShadowJar>("shadowJar").get()
         inputFile.set(shadowJar.archiveFile)
         injectAccessWidener = true
@@ -203,6 +206,46 @@ subprojects {
     components.getByName<AdhocComponentWithVariants>("java") {
         withVariantsFromConfiguration(project.configurations["shadowRuntimeElements"]) {
             skip()
+        }
+    }
+    
+    val releaseType = {
+        val versionStr = version.toString()
+        if (versionStr.contains("alpha")) {
+            ReleaseType.ALPHA;
+        } else if (versionStr.contains("beta")) {
+            ReleaseType.BETA;
+        } else {
+            ReleaseType.STABLE;
+        }
+    }()
+    configure<ModPublishExtension> {
+        file.set(remapJar.get().archiveFile)
+        version.set(project.version.toString())
+        changelog = ChangelogText.getChangelogText(rootProject).toString()
+        type = releaseType
+        displayName = "Numismatics ${"mod_version"()} ${capitalizedName}} ${"minecraft_version"()}"
+        modLoaders.add(project.name)
+        
+        val createVersionType = if (project.name == "fabric") "create-fabric" else "create"
+        curseforge {
+            projectId = "curseforge_id"()
+            accessToken = System.getenv("CURSEFORGE_TOKEN")
+            minecraftVersions.add("minecraft_version"())
+
+            requires {
+                slug = createVersionType
+            }
+        }
+
+        modrinth {
+            projectId = "modrinth_id"()
+            accessToken = System.getenv("MODRINTH_TOKEN")
+            minecraftVersions.add("minecraft_version"())
+
+            requires {
+                slug = createVersionType
+            }
         }
     }
 }

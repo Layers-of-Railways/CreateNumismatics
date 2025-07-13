@@ -10,12 +10,17 @@ import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import it.unimi.dsi.fastutil.objects.*;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.CreativeModeTabRegistry;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +71,20 @@ public class NumismaticsCreativeModeTabs {
     }
     
     public static final class RegistrateDisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
+        private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
+        static {
+            MutableObject<Predicate<Item>> isItem3d = new MutableObject<>(item -> false);
+            if (CatnipServices.PLATFORM.getEnv().isClient())
+                isItem3d.setValue(item -> {
+                    ItemRenderer itemRenderer = Minecraft.getInstance()
+                            .getItemRenderer();
+                    BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
+                    return model.isGui3d();
+                });
+            IS_ITEM_3D_PREDICATE = isItem3d.getValue();
+        }
+        
         private final Tabs tab;
 
         public RegistrateDisplayItemsGenerator(Tabs tab) {
@@ -200,25 +218,20 @@ public class NumismaticsCreativeModeTabs {
             List<ItemOrdering> orderings = makeOrderings();
             Function<Item, ItemStack> stackFunc = makeStackFunc();
             Function<Item, TabVisibility> visibilityFunc = makeVisibilityFunc();
-            ResourceKey<CreativeModeTab> tab = this.tab.getKey();
 
             List<Item> items = new LinkedList<>();
-            Predicate<Item> is3d = Env.unsafeRunForDist(
-                    () -> () -> item -> Minecraft.getInstance().getItemRenderer().getModel(new ItemStack(item), null, null, 0).isGui3d(),
-                    () -> () -> item -> false // don't crash servers
-            );
-            items.addAll(collectItems(tab, is3d, true, exclusionPredicate));
-            items.addAll(collectBlocks(tab, exclusionPredicate));
-            items.addAll(collectItems(tab, is3d, false, exclusionPredicate));
+            items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
+            items.addAll(collectBlocks(exclusionPredicate));
+            items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
 
             applyOrderings(items, orderings);
             outputAll(output, items, stackFunc, visibilityFunc);
         }
 
-        private List<Item> collectBlocks(ResourceKey<CreativeModeTab> tab, Predicate<Item> exclusionPredicate) {
+        private List<Item> collectBlocks(Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
             for (RegistryEntry<Block, ?> entry : Numismatics.registrate().getAll(Registries.BLOCK)) {
-                if (isInCreativeTab(entry, tab))
+                if (!isInCreativeTab(entry, tab.getKey()))
                     continue;
                 Item item = entry.get()
                     .asItem();
@@ -231,17 +244,14 @@ public class NumismaticsCreativeModeTabs {
             return items;
         }
 
-        private List<Item> collectItems(ResourceKey<CreativeModeTab> tab, Predicate<Item> is3d, boolean special,
-                                        Predicate<Item> exclusionPredicate) {
+        private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
 
             for (RegistryEntry<Item, ?> entry : Numismatics.registrate().getAll(Registries.ITEM)) {
-                if (isInCreativeTab(entry, tab))
+                if (!isInCreativeTab(entry, tab.getKey()))
                     continue;
                 Item item = entry.get();
                 if (item instanceof BlockItem)
-                    continue;
-                if (is3d.test(item) != special)
                     continue;
                 if (!exclusionPredicate.test(item))
                     items.add(item);
@@ -295,8 +305,5 @@ public class NumismaticsCreativeModeTabs {
                 AFTER;
             }
         }
-    }
-
-    public record TabInfo(ResourceKey<CreativeModeTab> key, CreativeModeTab tab) {
     }
 }

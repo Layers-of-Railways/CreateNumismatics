@@ -67,6 +67,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
+    private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
+    
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -359,6 +361,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 .forGoggles(tooltip);
         }
         return true;
+    }
+
+    @Override
+    public ItemStack getIcon(boolean isPlayerSneaking) {
+        return getSellingItem().isEmpty() ? BARRIER_STACK : getSellingItem();
     }
 
     @Override

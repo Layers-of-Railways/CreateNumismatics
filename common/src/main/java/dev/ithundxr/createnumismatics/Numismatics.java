@@ -16,7 +16,9 @@ import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.lang.FontHelper.Palette;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +34,22 @@ public class Numismatics {
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     static {
-        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
+        REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
+                .setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
                 .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
         Tabs.MAIN.use();
     }
 
     public static void init() {
         LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, CreateBuildInfo.VERSION, Loader.getCurrent());
-
-        ModSetup.register();
+        
+        // TODO make this better
+        Runnable modSetup = ModSetup::register;
+        if (Loader.FABRIC.isCurrent())
+            modSetup.run();
         finalizeRegistrate();
+        if (Loader.NEOFORGE.isCurrent())
+            modSetup.run();
 
         registerCommands(NumismaticsCommands::register);
         NumismaticsPackets.register();

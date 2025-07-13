@@ -4,7 +4,6 @@
   "package": "dev.ithundxr.createnumismatics.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "client.MixinGoggleOverlayRenderer",
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [

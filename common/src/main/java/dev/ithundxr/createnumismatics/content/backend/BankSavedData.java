@@ -36,7 +36,8 @@ public class BankSavedData extends SavedData {
 
         NBTHelper.iterateCompoundList(tag.getList("Accounts", Tag.TAG_COMPOUND), c -> {
             BankAccount account = BankAccount.load(c);
-            sd.accounts.put(account.id, account);
+            if (account != null)
+                sd.accounts.put(account.id, account);
         });
 
         return sd;

@@ -1,5 +1,6 @@
 package dev.ithundxr.createnumismatics.registry.neoforge;
 
+import com.simibubi.create.AllCreativeModeTabs;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.RegistrateDisplayItemsGenerator;
@@ -22,7 +23,7 @@ public class NumismaticsCreativeModeTabsImpl {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = TAB_REGISTER.register("main",
         () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.numismatics"))
-            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+            .withTabsBefore(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.getId())
             .icon(() -> NumismaticsBlocks.VENDOR.asStack())
             .displayItems(new RegistrateDisplayItemsGenerator(Tabs.MAIN))
             .build());

@@ -19,23 +19,4 @@ public class ClientUtils {
     public static boolean testClientPlayer(Predicate<Player> predicate) {
         return predicate.test(Minecraft.getInstance().player);
     }
-
-    private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
-    public static ItemStack changeGoggleOverlayItem(Supplier<ItemStack> original) {
-
-        HitResult hitResult = Minecraft.getInstance().hitResult;
-        if (!(hitResult instanceof BlockHitResult blockHitResult))
-            return original.get();
-
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return original.get();
-
-        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity vendorBE) {
-            // get the block entities cost and show the item for that and its cost and under
-            // show what is being sold (the enchants)
-            return vendorBE.getSellingItem().isEmpty() ? BARRIER_STACK : vendorBE.getSellingItem();
-        }
-        return original.get();
-    }
 }
