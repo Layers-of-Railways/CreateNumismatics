@@ -8,7 +8,6 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
-import dev.ithundxr.createnumismatics.multiloader.Env;
 import it.unimi.dsi.fastutil.objects.*;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.CreativeModeTab.TabVisibility;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.CreativeModeTabRegistry;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.LinkedList;
