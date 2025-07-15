@@ -224,7 +224,7 @@ subprojects {
         version.set(project.version.toString())
         changelog = ChangelogText.getChangelogText(rootProject).toString()
         type = releaseType
-        displayName = "Numismatics ${"mod_version"()} ${capitalizedName}} ${"minecraft_version"()}"
+        displayName = "Numismatics ${"mod_version"()} ${capitalizedName} ${"minecraft_version"()}"
         modLoaders.add(project.name)
         
         val createVersionType = if (project.name == "fabric") "create-fabric" else "create"
