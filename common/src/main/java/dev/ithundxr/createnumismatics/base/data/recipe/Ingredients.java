@@ -45,7 +45,7 @@ public class Ingredients {
 	}
 
 	public static TagKey<Item> ironSheet() {
-		return conventionalTag("sheets/iron");
+		return conventionalTag("plates/iron");
 	}
 
 	public static TagKey<Item> dye(@NotNull DyeColor color) {
