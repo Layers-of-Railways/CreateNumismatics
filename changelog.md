@@ -1,5 +1,5 @@
 ------------------------------------------------------
-Numismatics 1.0.17 Beta
+Numismatics 1.0.18
 ------------------------------------------------------
 Fixes
 - Fix recipes not accepting Create's iron sheets
