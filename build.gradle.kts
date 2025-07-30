@@ -33,8 +33,8 @@ plugins {
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
 }
 
-val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
-val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toInt()
+val isRelease =  providers.environmentVariable("RELEASE_BUILD").orNull?.toBoolean() ?: false
+val buildNumber =  providers.environmentVariable("GITHUB_RUN_NUMBER").orNull?.toInt()
 val gitHash = "\"${calculateGitHash() + (if (hasUnstaged()) "-modified" else "")}\""
 
 architectury {
@@ -107,9 +107,9 @@ subprojects {
         }
 
         repositories {
-            val mavenToken = System.getenv("MAVEN_TOKEN")
+            val mavenToken = providers.environmentVariable("MAVEN_TOKEN").getOrElse("")
             val maven = if (isRelease) "releases" else "snapshots"
-            if (mavenToken != null && mavenToken.isNotEmpty()) {
+            if (mavenToken.isNotEmpty()) {
                 maven {
                     url = uri("https://maven.ithundxr.dev/${maven}")
                     credentials {
@@ -208,43 +208,38 @@ subprojects {
             skip()
         }
     }
-    
-    val releaseType = {
-        val versionStr = version.toString()
-        if (versionStr.contains("alpha")) {
-            ReleaseType.ALPHA;
-        } else if (versionStr.contains("beta")) {
-            ReleaseType.BETA;
-        } else {
-            ReleaseType.STABLE;
-        }
-    }()
+
+    val releaseType = when {
+        "alpha" in version.toString() -> ReleaseType.ALPHA
+        "beta" in version.toString() -> ReleaseType.BETA
+        else -> ReleaseType.STABLE
+    }
     configure<ModPublishExtension> {
         file.set(remapJar.get().archiveFile)
         version.set(project.version.toString())
         changelog = ChangelogText.getChangelogText(rootProject).toString()
         type = releaseType
-        displayName = "Numismatics ${"mod_version"()} ${capitalizedName} ${"minecraft_version"()}"
+        displayName = "Numismatics ${"mod_version"()} for $capitalizedName ${"minecraft_version"()}"
         modLoaders.add(project.name)
         
-        val createVersionType = if (project.name == "fabric") "create-fabric" else "create"
+        val createVersionSlug = if (project.name == "fabric") "create-fabric" else "create"
         curseforge {
             projectId = "curseforge_id"()
-            accessToken = System.getenv("CURSEFORGE_TOKEN")
+            accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
             minecraftVersions.add("minecraft_version"())
 
             requires {
-                slug = createVersionType
+                slug = createVersionSlug
             }
         }
 
         modrinth {
             projectId = "modrinth_id"()
-            accessToken = System.getenv("MODRINTH_TOKEN")
+            accessToken =  providers.environmentVariable("MODRINTH_TOKEN")
             minecraftVersions.add("minecraft_version"())
 
             requires {
-                slug = createVersionType
+                slug = createVersionSlug
             }
         }
     }
@@ -256,7 +251,7 @@ fun calculateGitHash(): String {
             commandLine("git", "rev-parse", "HEAD")
         }
         return output.standardOutput.asText.get().trim()
-    } catch (ignored: Throwable) {
+    } catch (_: Throwable) {
         return "unknown"
     }
 }
@@ -270,13 +265,13 @@ fun hasUnstaged(): Boolean {
         if (result.isNotEmpty())
             println("Found stageable results:\n ${result}\n")
         return result.isNotEmpty()
-    } catch (ignored: Throwable) {
+    } catch (_: Throwable) {
         return false
     }
 }
 
 tasks.register("numismaticsPublish") {
-    when (val platform = System.getenv("PLATFORM")) {
+    when (val platform = providers.environmentVariable("PLATFORM").get()) {
         "both" -> {
             dependsOn(tasks.build, ":fabric:publish", ":neoforge:publish", ":common:publish", ":fabric:publishMods", ":neoforge:publishMods")
         }
