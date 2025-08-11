@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
+import dev.ithundxr.createnumismatics.content.checkout.GlobalDeferredCheckoutOrderManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
@@ -30,6 +31,7 @@ public class Numismatics {
     public static final String VERSION = findVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
+    public static final GlobalDeferredCheckoutOrderManager DEFERRED_ORDERS = new GlobalDeferredCheckoutOrderManager();
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 

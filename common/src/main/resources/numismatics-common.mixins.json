@@ -10,6 +10,8 @@
   "mixins": [
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
+    "MixinStockTickerInteractionHandler",
+    "MixinStockTickerBlockEntityReceivedPaymentsAccessor",
     "compat.carryon.MixinPickupHandler"
   ],
   "injectors": {

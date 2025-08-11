@@ -20,6 +20,7 @@ public enum NumismaticsPackets implements PacketTypeProvider {
     ANDESITE_DEPOSITOR_CONFIGURATION(AndesiteDepositorConfigurationPacket.class, AndesiteDepositorConfigurationPacket.STREAM_CODEC),
     OPEN_TRUST_LIST(OpenTrustListPacket.class, OpenTrustListPacket.STREAM_CODEC),
     VENDOR_CONFIGURATION(VendorConfigurationPacket.class, VendorConfigurationPacket.STREAM_CODEC),
+    DEFERRED_CHECKOUT_RESOLUTION(DeferredCheckoutResolutionPacket.class, DeferredCheckoutResolutionPacket.STREAM_CODEC),
     
     // S2C
     BANK_ACCOUNT_LABEL(BankAccountLabelPacket.class, BankAccountLabelPacket.STREAM_CODEC),

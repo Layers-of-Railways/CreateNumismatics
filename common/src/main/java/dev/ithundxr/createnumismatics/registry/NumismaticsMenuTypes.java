@@ -9,6 +9,8 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListScreen;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerMenu;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerScreen;
+import dev.ithundxr.createnumismatics.content.checkout.CheckoutMenu;
+import dev.ithundxr.createnumismatics.content.checkout.CheckoutScreen;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorMenu;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorScreen;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
@@ -58,6 +60,12 @@ public class NumismaticsMenuTypes {
         "vendor",
         VendorMenu::new,
         () -> VendorScreen::new
+    );
+
+    public static final MenuEntry<CheckoutMenu> CHECKOUT = register(
+        "checkout",
+        CheckoutMenu::new,
+        () -> CheckoutScreen::new
     );
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(

@@ -134,4 +134,12 @@ public enum Coin implements INamedIconOptions {
         }
         return closest;
     }
+
+    public static final Coin[] byValueAscending = new Coin[] {
+            SPUR, BEVEL, SPROCKET, COG, CROWN, SUN
+    };
+
+    public static final Coin[] byValueDescending = new Coin[] {
+            SUN, CROWN, COG, SPROCKET, BEVEL, SPUR
+    };
 }
