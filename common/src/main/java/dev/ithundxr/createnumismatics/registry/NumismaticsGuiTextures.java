@@ -22,6 +22,7 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     BLAZE_BANKER("blaze_banker",200, 110),
     VENDOR("vendor", 236, 145),
     CREATIVE_VENDOR("creative_vendor", 236, 145),
+    CHECKOUT_SCREEN("checkout_screen", 200, 132),
     ;
 
     public static final int FONT_COLOR = 0x575F7A;

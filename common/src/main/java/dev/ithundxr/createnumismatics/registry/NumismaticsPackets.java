@@ -14,6 +14,7 @@ public class NumismaticsPackets {
         .c2s(AndesiteDepositorConfigurationPacket.class, AndesiteDepositorConfigurationPacket::new)
         .c2s(OpenTrustListPacket.class, OpenTrustListPacket::new)
         .c2s(VendorConfigurationPacket.class, VendorConfigurationPacket::new)
+        .c2s(DeferredCheckoutResolutionPacket.clsss, DeferredCheckoutResolutionPacket::new)
 
         .s2c(BankAccountLabelPacket.class, BankAccountLabelPacket::new)
         .s2c(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket::new)

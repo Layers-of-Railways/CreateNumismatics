@@ -15,6 +15,7 @@ import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssemblyRecipeGen;
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
+import dev.ithundxr.createnumismatics.content.checkout.GlobalDeferredCheckoutOrderManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
@@ -38,6 +39,7 @@ public class Numismatics {
     public static final String VERSION = findVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public static final GlobalBankManager BANK = new GlobalBankManager();
+    public static final GlobalDeferredCheckoutOrderManager DEFERRED_ORDERS = new GlobalDeferredCheckoutOrderManager();
 
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 

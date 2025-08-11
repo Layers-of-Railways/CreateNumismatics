@@ -27,6 +27,14 @@
   "gui.numismatics.vendor.full": "Vendor is full",
   "gui.numismatics.vendor.full.named": "Vendor is full, contact %s to empty it",
   "gui.numismatics.vendor.no_item_in_hand": "Hold the stack of items you want to sell",
+  "gui.numismatics.checkout_screen.total": "Order Total: %s %s, %s¤",
+  "gui.numismatics.checkout_screen.header": "Checkout",
+  "gui.numismatics.checkout_screen.pay_with_coins": "Pay with Coins",
+  "gui.numismatics.checkout_screen.pay_with_card": "Pay with Card",
+
+  "numismatics.checkout.unauthorized": "You're not authorized to use that card",
+  "numismatics.checkout.insufficient_funds": "Insufficient funds!",
+  "numismatics.checkout.failure": "Error processing transaction! You have not been charged.",
 
   "block.numismatics.trusted_block.attempt_break": "Hold shift to break this block"
 }
