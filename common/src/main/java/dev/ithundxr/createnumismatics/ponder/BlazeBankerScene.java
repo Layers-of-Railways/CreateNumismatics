@@ -40,7 +40,7 @@ public class BlazeBankerScene {
         
         scene.overlay.showText(70)
                 .attachKeyFrame()
-                .text("Create a Blaze Banker by applying a Banking Guide to a blaze burner")
+                .text("Create a Blaze Banker by applying a Banking Guide to a Blaze Burner")
                 .pointAt(util.vector.blockSurface(blazeBurner, Direction.WEST))
                 .placeNearTarget();
         scene.idle(80);

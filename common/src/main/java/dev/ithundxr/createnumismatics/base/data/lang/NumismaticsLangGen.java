@@ -69,7 +69,8 @@ public class NumismaticsLangGen {
 
     private static void providePonderLang(BiConsumer<String, String> consumer) {
         NumismaticsSharedText.gatherText();
-        
+
+        PonderLocalization.generateSceneLang();
         PonderLocalization.provideLang(Numismatics.MOD_ID, consumer);
     }
 }
