@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2024 The Railways Team
+ * Copyright (c) 2024-2025 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -124,9 +124,9 @@ subprojects {
             val maven = if (isRelease) "releases" else "snapshots"
             if (mavenToken != null && mavenToken.isNotEmpty()) {
                 maven {
-                    url = uri("https://mvn.devos.one/${maven}")
+                    url = uri("https://maven.ithundxr.dev/${maven}")
                     credentials {
-                        username = "ithundxr-github"
+                        username = "numismatics-github"
                         password = mavenToken
                     }
                 }
