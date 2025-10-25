@@ -32,11 +32,5 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Validate Gradle Wrapper Integrity
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
-
       - name: Build & Publish
         run: ./gradlew numismaticsPublish
