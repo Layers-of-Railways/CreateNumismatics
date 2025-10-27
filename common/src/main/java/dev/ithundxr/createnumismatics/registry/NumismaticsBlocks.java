@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.data.BuilderTransformers;
+import dev.ithundxr.createnumismatics.base.data.CommonTags;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlock;
@@ -34,7 +35,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.strength(1.0F, 3600000.0F)) // explosion resistance same as bedrock
 		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
-		.tag(AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
+		.tag(CommonTags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.lang("Andesite Depositor")
 		.transform(BuilderTransformers.depositor("andesite"))
 		.simpleItem()
@@ -46,7 +47,7 @@ public class NumismaticsBlocks {
 		.properties(p -> p.strength(1.4F, 3600000.0F)) // explosion resistance same as bedrock
 		.properties(p -> p.isRedstoneConductor((state, getter, pos) -> false))
 		.transform(axeOrPickaxe())
-		.tag(AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
+		.tag(CommonTags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.lang("Brass Depositor")
 		.transform(BuilderTransformers.depositor("brass"))
 		.simpleItem()
@@ -74,7 +75,7 @@ public class NumismaticsBlocks {
 		.transform(pickaxeOnly())
 		.transform(BuilderTransformers.blazeBanker())
 		.addLayer(() -> RenderType::cutoutMipped)
-		.tag(AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
+		.tag(CommonTags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.tag(AllTags.AllBlockTags.FAN_TRANSPARENT.tag, AllTags.AllBlockTags.PASSIVE_BOILER_HEATERS.tag)
 		.loot((lt, block) -> lt.add(block, lt.createSingleItemTable(AllBlocks.BLAZE_BURNER)
 			.withPool(lt.applyExplosionCondition(NumismaticsItems.BANKING_GUIDE.get(), LootPool.lootPool()
