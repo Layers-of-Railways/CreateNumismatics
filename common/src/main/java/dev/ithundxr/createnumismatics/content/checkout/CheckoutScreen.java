@@ -10,12 +10,14 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.DeferredCheckoutResolutionPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.createmod.catnip.platform.CatnipServices;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
@@ -109,13 +111,13 @@ public class CheckoutScreen extends AbstractSimiContainerScreen<CheckoutMenu> {
 
     private void onConfirmTransaction(CheckoutPaymentMethod method) {
         Numismatics.LOGGER.info("Submitting resolution (APPROVED) of deferred order {}", this.menu.contentHolder.id());
-        CatnipServices.NETWORK.sendToServer(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), method, menu.currentCardUUID));
+        NumismaticsPackets.PACKETS.send(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), method, menu.currentCardUUID));
         super.onClose();
     }
 
     private void onCancelTransaction() {
         Numismatics.LOGGER.info("Submitting resolution (DENIED) of deferred order {}", this.menu.contentHolder.id());
-        CatnipServices.NETWORK.sendToServer(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), CheckoutPaymentMethod.CANCEL_TRANSACTION, Utils.emptyUUID));
+        NumismaticsPackets.PACKETS.send(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), CheckoutPaymentMethod.CANCEL_TRANSACTION, Utils.emptyUUID));
         super.onClose();
     }
 

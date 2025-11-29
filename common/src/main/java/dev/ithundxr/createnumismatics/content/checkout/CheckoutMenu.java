@@ -5,7 +5,7 @@ import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.util.Utils;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -26,7 +26,7 @@ public class CheckoutMenu extends MenuBase<DeferredCheckoutOrderMenuProvider> {
     private CheckoutMenu.CardSwitchContainer cardSwitchContainer;
     protected UUID currentCardUUID = Utils.emptyUUID;
 
-    public CheckoutMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
+    public CheckoutMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -35,7 +35,7 @@ public class CheckoutMenu extends MenuBase<DeferredCheckoutOrderMenuProvider> {
     }
 
     @Override
-    protected DeferredCheckoutOrderMenuProvider createOnClient(RegistryFriendlyByteBuf extraData) {
+    protected DeferredCheckoutOrderMenuProvider createOnClient(FriendlyByteBuf extraData) {
         return DeferredCheckoutOrderMenuProvider.clientSide(extraData);
     }
 
