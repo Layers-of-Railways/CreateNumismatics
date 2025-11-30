@@ -11,6 +11,7 @@ import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.mixin.MixinStockTickerBlockEntityReceivedPaymentsAccessor;
+import dev.ithundxr.createnumismatics.multiloader.NumismaticsCheckoutUtilities;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.data.Iterate;
@@ -103,7 +104,7 @@ public class DeferredCheckoutOrder {
             }
 
             if (!account.isAuthorized(player)) {
-                CheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.unauthorized"); // Unauthorized
+                NumismaticsCheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.unauthorized"); // Unauthorized
                 return false;
             }
         }
@@ -113,18 +114,18 @@ public class DeferredCheckoutOrder {
             return false;
         }
 
-        if (!CheckoutUtilities.checkOrderPreconditions(stockTicker, deferredOrder, level, player)) {
+        if (!NumismaticsCheckoutUtilities.checkOrderPreconditions(stockTicker, deferredOrder, level, player)) {
             // checkOrderPreconditions displays the chat message
             return false;
         }
 
         if (method == CheckoutPaymentMethod.CARD && account.getBalance() < costInSpurs) {
-            CheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.insufficient_funds");
+            NumismaticsCheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.insufficient_funds");
             return false;
         }
 
         if (method == CheckoutPaymentMethod.COINS && !playerHasEnoughCoinsInInventory(player.getInventory(), costInSpurs)) {
-            CheckoutUtilities.denyPurchase(level, player, "create.stock_keeper.too_broke");
+            NumismaticsCheckoutUtilities.denyPurchase(level, player, "create.stock_keeper.too_broke");
             return false;
         }
 
@@ -143,25 +144,25 @@ public class DeferredCheckoutOrder {
         if (itemCost.isEmpty()) {
             if (!tryDoCoinTransaction(method, account)) {
                 Numismatics.LOGGER.warn("Failed to do a numismatics transaction, even though all the preconditions passed!");
-                CheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.failure");
+                NumismaticsCheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.failure");
                 return false;
             }
 
             // If there's no item cost, we can skip a lot of the default create interaction. and just submit the order.
-            CheckoutUtilities.shopInteractionSubmitToNetwork(stockTicker, deferredOrder, player, level, packageAddress);
+            NumismaticsCheckoutUtilities.shopInteractionSubmitToNetwork(stockTicker, deferredOrder, player, level, packageAddress);
         } else {
             // There are item costs in the shopping list, so we must submit the order through the standard pipeline.
             // This could potentially fail because of the stock keeper being too full, so we'll submit the order, let it
             // take any items as payment.
             var receivedPayments = ((MixinStockTickerBlockEntityReceivedPaymentsAccessor) stockTicker).getReceivedPayments();
-            if (!CheckoutUtilities.finishShopInteractionStock(stockTicker, level, player, itemCost, deferredOrder, receivedPayments, packageAddress)) {
+            if (!NumismaticsCheckoutUtilities.finishShopInteractionStock(stockTicker, level, player, itemCost, deferredOrder, receivedPayments, packageAddress)) {
                 return false;
             }
 
             if (!tryDoCoinTransaction(method, account)) {
                 Numismatics.LOGGER.warn("Failed to do a numismatics transaction, even though all the preconditions passed! " +
                         "Unfortunately, the stock order has already been placed and we cannot unwind it.");
-                CheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.failure");
+                NumismaticsCheckoutUtilities.denyPurchase(level, player, "numismatics.checkout.failure");
                 return false;
             }
         }

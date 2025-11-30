@@ -1,4 +1,4 @@
-package dev.ithundxr.createnumismatics.content.checkout;
+package dev.ithundxr.createnumismatics.multiloader.neoforge;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.logistics.BigItemStack;
@@ -8,11 +8,7 @@ import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
 import com.simibubi.create.content.logistics.stockTicker.StockTickerBlockEntity;
 import com.simibubi.create.content.logistics.tableCloth.ShoppingListItem;
 import com.simibubi.create.foundation.item.SmartInventory;
-import com.simibubi.create.foundation.utility.CreateLang;
-import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.data.lang.NumismaticsLangGen;
-import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import net.createmod.catnip.data.Couple;
+import dev.ithundxr.createnumismatics.multiloader.NumismaticsCheckoutUtilities;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -34,7 +30,7 @@ import java.util.List;
     As such, it has been isolated to its own class. If the interactWithShop() function changes, most of the impact
     will be to this file, and the mixin which kicks off the whole deferred checkout process
  */
-public class CheckoutUtilities {
+public class NumismaticsCheckoutUtilitiesImpl extends NumismaticsCheckoutUtilities {
 
     public static void shopInteractionSubmitToNetwork(StockTickerBlockEntity tickerBE, PackageOrder order, Player player, Level level, String packageAddress) {
         tickerBE.broadcastPackageRequest(LogisticallyLinkedBehaviour.RequestType.PLAYER, order, null, packageAddress);
