@@ -158,12 +158,19 @@ subprojects {
         destinationDirectory = layout.buildDirectory.dir("devlibs").get()
     }
 
+    @Suppress("RedundantLambdaOrAnonymousFunction")
     tasks.processResources {
         val createNeoForgeVersion = "create_neoforge_version"().split("-")[0] // cut off build number
         val createNeoForgeUpperBounds = {
             val parts = createNeoForgeVersion.split(".").map { it.toInt() }
             val newMinor = parts[1] + 1
             "${parts[0]}.$newMinor.0"
+        }()
+        val createFabricVersionRange = {
+            val regex = Regex("(([0-9]\\.[0-9])\\.[0-9])\\.[0-9]")
+            val match = regex.find("create_fabric_version"())
+            val groups = match?.groups;
+            ">=${groups?.get(0)} ~${groups?.get(1)}"
         }()
         
         // set up properties for filling into metadata
@@ -175,7 +182,7 @@ subprojects {
             "neoforge_version" to "neoforge_version"(),
             "create_neoforge_version" to createNeoForgeVersion, 
             "create_neoforge_upper_bounds" to createNeoForgeUpperBounds,
-            "create_fabric_version_range" to "create_fabric_version_range"()
+            "create_fabric_version_range" to createFabricVersionRange
         )
 
         inputs.properties(properties)
@@ -289,24 +296,18 @@ tasks.register("numismaticsPublish") {
 fun Project.setupRepositories() {
     repositories {
         mavenCentral()
-        exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
         maven("https://maven.neoforged.net") // NeoForge
-        exclusiveMaven( // Create, Ponder, Flywheel
-            "https://maven.createmod.net",
-            "com.simibubi.create",
-            "net.createmod.ponder",
-            "dev.engine-room.flywheel"
-        )
-        exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate")
+        maven("https://maven.createmod.net") // Create, Ponder, Flywheel
+        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Registrate Fabric, Milk Lib, Dripstone Lib
+
+        exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
+        exclusiveMaven("https://mvn.devos.one/releases", "io.github.fabricators_of_create.Porting-Lib") // Porting Lib Releases
+        exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate") // Registrate
         exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon") // Carry On
-        exclusiveMaven( // EMI, Mod Menu
-            "https://maven.terraformersmc.com/releases", 
-            "dev.emi", "com.terraformersmc.modmenu"
-        )
-        exclusiveMaven( // Forge config api port
-            "https://raw.githubusercontent.com/Fuzss/modresources/main/maven",
-            "fuzs.forgeconfigapiport"
-        )
+        exclusiveMaven("https://maven.terraformersmc.com/releases", "dev.emi", "com.terraformersmc") // EMI, Mod Menu
+        exclusiveMaven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven", "fuzs.forgeconfigapiport") // Forge config api port
+        exclusiveMaven("https://maven.jamieswhiteshirt.com/libs-release", "com.jamieswhiteshirt") // Reach Entity Attributes
+        exclusiveMaven("https://maven.siphalor.de/", "de.siphalor") // Amecs API (required by Carry On)
     }
 }
 
