@@ -54,7 +54,7 @@ dependencies {
 
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_neoforge_version"()}:slim") { isTransitive = false }
-    modImplementation("net.createmod.ponder:Ponder-NeoForge-${"minecraft_version"()}:${"ponder_version"()}")
+    modImplementation("net.createmod.ponder:ponder-neoforge:${"ponder_version"()}+mc${"minecraft_version"()}")
     modImplementation("com.tterrag.registrate:Registrate:${"registrate_neoforge_version"()}")
     modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${"minecraft_version"()}:${"flywheel_version"()}")
     modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
