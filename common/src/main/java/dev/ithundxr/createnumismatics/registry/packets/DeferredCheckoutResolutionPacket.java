@@ -24,7 +24,6 @@ public record DeferredCheckoutResolutionPacket(
 
     @Override
     public void handle(ServerPlayer player) {
-        Numismatics.LOGGER.info("Received checkout packet! Transaction: {}; Method: {}; BankAccount: {}", transactionId, method, bankAccount);
         var order = Numismatics.DEFERRED_ORDERS.getDeferredOrder(transactionId);
         if (order == null)
             return;

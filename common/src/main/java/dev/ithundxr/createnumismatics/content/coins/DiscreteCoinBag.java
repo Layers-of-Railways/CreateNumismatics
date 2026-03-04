@@ -119,11 +119,14 @@ public class DiscreteCoinBag implements CoinBag {
     }
 
     public static DiscreteCoinBag ofGreedy(int totalSpurValue) {
-        var bag = new DiscreteCoinBag();
+        DiscreteCoinBag bag = new DiscreteCoinBag();
         int spurs = totalSpurValue;
-        for (var coin : Coin.byValueDescending)
-        {
-            var tuple = coin.convert(spurs);
+        
+        Coin[] coins = Coin.VALUES;
+        for (int i = coins.length - 1; i >= 0; i--) {
+            Coin coin = coins[i];
+
+            Couple<Integer> tuple = coin.convert(spurs);
             if (tuple.getFirst() != 0)
                 bag.add(coin, tuple.getFirst());
             spurs = tuple.getSecond();
@@ -131,11 +134,9 @@ public class DiscreteCoinBag implements CoinBag {
         return bag;
     }
 
-    public static DiscreteCoinBag ofChange(int costInSpurs, Coin coinToBreak)
-    {
+    public static DiscreteCoinBag ofChange(int costInSpurs, Coin coinToBreak) {
         return DiscreteCoinBag.ofGreedy(coinToBreak.value - costInSpurs);
     }
-
 
     public static DiscreteCoinBag of() {
         return new DiscreteCoinBag();
@@ -154,8 +155,6 @@ public class DiscreteCoinBag implements CoinBag {
     }
 
     private void dropContents(Level level, double x, double y, double z) {
-        coins.forEach((coin, amount) -> {
-            Containers.dropItemStack(level, x, y, z, coin.asStack(amount));
-        });
+        coins.forEach((coin, amount) -> Containers.dropItemStack(level, x, y, z, coin.asStack(amount)));
     }
 }

@@ -1,7 +1,6 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
@@ -11,13 +10,11 @@ import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.data.Couple;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,6 +37,8 @@ public enum Coin implements INamedIconOptions {
     ;
     
     public static final StreamCodec<ByteBuf, Coin> STREAM_CODEC = CatnipStreamCodecBuilders.ofEnum(Coin.class);
+
+    public static final Coin[] VALUES = values();
 
     public final int value; // in terms of spurs
     public final Rarity rarity;
@@ -134,12 +133,4 @@ public enum Coin implements INamedIconOptions {
         }
         return closest;
     }
-
-    public static final Coin[] byValueAscending = new Coin[] {
-            SPUR, BEVEL, SPROCKET, COG, CROWN, SUN
-    };
-
-    public static final Coin[] byValueDescending = new Coin[] {
-            SUN, CROWN, COG, SPROCKET, BEVEL, SPUR
-    };
 }

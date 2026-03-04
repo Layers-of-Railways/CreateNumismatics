@@ -1,5 +1,6 @@
 package dev.ithundxr.createnumismatics.content.checkout;
 
+import com.simibubi.create.content.logistics.BigItemStack;
 import com.simibubi.create.content.logistics.packager.InventorySummary;
 import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
 import com.simibubi.create.content.logistics.stockTicker.StockTickerBlockEntity;
@@ -12,7 +13,6 @@ import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlockEntity;
 import dev.ithundxr.createnumismatics.mixin.MixinStockTickerBlockEntityReceivedPaymentsAccessor;
 import dev.ithundxr.createnumismatics.multiloader.NumismaticsCheckoutUtilities;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
@@ -46,7 +46,7 @@ public class DeferredCheckoutOrder {
         // Determine cost of coin component of order
         InventorySummary paymentWithoutCoins = new InventorySummary();
         int cost = 0;
-        for (var stack : paymentEntries.getStacksByCount()) {
+        for (BigItemStack stack : paymentEntries.getStacksByCount()) {
             if (stack.stack.getItem() instanceof CoinItem coinItem) {
                 cost += coinItem.coin.toSpurs(stack.count);
             } else {
@@ -211,7 +211,11 @@ public class DeferredCheckoutOrder {
         // 2. Plan which coins to remove (greedy from largest to smallest)
         DiscreteCoinBag toRemove = new DiscreteCoinBag();
         int remaining = spursToRemove;
-        for (Coin coin : Coin.byValueDescending) {
+        
+        Coin[] coins = Coin.VALUES;
+        for (int i = coins.length - 1; i >= 0; i--) {
+            Coin coin = coins[i];
+
             if (remaining <= 0)
                 break;
 
@@ -228,7 +232,7 @@ public class DeferredCheckoutOrder {
         if (remaining > 0) {
             // Search ascending for the smallest coin whose value >= remaining and still available
             Coin breaker = null;
-            for (Coin coin : Coin.byValueAscending) {
+            for (Coin coin : Coin.VALUES) {
                 int availableCount = available.getDiscrete(coin) - toRemove.getDiscrete(coin);
                 if (availableCount > 0 && coin.value >= remaining) {
                     breaker = coin;
