@@ -290,7 +290,7 @@ fun Project.setupRepositories() {
     repositories {
         mavenCentral()
         exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
-        maven("https://maven.neoforged.net") // NeoForge
+        maven("https://maven.neoforged.net/releases") // NeoForge
         exclusiveMaven( // Create, Ponder, Flywheel
             "https://maven.createmod.net",
             "com.simibubi.create",
