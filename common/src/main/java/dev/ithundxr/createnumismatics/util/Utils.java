@@ -2,14 +2,12 @@ package dev.ithundxr.createnumismatics.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.multiloader.Env;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
