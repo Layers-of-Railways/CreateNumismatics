@@ -4,19 +4,21 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.checkout.CheckoutPaymentMethod;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public record DeferredCheckoutResolutionPacket(
-        UUID transactionId, CheckoutPaymentMethod method, UUID bankAccount) implements ServerboundPacketPayload {
+        UUID transactionId, CheckoutPaymentMethod method, @Nullable UUID bankAccount) implements ServerboundPacketPayload {
     public static final StreamCodec<ByteBuf, DeferredCheckoutResolutionPacket> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC, DeferredCheckoutResolutionPacket::transactionId,
             CheckoutPaymentMethod.STREAM_CODEC, DeferredCheckoutResolutionPacket::method,
-            UUIDUtil.STREAM_CODEC, DeferredCheckoutResolutionPacket::bankAccount,
+            CatnipStreamCodecBuilders.nullable(UUIDUtil.STREAM_CODEC), DeferredCheckoutResolutionPacket::bankAccount,
             DeferredCheckoutResolutionPacket::new
     );
 

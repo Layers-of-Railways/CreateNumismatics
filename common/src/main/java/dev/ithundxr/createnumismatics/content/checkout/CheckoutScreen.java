@@ -6,13 +6,11 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.packets.DeferredCheckoutResolutionPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.createmod.catnip.platform.CatnipServices;
@@ -91,7 +89,7 @@ public class CheckoutScreen extends AbstractSimiContainerScreen<CheckoutMenu> {
     }
 
     private void updatePayWithCardButton() {
-        payWithCardButton.active = !menu.currentCardUUID.equals(Utils.emptyUUID);
+        payWithCardButton.active = menu.currentCardUUID != null;
     }
 
     @Override
@@ -108,14 +106,12 @@ public class CheckoutScreen extends AbstractSimiContainerScreen<CheckoutMenu> {
     }
 
     private void onConfirmTransaction(CheckoutPaymentMethod method) {
-        Numismatics.LOGGER.info("Submitting resolution (APPROVED) of deferred order {}", this.menu.contentHolder.id());
         CatnipServices.NETWORK.sendToServer(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), method, menu.currentCardUUID));
         super.onClose();
     }
 
     private void onCancelTransaction() {
-        Numismatics.LOGGER.info("Submitting resolution (DENIED) of deferred order {}", this.menu.contentHolder.id());
-        CatnipServices.NETWORK.sendToServer(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), CheckoutPaymentMethod.CANCEL_TRANSACTION, Utils.emptyUUID));
+        CatnipServices.NETWORK.sendToServer(new DeferredCheckoutResolutionPacket(this.menu.contentHolder.id(), CheckoutPaymentMethod.CANCEL_TRANSACTION, null));
         super.onClose();
     }
 

@@ -4,7 +4,6 @@ import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardSlot;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
-import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -15,6 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.function.Function;
 
 public class CheckoutMenu extends MenuBase<DeferredCheckoutOrderMenuProvider> {
     private CheckoutMenu.CardSwitchContainer cardSwitchContainer;
-    protected UUID currentCardUUID = Utils.emptyUUID;
+    protected @Nullable UUID currentCardUUID;
 
     public CheckoutMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);

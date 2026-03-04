@@ -86,13 +86,13 @@ public class DeferredCheckoutOrder {
         return true;
     }
 
-    public boolean completePurchase(CheckoutPaymentMethod method, UUID purchasingAccountId) {
+    public boolean completePurchase(CheckoutPaymentMethod method, @Nullable UUID purchasingAccountId) {
         if (method == CheckoutPaymentMethod.CANCEL_TRANSACTION)
             return false;
 
         BankAccount account = null;
         if (method == CheckoutPaymentMethod.CARD) {
-            if (purchasingAccountId.equals(Utils.emptyUUID)) {
+            if (purchasingAccountId == null) {
                 Numismatics.LOGGER.warn("Attempted to complete a card transaction {} with default bank account", id);
                 return false;
             }

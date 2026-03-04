@@ -29,6 +29,4 @@ public class Utils {
     public static void openScreen(ServerPlayer player, MenuProvider factory, Consumer<RegistryFriendlyByteBuf> extraDataWriter) {
         throw new AssertionError();
     }
-
-    public static final UUID emptyUUID = new UUID(0L, 0L);
 }
