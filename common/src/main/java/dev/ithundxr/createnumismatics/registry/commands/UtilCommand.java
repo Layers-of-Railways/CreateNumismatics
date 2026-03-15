@@ -51,22 +51,28 @@ public class UtilCommand {
         return literal("ponder")
             .then(argument("pos", BlockPosArgument.blockPos())
                 .then(argument("size", IntegerArgumentType.integer(1))
-                    .then(argument("name", StringArgumentType.greedyString())
-                        .executes(ctx -> $ponder(
-                            ctx.getSource(),
-                            BlockPosArgument.getLoadedBlockPos(ctx, "pos"),
-                            IntegerArgumentType.getInteger(ctx, "size"),
-                            StringArgumentType.getString(ctx, "name")
-                        )))
-                    .then(argument("height", IntegerArgumentType.integer(1))
+                    .then(literal("named")
                         .then(argument("name", StringArgumentType.greedyString())
                             .executes(ctx -> $ponder(
                                 ctx.getSource(),
                                 BlockPosArgument.getLoadedBlockPos(ctx, "pos"),
                                 IntegerArgumentType.getInteger(ctx, "size"),
-                                IntegerArgumentType.getInteger(ctx, "height"),
                                 StringArgumentType.getString(ctx, "name")
-                            )))
+                            ))
+                        )
+                    )
+                    .then(argument("height", IntegerArgumentType.integer(1))
+                        .then(literal("named")
+                            .then(argument("name", StringArgumentType.greedyString())
+                                .executes(ctx -> $ponder(
+                                    ctx.getSource(),
+                                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"),
+                                    IntegerArgumentType.getInteger(ctx, "size"),
+                                    IntegerArgumentType.getInteger(ctx, "height"),
+                                    StringArgumentType.getString(ctx, "name")
+                                ))
+                            )
+                        )
                     )
                 )
             );
