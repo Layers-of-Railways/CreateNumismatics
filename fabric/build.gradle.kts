@@ -41,24 +41,6 @@ loom {
     }
 }
 
-repositories {
-    // mavens for Fabric-exclusives
-    maven("https://api.modrinth.com/maven") // LazyDFU
-    maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-    maven("https://maven.cafeteria.dev/releases") // Fake Player API
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
-        name = "Siphalor's Maven"
-    }
-    maven("https://squiddev.cc/maven/") {// CC Tweaked
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-}
-
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${"fabric_loader_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }

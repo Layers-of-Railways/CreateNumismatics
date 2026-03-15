@@ -30,24 +30,6 @@ loom {
     accessWidenerPath = file("src/main/resources/numismatics.accesswidener")
 }
 
-repositories {
-    // mavens for Create Fabric and dependencies
-    maven("https://api.modrinth.com/maven") // LazyDFU
-    maven("https://maven.terraformersmc.com/releases/") // Mod Menu
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-    maven("https://maven.cafeteria.dev/releases") // Fake Player API
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
-        name = "Siphalor's Maven"
-    }
-    maven("https://squiddev.cc/maven/") {// CC Tweaked
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-}
-
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader

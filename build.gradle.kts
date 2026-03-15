@@ -26,7 +26,7 @@ plugins {
     java
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.7.+" apply false
+    id("dev.architectury.loom") version "1.11.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
@@ -51,6 +51,12 @@ allprojects {
     apply(plugin = "architectury-plugin")
     apply(plugin = "maven-publish")
 
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
     base.archivesName.set("archives_base_name"())
     group = "maven_group"()
 
@@ -73,6 +79,8 @@ subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "net.kyori.blossom")
 
+    setupRepositories()
+
     val capitalizedName = project.name.replaceFirstChar { it.uppercase() }
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
@@ -84,21 +92,6 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
-        }
-    }
-
-    repositories {
-        mavenCentral()
-        maven("https://maven.shedaniel.me/") // Cloth Config, REI
-        maven("https://maven.blamejared.com/") // JEI, Carry On
-        maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
-        maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
-        maven("https://maven.tterrag.com/") { // Flywheel
-            content {
-                // need to be specific here due to version overlaps
-                includeGroup("com.jozufozu.flywheel")
-            }
         }
     }
 
@@ -258,4 +251,54 @@ tasks.create("numismaticsPublish") {
 operator fun String.invoke(): String {
     return rootProject.ext[this] as? String
         ?: throw IllegalStateException("Property $this is not defined")
+}
+
+fun Project.setupRepositories() {
+    repositories {
+        mavenCentral()
+        maven("https://modmaven.dev/") // Create
+        exclusiveMaven("https://api.modrinth.com/maven", "maven.modrinth") // LazyDFU, Create Crafts and Additions
+        maven("https://maven.shedaniel.me/") // Cloth Config, REI
+        maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
+        maven("https://maven.blamejared.com/") // JEI, Carry On
+        maven("https://maven.parchmentmc.org") // Parchment mappings
+        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
+        maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
+        maven("https://maven.cafeteria.dev/releases") // Fake Player API
+        maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
+        maven("https://maven.tterrag.com/") { // Flywheel, Registrate, Create
+            content {
+                // need to be specific here due to version overlaps
+                includeGroup("com.simibubi.create")
+                includeGroup("com.tterrag.registrate")
+                includeGroup("com.jozufozu.flywheel")
+            }
+        }
+        maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
+        maven("https://jitpack.io/") { // Mixin Extras, Fabric ASM
+            content {
+                includeGroupByRegex("com.github.*")
+            }
+        }
+        maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
+            name = "Siphalor's Maven"
+        }
+        maven("https://squiddev.cc/maven/") {// CC Tweaked
+            content {
+                includeGroup("cc.tweaked")
+            }
+        }
+        maven("https://maven.theillusivec4.top/") // Curios
+    }
+}
+
+fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            groups.forEach {
+                includeGroup(it)
+            }
+        }
+    }
 }
