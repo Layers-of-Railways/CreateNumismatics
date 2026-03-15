@@ -237,7 +237,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
             if (shiftHeld)
                 offset *= 4;
             count += offset;
-            count = Math.max(0, Math.min(count, stack.getMaxStackSize()));
+            count = Math.max(shiftHeld ? 1 : 0, Math.min(count, stack.getMaxStackSize()));
             slot.set(count == 0 ? ItemStack.EMPTY : stack.copyWithCount(count));
             this.broadcastChanges();
         }

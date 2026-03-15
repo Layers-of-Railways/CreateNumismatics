@@ -42,13 +42,22 @@ public class NumismaticsCommands {
             .then(ToggleAdminModeCommand.register())
         ;
 
+        LiteralCommandNode<CommandSourceStack> util;
         if (Utils.isDevEnv()) {
+            util = UtilCommand.build();
             numismaticsCommand = numismaticsCommand
                 .then(ReloadCommandsCommand.register(dispatcher, dedicated))
+                .then(util)
             ;
+        } else {
+            util = null;
         }
 
         LiteralCommandNode<CommandSourceStack> numismaticsRoot = dispatcher.register(numismaticsCommand);
+
+        if (util != null) {
+            numismaticsRoot.addChild(AllCommands.buildRedirect("u", util));
+        }
 
         CommandNode<CommandSourceStack> nm = dispatcher.findNode(Collections.singleton("nm"));
         if (nm != null)

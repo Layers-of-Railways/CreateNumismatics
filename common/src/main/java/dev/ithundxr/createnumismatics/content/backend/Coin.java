@@ -45,24 +45,27 @@ import static dev.ithundxr.createnumismatics.registry.NumismaticsIcons.*;
  */
 
 public enum Coin implements INamedIconOptions {
-    SPUR(1, Rarity.COMMON, I_COIN_SPUR, "\uF011"),
-    BEVEL(8, Rarity.COMMON, I_COIN_BEVEL, "\uF012"), // 8 spurs
-    SPROCKET(16, Rarity.COMMON, I_COIN_SPROCKET, "\uF013"), // 16 spurs, 2 bevels
-    COG(64, Rarity.UNCOMMON, I_COIN_COG, "\uF014"), // 64 spurs, 8 bevels, 4 sprockets
-    CROWN(512, Rarity.RARE, I_COIN_CROWN, "\uF015"), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
-    SUN(4096, Rarity.EPIC, I_COIN_SUN, "\uF016") // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
+    SPUR(1, Rarity.COMMON, I_COIN_SPUR, I_COIN_SPUR_RED_LINE, "\uF011"),
+    BEVEL(8, Rarity.COMMON, I_COIN_BEVEL, I_COIN_BEVEL_RED_LINE, "\uF012"), // 8 spurs
+    SPROCKET(16, Rarity.COMMON, I_COIN_SPROCKET, I_COIN_SPROCKET_RED_LINE, "\uF013"), // 16 spurs, 2 bevels
+    COG(64, Rarity.UNCOMMON, I_COIN_COG, I_COIN_COG_RED_LINE, "\uF014"), // 64 spurs, 8 bevels, 4 sprockets
+    CROWN(512, Rarity.RARE, I_COIN_CROWN, I_COIN_CROWN_RED_LINE, "\uF015"), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
+    SUN(4096, Rarity.EPIC, I_COIN_SUN, I_COIN_SUN_RED_LINE, "\uF016") // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
 
     public final int value; // in terms of spurs
     public final Rarity rarity;
     private final NumismaticsIcons icon;
+    private final NumismaticsIcons redLineIcon;
     public final String fontChar;
 
-    Coin(int value, Rarity rarity, NumismaticsIcons icon, String fontChar) {
+    Coin(int value, Rarity rarity, NumismaticsIcons icon, NumismaticsIcons redLineIcon, String fontChar) {
         this.value = value;
         this.rarity = rarity;
         this.icon = icon;
         this.icon.setCoin();
+        this.redLineIcon = redLineIcon;
+        this.redLineIcon.setCoin();
         this.fontChar = fontChar;
     }
 
@@ -136,6 +139,10 @@ public enum Coin implements INamedIconOptions {
     @Override
     public AllIcons getIcon() {
         return icon;
+    }
+
+    public NumismaticsIcons getRedLineIcon() {
+        return redLineIcon;
     }
 
     @Override

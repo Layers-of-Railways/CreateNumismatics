@@ -29,16 +29,22 @@ public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
 
     public static void register() {
+        /*HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
+                .addStoryBoard("depositor", OldDepositorScenes::depositor)
+                .addStoryBoard("depositor_pricing", OldDepositorScenes::depositorPricing);*/
+
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
-                .addStoryBoard("depositor", DepositorScenes::depositor)
-                .addStoryBoard("depositor_pricing", DepositorScenes::depositorPricing);
+            .addStoryBoard("depositors/intro", DepositorScenes::intro)
+            .addStoryBoard("depositors/redstone", DepositorScenes::redstone)
+            .addStoryBoard("depositors/pricing", DepositorScenes::pricing);
+
         HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
-                .addStoryBoard("salepoint", SalepointScenes::item);
+            .addStoryBoard("salepoint", SalepointScenes::item);
     }
 
     // Any ponders that should appear AFTER creates own ponders should go here
     public static void registerAfterCreatePonders() {
         HELPER.forComponents(AllBlocks.BLAZE_BURNER)
-                .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
+            .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }
 }

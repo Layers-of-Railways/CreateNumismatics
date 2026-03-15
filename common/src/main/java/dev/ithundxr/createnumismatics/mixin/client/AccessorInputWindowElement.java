@@ -28,14 +28,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(InputWindowElement.class)
 public interface AccessorInputWindowElement {
     @Accessor("key")
-    ResourceLocation numsismatics$getKey();
+    ResourceLocation numismatics$getKey();
 
     @Accessor("item")
-    ItemStack numsismatics$getItem();
+    ItemStack numismatics$getItem();
 
     @Accessor(value = "icon", remap = false)
-    AllIcons numsismatics$getIcon();
+    AllIcons numismatics$getIcon();
     
     @Accessor("key")
-    void numsismatics$setKey(ResourceLocation key);
+    void numismatics$setKey(ResourceLocation key);
 }
