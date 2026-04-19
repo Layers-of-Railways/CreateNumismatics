@@ -2,7 +2,7 @@
 Numismatics 1.0.20
 ------------------------------------------------------
 Fixes
-- Fix vendors dropping items when assembled with Sable
+- Fix vendors dropping/duplicating items when assembled with Sable
 ------------------------------------------------------
 Numismatics 1.0.19
 ------------------------------------------------------

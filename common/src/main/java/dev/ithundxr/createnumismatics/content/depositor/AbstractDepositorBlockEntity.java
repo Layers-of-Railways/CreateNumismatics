@@ -23,6 +23,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveHoveringInformation, Trusted, TrustListHolder {
+public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity implements IHaveHoveringInformation, Trusted, TrustListHolder, Clearable {
 
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
@@ -190,5 +191,10 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     @Override
     public Container getTrustListBackingContainer() {
         return trustListContainer;
+    }
+
+    @Override
+    public void clearContent() {
+        inventory.clear();
     }
 }
