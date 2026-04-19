@@ -296,7 +296,7 @@ tasks.register("numismaticsPublish") {
 fun Project.setupRepositories() {
     repositories {
         mavenCentral()
-        maven("https://maven.neoforged.net") // NeoForge
+        maven("https://maven.neoforged.net/releases") // NeoForge
         maven("https://maven.createmod.net") // Create, Ponder, Flywheel
         maven("https://mvn.devos.one/snapshots/") // Create Fabric, Registrate Fabric, Milk Lib, Dripstone Lib
 

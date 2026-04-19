@@ -171,6 +171,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
         inputStack = ItemStack.EMPTY;
         return ret;
     }
+
     @Override
     public void setItem(int slot, @NotNull ItemStack stack) {
         inputStack = stack;
