@@ -27,6 +27,9 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
+// TODO:
+//  - add to the primary scene that cards can be placed in a Bank Terminal to access the account
+//  - compare permissions to those of sub-accounts (i.e. everyone has full, equal access to Blaze Banker accounts)
 public class BlazeBankerScene {
     public static void banker(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("blaze_banker", "Banking with Blazes");

@@ -24,19 +24,33 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
 import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
 import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
+import dev.ithundxr.createnumismatics.ponder.VendorScenes;
 
 public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
 
     public static void register() {
-        /*HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
-                .addStoryBoard("depositor", OldDepositorScenes::depositor)
-                .addStoryBoard("depositor_pricing", OldDepositorScenes::depositorPricing);*/
+        /* TODO
+            See https://discord.com/channels/1226981107401232545/1261067581469757511/1495869753343082636
+            Ponder Progress:
+            - Depositors are basically done
+            - Vendors need usage finished and configuration explained (the current 'pricing' stub should probably be renamed 'configuration')
+            - Salepoints need configuration explained
+            - Blaze Banker's to-do is listed in its file
+            - Bank Terminal maybe needs a coin-conversion-rate ponder
+            - Bank Terminal/Authorized Card needs a subaccount ponder
+            - Both types of payment Card need (shared) purchasing and fund-(source/target)-in-shops ponders
+            - ID Cards need a trust list ponder
+         */
 
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
             .addStoryBoard("depositors/intro", DepositorScenes::intro)
             .addStoryBoard("depositors/redstone", DepositorScenes::redstone)
             .addStoryBoard("depositors/pricing", DepositorScenes::pricing);
+
+        HELPER.forComponents(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
+            .addStoryBoard("vendors/intro", VendorScenes::intro)
+            .addStoryBoard("vendors/pricing", VendorScenes::pricing);
 
         HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
             .addStoryBoard("salepoint", SalepointScenes::item);

@@ -116,6 +116,7 @@ public class DepositorScenes {
         depositorSuccess(depositor, redstoneLamp, Coin.COG, scene, util);
     }
 
+    // TODO: once gui ponders are implemented, perhaps show the Brass Depositor's gui when describing its pricing
     public static void pricing(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("depositor_pricing", "Depositor Pricing");
         scene.configureBasePlate(0, 0, 5);

@@ -10,6 +10,7 @@
     "client.MixinPonderIndex"
   ],
   "mixins": [
+    "AccessorSceneBuilder",
     "AccessorSimpleContainer",
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",

@@ -30,6 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+// TODO update: finish usage ponder, add configuration ponder
 public class SalepointScenes {
     private static final ItemStack ingotStack = new ItemStack(Items.IRON_INGOT, 64);
     
