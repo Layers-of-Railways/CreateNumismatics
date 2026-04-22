@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
@@ -78,7 +79,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
+public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack, WorldlyContainer, MenuProvider {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -427,6 +428,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 .forGoggles(tooltip);
         }
         return true;
+    }
+
+    @Override
+    public ItemStack getCustomGoggleOverlayStack() {
+        ItemStack filter = getFilterItem();
+
+        return filter.isEmpty() ? new ItemStack(Items.BARRIER) : filter;
     }
 
     @Override

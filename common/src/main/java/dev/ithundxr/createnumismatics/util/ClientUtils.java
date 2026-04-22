@@ -18,16 +18,13 @@
 
 package dev.ithundxr.createnumismatics.util;
 
-import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
-import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
-import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
+import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -40,12 +37,7 @@ public class ClientUtils {
         return predicate.test(Minecraft.getInstance().player);
     }
 
-    private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
-    private static ItemStack SALEPOINT_STACK;
     public static ItemStack changeGoggleOverlayItem(Supplier<ItemStack> original) {
-        if (SALEPOINT_STACK == null)
-            SALEPOINT_STACK = NumismaticsBlocks.SALEPOINT.asStack();
-
         HitResult hitResult = Minecraft.getInstance().hitResult;
         if (!(hitResult instanceof BlockHitResult blockHitResult))
             return original.get();
@@ -54,15 +46,10 @@ public class ClientUtils {
         if (level == null)
             return original.get();
 
-        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof VendorBlockEntity vendorBE) {
-            // get the block entities cost and show the item for that and its cost and under
-            // show what is being sold (the enchants)
-            return vendorBE.getFilterItem().isEmpty() ? BARRIER_STACK : vendorBE.getFilterItem();
+        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof CustomGoggleOverlayStack be) {
+            return be.getCustomGoggleOverlayStack();
         }
-        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof SalepointBlockEntity salepointBE) {
-            ItemStack displayItem = salepointBE.getDisplayItem();
-            return displayItem.isEmpty() ? SALEPOINT_STACK : displayItem;
-        }
+
         return original.get();
     }
 }
