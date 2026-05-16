@@ -32,7 +32,7 @@ import java.util.List;
 
 @DevMixin
 @Mixin(PonderRegistry.class)
-public class PonderRegistryMixin {
+public class MixinPonderRegistry {
     @Inject(method = "compile(Ljava/util/List;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/infrastructure/ponder/SharedText;gatherText()V"), remap = false)
     private static void numismatics$injectNumismaticsSharedText(List<PonderStoryBoardEntry> entries, CallbackInfoReturnable<List<PonderScene>> cir) {
         NumismaticsSharedText.gatherText();

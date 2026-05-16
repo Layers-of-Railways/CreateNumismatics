@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
@@ -40,7 +41,8 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
                        @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack itemStack = be.getFilterItem();
-        float age = AnimationTickHolder.getRenderTime();
+        Level level = be.getLevel();
+        float age = AnimationTickHolder.getRenderTime(level);
         float yHeight = 0.65F;
 
         if (itemStack.getItem() instanceof BlockItem) {
@@ -51,7 +53,7 @@ public class VendorRenderer implements BlockEntityRenderer<VendorBlockEntity> {
         poseStack.translate(0.5F, yHeight, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(age % 360.0F));
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.GROUND, packedLight, packedOverlay,
-                poseStack, buffer, be.getLevel(), 0);
+                poseStack, buffer, level, 0);
         poseStack.popPose();
     }
 }

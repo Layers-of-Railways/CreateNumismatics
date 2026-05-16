@@ -4,19 +4,20 @@
   "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "client.AccessorInputWindowElement",
+    "client.MixinBeltRenderer",
     "client.MixinBitmapProvider$Definition",
     "client.MixinChatScreen",
+    "client.MixinInputWindowElement",
     "client.MixinLocalPlayer",
-    "client.MixinPonderIndex"
+    "client.MixinPonderIndex",
+    "client.MixinPonderRegistry"
   ],
   "mixins": [
     "AccessorSceneBuilder",
     "AccessorSimpleContainer",
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
-    "client.AccessorInputWindowElement",
-    "client.MixinBeltRenderer",
-    "client.PonderRegistryMixin",
     "compat.carryon.MixinPickupHandler"
   ],
   "injectors": {

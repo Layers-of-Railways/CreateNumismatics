@@ -367,7 +367,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
-                } else if (!hasEnoughMoneyFromServer) {
+                } else if (!(hasEnoughMoneyFromServer || isVirtual())) {
                     Lang.builder()
                         .add(Components.translatable("gui.numismatics.vendor.out_of_stock.funds"))
                         .style(ChatFormatting.DARK_RED)

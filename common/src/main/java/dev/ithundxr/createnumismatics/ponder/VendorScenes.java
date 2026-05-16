@@ -21,12 +21,20 @@ package dev.ithundxr.createnumismatics.ponder;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
+import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import com.simibubi.create.foundation.utility.Iterate;
+import com.simibubi.create.foundation.utility.Pointing;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -43,19 +51,89 @@ public class VendorScenes {
 
         BlockPos vendorSell = util.grid.at(1, 1, 1);
         BlockPos vendorBuy = util.grid.at(0, 1, 1);
+        Vec3 vendorText = util.vector.blockSurface(vendorSell, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        scene.world.showIndependentSection(util.select.position(vendorSell), Direction.DOWN);
+        var vendorSellLink = scene.world.showIndependentSection(util.select.position(vendorSell), Direction.DOWN);
         scene.idle(10);
 
-        // fixme: tech demo, needs explanatory text. Should compare buy/sell mode and demo each, including sneak-for-bulk functionality
+        scene.overlay.showText(70)
+            .text("This vendor is selling 8 apples for a cog and a bevel.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(80);
+
         scenex.showTextComponent(100)
             .text(vendorTooltip(vendorSell))
             .item(vendorTooltipItem(vendorSell))
             .preserveTextColor()
             .attachKeyFrame()
-            .pointAt(vendorSell.getCenter())
+            .pointAt(vendorText)
             .placeNearTarget();
+        scene.idle(110);
+
+        scene.overlay.showText(130)
+            .text("Use the vendor to buy 8 apples, sneak-use it to buy a whole stack.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+
+        scene.idle(20);
+
+        for (boolean bulk : Iterate.falseAndTrue) {
+            tradeInteraction(
+                scene,
+                util,
+                vendorSell,
+                (bulk ? Coin.COG : Coin.BEVEL).asStack(9),
+                new ItemStack(Items.GOLDEN_APPLE, bulk ? 64 : 8),
+                bulk
+            );
+        }
+
+        scene.idle(20);
+
+        scene.world.hideIndependentSection(vendorSellLink, Direction.EAST);
+        scene.idle(5);
+        var vendorBuyLink = scene.world.showIndependentSection(util.select.position(vendorBuy), Direction.EAST);
+        scene.world.moveSection(vendorBuyLink, Vec3.atLowerCornerOf(vendorSell.subtract(vendorBuy)), 20);
+        scene.idle(30);
+
+        scene.overlay.showText(70)
+            .text("This vendor is buying 16 oak logs for a bevel.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(80);
+
+        scenex.showTextComponent(100)
+            .text(vendorTooltip(vendorBuy))
+            .item(vendorTooltipItem(vendorBuy))
+            .preserveTextColor()
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(110);
+
+        scene.overlay.showText(130)
+            .text("Use the vendor to sell 16 oak logs, sneak-use it to sell a whole stack.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+
+        scene.idle(20);
+
+        for (boolean bulk : Iterate.falseAndTrue) {
+            tradeInteraction(
+                scene,
+                util,
+                vendorSell,
+                new ItemStack(Items.OAK_LOG, bulk ? 64 : 16),
+                Coin.BEVEL.asStack(bulk ? 4 : 1),
+                bulk
+            );
+        }
     }
 
     public static void pricing(SceneBuilder scene, SceneBuildingUtil util) {
@@ -82,5 +160,27 @@ public class VendorScenes {
                 return ItemStack.EMPTY;
             }
         };
+    }
+
+    private static void tradeInteraction(SceneBuilder scene, SceneBuildingUtil util, BlockPos vendorPos,
+                                         ItemStack intoVendor, ItemStack fromVendor, boolean bulk) {
+        InputWindowElement iwe = new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
+            .withItem(intoVendor)
+            .rightClick();
+        if (bulk) iwe.whileSneaking();
+        ((InputWindowElement_Duck) iwe).numismatics$showItemCount(true);
+        scene.overlay.showControls(iwe, 40);
+        scene.idle(6);
+
+        scene.effects.indicateSuccess(vendorPos);
+        var item = scene.world.createItemEntity(
+            util.vector.blockSurface(vendorPos, Direction.NORTH),
+            new Vec3(0, 0.15, -0.15),
+            fromVendor
+        );
+        scene.idle(36);
+        scene.idle(10);
+
+        scene.world.modifyEntity(item, Entity::discard);
     }
 }
