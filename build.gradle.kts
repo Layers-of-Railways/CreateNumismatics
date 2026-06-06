@@ -92,6 +92,7 @@ subprojects {
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
+        maven("https://modmaven.dev/") // Flywheel
         maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
         maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
         maven("https://maven.tterrag.com/") { // Flywheel
