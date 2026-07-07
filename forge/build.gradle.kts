@@ -82,8 +82,8 @@ dependencies {
         modLocalRuntime("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
     }
 
-    compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
+    implementation(include("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!
 }
 
 publishMods {
