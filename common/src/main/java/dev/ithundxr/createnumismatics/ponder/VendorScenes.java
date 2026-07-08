@@ -32,6 +32,8 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
 import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
+import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.Cursor;
+import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.CursorPhysicsProperties;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import net.minecraft.core.BlockPos;
@@ -173,7 +175,7 @@ public class VendorScenes {
         scene.idle(15);
 
         var menu = scenex.showContainerMenu(
-                160,
+                5,
                 vendorSell,
                 NumismaticsBlockEntities.VENDOR.get(),
                 (be, inv) -> new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), -3, inv, be),
@@ -185,11 +187,35 @@ public class VendorScenes {
 
         scenex.enableScreenOverlayLayer();
 
+        scene.idle(15);
+
         scene.idle(20);
+
+        scene.addInstruction($ -> $.runWith(menu,
+            $$ -> $$
+                .getCursorState()
+                .setCursor(Cursor.NORMAL)
+                .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW_LOOSE)
+                .target(120, 84)));
+
+        scene.idle(50);
+
+        scene.addInstruction($ -> $.runWith(menu,
+            $$ -> $$
+                .getCursorState()
+                .target(70, 100)));
+
+        scene.idle(10);
+
+        scene.addInstruction($ -> $.runWith(menu,
+            $$ -> $$
+                .getCursorState()
+                .setCursor(Cursor.SCROLL_UP)));
 
         for (int i = 0; i < 59; i ++) {
             scenex.showText(60, ScreenVec.slotRelative(menu, 0, 0, i))
                 .text(""+i)
+                .colored(PonderPalette.values()[i % PonderPalette.values().length])
                 .placeNearTarget();
             scene.idle(5);
         }
@@ -197,6 +223,8 @@ public class VendorScenes {
         scene.idle(80);
 
         scenex.disableScreenOverlayLayer();
+
+        scenex.hideContainerMenu(5, menu);
     }
 
     private static BiConsumer<PonderScene, List<Component>> vendorTooltip(BlockPos pos) {

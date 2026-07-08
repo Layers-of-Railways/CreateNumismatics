@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.ponder.utils;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
+import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.Selection;
@@ -32,7 +33,8 @@ import dev.ithundxr.createnumismatics.mixin_interfaces.TextWindowElement_Builder
 import dev.ithundxr.createnumismatics.ponder.utils.elements.TextComponentWindowElement;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.TextComponentInstruction;
-import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenInstruction;
+import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenCloseInstruction;
+import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenOpenInstruction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -82,19 +84,24 @@ public class SceneBuilderExtension {
         return textWindowElement.new Builder(((AccessorSceneBuilder) wrapped).numismatics$getScene()).pointAt(selection.getCenter());
     }
 
-    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> VirtualScreenElement<M, S, B>.Builder showContainerMenu(int duration, BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, VirtualScreenElement.ScreenFactory<M, S> screenFactory) {
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> VirtualScreenElement<M, S, B>.Builder showContainerMenu(int fadeInTicks, BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, VirtualScreenElement.ScreenFactory<M, S> screenFactory) {
         VirtualScreenElement<M, S, B> element = new VirtualScreenElement<>(bePos, beType, menuFactory, screenFactory);
-        VirtualScreenInstruction<M, S, B> instruction = new VirtualScreenInstruction<>(element, duration);
+        VirtualScreenOpenInstruction<M, S, B> instruction = new VirtualScreenOpenInstruction<>(element, fadeInTicks);
         wrapped.addInstruction(instruction);
         PonderScene scene = ((AccessorSceneBuilder) wrapped).numismatics$getScene();
         return element.new Builder(scene, instruction.createLink(scene));
     }
 
-    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> VirtualScreenElement<M, S, B>.Builder showSelectionWithContainerMenu(int duration, Selection selection, BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, VirtualScreenElement.ScreenFactory<M, S> screenFactory) {
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> VirtualScreenElement<M, S, B>.Builder showSelectionWithContainerMenu(int fadeInTicks, Selection selection, BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, VirtualScreenElement.ScreenFactory<M, S> screenFactory) {
         VirtualScreenElement<M, S, B> element = new VirtualScreenElement<>(bePos, beType, menuFactory, screenFactory);
-        VirtualScreenInstruction<M, S, B> instruction = new VirtualScreenInstruction<>(element, duration, selection);
+        VirtualScreenOpenInstruction<M, S, B> instruction = new VirtualScreenOpenInstruction<>(element, fadeInTicks, selection);
         wrapped.addInstruction(instruction);
         PonderScene scene = ((AccessorSceneBuilder) wrapped).numismatics$getScene();
         return element.new Builder(scene, instruction.createLink(scene));
+    }
+
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void hideContainerMenu(int fadeOutTicks, ElementLink<VirtualScreenElement<M, S, B>> link) {
+        VirtualScreenCloseInstruction<M, S, B> instruction = new VirtualScreenCloseInstruction<>(link, fadeOutTicks);
+        wrapped.addInstruction(instruction);
     }
 }

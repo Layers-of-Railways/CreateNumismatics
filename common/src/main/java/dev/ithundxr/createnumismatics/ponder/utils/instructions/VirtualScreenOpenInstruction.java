@@ -24,60 +24,54 @@ import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.Selection;
 import com.simibubi.create.foundation.ponder.element.OutlinerElement;
-import com.simibubi.create.foundation.ponder.instruction.FadeInOutInstruction;
+import com.simibubi.create.foundation.ponder.instruction.TickingInstruction;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class VirtualScreenInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> extends FadeInOutInstruction {
+public class VirtualScreenOpenInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> extends TickingInstruction {
     private final VirtualScreenElement<M, S, B> element;
-    private OutlinerElement outline;
     private ElementLink<VirtualScreenElement<M, S, B>> elementLink;
 
-    public VirtualScreenInstruction(VirtualScreenElement<M, S, B> element, int duration) {
-        super(duration);
+    public VirtualScreenOpenInstruction(VirtualScreenElement<M, S, B> element, int fadeInTicks) {
+        super(false, fadeInTicks);
         this.element = element;
+        element.outline = null;
     }
 
-    public VirtualScreenInstruction(VirtualScreenElement<M, S, B> element, int duration, Selection selection) {
-        this(element, duration);
-        outline = new OutlinerElement(o -> selection.makeOutline(o)
+    public VirtualScreenOpenInstruction(VirtualScreenElement<M, S, B> element, int fadeInTicks, Selection selection) {
+        this(element, fadeInTicks);
+        element.outline = new OutlinerElement(o -> selection.makeOutline(o)
             .lineWidth(1 / 16f));
     }
 
     @Override
-    public void tick(PonderScene scene) {
-        super.tick(scene);
-        if (outline != null)
-            outline.setColor(element.getColor());
-    }
-
-    @Override
-    protected void show(PonderScene scene) {
+    protected void firstTick(PonderScene scene) {
+        super.firstTick(scene);
         scene.addElement(element);
         element.setVisible(true);
-        if (outline != null) {
-            scene.addElement(outline);
-            outline.setFade(1);
-            outline.setVisible(true);
+        element.setFade(0);
+        element.clearState();
+        if (element.outline != null) {
+            scene.addElement(element.outline);
+            element.outline.setFade(1);
+            element.outline.setVisible(true);
         }
         if (elementLink != null)
             scene.linkElement(element, elementLink);
     }
 
     @Override
-    protected void hide(PonderScene scene) {
-        element.setVisible(false);
-        if (outline != null) {
-            outline.setFade(0);
-            outline.setVisible(false);
+    public void tick(PonderScene scene) {
+        super.tick(scene);
+        if (element.outline != null)
+            element.outline.setColor(element.getColor());
+        float fade = totalTicks == 0 ? 1 : (remainingTicks / (float) totalTicks);
+        element.setFade(1 - fade * fade);
+        if (remainingTicks == 0) {
+            element.setFade(1);
         }
-    }
-
-    @Override
-    protected void applyFade(PonderScene scene, float fade) {
-        element.setFade(fade);
     }
 
     public ElementLink<VirtualScreenElement<M, S, B>> createLink(PonderScene scene) {
