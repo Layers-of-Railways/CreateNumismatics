@@ -3,7 +3,11 @@
   "minVersion": "0.8",
   "package": "dev.ithundxr.createnumismatics.mixin",
   "compatibilityLevel": "JAVA_17",
+  "mixinextras": {
+    "minVersion": "0.5.3"
+  },
   "client": [
+    "client.AccessorAbstractContainerScreen",
     "client.AccessorInputWindowElement",
     "client.MixinBeltRenderer",
     "client.MixinBitmapProvider$Definition",
@@ -11,7 +15,14 @@
     "client.MixinInputWindowElement",
     "client.MixinLocalPlayer",
     "client.MixinPonderIndex",
-    "client.MixinPonderRegistry"
+    "client.MixinPonderOverlayElement",
+    "client.MixinPonderRegistry",
+    "client.MixinPonderScene",
+    "client.MixinPonderUI",
+    "client.MixinSceneBuilder",
+    "client.MixinSceneBuilder$MixinOverlayInstructions",
+    "client.MixinTextWindowElement",
+    "client.MixinTextWindowElement$MixinBuilder"
   ],
   "mixins": [
     "AccessorSceneBuilder",

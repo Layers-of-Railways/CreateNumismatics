@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
+import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
@@ -26,8 +27,13 @@ import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
+import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
+import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -40,7 +46,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-// TODO finish usage ponder, add configuration ponder
+// TODO add configuration ponder
+@SuppressWarnings("DuplicatedCode")
 public class VendorScenes {
     public static void intro(SceneBuilder scene, SceneBuildingUtil util) {
         SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
@@ -136,12 +143,60 @@ public class VendorScenes {
         }
     }
 
-    public static void pricing(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("vendor_pricing", "Vendor Pricing");
+    public static void config(SceneBuilder scene, SceneBuildingUtil util) {
+        SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
+        scene.title("vendor_config", "Vendor Configuration");
         scene.configureBasePlate(0, 0, 3);
         scene.showBasePlate();
         scene.idle(10);
-        scene.world.showSection(util.select.everywhere(), Direction.DOWN);
+
+        BlockPos vendorSell = util.grid.at(1, 1, 1);
+        BlockPos vendorBuy = util.grid.at(0, 1, 1);
+        Vec3 vendorText = util.vector.blockSurface(vendorSell, Direction.WEST).add(0, 0.5, 0);
+
+        // for some reason the lighting is broken if we show it normally
+        var vendorSellLink = scene.world.showIndependentSection(util.select.position(vendorSell), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(60)
+            .text("Players with access to a vendor can sneak-use to configure it.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+
+        scene.idle(50);
+
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorSell), Pointing.DOWN)
+            .rightClick()
+            .whileSneaking(),
+            10);
+        scene.idle(15);
+
+        var menu = scenex.showContainerMenu(
+                160,
+                vendorSell,
+                NumismaticsBlockEntities.VENDOR.get(),
+                (be, inv) -> new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), -3, inv, be),
+                VendorScreen::new
+            )
+            .colored(PonderPalette.RED)
+            .attachKeyFrame()
+            .link();
+
+        scenex.enableScreenOverlayLayer();
+
+        scene.idle(20);
+
+        for (int i = 0; i < 59; i ++) {
+            scenex.showText(60, ScreenVec.slotRelative(menu, 0, 0, i))
+                .text(""+i)
+                .placeNearTarget();
+            scene.idle(5);
+        }
+
+        scene.idle(80);
+
+        scenex.disableScreenOverlayLayer();
     }
 
     private static BiConsumer<PonderScene, List<Component>> vendorTooltip(BlockPos pos) {

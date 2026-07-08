@@ -50,7 +50,7 @@ public class NumismaticsPonderIndex {
 
         HELPER.forComponents(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
             .addStoryBoard("vendors/intro", VendorScenes::intro)
-            .addStoryBoard("vendors/pricing", VendorScenes::pricing);
+            .addStoryBoard("vendors/config", VendorScenes::config);
 
         HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
             .addStoryBoard("salepoint", SalepointScenes::item);

@@ -79,6 +79,28 @@ public class NumismaticsIcons extends AllIcons {
         I_SALE_CANCEL = next()
     ;
 
+    public static final NumismaticsIcons
+        I_CURSOR = newRow(),
+        I_CURSOR_SCROLL_DOWN_1 = next(),
+        I_CURSOR_SCROLL_DOWN_2 = next(),
+        I_CURSOR_SCROLL_DOWN_3 = next(),
+        I_CURSOR_SCROLL_UP_1 = next(),
+        I_CURSOR_SCROLL_UP_2 = next(),
+        I_CURSOR_SCROLL_UP_3 = next()
+    ;
+
+    public static final NumismaticsIcons[] I_CURSOR_SCROLL_DOWN = new NumismaticsIcons[]{
+        I_CURSOR_SCROLL_DOWN_1,
+        I_CURSOR_SCROLL_DOWN_2,
+        I_CURSOR_SCROLL_DOWN_3
+    };
+
+    public static final NumismaticsIcons[] I_CURSOR_SCROLL_UP = new NumismaticsIcons[]{
+        I_CURSOR_SCROLL_UP_1,
+        I_CURSOR_SCROLL_UP_2,
+        I_CURSOR_SCROLL_UP_3
+    };
+
     public NumismaticsIcons(int x, int y) {
         super(x, y);
         iconX = x * 16;

@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.gui.widget.*;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
+public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implements VirtualizableScreen {
 
     private Indicator extractionIndicator;
     private IconButton extractionButton;
@@ -69,10 +70,22 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode;
+
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
         renderedItem = container.contentHolder.isCreativeVendor() ? NumismaticsBlocks.CREATIVE_VENDOR.asStack() : NumismaticsBlocks.VENDOR.asStack();
         background = container.contentHolder.isCreativeVendor() ? NumismaticsGuiTextures.CREATIVE_VENDOR : NumismaticsGuiTextures.VENDOR;
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
     }
 
     @Override
@@ -159,6 +172,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override
