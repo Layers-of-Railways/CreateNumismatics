@@ -33,7 +33,6 @@ import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
 import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.Cursor;
-import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.CursorPhysicsProperties;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import net.minecraft.core.BlockPos;
@@ -186,31 +185,25 @@ public class VendorScenes {
             .link();
 
         scenex.enableScreenOverlayLayer();
+        scenex.modifyCursor(menu, c -> c
+            .setCursor(Cursor.HIDDEN)
+            .teleport(-20, -30)
+            .snapFrame());
 
         scene.idle(15);
 
         scene.idle(20);
 
-        scene.addInstruction($ -> $.runWith(menu,
-            $$ -> $$
-                .getCursorState()
-                .setCursor(Cursor.NORMAL)
-                .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW_LOOSE)
-                .target(120, 84)));
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scenex.cursorTarget(ScreenVec.relative(menu, 120, 84));
 
         scene.idle(50);
 
-        scene.addInstruction($ -> $.runWith(menu,
-            $$ -> $$
-                .getCursorState()
-                .target(70, 100)));
+        scenex.cursorTarget(ScreenVec.relative(menu, 70, 100));
 
         scene.idle(10);
 
-        scene.addInstruction($ -> $.runWith(menu,
-            $$ -> $$
-                .getCursorState()
-                .setCursor(Cursor.SCROLL_UP)));
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
 
         for (int i = 0; i < 59; i ++) {
             scenex.showText(60, ScreenVec.slotRelative(menu, 0, 0, i))
@@ -224,7 +217,7 @@ public class VendorScenes {
 
         scenex.disableScreenOverlayLayer();
 
-        scenex.hideContainerMenu(5, menu);
+        scenex.hideContainerMenu(menu, 5);
     }
 
     private static BiConsumer<PonderScene, List<Component>> vendorTooltip(BlockPos pos) {

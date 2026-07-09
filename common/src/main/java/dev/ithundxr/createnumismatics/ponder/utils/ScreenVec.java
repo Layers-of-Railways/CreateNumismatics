@@ -58,4 +58,12 @@ public record ScreenVec<
     public @Nullable Vec2 toGlobal(PonderScene scene, float partialTicks) {
         return scene.applyTo(screen, s -> s.guiLocalToGlobal(vec, partialTicks));
     }
+
+    public @Nullable Vec2 toLocal(PonderScene scene) {
+        return scene.applyTo(screen, this::toLocal);
+    }
+
+    public @Nullable Vec2 toLocal(VirtualScreenElement<M, S, B> vse) {
+        return vse.applyMenu(vec);
+    }
 }

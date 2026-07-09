@@ -25,6 +25,7 @@ import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.Selection;
 import com.simibubi.create.foundation.ponder.element.TextWindowElement;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.mixin.AccessorSceneBuilder;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderOverlayElement_Duck;
@@ -35,13 +36,16 @@ import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.TextComponentInstruction;
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenCloseInstruction;
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenOpenInstruction;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class SceneBuilderExtension {
     private final SceneBuilder wrapped;
@@ -100,8 +104,36 @@ public class SceneBuilderExtension {
         return element.new Builder(scene, instruction.createLink(scene));
     }
 
-    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void hideContainerMenu(int fadeOutTicks, ElementLink<VirtualScreenElement<M, S, B>> link) {
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void hideContainerMenu(ElementLink<VirtualScreenElement<M, S, B>> link, int fadeOutTicks) {
         VirtualScreenCloseInstruction<M, S, B> instruction = new VirtualScreenCloseInstruction<>(link, fadeOutTicks);
         wrapped.addInstruction(instruction);
+    }
+
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void modifyCursor(ElementLink<VirtualScreenElement<M, S, B>> link, Consumer<VirtualScreenElement.CursorState> modifier) {
+        wrapped.addInstruction(scene -> scene.runWith(link, vse -> modifier.accept(vse.getCursorState())));
+    }
+
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void cursorTarget(ScreenVec<M, S, B> vec) {
+        wrapped.addInstruction(scene -> scene.runWith(vec.screen(), vse -> {
+            Vec2 local = vec.toLocal(vse);
+            if (local == null) {
+                crashInDev("Cannot target cursor in a closed screen");
+                return;
+            }
+            vse.getCursorState().target((int) local.x, (int) local.y);
+        }));
+    }
+
+    private static void crashInDev(@SuppressWarnings("SameParameterValue") String message) {
+        long start = System.currentTimeMillis();
+        Numismatics.LOGGER.error(message); // set breakpoint here when developing
+        if (Utils.isDevEnv()) {
+            long end = System.currentTimeMillis();
+            if (end - start < 50) { // crash if breakpoint wasn't set
+                throw new RuntimeException("Please set a breakpoint above");
+            }
+        } else {
+            Numismatics.LOGGER.error("Stacktrace: ", new RuntimeException(message));
+        }
     }
 }

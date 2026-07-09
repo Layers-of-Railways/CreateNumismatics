@@ -123,6 +123,12 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         return state == null ? null : state.menu;
     }
 
+    public <T> @Nullable T applyMenu(Function<M, T> function) {
+        if (state == null)
+            return null;
+        return function.apply(state.menu);
+    }
+
     public @NotNull S getScreen() {
         if (state == null)
             throw new IllegalStateException("Cannot get screen when screen is not presenting");
@@ -323,7 +329,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_SLOW = new CursorPhysicsProperties(200, 0.8);
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_SLOW_LOOSE = new CursorPhysicsProperties(200, 0.6);
-        public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_DEFAULT = new CursorPhysicsProperties(380, 0.8);
+        public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_MEDIUM = new CursorPhysicsProperties(380, 0.8);
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_FAST = new CursorPhysicsProperties(800, 0.6);
     }
 
@@ -348,7 +354,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         public CursorState() {
             this.cursor = Cursor.HIDDEN;
-            this.physics = CursorPhysicsProperties.EXPRESSIVE_SPATIAL_DEFAULT;
+            this.physics = CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW_LOOSE;
             teleport(0, 0);
         }
 
