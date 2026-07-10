@@ -120,32 +120,33 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         int x = leftPos;
         int y = topPos;
 
+        boolean extractionButtonActive = menu.contentHolder.getMode() == Mode.BUY;
+
         extractionIndicator = new Indicator(x + 29, y + background.height - 30, Components.immutableEmpty());
         extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
-            ? Indicator.State.GREEN
-            : Indicator.State.RED;
+            ? (extractionButtonActive ? Indicator.State.GREEN : Indicator.State.ON)
+            : (extractionButtonActive ? Indicator.State.RED : Indicator.State.OFF);
         addRenderableWidget(extractionIndicator);
 
         extractionButton = new IconButton(x + 29, y + background.height - 24, NumismaticsIcons.I_HOPPER);
         extractionButton.withCallback(() -> {
+            boolean extractionButtonActive$ = menu.contentHolder.getMode() == Mode.BUY;
             menu.contentHolder.toggleAutomatedExtraction();
             extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
-                ? Indicator.State.GREEN
-                : Indicator.State.RED;
+                ? (extractionButtonActive$ ? Indicator.State.GREEN : Indicator.State.ON)
+                : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
         });
-        extractionButton.setToolTip(Components.translatable("gui.numismatics.vendor.toggle_automated_extraction"));
+        extractionButton.setToolTip(Component.translatable("gui.numismatics.vendor.toggle_automated_extraction"));
+        extractionButton.active = extractionButtonActive;
         addRenderableWidget(extractionButton);
 
         trustListButton = new IconButton(x + 7, y + background.height - 24, AllIcons.I_VIEW_SCHEDULE);
-        trustListButton.withCallback(() -> {
-            menu.contentHolder.openTrustList();
-        });
+        trustListButton.setToolTip(Component.translatable("numismatics.trust_list.configure"));
+        trustListButton.withCallback(() -> menu.contentHolder.openTrustList());
         addRenderableWidget(trustListButton);
 
         confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
-        confirmButton.withCallback(() -> {
-            onClose();
-        });
+        confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
         for (Coin coin : Coin.values()) {
@@ -183,6 +184,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         modeScrollInput.titled(Components.translatable("block.numismatics.vendor.tooltip.mode"));
         modeScrollInput.calling(idx -> {
             menu.contentHolder.setMode(Mode.values()[idx]);
+
+            boolean extractionButtonActive$ = menu.contentHolder.getMode() == Mode.BUY;
+            extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
+                ? (extractionButtonActive$ ? Indicator.State.GREEN : Indicator.State.ON)
+                : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
+            extractionButton.active = extractionButtonActive$;
         });
         addRenderableWidget(modeScrollInput);
 

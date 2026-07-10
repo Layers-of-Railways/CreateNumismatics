@@ -90,6 +90,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
         int y = topPos;
 
         trustListButton = new IconButton(x + 16, y + background.height - 24, AllIcons.I_VIEW_SCHEDULE);
+        trustListButton.setToolTip(Component.translatable("numismatics.trust_list.configure"));
         trustListButton.withCallback(() -> menu.contentHolder.openTrustList());
         addRenderableWidget(trustListButton);
 
