@@ -158,7 +158,7 @@ public class VendorScenes {
 
     public static void configSell(SceneBuilder scene, SceneBuildingUtil util) {
         SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
-        scene.title("vendor_config_sell", "Configuring Vendors to Sell");
+        scene.title("vendor_config_sell", "Configuring Vendors for Selling");
         scene.configureBasePlate(0, 0, 3);
         scene.showBasePlate();
         scene.idle(10);
@@ -299,7 +299,7 @@ public class VendorScenes {
 
     public static void configBuy(SceneBuilder scene, SceneBuildingUtil util) {
         SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
-        scene.title("vendor_config_buy", "Configuring Vendors to Buy");
+        scene.title("vendor_config_buy", "Configuring Vendors for Buying");
         scene.configureBasePlate(0, 0, 3);
         scene.showBasePlate();
         scene.idle(10);
