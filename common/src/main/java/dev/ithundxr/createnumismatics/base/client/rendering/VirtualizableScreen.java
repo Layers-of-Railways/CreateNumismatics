@@ -22,4 +22,6 @@ public interface VirtualizableScreen {
     void markVirtual();
 
     boolean isVirtual();
+
+    default void virtualTick() {}
 }

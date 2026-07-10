@@ -31,6 +31,7 @@ import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
@@ -58,6 +59,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     private final BlockEntityType<B> beType;
     private final BiFunction<B, Inventory, M> menuFactory;
     private final ScreenFactory<M, S> screenFactory;
+    private final boolean scaleDown;
 
     @Nullable Consumer<Inventory> inventoryFiller = null;
     int color = PonderPalette.WHITE.getColor();
@@ -106,6 +108,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         this.beType = beType;
         this.menuFactory = menuFactory;
         this.screenFactory = screenFactory;
+        this.scaleDown = NumismaticsConfig.client().scalePonderGui.get();
     }
 
     @ApiStatus.Internal
@@ -129,6 +132,13 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         return function.apply(state.menu);
     }
 
+    public boolean runMenu(Consumer<M> consumer) {
+        if (state == null)
+            return false;
+        consumer.accept(state.menu);
+        return true;
+    }
+
     public @NotNull S getScreen() {
         if (state == null)
             throw new IllegalStateException("Cannot get screen when screen is not presenting");
@@ -137,6 +147,16 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
     public @Nullable S getScreenUnchecked() {
         return state == null ? null : state.screen;
+    }
+
+    public @NotNull ActiveState<M, S> getActiveState() {
+        if (state == null)
+            throw new IllegalStateException("Cannot get state when screen is not presenting");
+        return state;
+    }
+
+    public @Nullable ActiveState<M, S> getActiveStateUnchecked() {
+        return state;
     }
 
     public @NotNull CursorState getCursorState() {
@@ -163,7 +183,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         Window window = mc.getWindow();
 
         double guiScale = window.getGuiScale();
-        float scale = (float) ((guiScale <= 1 ? 0.75 : (guiScale - 1) / guiScale) * fade.getValue(partialTicks));
+        float scale = (float) ((scaleDown ? (guiScale <= 1 ? 0.75 : (guiScale - 1) / guiScale) : 1) * fade.getValue(partialTicks));
 
         int scaleCenterX = window.getGuiScaledWidth() / 2;
         int scaleCenterY = window.getGuiScaledHeight() / 2;
@@ -178,15 +198,18 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     @Override
     public void tick(PonderScene scene) {
         super.tick(scene);
-        if (state != null)
+        updateState(scene, Minecraft.getInstance());
+        if (state != null) {
             state.cursor.tick();
+            state.screen.virtualTick();
+        }
     }
 
     @Override
     protected void render(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, float fade) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
-        updateState(scene, screen, mc, window);
+        updateStateWidth(mc, window);
 
         if (fade < 1 / 16f)
             return;
@@ -199,7 +222,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             graphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
             double guiScale = window.getGuiScale();
-            float scale = (float) ((guiScale <= 1 ? 0.75 : (guiScale - 1) / guiScale) * fade);
+            float scale = (float) ((scaleDown ? (guiScale <= 1 ? 0.75 : (guiScale - 1) / guiScale) : 1) * fade);
 
             int scaleCenterX = window.getGuiScaledWidth() / 2;
             int scaleCenterY = window.getGuiScaledHeight() / 2;
@@ -256,7 +279,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         }
     }
 
-    private void updateState(PonderScene scene, PonderUI screen, Minecraft mc, Window window) {
+    private void updateState(PonderScene scene, Minecraft mc) {
         boolean visible = isVisible();
         if (visible && state == null) {
             var be$ = scene.getWorld().getBlockEntity(bePos, beType);
@@ -280,14 +303,19 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             menu.suppressRemoteUpdates();
             S screen$ = screenFactory.create(menu, inv, be.getDisplayName());
             screen$.markVirtual();
-            screen$.init(mc, screen.width, screen.height);
-            prevWidth = -1;
-            prevHeight = -1;
+            Window window = mc.getWindow();
+            int width = window.getGuiScaledWidth();
+            int height = window.getGuiScaledHeight();
+            screen$.init(mc, width, height);
+            prevWidth = width;
+            prevHeight = height;
             state = new ActiveState<>(menu, screen$, inv, new CursorState());
         } else if (!visible && state != null) {
             state = null;
         }
+    }
 
+    private void updateStateWidth(Minecraft mc, Window window) {
         if (state != null) {
             int width = window.getGuiScaledWidth();
             int height = window.getGuiScaledHeight();
@@ -305,7 +333,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         return color;
     }
 
-    private record ActiveState<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M>>(M menu, S screen, Inventory inv, CursorState cursor) {}
+    public record ActiveState<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M>>(M menu, S screen, Inventory inv, CursorState cursor) {}
 
     public enum Cursor {
         HIDDEN,
@@ -327,8 +355,8 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             this.dampedFreq = this.naturalFreq * this.dampingRatio;
         }
 
+        public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_SLOWER = new CursorPhysicsProperties(120, 0.8);
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_SLOW = new CursorPhysicsProperties(200, 0.8);
-        public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_SLOW_LOOSE = new CursorPhysicsProperties(200, 0.6);
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_MEDIUM = new CursorPhysicsProperties(380, 0.8);
         public static final CursorPhysicsProperties EXPRESSIVE_SPATIAL_FAST = new CursorPhysicsProperties(800, 0.6);
     }
@@ -354,7 +382,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         public CursorState() {
             this.cursor = Cursor.HIDDEN;
-            this.physics = CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW_LOOSE;
+            this.physics = CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW;
             teleport(0, 0);
         }
 

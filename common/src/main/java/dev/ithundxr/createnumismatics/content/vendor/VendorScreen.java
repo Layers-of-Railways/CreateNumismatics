@@ -46,6 +46,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,6 +72,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
     private List<Rect2i> extraAreas = Collections.emptyList();
 
     private boolean virtualMode;
+    private @Nullable VirtualHandle virtualHandle = null;
 
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -81,11 +83,32 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
     @Override
     public void markVirtual() {
         virtualMode = true;
+        virtualHandle = new VirtualHandle();
     }
 
     @Override
     public boolean isVirtual() {
         return virtualMode;
+    }
+
+    public @NotNull VirtualHandle getVirtualHandle() {
+        if (virtualHandle == null)
+            throw new IllegalStateException("Not a virtual screen");
+        return virtualHandle;
+    }
+
+    public @Nullable VirtualHandle getVirtualHandleUnchecked() {
+        return virtualHandle;
+    }
+
+    public class VirtualHandle {
+        private VirtualHandle() {}
+
+        public void setPrice(Coin coin, int amount) {
+            ScrollInput input = coinScrollInputs[coin.ordinal()];
+            input.setState(amount);
+            input.onChanged();
+        }
     }
 
     @Override

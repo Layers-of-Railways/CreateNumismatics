@@ -18,6 +18,10 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
+import com.simibubi.create.foundation.gui.menu.MenuBase;
+import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
@@ -25,6 +29,7 @@ import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Pointing;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
@@ -32,13 +37,20 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
 import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
+import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.Cursor;
+import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.CursorPhysicsProperties;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -144,19 +156,18 @@ public class VendorScenes {
         }
     }
 
-    public static void config(SceneBuilder scene, SceneBuildingUtil util) {
+    public static void configSell(SceneBuilder scene, SceneBuildingUtil util) {
         SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
-        scene.title("vendor_config", "Vendor Configuration");
+        scene.title("vendor_config_sell", "Configuring Vendors to Sell");
         scene.configureBasePlate(0, 0, 3);
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos vendorSell = util.grid.at(1, 1, 1);
-        BlockPos vendorBuy = util.grid.at(0, 1, 1);
-        Vec3 vendorText = util.vector.blockSurface(vendorSell, Direction.WEST).add(0, 0.5, 0);
+        BlockPos vendorPos = util.grid.at(1, 1, 1);
+        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        var vendorSellLink = scene.world.showIndependentSection(util.select.position(vendorSell), Direction.DOWN);
+        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
         scene.idle(10);
 
         scene.overlay.showText(60)
@@ -167,7 +178,7 @@ public class VendorScenes {
 
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorSell), Pointing.DOWN)
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
             .rightClick()
             .whileSneaking(),
             10);
@@ -175,47 +186,254 @@ public class VendorScenes {
 
         var menu = scenex.showContainerMenu(
                 5,
-                vendorSell,
+                vendorPos,
                 NumismaticsBlockEntities.VENDOR.get(),
                 (be, inv) -> new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), -3, inv, be),
                 VendorScreen::new
             )
+            .inventoryFiller(inv -> {
+                inv.setItem(9, new ItemStack(Items.GOLDEN_APPLE, 64));
+                inv.setItem(10, new ItemStack(Items.GOLDEN_APPLE, 8));
+            })
             .colored(PonderPalette.RED)
             .attachKeyFrame()
             .link();
-
         scenex.enableScreenOverlayLayer();
-        scenex.modifyCursor(menu, c -> c
-            .setCursor(Cursor.HIDDEN)
-            .teleport(-20, -30)
-            .snapFrame());
-
         scene.idle(15);
 
-        scene.idle(20);
+        scenex.modifyCursor(menu, c -> c
+            .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW)
+            .teleport(-20, -30)
+            .snapFrame());
+        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.FILTER_SLOT_INDEX))
+            .text("The filter slot controls the item type and count that is sold.")
+            .placeNearTarget();
+        scene.idle(5);
 
         scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
-        scenex.cursorTarget(ScreenVec.relative(menu, 120, 84));
+        scenex.cursorTarget(ScreenVec.relative(menu, -20, 60));
+        scene.idle(2);
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 10));
+        scene.idle(18);
 
-        scene.idle(50);
-
-        scenex.cursorTarget(ScreenVec.relative(menu, 70, 100));
-
+        // pick up 8 golden apples
+        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
+        scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
         scene.idle(10);
 
+        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.INV_START_INDEX + 5))
+            .text("Stock slots hold the inventory.")
+            .attachKeyFrame()
+            .placeNearTarget();
+        scene.idle(5);
+
+        // set filter
+        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scene.idle(5);
+
+        // place 8 golden apples in stock
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX));
+        scene.idle(10);
+        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX);
+        scene.idle(5);
+
+        // pick up 64 golden apples
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
+        scene.idle(15);
+        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
+        scene.idle(5);
+
+        // place 64 golden apples in stock
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX + 1));
+        scene.idle(10);
+        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX + 1);
+        scene.idle(5);
+
+        scene.overlay.showText(150)
+            .text("Configure each coin to set the price")
+            .independent(50);
+        scene.idle(5);
+
+        scenex.cursorTarget(ScreenVec.relative(menu, 72, 80));
+        scene.idle(15);
+
+        scene.addKeyframe();
         scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
 
-        for (int i = 0; i < 59; i ++) {
-            scenex.showText(60, ScreenVec.slotRelative(menu, 0, 0, i))
-                .text(""+i)
-                .colored(PonderPalette.values()[i % PonderPalette.values().length])
-                .placeNearTarget();
+        for (int i = 1; i <= 8; i++) {
+            final int finalI = i;
+            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
             scene.idle(5);
         }
 
-        scene.idle(80);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(5);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_DOWN));
 
-        scenex.disableScreenOverlayLayer();
+        for (int i = 8; i >= 1; i--) {
+            final int finalI = i;
+            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
+            scene.idle(5);
+        }
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(5);
+        scenex.cursorTarget(ScreenVec.relative(menu, 218, 58));
+        scene.idle(10);
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
+        scene.idle(5);
+        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.COG, 1));
+        scene.idle(5);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(20);
+
+        // hide cursor
+        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_MEDIUM));
+        scenex.cursorTarget(ScreenVec.relative(menu, 230, 130));
+        scene.idle(10);
+
+        scenex.hideContainerMenu(menu, 5);
+    }
+
+    public static void configBuy(SceneBuilder scene, SceneBuildingUtil util) {
+        SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
+        scene.title("vendor_config_buy", "Configuring Vendors to Buy");
+        scene.configureBasePlate(0, 0, 3);
+        scene.showBasePlate();
+        scene.idle(10);
+
+        BlockPos vendorPos = util.grid.at(1, 1, 1);
+        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
+
+        // for some reason the lighting is broken if we show it normally
+        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(60)
+            .text("Players with access to a vendor can sneak-use to configure it.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+
+        scene.idle(50);
+
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
+                .rightClick()
+                .whileSneaking(),
+            10);
+        scene.idle(15);
+
+        var menu = scenex.showContainerMenu(
+                5,
+                vendorPos,
+                NumismaticsBlockEntities.VENDOR.get(),
+                (be, inv) -> new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), -3, inv, be),
+                VendorScreen::new
+            )
+            .inventoryFiller(inv -> {
+                inv.setItem(9, new ItemStack(Items.GOLDEN_APPLE, 64));
+                inv.setItem(10, new ItemStack(Items.GOLDEN_APPLE, 8));
+            })
+            .colored(PonderPalette.RED)
+            .attachKeyFrame()
+            .link();
+        scenex.enableScreenOverlayLayer();
+        scene.idle(15);
+
+        scenex.modifyCursor(menu, c -> c
+            .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW)
+            .teleport(-20, -30)
+            .snapFrame());
+        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.FILTER_SLOT_INDEX))
+            .text("The filter slot controls the item type and count that is sold.")
+            .placeNearTarget();
+        scene.idle(5);
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scenex.cursorTarget(ScreenVec.relative(menu, -20, 60));
+        scene.idle(2);
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 10));
+        scene.idle(18);
+
+        // pick up 8 golden apples
+        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
+        scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
+        scene.idle(10);
+
+        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.INV_START_INDEX + 5))
+            .text("Stock slots hold the inventory.")
+            .attachKeyFrame()
+            .placeNearTarget();
+        scene.idle(5);
+
+        // set filter
+        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scene.idle(5);
+
+        // place 8 golden apples in stock
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX));
+        scene.idle(10);
+        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX);
+        scene.idle(5);
+
+        // pick up 64 golden apples
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
+        scene.idle(15);
+        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
+        scene.idle(5);
+
+        // place 64 golden apples in stock
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX + 1));
+        scene.idle(10);
+        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX + 1);
+        scene.idle(5);
+
+        scene.overlay.showText(150)
+            .text("Configure each coin to set the price")
+            .independent(50);
+        scene.idle(5);
+
+        scenex.cursorTarget(ScreenVec.relative(menu, 72, 80));
+        scene.idle(15);
+
+        scene.addKeyframe();
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
+
+        for (int i = 1; i <= 8; i++) {
+            final int finalI = i;
+            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
+            scene.idle(5);
+        }
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(5);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_DOWN));
+
+        for (int i = 8; i >= 1; i--) {
+            final int finalI = i;
+            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
+            scene.idle(5);
+        }
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(5);
+        scenex.cursorTarget(ScreenVec.relative(menu, 218, 58));
+        scene.idle(10);
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
+        scene.idle(5);
+        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.COG, 1));
+        scene.idle(5);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(20);
+
+        // hide cursor
+        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_MEDIUM));
+        scenex.cursorTarget(ScreenVec.relative(menu, 230, 130));
+        scene.idle(10);
 
         scenex.hideContainerMenu(menu, 5);
     }
@@ -258,5 +476,36 @@ public class VendorScenes {
         scene.idle(10);
 
         scene.world.modifyEntity(item, Entity::discard);
+    }
+
+    private static <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void swapCarriedAndInvSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+        scenex.modifyScreen(link, $ -> {
+            ItemStack invItem = $.inv().removeItemNoUpdate(slot);
+            ItemStack carriedItem = $.menu().getCarried();
+            $.menu().setCarried(invItem);
+            $.inv().setItem(slot, carriedItem);
+        });
+    }
+
+    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void swapCarriedAndMenuSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+        scenex.modifyScreen(link, $ -> {
+            Slot slot$ = $.menu().getSlot(slot);
+            ItemStack invItem = slot$.getItem();
+            ItemStack carriedItem = $.menu().getCarried();
+            $.menu().setCarried(invItem);
+            slot$.set(carriedItem);
+        });
+    }
+
+    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+        clickSlot(scenex, link, slot, ClickAction.PRIMARY);
+    }
+
+    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot, ClickAction action) {
+        clickSlot(scenex, link, slot, action.ordinal(), ClickType.PICKUP);
+    }
+
+    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot, int button, ClickType clickType) {
+        scenex.modifyScreen(link, $ -> $.menu().clicked(slot, button, clickType, $.menu().player));
     }
 }

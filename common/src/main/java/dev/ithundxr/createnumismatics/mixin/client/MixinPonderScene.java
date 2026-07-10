@@ -18,32 +18,40 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.ponder.PonderScene;
+import com.simibubi.create.foundation.ponder.element.PonderElement;
 import com.simibubi.create.foundation.ponder.element.PonderOverlayElement;
 import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderOverlayElement_Duck;
 import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Consumer;
 
 @Mixin(PonderScene.class)
-public class MixinPonderScene {
-    @WrapOperation(method = "lambda$renderOverlay$7", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/ponder/element/PonderOverlayElement;render(Lcom/simibubi/create/foundation/ponder/PonderScene;Lcom/simibubi/create/foundation/ponder/ui/PonderUI;Lnet/minecraft/client/gui/GuiGraphics;F)V"))
-    private void applyOverlayLayer(PonderOverlayElement instance, PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, Operation<Void> original) {
-        if (!((PonderOverlayElement_Duck) instance).numismatics$isOnOverlayLayer()) {
-            original.call(instance, scene, screen, graphics, partialTicks);
-            return;
-        }
+public abstract class MixinPonderScene {
+    @Shadow public abstract <T extends PonderElement> void forEachVisible(Class<T> type, Consumer<T> function);
 
+    @WrapWithCondition(method = "lambda$renderOverlay$7", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/ponder/element/PonderOverlayElement;render(Lcom/simibubi/create/foundation/ponder/PonderScene;Lcom/simibubi/create/foundation/ponder/ui/PonderUI;Lnet/minecraft/client/gui/GuiGraphics;F)V"))
+    private boolean renderNonOverlayFirst(PonderOverlayElement instance, PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks) {
+        return !((PonderOverlayElement_Duck) instance).numismatics$isOnOverlayLayer();
+    }
+
+    @Inject(method = "renderOverlay", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
+    private void renderOverlayLayer(PonderUI screen, GuiGraphics graphics, float partialTicks, CallbackInfo ci) {
         PoseStack ms = graphics.pose();
         ms.pushPose();
         ms.translate(0, 0, 3000);
-        RenderSystem.enableDepthTest();
-        original.call(instance, scene, screen, graphics, partialTicks);
+        forEachVisible(PonderOverlayElement.class, e -> {
+            if (((PonderOverlayElement_Duck) e).numismatics$isOnOverlayLayer())
+                e.render((PonderScene) (Object) this, screen, graphics, partialTicks);
+        });
         ms.popPose();
     }
 }

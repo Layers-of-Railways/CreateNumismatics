@@ -124,6 +124,17 @@ public class SceneBuilderExtension {
         }));
     }
 
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void modifyScreen(ElementLink<VirtualScreenElement<M, S, B>> link, Consumer<VirtualScreenElement.ActiveState<M, S>> modifier) {
+        wrapped.addInstruction(scene -> scene.runWith(link, vse -> {
+            var state = vse.getActiveStateUnchecked();
+            if (state == null) {
+                crashInDev("Cannot modify closed screen");
+                return;
+            }
+            modifier.accept(state);
+        }));
+    }
+
     private static void crashInDev(@SuppressWarnings("SameParameterValue") String message) {
         long start = System.currentTimeMillis();
         Numismatics.LOGGER.error(message); // set breakpoint here when developing
