@@ -248,8 +248,8 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
                 cursor = switch (state.cursor.cursor) {
                     case HIDDEN -> null;
                     case NORMAL -> NumismaticsIcons.I_CURSOR;
-                    case SCROLL_DOWN -> NumismaticsIcons.I_CURSOR_SCROLL_DOWN[(AnimationTickHolder.getTicks(true) / 5) % 3];
-                    case SCROLL_UP -> NumismaticsIcons.I_CURSOR_SCROLL_UP[(AnimationTickHolder.getTicks(true) / 5) % 3];
+                    case SCROLL_DOWN -> NumismaticsIcons.I_CURSOR_SCROLL_DOWN[(AnimationTickHolder.getTicks(scene.getWorld()) / 5) % 3];
+                    case SCROLL_UP -> NumismaticsIcons.I_CURSOR_SCROLL_UP[(AnimationTickHolder.getTicks(scene.getWorld()) / 5) % 3];
                 };
 
                 if (cursor == null) {
