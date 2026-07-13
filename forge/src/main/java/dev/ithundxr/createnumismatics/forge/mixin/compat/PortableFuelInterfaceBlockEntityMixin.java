@@ -237,7 +237,8 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
             at = @At(
                 value = "INVOKE",
                 target = "Lcom/railwayteam/railways/content/fuel/psi/PortableFuelInterfaceBlockEntity$InterfaceFluidHandler;isConnected()Z"
-            )
+            ),
+            remap = false
         )
         private boolean fakeConnect(InterfaceFluidHandler instance, Operation<Boolean> original) {
             return original.call(instance) || this$0.getBehaviour(SalepointTargetBehaviour.TYPE).isControlledBySalepoint();

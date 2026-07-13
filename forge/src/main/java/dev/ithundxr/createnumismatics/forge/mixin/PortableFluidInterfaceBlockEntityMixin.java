@@ -216,7 +216,8 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
             at = @At(
                 value = "INVOKE",
                 target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableFluidInterfaceBlockEntity;isConnected()Z"
-            )
+            ),
+            remap = false
         )
         private boolean fakeConnect(PortableFluidInterfaceBlockEntity instance, Operation<Boolean> original) {
             return original.call(instance) || instance.getBehaviour(SalepointTargetBehaviour.TYPE).isControlledBySalepoint();

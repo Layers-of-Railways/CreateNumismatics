@@ -31,8 +31,9 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(GoggleOverlayRenderer.class)
 public class MixinGoggleOverlayRenderer {
     @WrapOperation(
-            method = "renderOverlay",
-            at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/ItemEntry;asStack()Lnet/minecraft/world/item/ItemStack;")
+        method = "renderOverlay",
+        at = @At(value = "INVOKE", target = "Lcom/tterrag/registrate/util/entry/ItemEntry;asStack()Lnet/minecraft/world/item/ItemStack;"),
+        remap = false
     )
     private static ItemStack changeDisplayItem(ItemEntry<GogglesItem> instance, Operation<ItemStack> original) {
         return ClientUtils.changeGoggleOverlayItem(() -> original.call(instance));
