@@ -34,7 +34,7 @@ public class NumismaticsPonderIndex {
             See https://discord.com/channels/1226981107401232545/1261067581469757511/1495869753343082636
             Ponder Progress:
             - Depositors are basically done
-            - Vendors need configuration explained (the current 'pricing' stub should probably be renamed 'configuration')
+            - Vendors are basically done
             - Salepoints need configuration explained
             - Blaze Banker's to-do is listed in its file
             - Bank Terminal maybe needs a coin-conversion-rate ponder

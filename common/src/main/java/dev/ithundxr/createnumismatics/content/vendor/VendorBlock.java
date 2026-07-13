@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.block.IBE;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.registry.NumismaticsShapes;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,16 +50,11 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class VendorBlock extends Block implements IBE<VendorBlockEntity>, TrustedBlock, IWrenchable, NotifyFailedBreak {
-    VoxelShape voxelShape = Shapes.or(
-        Block.box(0, 0, 0, 16, 8, 16),
-        Block.box(1, 8, 1, 15, 18, 15)
-    );
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public final boolean isCreativeVendor;
 
@@ -183,6 +179,13 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
     @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
                                         @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return voxelShape;
+        return NumismaticsShapes.VENDOR;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                              @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return NumismaticsShapes.VENDOR_VISUAL;
     }
 }

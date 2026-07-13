@@ -109,6 +109,15 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
             input.setState(amount);
             input.onChanged();
         }
+
+        public void setMode(Mode mode) {
+            modeScrollInput.setState(mode.ordinal());
+            modeScrollInput.onChanged();
+        }
+
+        public void toggleExtraction() {
+            extractionButton.onClick(extractionButton.getX() + 4, extractionButton.getY() + 4);
+        }
     }
 
     @Override

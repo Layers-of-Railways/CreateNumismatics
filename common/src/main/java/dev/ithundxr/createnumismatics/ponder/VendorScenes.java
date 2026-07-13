@@ -47,6 +47,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.ClickType;
@@ -59,7 +60,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-// TODO add configuration ponder
 @SuppressWarnings("DuplicatedCode")
 public class VendorScenes {
     public static void intro(SceneBuilder scene, SceneBuildingUtil util) {
@@ -94,7 +94,7 @@ public class VendorScenes {
         scene.idle(110);
 
         scene.overlay.showText(130)
-            .text("Use the vendor to buy 8 apples, sneak-use it to buy a whole stack.")
+            .text("Use the vendor to buy 8 apples, sneak-use it to buy a whole stack")
             .attachKeyFrame()
             .pointAt(vendorText)
             .placeNearTarget();
@@ -137,7 +137,7 @@ public class VendorScenes {
         scene.idle(110);
 
         scene.overlay.showText(130)
-            .text("Use the vendor to sell 16 oak logs, sneak-use it to sell a whole stack.")
+            .text("Use the vendor to sell 16 oak logs, sneak-use it to sell a whole stack")
             .attachKeyFrame()
             .pointAt(vendorText)
             .placeNearTarget();
@@ -295,6 +295,18 @@ public class VendorScenes {
         scene.idle(10);
 
         scenex.hideContainerMenu(menu, 5);
+        scenex.disableScreenOverlayLayer();
+        scene.idle(10);
+
+        // display final result
+        scenex.showTextComponent(40)
+            .text(vendorTooltip(vendorPos))
+            .item(vendorTooltipItem(vendorPos))
+            .preserveTextColor()
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(50);
     }
 
     public static void configBuy(SceneBuilder scene, SceneBuildingUtil util) {
@@ -333,8 +345,8 @@ public class VendorScenes {
                 VendorScreen::new
             )
             .inventoryFiller(inv -> {
-                inv.setItem(9, new ItemStack(Items.GOLDEN_APPLE, 64));
-                inv.setItem(10, new ItemStack(Items.GOLDEN_APPLE, 8));
+                inv.setItem(9, Coin.BEVEL.asStack(64));
+                inv.setItem(10, new ItemStack(Items.OAK_LOG, 1));
             })
             .colored(PonderPalette.RED)
             .attachKeyFrame()
@@ -346,96 +358,121 @@ public class VendorScenes {
             .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW)
             .teleport(-20, -30)
             .snapFrame());
-        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.FILTER_SLOT_INDEX))
-            .text("The filter slot controls the item type and count that is sold.")
-            .placeNearTarget();
-        scene.idle(5);
 
+        // move to buy/sell toggle
         scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
-        scenex.cursorTarget(ScreenVec.relative(menu, -20, 60));
+        scenex.cursorTarget(ScreenVec.relative(menu, 30, -30));
         scene.idle(2);
-        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 10));
+        scenex.showText(60, ScreenVec.relative(menu, 160, 48))
+            .text("Configure the vendor to buy from customers")
+            .placeNearTarget();
+        scenex.cursorTarget(ScreenVec.relative(menu, 115, 53));
         scene.idle(18);
 
-        // pick up 8 golden apples
+        // scroll to set buy mode
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_DOWN));
+        scene.idle(10);
+        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setMode(VendorBlockEntity.Mode.BUY));
+        scene.idle(10);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
+        scene.idle(20);
+
+        // start configuring inventory: move to oak logs
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 10));
+        scene.idle(15);
+
+        // pick up 1 oak log
         clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
-        scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
         scene.idle(10);
 
-        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.INV_START_INDEX + 5))
-            .text("Stock slots hold the inventory.")
+        // set filter
+        scene.addInstruction($ -> $.getWorld().random.setSeed(87195871L)); // consistent clearing velocity
+        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scene.addInstruction($ -> $.forEachWorldEntity(ItemEntity.class, $$ ->
+            $$.setDeltaMovement($$.getDeltaMovement().scale(1.5).add(0, 0.25, 0)))); // add some pizzazz to the cleared items
+        scene.idle(5);
+
+        // swap logs for bevels
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
+        scene.idle(10);
+        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
+        scenex.showText(60, ScreenVec.slotRelative(menu, 18, 7, VendorMenu.COIN_SLOTS - 1))
+            .text("Provide funds to pay customers with")
             .attachKeyFrame()
             .placeNearTarget();
         scene.idle(5);
 
-        // set filter
-        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
-        scene.idle(5);
-
-        // place 8 golden apples in stock
-        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX));
+        // place bevels in coin supply
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, 1));
         scene.idle(10);
-        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX);
-        scene.idle(5);
-
-        // pick up 64 golden apples
-        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
-        scene.idle(15);
-        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
-        scene.idle(5);
-
-        // place 64 golden apples in stock
-        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX + 1));
+        clickSlot(scenex, menu, 1);
         scene.idle(10);
-        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX + 1);
-        scene.idle(5);
 
-        scene.overlay.showText(150)
-            .text("Configure each coin to set the price")
-            .independent(50);
-        scene.idle(5);
-
-        scenex.cursorTarget(ScreenVec.relative(menu, 72, 80));
-        scene.idle(15);
-
-        scene.addKeyframe();
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
-
-        for (int i = 1; i <= 8; i++) {
-            final int finalI = i;
-            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
-            scene.idle(5);
-        }
-
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
-        scene.idle(5);
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_DOWN));
-
-        for (int i = 8; i >= 1; i--) {
-            final int finalI = i;
-            scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.BEVEL, finalI));
-            scene.idle(5);
-        }
-
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
-        scene.idle(5);
+        // set (cog) prices
         scenex.cursorTarget(ScreenVec.relative(menu, 218, 58));
-        scene.idle(10);
-
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
-        scene.idle(5);
-        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.COG, 1));
-        scene.idle(5);
-        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
         scene.idle(20);
 
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_DOWN));
+        scene.idle(5);
+        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().setPrice(Coin.COG, 0));
+        scene.idle(5);
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(15);
+
+        // configure filter count
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.FILTER_SLOT_INDEX));
+        scenex.showText(60, ScreenVec.slotRelative(menu, 20, 7, VendorMenu.FILTER_SLOT_INDEX))
+            .text("Scroll to modify the filter count")
+            .placeNearTarget();
+        scene.idle(15);
+        scene.addKeyframe();
+
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.SCROLL_UP));
+        for (int i = 1; i < 16; i++) {
+            scenex.modifyScreen(menu, $ -> $.menu().scrollSlot(VendorMenu.FILTER_SLOT_INDEX, 1, false));
+            scene.idle(5);
+        }
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scene.idle(15);
+
+        // move towards Automated Extraction button
+        scenex.cursorTarget(ScreenVec.relative(menu, 100, 165));
+        scene.idle(2);
+        scenex.cursorTarget(ScreenVec.relative(menu, 40, 135));
+        scene.idle(4);
+
+        // toggle Automated Extraction
+        scenex.showText(80, ScreenVec.relative(menu, 50, 136))
+            .text("Hoppers, funnels, etc. can extract stock from buy-mode vendors by default. You can disable this.")
+            .placeNearTarget()
+            .attachKeyFrame();
+        scene.idle(24);
+        scenex.modifyScreen(menu, $ -> $.screen().getVirtualHandle().toggleExtraction());
+
+        scene.idle(70);
+
         // hide cursor
-        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_MEDIUM));
-        scenex.cursorTarget(ScreenVec.relative(menu, 230, 130));
-        scene.idle(10);
+        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW));
+        scenex.cursorTarget(ScreenVec.relative(menu, 120, 160));
+        scene.idle(2);
+        scenex.cursorTarget(ScreenVec.relative(menu, 230, 140));
+        scene.idle(12);
 
         scenex.hideContainerMenu(menu, 5);
+        scenex.disableScreenOverlayLayer();
+        scene.idle(10);
+
+        // display final result
+        scenex.showTextComponent(40)
+            .text(vendorTooltip(vendorPos))
+            .item(vendorTooltipItem(vendorPos))
+            .preserveTextColor()
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(50);
     }
 
     private static BiConsumer<PonderScene, List<Component>> vendorTooltip(BlockPos pos) {
