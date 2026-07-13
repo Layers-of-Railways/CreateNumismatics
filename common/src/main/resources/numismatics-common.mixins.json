@@ -22,7 +22,13 @@
     "client.MixinSceneBuilder",
     "client.MixinSceneBuilder$MixinOverlayInstructions",
     "client.MixinTextWindowElement",
-    "client.MixinTextWindowElement$MixinBuilder"
+    "client.MixinTextWindowElement$MixinBuilder",
+    "client.dev_export.AccessorMinecraft",
+    "client.dev_export.AccessorPonderUI",
+    "client.dev_export.MixinEmiScreenManager",
+    "client.dev_export.MixinMinecraft",
+    "client.dev_export.MixinPonderIndex",
+    "client.dev_export.MixinPonderLocalization"
   ],
   "mixins": [
     "AccessorSceneBuilder",

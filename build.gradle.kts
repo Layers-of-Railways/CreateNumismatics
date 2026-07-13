@@ -17,10 +17,20 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import org.gradle.configurationcache.extensions.capitalized
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.tree.AnnotationNode
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.MethodNode
 import java.io.ByteArrayOutputStream
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
+import java.util.jar.JarOutputStream
+import java.util.zip.Deflater
 
 plugins {
     java
@@ -37,8 +47,14 @@ plugins {
 println("Numismatics v${"mod_version"()}")
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
+// whether methods annotated with @StripFromRelease should be stripped, even if it's not a release build
+val removeDevMethodsAnyway = System.getenv("REMOVE_DEV_METHODS_ANYWAY")?.toBoolean() ?: false
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toInt()
 val gitHash = "\"${calculateGitHash() + (if (hasUnstaged()) "-modified" else "")}\""
+
+if (!isRelease && removeDevMethodsAnyway) {
+    println("Removing dev methods, even though it's not a release build")
+}
 
 extra["gitHash"] = gitHash
 
@@ -145,6 +161,9 @@ subprojects {
         injectAccessWidener = true
         dependsOn(shadowJar)
         archiveClassifier = null
+        doLast {
+            transformJar(outputs.files.singleFile)
+        }
     }
 
     val common: Configuration by configurations.creating
@@ -206,6 +225,63 @@ subprojects {
             skip()
         }
     }
+}
+
+fun transformJar(jar: File) {
+    val contents = linkedMapOf<String, ByteArray>();
+    JarFile(jar).use {
+        it.entries().asIterator().forEach { entry ->
+            if (!entry.isDirectory) {
+                contents[entry.name] = it.getInputStream(entry).readAllBytes();
+            }
+        }
+    }
+
+    jar.delete();
+
+    JarOutputStream(jar.outputStream()).use { out ->
+        out.setLevel(Deflater.BEST_COMPRESSION)
+        contents.forEach { var (name, data) = it
+            if (name.startsWith("architectury_inject_${project.name}_common"))
+                return@forEach
+
+            if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
+                data = (JsonOutput.toJson(JsonSlurper().parse(data)).toByteArray())
+            } else if (name.endsWith(".class")) {
+                data = transformClass(data)
+            }
+
+            out.putNextEntry(JarEntry(name))
+            out.write(data)
+            out.closeEntry()
+        }
+        out.finish()
+        out.close()
+    }
+}
+
+fun transformClass(bytes: ByteArray): ByteArray {
+    val node = ClassNode()
+    ClassReader(bytes).accept(node, 0)
+
+    node.methods.removeIf { methodNode: MethodNode -> removeIfDevMethod(methodNode.visibleAnnotations) }
+
+    return ClassWriter(0).also { node.accept(it) }.toByteArray()
+}
+
+fun removeIfDevMethod(visibleAnnotations: List<AnnotationNode>?): Boolean {
+    // Don't remove methods if it's not a GHA build/Release build
+    if (!removeDevMethodsAnyway && buildNumber == null)
+        return false
+
+    if (visibleAnnotations != null) {
+        for (annotationNode in visibleAnnotations) {
+            if (annotationNode.desc == "Ldev/ithundxr/createnumismatics/annotation/mixin/StripFromRelease;")
+                return true;
+        }
+    }
+
+    return false
 }
 
 fun calculateGitHash(): String {

@@ -34,6 +34,7 @@ import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
+import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,7 +60,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     private final BlockEntityType<B> beType;
     private final BiFunction<B, Inventory, M> menuFactory;
     private final ScreenFactory<M, S> screenFactory;
-    private final boolean scaleDown;
+    private boolean scaleDown;
 
     @Nullable Consumer<Inventory> inventoryFiller = null;
     int color = PonderPalette.WHITE.getColor();
@@ -108,12 +109,13 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         this.beType = beType;
         this.menuFactory = menuFactory;
         this.screenFactory = screenFactory;
-        this.scaleDown = NumismaticsConfig.client().scalePonderGui.get();
+        this.scaleDown = NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
     }
 
     @ApiStatus.Internal
     public void clearState() {
         state = null;
+        scaleDown = NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
     }
 
     public @NotNull M getMenu() {

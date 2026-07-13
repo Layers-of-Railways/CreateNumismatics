@@ -22,12 +22,16 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,6 +40,7 @@ import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 
+import static com.simibubi.create.infrastructure.command.PonderCommand.ITEM_PONDERS;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -44,6 +49,7 @@ public class UtilCommand {
         return literal("util")
             .requires(cs -> cs.hasPermission(2))
             .then(ponder())
+            .then(export_ponder())
             .build();
     }
 
@@ -75,6 +81,17 @@ public class UtilCommand {
                         )
                     )
                 )
+            );
+    }
+
+    private static ArgumentBuilder<CommandSourceStack, ?> export_ponder() {
+        return literal("export_ponder")
+            .then(argument("scene", ResourceLocationArgument.id())
+                .suggests(ITEM_PONDERS)
+                .executes(ctx -> $export_ponder(
+                    ctx.getSource(),
+                    ResourceLocationArgument.getId(ctx, "scene")
+                ))
             );
     }
 
@@ -140,6 +157,12 @@ public class UtilCommand {
 
         source.sendSuccess(() -> Component.literal("Ponder template created"), true);
 
+        return 1;
+    }
+
+    private static int $export_ponder(CommandSourceStack source, ResourceLocation id) {
+        PonderExport.queuePonder(PonderUI.of(id));
+        source.sendSuccess(() -> Component.literal("Queued ponder " + id + " for rendering"), true);
         return 1;
     }
 }
