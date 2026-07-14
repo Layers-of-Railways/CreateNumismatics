@@ -335,7 +335,8 @@ fun Project.setupRepositories() {
         maven("https://modmaven.dev/") // Create
         exclusiveMaven("https://api.modrinth.com/maven", "maven.modrinth") // LazyDFU, Create Crafts and Additions
         maven("https://maven.shedaniel.me/") // Cloth Config, REI
-        maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
+        //maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
+        exclusiveMaven("https://maven.gnomecraft.net/releases/", "com.terraformersmc", "dev.emi") // Caching mirror of terraformersmc, which is currently (2026-07-14) flaky
         maven("https://maven.blamejared.com/") // JEI, Carry On
         maven("https://maven.parchmentmc.org") // Parchment mappings
         maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
@@ -368,12 +369,13 @@ fun Project.setupRepositories() {
     }
 }
 
+@Suppress("UnstableApiUsage")
 fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
     exclusiveContent {
         forRepository { maven(url) }
         filter {
             groups.forEach {
-                includeGroup(it)
+                includeGroupAndSubgroups(it)
             }
         }
     }
