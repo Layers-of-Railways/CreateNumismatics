@@ -4,13 +4,13 @@ mod_version:
   path: gradle.properties
   regex: mod_version = (.*)
   group: 1
-  format: ${mod_version}-mc${minecraft_version}-build.${build_number}
+  format: ${mod_version}+mc${minecraft_version}-build.${build_number}
 buttons:
   fabric:
     style: link
-    url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-fabric-${minecraft_version}/${mod_version}+fabric-mc${minecraft_version}/CreateNumismatics-fabric-${minecraft_version}-${mod_version}+fabric-mc${minecraft_version}.jar
+    url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-fabric-${minecraft_version}/${mod_version}+fabric-mc${minecraft_version}-build.${build_number}/CreateNumismatics-fabric-${minecraft_version}-${mod_version}+fabric-mc${minecraft_version}-build.${build_number}.jar
     label: Fabric
   forge:
     style: link
-    url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-forge-${minecraft_version}/${mod_version}+forge-mc${minecraft_version}/CreateNumismatics-forge-${minecraft_version}-${mod_version}+forge-mc${minecraft_version}.jar
+    url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-forge-${minecraft_version}/${mod_version}+forge-mc${minecraft_version}-build.${build_number}/CreateNumismatics-forge-${minecraft_version}-${mod_version}+forge-mc${minecraft_version}-build.${build_number}.jar
     label: Forge
