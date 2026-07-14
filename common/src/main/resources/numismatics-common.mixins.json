@@ -7,6 +7,7 @@
     "minVersion": "0.5.3"
   },
   "client": [
+    "client.AccessorAbstractContainerMenu",
     "client.AccessorAbstractContainerScreen",
     "client.AccessorInputWindowElement",
     "client.MixinBeltRenderer",

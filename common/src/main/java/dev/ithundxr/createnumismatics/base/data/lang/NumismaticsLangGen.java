@@ -28,6 +28,8 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.ponder.utils.NumismaticsSharedText;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 
 import java.util.Map;
@@ -68,6 +70,9 @@ public class NumismaticsLangGen {
     }
 
     private static void providePonderLang(BiConsumer<String, String> consumer) {
+        NumismaticsPonderTags.register();
+        NumismaticsPonderIndex.register();
+
         NumismaticsSharedText.gatherText();
 
         PonderLocalization.generateSceneLang();

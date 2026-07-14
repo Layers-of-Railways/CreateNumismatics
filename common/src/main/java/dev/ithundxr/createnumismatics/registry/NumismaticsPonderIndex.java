@@ -44,22 +44,23 @@ public class NumismaticsPonderIndex {
          */
 
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
-            .addStoryBoard("depositors/intro", DepositorScenes::intro)
+            .addStoryBoard("depositors/intro", DepositorScenes::intro, NumismaticsPonderTags.SHOPS)
             .addStoryBoard("depositors/redstone", DepositorScenes::redstone)
             .addStoryBoard("depositors/pricing", DepositorScenes::pricing);
 
         HELPER.forComponents(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
-            .addStoryBoard("vendors/intro", VendorScenes::intro)
+            .addStoryBoard("vendors/intro", VendorScenes::intro, NumismaticsPonderTags.SHOPS)
             .addStoryBoard("vendors/config_sell", VendorScenes::configSell)
-            .addStoryBoard("vendors/config_buy", VendorScenes::configBuy);
+            .addStoryBoard("vendors/config_buy", VendorScenes::configBuy)
+            .addStoryBoard("vendors/config_emi", VendorScenes::configEmi);
 
         HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
-            .addStoryBoard("salepoint", SalepointScenes::item);
+            .addStoryBoard("salepoint", SalepointScenes::item, NumismaticsPonderTags.SHOPS);
     }
 
     // Any ponders that should appear AFTER creates own ponders should go here
     public static void registerAfterCreatePonders() {
-        HELPER.forComponents(AllBlocks.BLAZE_BURNER)
+        HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
             .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }
 }

@@ -42,20 +42,28 @@ import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.CursorPhysicsProperties;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.util.ClientCraftingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -475,6 +483,181 @@ public class VendorScenes {
         scene.idle(50);
     }
 
+    public static void configEmi(SceneBuilder scene, SceneBuildingUtil util) {
+        SceneBuilderExtension scenex = new SceneBuilderExtension(scene);
+        scene.title("vendor_config_emi", "Configuring Vendors with EMI/JEI");
+        scene.configureBasePlate(0, 0, 3);
+        scene.showBasePlate();
+        scene.idle(10);
+
+        BlockPos vendorPos = util.grid.at(1, 1, 1);
+        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
+
+        // for some reason the lighting is broken if we show it normally
+        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(60)
+            .text("Players with access to a vendor can sneak-use to configure it.")
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+
+        scene.idle(50);
+
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
+                .rightClick()
+                .whileSneaking(),
+            10);
+        scene.idle(15);
+
+        List<ItemStack> fakeEmiItems = new ArrayList<>();
+        fakeEmiItems.add(new ItemStack(Items.WHITE_DYE));
+        fakeEmiItems.add(new ItemStack(Items.LIGHT_GRAY_DYE));
+        fakeEmiItems.add(new ItemStack(Items.GRAY_DYE));
+        fakeEmiItems.add(new ItemStack(Items.BLACK_DYE));
+        fakeEmiItems.add(new ItemStack(Items.LEATHER_CHESTPLATE));
+
+        fakeEmiItems.add(new ItemStack(Items.BROWN_DYE));
+        fakeEmiItems.add(new ItemStack(Items.RED_DYE));
+        fakeEmiItems.add(new ItemStack(Items.ORANGE_DYE));
+        fakeEmiItems.add(new ItemStack(Items.YELLOW_DYE));
+        fakeEmiItems.add(enchantedBook(Enchantments.MENDING, 1));
+
+        fakeEmiItems.add(new ItemStack(Items.LIME_DYE));
+        fakeEmiItems.add(new ItemStack(Items.GREEN_DYE));
+        fakeEmiItems.add(new ItemStack(Items.CYAN_DYE));
+        fakeEmiItems.add(new ItemStack(Items.LIGHT_BLUE_DYE));
+        fakeEmiItems.add(enchantedBook(Enchantments.UNBREAKING, 3));
+
+        fakeEmiItems.add(new ItemStack(Items.BLUE_DYE));
+        fakeEmiItems.add(new ItemStack(Items.PURPLE_DYE));
+        fakeEmiItems.add(new ItemStack(Items.MAGENTA_DYE));
+        fakeEmiItems.add(new ItemStack(Items.PINK_DYE));
+        fakeEmiItems.add(enchantedBook(Enchantments.ALL_DAMAGE_PROTECTION, 4));
+
+        var menu = scenex.showContainerMenu(
+                5,
+                vendorPos,
+                NumismaticsBlockEntities.VENDOR.get(),
+                (be, inv) -> new VendorMenu(NumismaticsMenuTypes.VENDOR.get(), -3, inv, be),
+                VendorScreen::new
+            )
+            .slotFiller(filler -> {
+                final Container fakeEmiContainer = new SimpleContainer(fakeEmiItems.size());
+                final int x0 = 260;
+                final int y0 = 0;
+                for (int i = 0; i < fakeEmiItems.size(); i++) {
+                    int xi = i % 5;
+                    int yi = i / 5;
+                    filler.apply(new Slot(fakeEmiContainer, i, x0 + xi * 18, y0 + yi * 18));
+                }
+            })
+            .inventoryFiller(inv -> {})
+            .colored(PonderPalette.RED)
+            .attachKeyFrame()
+            .link();
+        scenex.enableScreenOverlayLayer();
+        scene.idle(15);
+
+        scenex.modifyCursor(menu, c -> c
+            .setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW)
+            .teleport(-20, -30)
+            .snapFrame());
+
+        scene.overlay.showText(70)
+            .text("To set the filter item of a vendor (or salepoint) to an item you don't have...")
+            .independent(65);
+        scene.idle(20);
+        scene.overlay.showText(90)
+            .text("...use a recipe viewer such as EMI or JEI and drag items to the filter slot.")
+            .independent(105);
+        scene.idle(10);
+        for (int i = 0; i < fakeEmiItems.size(); i++) {
+            final int i$ = i;
+            scenex.modifyScreen(menu, $ -> $.menu()
+                .getSlot(VendorMenu.PLAYER_INV_END_INDEX + 6 + i$)
+                .set(fakeEmiItems.get(i$)));
+            scene.idle(1);
+        }
+        scene.idle(50);
+        scene.addKeyframe();
+
+        // move to fake EMI leather chestplate
+        scenex.modifyCursor(menu, c -> c.setCursor(Cursor.NORMAL));
+        scenex.cursorTarget(ScreenVec.relative(menu, 30, -60));
+        scene.idle(2);
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_END_INDEX + 6 + 4));
+        scene.idle(15);
+
+        // pick up fake EMI leather chestplate
+        cloneMenuSlotToCarried(scenex, menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + 4);
+        scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
+        scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
+        scene.idle(10);
+
+        // set filter
+        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scenex.modifyScreen(menu, $ -> $.menu().setCarried(ItemStack.EMPTY));
+        scene.idle(10);
+
+        scene.overlay.showText(70)
+            .text("Items such as dyes and enchanted books can be sneak-dragged to modify the filter item.")
+            .independent(105)
+            .attachKeyFrame();
+        scene.idle(10);
+
+        scenex.modifyCursor(menu, $ -> $.setPhysics(new CursorPhysicsProperties(60, 0.8)));
+
+        for (int emiIdx : new int[] {6, 7, 17, 9, 14, 19}) {
+            // pick up dye/enchanted book
+            scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_END_INDEX + 6 + emiIdx));
+            scene.idle(20);
+            cloneMenuSlotToCarried(scenex, menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + emiIdx);
+
+            scenex.modifyCursor(menu, c -> c.setSneak(true));
+            scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
+            scene.idle(15);
+
+            // set filter
+            scenex.modifyCursor(menu, c -> c.setSneak(false));
+            scenex.modifyScreen(menu, $ -> {
+                ItemStack carried = $.menu().getCarried();
+                $.menu().setCarried(ItemStack.EMPTY);
+                Slot slot = $.menu().getSlot(VendorMenu.FILTER_SLOT_INDEX);
+                ItemStack existing = slot.getItem();
+                ClientCraftingUtils.Result result = ClientCraftingUtils.applyStackingCrafts(existing, carried);
+                slot.set(result.getResult(existing, true));
+            });
+            scene.idle(10);
+        }
+
+        scene.idle(40);
+
+        // hide cursor
+        scenex.modifyCursor(menu, c -> c.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW));
+        scenex.cursorTarget(ScreenVec.relative(menu, 230, 140));
+        scene.idle(15);
+
+        scenex.hideContainerMenu(menu, 5);
+        scenex.disableScreenOverlayLayer();
+        scene.idle(10);
+
+        // display final result
+        scenex.showTextComponent(60)
+            .text(vendorTooltip(vendorPos))
+            .item(vendorTooltipItem(vendorPos))
+            .preserveTextColor()
+            .attachKeyFrame()
+            .pointAt(vendorText)
+            .placeNearTarget();
+        scene.idle(70);
+    }
+
+    private static ItemStack enchantedBook(Enchantment enchantment, int level) {
+        return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
+    }
+
     private static BiConsumer<PonderScene, List<Component>> vendorTooltip(BlockPos pos) {
         return (scene, tooltip) -> {
             if (scene.getWorld().getBlockEntity(pos) instanceof VendorBlockEntity vbe) {
@@ -531,6 +714,14 @@ public class VendorScenes {
             ItemStack carriedItem = $.menu().getCarried();
             $.menu().setCarried(invItem);
             slot$.set(carriedItem);
+        });
+    }
+
+    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void cloneMenuSlotToCarried(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+        scenex.modifyScreen(link, $ -> {
+            Slot slot$ = $.menu().getSlot(slot);
+            ItemStack invItem = slot$.getItem();
+            $.menu().setCarried(invItem.copy());
         });
     }
 

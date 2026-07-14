@@ -20,23 +20,28 @@ package dev.ithundxr.createnumismatics.ponder.utils.elements;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.ponder.ElementLink;
+import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.element.AnimatedOverlayElement;
 import com.simibubi.create.foundation.ponder.element.OutlinerElement;
 import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
+import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerMenu;
 import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -44,6 +49,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.ApiStatus;
@@ -54,6 +60,7 @@ import org.joml.Matrix4f;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class VirtualScreenElement<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> extends AnimatedOverlayElement {
     private final BlockPos bePos;
@@ -63,6 +70,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     private boolean scaleDown;
 
     @Nullable Consumer<Inventory> inventoryFiller = null;
+    @Nullable Consumer<UnaryOperator<Slot>> slotFiller = null;
     int color = PonderPalette.WHITE.getColor();
 
     private boolean alreadyWarned = false;
@@ -85,6 +93,11 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         public Builder colored(PonderPalette color) {
             VirtualScreenElement.this.color = color.getColor();
+            return this;
+        }
+
+        public Builder slotFiller(@Nullable Consumer<UnaryOperator<Slot>> filler) {
+            VirtualScreenElement.this.slotFiller = filler;
             return this;
         }
 
@@ -236,6 +249,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             // TODO: is it nicer to immediately floor/round this down?
             double localMouseX, localMouseY;
             NumismaticsIcons cursor;
+            boolean cursorSneak;
 
             if (((PonderUI_Duck) screen).numismatics$isIdentifyMode()) {
                 double globalMouseX = mc.mouseHandler.xpos() * (double) window.getGuiScaledWidth() / (double) window.getScreenWidth();
@@ -244,6 +258,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
                 localMouseX = (((globalMouseX - scaleCenterX) / scale) + scaleCenterX);
                 localMouseY = (((globalMouseY - scaleCenterY) / scale) + scaleCenterY);
                 cursor = null;
+                cursorSneak = false;
             } else {
                 cursor = switch (state.cursor.cursor) {
                     case HIDDEN -> null;
@@ -255,11 +270,13 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
                 if (cursor == null) {
                     localMouseX = 0;
                     localMouseY = 0;
+                    cursorSneak = false;
                 } else {
                     int left = ((AccessorAbstractContainerScreen) state.screen).numismatics$getLeftPos();
                     int top = ((AccessorAbstractContainerScreen) state.screen).numismatics$getTopPos();
                     localMouseX = state.cursor.getX(partialTicks) + left;
                     localMouseY = state.cursor.getY(partialTicks) + top;
+                    cursorSneak = state.cursor.sneak;
                 }
             }
 
@@ -274,6 +291,14 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
                 ms.translate(localMouseX - 1, localMouseY - 1, 2000);
                 ms.mulPoseMatrix(new Matrix4f().scaling(1/scale, 1/scale, 1));
                 cursor.render(graphics, 0, 0);
+                if (cursorSneak) {
+                    String text = PonderLocalization.getShared(Create.asResource("sneak_and"));
+                    Font font = screen.getFontRenderer();
+                    int textWidth = font.width(text);
+                    PonderUI.renderSpeechBox(graphics, -2, 4, textWidth + 4, 9, false, Pointing.RIGHT, true);
+                    ms.translate(0, 0, 110);
+                    graphics.drawString(font, text, 2, 1, PonderPalette.WHITE.getColor(), false);
+                }
                 ms.popPose();
             }
 
@@ -303,6 +328,9 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
             M menu = menuFactory.apply(be, inv);
             menu.suppressRemoteUpdates();
+            if (this.slotFiller != null)
+                this.slotFiller.accept(s -> ((AccessorAbstractContainerMenu) menu).numismatics$addSlot(s));
+
             S screen$ = screenFactory.create(menu, inv, be.getDisplayName());
             screen$.markVirtual();
             Window window = mc.getWindow();
@@ -370,6 +398,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         private @NotNull Cursor cursor;
         private @NotNull CursorPhysicsProperties physics;
+        private boolean sneak;
 
         // prev position
         private double x0, y0;
@@ -385,6 +414,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         public CursorState() {
             this.cursor = Cursor.HIDDEN;
             this.physics = CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOW;
+            this.sneak = false;
             teleport(0, 0);
         }
 
@@ -395,6 +425,11 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
 
         public CursorState setCursor(@NotNull Cursor cursor) {
             this.cursor = cursor;
+            return this;
+        }
+
+        public CursorState setSneak(boolean sneak) {
+            this.sneak = sneak;
             return this;
         }
 
