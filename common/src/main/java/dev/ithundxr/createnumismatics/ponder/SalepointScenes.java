@@ -49,9 +49,9 @@ public class SalepointScenes {
 
         Selection beltIntoFunnel = util.select.fromTo(7, 1, 2, 7, 1, 3);
         Selection beltIntoBelt = util.select.fromTo(12, 1, 2, 8, 1, 2);
-        
+
         BlockPos beltStart = util.grid.at(12, 1, 2);
-        
+
         Selection gearBoxes = util.select.fromTo(8, 1, 3, 9, 1, 3);
         Selection smallCog = util.select.position(12, 1, 3);
         Selection largeCog = util.select.position(13, 0, 3);
@@ -59,13 +59,13 @@ public class SalepointScenes {
         Selection train1 = util.select.fromTo(12, 2, 5, 8, 3, 7);
         Selection train2 = util.select.fromTo(7, 2, 5, 4, 3, 7);
         Selection train2a = util.select.fromTo(7, 2, 7, 4, 3, 10);
-        
+
         // Show tracks
         for (int i = 0; i <= 13; i++) {
             scene.world.showSection(util.select.position(i, 1, 6), Direction.DOWN);
             scene.idle(1);
         }
-        
+
         scene.world.showSection(largeCog, Direction.DOWN);
         scene.idle(10);
         scene.world.showSection(smallCog, Direction.DOWN);
@@ -84,33 +84,33 @@ public class SalepointScenes {
         scene.idle(10);
         scene.world.showSection(station, Direction.DOWN);
         scene.idle(10);
-        
+
         for (int i = 0; i < 6; i++) {
             ElementLink<EntityElement> item = scene.world.createItemEntity(
-                            util.vector.centerOf(beltStart.above(3)),
-                            util.vector.of(0, 0, 0),
-                            ingotStack
+                util.vector.centerOf(beltStart.above(3)),
+                util.vector.of(0, 0, 0),
+                ingotStack
             );
             scene.idle(13);
             scene.world.modifyEntity(item, Entity::discard);
-            
+
             scene.world.createItemOnBelt(beltStart, Direction.DOWN, ingotStack);
             scene.idle(5);
         }
 
         scene.overlay.showText(70)
-                .attachKeyFrame()
-                .text("""
-                        The Salepoint is a way to buy and sell items and fluid in bulk.
-                        Normally, stationary interfaces will automatically connect to any assembled interface that attaches to it.
-                        """)
-                .pointAt(portableInterface.getCenter())
-                .placeNearTarget();
+            .attachKeyFrame()
+            .text("""
+                The Salepoint is a way to buy and sell items and fluid in bulk.
+                Normally, stationary interfaces will automatically connect to any assembled interface that attaches to it.
+                """)
+            .pointAt(portableInterface.getCenter())
+            .placeNearTarget();
         scene.idle(80);
 
         scene.addKeyframe();
         scene.idle(10);
-        
+
         ElementLink<WorldSectionElement> trainElement1 = scene.world.showIndependentSection(train1, Direction.EAST);
         scene.world.moveSection(trainElement1, util.vector.of(-14, 0, 0), 0);
 
