@@ -250,6 +250,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             trustListContainer.load(tag.getCompound("TrustListInv"));
         }
 
+        salepointState = null;
         if (tag.contains("SalepointState", Tag.TAG_COMPOUND))
             salepointState = SalepointStateWrapper.deserialize(tag.getCompound("SalepointState"));
         onSalepointStateSet();
@@ -606,9 +607,16 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             return tag;
         }
 
-        public static SalepointStateWrapper deserialize(CompoundTag tag) {
+        public static @Nullable SalepointStateWrapper deserialize(CompoundTag tag) {
+            if (!tag.contains("state", Tag.TAG_COMPOUND) || !tag.contains("pos", Tag.TAG_COMPOUND))
+                return null;
+
             ISalepointState<?> state = SalepointTypes.load(tag.getCompound("state"));
             BlockPos pos = NbtUtils.readBlockPos(tag.getCompound("pos"));
+
+            if (state == null)
+                return null;
+
             return new SalepointStateWrapper(state, pos);
         }
     }

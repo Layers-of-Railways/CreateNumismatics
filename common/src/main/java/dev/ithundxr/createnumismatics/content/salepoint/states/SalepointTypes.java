@@ -57,7 +57,6 @@ public enum SalepointTypes {
         return state;
     }
 
-    @Contract("_ -> new")
     public static @Nullable ISalepointState<?> load(@NotNull CompoundTag tag) {
         if (!tag.contains("id", CompoundTag.TAG_STRING))
             return null;
