@@ -16,7 +16,7 @@ public record VendorContainerSetSlotPacket(int containerId, int stateId, int slo
         ByteBufCodecs.BYTE, i -> (byte) i.containerId,
         ByteBufCodecs.VAR_INT, VendorContainerSetSlotPacket::stateId,
         ByteBufCodecs.SHORT, i -> (short) i.slot, 
-        ItemStack.STREAM_CODEC, VendorContainerSetSlotPacket::itemStack,
+        ItemStack.OPTIONAL_STREAM_CODEC, VendorContainerSetSlotPacket::itemStack,
         (containerId, stateId, slot, itemStack) -> new VendorContainerSetSlotPacket(containerId, stateId, slot, itemStack)
     );
 
