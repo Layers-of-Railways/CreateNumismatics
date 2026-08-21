@@ -31,6 +31,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidget;
 import dev.ithundxr.createnumismatics.base.client.rendering.ISalepointStateUpdatingWidget;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
@@ -55,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class SalepointConfigScreen extends AbstractSimiContainerScreen<SalepointConfigMenu> {
+public class SalepointConfigScreen extends AbstractSimiContainerScreen<SalepointConfigMenu> implements VirtualizableScreen {
 
     private IconButton trustListButton;
     private IconButton confirmButton;
@@ -72,8 +73,42 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+    private @Nullable VirtualHandle virtualHandle = null;
+
     public SalepointConfigScreen(SalepointConfigMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+        virtualHandle = new VirtualHandle();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
+    }
+
+    public @NotNull VirtualHandle getVirtualHandle() {
+        if (virtualHandle == null)
+            throw new IllegalStateException("Not a virtual screen");
+        return virtualHandle;
+    }
+
+    public @Nullable VirtualHandle getVirtualHandleUnchecked() {
+        return virtualHandle;
+    }
+
+    public class VirtualHandle {
+        private VirtualHandle() {}
+
+        public void setPrice(Coin coin, int amount) {
+            ScrollInput input = coinScrollInputs[coin.ordinal()];
+            input.setState(amount);
+            input.onChanged();
+        }
     }
 
     private @Nullable ISalepointState<?> getSalepointState() {
@@ -142,6 +177,12 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override

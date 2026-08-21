@@ -513,6 +513,14 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         return display.isEmpty() ? NumismaticsBlocks.SALEPOINT.asStack() : display;
     }
 
+    public void createTooltipVirtual() {
+        if (!isVirtual()) {
+            Numismatics.LOGGER.warn("SalepointBlockEntity#createTooltipVirtual called on a non-virtual salepoint");
+            return;
+        }
+        createTooltip();
+    }
+
     private void createTooltip() {
         clientsideTooltip.clear();
         ISalepointState<?> state = getSalepointState();

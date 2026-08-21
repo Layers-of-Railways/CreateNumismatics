@@ -34,12 +34,12 @@ import org.jetbrains.annotations.Nullable;
 public record ScreenVec<
     M extends AbstractContainerMenu,
     S extends AbstractSimiContainerScreen<M> & VirtualizableScreen,
-    B extends SmartBlockEntity & MenuProvider
+    B extends SmartBlockEntity
 >(ElementLink<VirtualScreenElement<M, S, B>> screen, FusedFunction<M, Vec2> vec) {
     public static <
         M extends AbstractContainerMenu,
         S extends AbstractSimiContainerScreen<M> & VirtualizableScreen,
-        B extends SmartBlockEntity & MenuProvider
+        B extends SmartBlockEntity
     > ScreenVec<M, S, B> relative(ElementLink<VirtualScreenElement<M, S, B>> screen, float x, float y) {
         return new ScreenVec<>(screen, new FusedFunction<>(new Vec2(x, y)));
     }
@@ -47,7 +47,7 @@ public record ScreenVec<
     public static <
         M extends AbstractContainerMenu,
         S extends AbstractSimiContainerScreen<M> & VirtualizableScreen,
-        B extends SmartBlockEntity & MenuProvider
+        B extends SmartBlockEntity
         > ScreenVec<M, S, B> slotRelative(ElementLink<VirtualScreenElement<M, S, B>> screen, float x, float y, int slotId) {
         return new ScreenVec<>(screen, new FusedFunction<>(menu -> {
             Slot slot$ = menu.getSlot(slotId);

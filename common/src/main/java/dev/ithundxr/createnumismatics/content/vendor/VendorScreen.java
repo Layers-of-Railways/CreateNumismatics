@@ -71,7 +71,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
-    private boolean virtualMode;
+    private boolean virtualMode = false;
     private @Nullable VirtualHandle virtualHandle = null;
 
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {

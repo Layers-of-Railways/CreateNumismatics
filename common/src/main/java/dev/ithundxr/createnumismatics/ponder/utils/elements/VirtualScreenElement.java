@@ -45,7 +45,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -62,11 +61,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class VirtualScreenElement<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> extends AnimatedOverlayElement {
+public class VirtualScreenElement<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends AnimatedOverlayElement {
     private final BlockPos bePos;
     private final BlockEntityType<B> beType;
     private final BiFunction<B, Inventory, M> menuFactory;
     private final ScreenFactory<M, S> screenFactory;
+    private final Function<B, Component> titleFactory;
     private boolean scaleDown;
 
     @Nullable Consumer<Inventory> inventoryFiller = null;
@@ -117,11 +117,12 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         }
     }
 
-    public VirtualScreenElement(BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, ScreenFactory<M, S> screenFactory) {
+    public VirtualScreenElement(BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, ScreenFactory<M, S> screenFactory, Function<B, Component> titleFactory) {
         this.bePos = bePos;
         this.beType = beType;
         this.menuFactory = menuFactory;
         this.screenFactory = screenFactory;
+        this.titleFactory = titleFactory;
         this.scaleDown = NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
     }
 
@@ -331,7 +332,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             if (this.slotFiller != null)
                 this.slotFiller.accept(s -> ((AccessorAbstractContainerMenu) menu).numismatics$addSlot(s));
 
-            S screen$ = screenFactory.create(menu, inv, be.getDisplayName());
+            S screen$ = screenFactory.create(menu, inv, titleFactory.apply(be));
             screen$.markVirtual();
             Window window = mc.getWindow();
             int width = window.getGuiScaledWidth();
@@ -511,7 +512,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static <S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, M extends AbstractContainerMenu, B extends SmartBlockEntity & MenuProvider> Class<VirtualScreenElement<M,S,B>> genericClass() {
+    public static <S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, M extends AbstractContainerMenu, B extends SmartBlockEntity> Class<VirtualScreenElement<M,S,B>> genericClass() {
         return (Class<VirtualScreenElement<M, S, B>>) (Class) VirtualScreenElement.class;
     }
 }

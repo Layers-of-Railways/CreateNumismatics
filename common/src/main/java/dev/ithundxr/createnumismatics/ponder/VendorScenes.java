@@ -18,10 +18,6 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.gui.menu.MenuBase;
-import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
@@ -29,7 +25,6 @@ import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Pointing;
-import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
@@ -37,7 +32,6 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorScreen;
 import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.SceneBuilderExtension;
 import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
-import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.Cursor;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement.CursorPhysicsProperties;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
@@ -47,13 +41,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -225,7 +215,7 @@ public class VendorScenes {
         scene.idle(18);
 
         // pick up 8 golden apples
-        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
+        scenex.clickSlot(menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
         scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
         scene.idle(10);
@@ -237,25 +227,25 @@ public class VendorScenes {
         scene.idle(5);
 
         // set filter
-        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scenex.clickSlot(menu, VendorMenu.FILTER_SLOT_INDEX);
         scene.idle(5);
 
         // place 8 golden apples in stock
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX));
         scene.idle(10);
-        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX);
+        scenex.clickSlot(menu, VendorMenu.INV_START_INDEX);
         scene.idle(5);
 
         // pick up 64 golden apples
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
         scene.idle(15);
-        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
+        scenex.clickSlot(menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
         scene.idle(5);
 
         // place 64 golden apples in stock
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.INV_START_INDEX + 1));
         scene.idle(10);
-        clickSlot(scenex, menu, VendorMenu.INV_START_INDEX + 1);
+        scenex.clickSlot(menu, VendorMenu.INV_START_INDEX + 1);
         scene.idle(5);
 
         scene.overlay.showText(150)
@@ -356,7 +346,6 @@ public class VendorScenes {
                 inv.setItem(9, Coin.BEVEL.asStack(64));
                 inv.setItem(10, new ItemStack(Items.OAK_LOG, 1));
             })
-            .colored(PonderPalette.RED)
             .attachKeyFrame()
             .link();
         scenex.enableScreenOverlayLayer();
@@ -391,13 +380,13 @@ public class VendorScenes {
         scene.idle(15);
 
         // pick up 1 oak log
-        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
+        scenex.clickSlot(menu, VendorMenu.PLAYER_INV_START_INDEX + 10);
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
         scene.idle(10);
 
         // set filter
         scene.addInstruction($ -> $.getWorld().random.setSeed(87195871L)); // consistent clearing velocity
-        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scenex.clickSlot(menu, VendorMenu.FILTER_SLOT_INDEX);
         scene.addInstruction($ -> $.forEachWorldEntity(ItemEntity.class, $$ ->
             $$.setDeltaMovement($$.getDeltaMovement().scale(1.5).add(0, 0.25, 0)))); // add some pizzazz to the cleared items
         scene.idle(5);
@@ -405,7 +394,7 @@ public class VendorScenes {
         // swap logs for bevels
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_START_INDEX + 9));
         scene.idle(10);
-        clickSlot(scenex, menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
+        scenex.clickSlot(menu, VendorMenu.PLAYER_INV_START_INDEX + 9);
         scenex.showText(60, ScreenVec.slotRelative(menu, 18, 7, VendorMenu.COIN_SLOTS - 1))
             .text("Provide funds to pay customers with")
             .attachKeyFrame()
@@ -415,7 +404,7 @@ public class VendorScenes {
         // place bevels in coin supply
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, 1));
         scene.idle(10);
-        clickSlot(scenex, menu, 1);
+        scenex.clickSlot(menu, 1);
         scene.idle(10);
 
         // set (cog) prices
@@ -591,13 +580,13 @@ public class VendorScenes {
         scene.idle(15);
 
         // pick up fake EMI leather chestplate
-        cloneMenuSlotToCarried(scenex, menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + 4);
+        scenex.cloneMenuSlotToCarried(menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + 4);
         scenex.modifyCursor(menu, $ -> $.setPhysics(CursorPhysicsProperties.EXPRESSIVE_SPATIAL_SLOWER));
         scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
         scene.idle(10);
 
         // set filter
-        clickSlot(scenex, menu, VendorMenu.FILTER_SLOT_INDEX);
+        scenex.clickSlot(menu, VendorMenu.FILTER_SLOT_INDEX);
         scenex.modifyScreen(menu, $ -> $.menu().setCarried(ItemStack.EMPTY));
         scene.idle(10);
 
@@ -613,7 +602,7 @@ public class VendorScenes {
             // pick up dye/enchanted book
             scenex.cursorTarget(ScreenVec.slotRelative(menu, 10, 10, VendorMenu.PLAYER_INV_END_INDEX + 6 + emiIdx));
             scene.idle(20);
-            cloneMenuSlotToCarried(scenex, menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + emiIdx);
+            scenex.cloneMenuSlotToCarried(menu, VendorMenu.PLAYER_INV_END_INDEX + 6 + emiIdx);
 
             scenex.modifyCursor(menu, c -> c.setSneak(true));
             scenex.cursorTarget(ScreenVec.slotRelative(menu, 7, 7, VendorMenu.FILTER_SLOT_INDEX));
@@ -669,7 +658,7 @@ public class VendorScenes {
     private static Function<PonderScene, ItemStack> vendorTooltipItem(BlockPos pos) {
         return (scene) -> {
             if (scene.getWorld().getBlockEntity(pos) instanceof VendorBlockEntity vbe) {
-                return vbe.getFilterItem();
+                return vbe.getCustomGoggleOverlayStack();
             } else {
                 return ItemStack.EMPTY;
             }
@@ -696,44 +685,5 @@ public class VendorScenes {
         scene.idle(10);
 
         scene.world.modifyEntity(item, Entity::discard);
-    }
-
-    private static <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void swapCarriedAndInvSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
-        scenex.modifyScreen(link, $ -> {
-            ItemStack invItem = $.inv().removeItemNoUpdate(slot);
-            ItemStack carriedItem = $.menu().getCarried();
-            $.menu().setCarried(invItem);
-            $.inv().setItem(slot, carriedItem);
-        });
-    }
-
-    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void swapCarriedAndMenuSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
-        scenex.modifyScreen(link, $ -> {
-            Slot slot$ = $.menu().getSlot(slot);
-            ItemStack invItem = slot$.getItem();
-            ItemStack carriedItem = $.menu().getCarried();
-            $.menu().setCarried(invItem);
-            slot$.set(carriedItem);
-        });
-    }
-
-    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void cloneMenuSlotToCarried(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
-        scenex.modifyScreen(link, $ -> {
-            Slot slot$ = $.menu().getSlot(slot);
-            ItemStack invItem = slot$.getItem();
-            $.menu().setCarried(invItem.copy());
-        });
-    }
-
-    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
-        clickSlot(scenex, link, slot, ClickAction.PRIMARY);
-    }
-
-    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot, ClickAction action) {
-        clickSlot(scenex, link, slot, action.ordinal(), ClickType.PICKUP);
-    }
-
-    private static <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> void clickSlot(SceneBuilderExtension scenex, ElementLink<VirtualScreenElement<M, S, B>> link, int slot, int button, ClickType clickType) {
-        scenex.modifyScreen(link, $ -> $.menu().clicked(slot, button, clickType, $.menu().player));
     }
 }

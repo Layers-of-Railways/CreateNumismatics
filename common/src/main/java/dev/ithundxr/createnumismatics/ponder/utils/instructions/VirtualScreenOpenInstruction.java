@@ -30,7 +30,7 @@ import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class VirtualScreenOpenInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> extends TickingInstruction {
+public class VirtualScreenOpenInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends TickingInstruction {
     private final VirtualScreenElement<M, S, B> element;
     private ElementLink<VirtualScreenElement<M, S, B>> elementLink;
 
