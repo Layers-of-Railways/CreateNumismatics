@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.content.backend;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -98,6 +99,8 @@ public class GlobalBankManager {
         } else {
             if (uuid == null)
                 throw new RuntimeException("UUID cannot be null");
+            if (BlazeBankerBlockEntity.PONDER_ACCOUNT.equals(uuid))
+                throw new RuntimeException("Cannot create a bank account with the ID of the ponder blaze banker");
             BankAccount account = new BankAccount(uuid, type);
 
             if (type == Type.PLAYER) {

@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -44,7 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMenu> {
+public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMenu> implements VirtualizableScreen {
 
     private EditBox labelBox;
 
@@ -58,8 +59,20 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+
     public BlazeBankerScreen(BlazeBankerMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
     }
 
     @Override
@@ -111,6 +124,12 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override

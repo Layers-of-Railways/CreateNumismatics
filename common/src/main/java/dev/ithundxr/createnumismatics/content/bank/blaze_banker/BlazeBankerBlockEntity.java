@@ -64,6 +64,8 @@ import java.util.UUID;
 
 public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, MenuProvider {
 
+    public static final UUID PONDER_ACCOUNT = UUID.randomUUID();
+
     protected LerpedFloat headAnimation;
     protected LerpedFloat headAngle;
 

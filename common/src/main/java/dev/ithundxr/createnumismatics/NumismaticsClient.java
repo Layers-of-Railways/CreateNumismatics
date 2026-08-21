@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics;
 
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPartialModels;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
@@ -39,5 +40,7 @@ public class NumismaticsClient {
         NumismaticsPonderIndex.register();
 
         NumismaticsPartialModels.init();
+
+        bankAccountLabels.put(BlazeBankerBlockEntity.PONDER_ACCOUNT, "Blaze Banker");
     }
 }

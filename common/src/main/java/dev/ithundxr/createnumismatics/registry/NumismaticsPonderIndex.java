@@ -36,7 +36,7 @@ public class NumismaticsPonderIndex {
             - Depositors are basically done
             - Vendors are basically done
             - Salepoints are basically done
-            - Blaze Banker's to-do is listed in its file
+            - Blaze Bankers are basically done
             - Bank Terminal maybe needs a coin-conversion-rate ponder
             - Bank Terminal/Authorized Card needs a subaccount ponder
             - Both types of payment Card need (shared) purchasing and fund-(source/target)-in-shops ponders
