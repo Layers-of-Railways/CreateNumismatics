@@ -159,7 +159,7 @@ public class SceneBuilderExtension {
         });
     }
 
-    public <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void swapCarriedAndMenuSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void swapCarriedAndMenuSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
         modifyScreen(link, $ -> {
             Slot slot$ = $.menu().getSlot(slot);
             ItemStack invItem = slot$.getItem();
@@ -169,7 +169,7 @@ public class SceneBuilderExtension {
         });
     }
 
-    public <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void cloneMenuSlotToCarried(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+    public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void cloneMenuSlotToCarried(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
         modifyScreen(link, $ -> {
             Slot slot$ = $.menu().getSlot(slot);
             ItemStack invItem = slot$.getItem();
@@ -177,15 +177,15 @@ public class SceneBuilderExtension {
         });
     }
 
-    public <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
+    public <M extends MenuBase<? super B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot) {
         clickSlot(link, slot, ClickAction.PRIMARY);
     }
 
-    public <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot, ClickAction action) {
+    public <M extends MenuBase<? super B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot, ClickAction action) {
         clickSlot(link, slot, action.ordinal(), ClickType.PICKUP);
     }
 
-    public <M extends MenuBase<B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot, int button, ClickType clickType) {
+    public <M extends MenuBase<? super B>, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> void clickSlot(ElementLink<VirtualScreenElement<M, S, B>> link, int slot, int button, ClickType clickType) {
         modifyScreen(link, $ -> $.menu().clicked(slot, button, clickType, $.menu().player));
     }
 

@@ -20,11 +20,15 @@ package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.ponder.BankingScenes;
 import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
 import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
 import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
 import dev.ithundxr.createnumismatics.ponder.VendorScenes;
+
+import java.util.Iterator;
 
 public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
@@ -56,11 +60,49 @@ public class NumismaticsPonderIndex {
 
         HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
             .addStoryBoard("salepoint", SalepointScenes::item, NumismaticsPonderTags.SHOPS);
+
+        HELPER.forComponents(iterableThenVarArgs(
+                NumismaticsItems.ID_CARDS,
+                NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR,
+                NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR,
+                NumismaticsBlocks.SALEPOINT
+            ))
+            .addStoryBoard("trust_list", BankingScenes::trustList);
     }
 
     // Any ponders that should appear AFTER creates own ponders should go here
     public static void registerAfterCreatePonders() {
         HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
             .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Iterable<? extends ItemProviderEntry<?>> iterableThenVarArgs(
+        Iterable<? extends ItemProviderEntry<?>> iter,
+        ItemProviderEntry<?>... items
+    ) {
+        if (items.length == 0)
+            return iter;
+
+        return () -> new Iterator<>() {
+            private int i = -1;
+            private final Iterator<? extends ItemProviderEntry<?>> iter$ = iter.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return i < items.length;
+            }
+
+            @Override
+            public ItemProviderEntry<?> next() {
+                if (i == -1) {
+                    if (iter$.hasNext())
+                        return iter$.next();
+                    else
+                        i = 0;
+                }
+                return items[i++];
+            }
+        };
     }
 }

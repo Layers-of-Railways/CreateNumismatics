@@ -27,6 +27,7 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import com.simibubi.create.foundation.utility.Components;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
@@ -42,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<AndesiteDepositorMenu> {
+public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<AndesiteDepositorMenu> implements VirtualizableScreen {
 
     private IconButton trustListButton;
     private IconButton confirmButton;
@@ -55,8 +56,20 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+
     public AndesiteDepositorScreen(AndesiteDepositorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
     }
 
     @Override
@@ -103,6 +116,12 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override

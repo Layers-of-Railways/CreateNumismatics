@@ -62,7 +62,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         super(type, id, inv, extraData);
     }
 
-    protected TrustListMenu(MenuType<?> type, int id, Inventory inv, TrustListHolder contentHolder, ItemStack renderedItem) {
+    public TrustListMenu(MenuType<?> type, int id, Inventory inv, TrustListHolder contentHolder, ItemStack renderedItem) {
         super(type, id, inv, contentHolder);
         this.renderedItem = renderedItem;
     }
