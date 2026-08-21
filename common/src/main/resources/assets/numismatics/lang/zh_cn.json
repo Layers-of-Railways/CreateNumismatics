@@ -187,7 +187,7 @@
   "numismatics.authorization_type.trusted_automation.description": "信任列表上的玩家及其放置的自动化设备（例如：机械手）",
   "numismatics.authorization_type.trusted_players": "仅限受信任玩家",
   "numismatics.authorization_type.trusted_players.description": "仅限信任列表上的玩家",
-  "numismatics.special.ltr": "真",
+  "numismatics.special.ltr": "true",
   "numismatics.trust_list.configure": "配置信任列表",
   "tag.block.numismatics.numismatics_blocks": "机械动力：金融学 | 方块",
   "tag.item.forge.string": "线",
