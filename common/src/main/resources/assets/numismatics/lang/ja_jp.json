@@ -64,7 +64,7 @@
   "item.numismatics.brown_id_card": "茶色のIDカード",
   "item.numismatics.card.tooltip.blank": "なし",
   "item.numismatics.card.tooltip.bound": "結び付け",
-  "item.numismatics.card.tooltip.bound.to": "結び付け：",
+  "item.numismatics.card.tooltip.bound.to": "結び付け：%s",
   "item.numismatics.cog": "コグ",
   "item.numismatics.cog.plural": "コグ",
   "item.numismatics.coin.tooltip.count": "数量：%s%s",
