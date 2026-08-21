@@ -59,7 +59,12 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccountListMenu> {
@@ -121,6 +126,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
             menu.addSubAccount(label);
             nameBox.setValue("");
         });
+        addButton.setToolTip(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.new"));
         addRenderableWidget(addButton);
 
         nameBox = new EditBox(this.font, x + 12+1, y + 197+4, 152, 16, Components.translatable("gui.numismatics.bank_terminal.sub_accounts.name_box"));
@@ -652,6 +658,20 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         int yo = -45;
         NumismaticsGuiTextures.SUB_ACCOUNT_LIST_POPUP.render(graphics, leftPos - 2+xo, topPos + 40+yo);
         renderPlayerInventory(graphics, leftPos + 38+xo, topPos + 167+yo);
+    }
+
+    @Override
+    protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
+        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
+            Component component = null;
+            if (hasPopup && hoveredSlot.index == SubAccountListMenu.CARD_WRITING_INDEX) {
+                component = Components.translatable("gui.numismatics.bank_terminal.sub_accounts.bind_card");
+            }
+            if (component != null) {
+                guiGraphics.renderTooltip(font, component, x, y);
+            }
+        }
     }
 
     @Override

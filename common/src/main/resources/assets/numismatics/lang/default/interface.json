@@ -4,9 +4,12 @@
   "numismatics.andesite_depositor.price": "Price",
 
   "gui.numismatics.bank_terminal.balance": "Balance: %s %s, %s¤",
+  "gui.numismatics.bank_terminal.switch_account": "Switch Account",
 
   "gui.numismatics.bank_terminal.sub_accounts": "Sub Accounts",
   "gui.numismatics.bank_terminal.sub_accounts.named": "%s: Sub Accounts",
+  "gui.numismatics.bank_terminal.sub_accounts.configure": "Configure Sub Accounts",
+  "gui.numismatics.bank_terminal.sub_accounts.new": "New Sub Account",
   "gui.numismatics.bank_terminal.sub_accounts.edit": "Edit Sub Account",
   "gui.numismatics.bank_terminal.sub_accounts.remove": "Remove Sub Account",
   "gui.numismatics.bank_terminal.sub_accounts.remove.confirm": "Are you sure? Click again to actually remove",
@@ -20,6 +23,7 @@
   "gui.numismatics.bank_terminal.sub_accounts.help.line.4": "limited access to selected players or",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.5": "enable safer automated transactions.",
   "gui.numismatics.bank_terminal.sub_accounts.help.line.6": "",
+  "gui.numismatics.bank_terminal.sub_accounts.bind_card": "Bind Authorized Card",
 
   "gui.numismatics.salepoint.price": "Price/Unit: %s %s, %s¤",
   "gui.numismatics.salepoint.count": "Units",
