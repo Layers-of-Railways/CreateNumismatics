@@ -44,7 +44,7 @@ public class NumismaticsPonderIndex {
             - Bank Terminal maybe needs a coin-conversion-rate ponder
             - Bank Terminal/Authorized Card needs a subaccount ponder
             - Both types of payment Card need (shared) purchasing and fund-(source/target)-in-shops ponders
-            - ID Cards need a trust list ponder
+            - ID Cards have a trust list ponder
          */
 
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
