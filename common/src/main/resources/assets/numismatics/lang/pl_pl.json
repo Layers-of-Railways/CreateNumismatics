@@ -1,6 +1,6 @@
 {
   "advancement.numismatics.is_this_legal": "Czy to jest legalne?",
-  "advancement.numismatics.is_this_legal.desc": "Kup monety taniej niż są warte§7(Ukryte osiągnięcie)",
+  "advancement.numismatics.is_this_legal.desc": "Kup monety taniej niż są warte §7(Ukryte osiągnięcie)",
   "advancement.numismatics.money_laundering": "Pranie pieniędzy",
   "advancement.numismatics.money_laundering.desc": "Kup pieniądze w automacie§7(Ukryte osiągnięcie)",
   "advancement.numismatics.questionable_investment": "Dziwna inwestycja",
@@ -51,8 +51,8 @@
   "gui.numismatics.vendor.too_few_items": "Za mało przedmiotów",
   "item.numismatics.bank_card.tooltip": "KARTA BANKOWA",
   "item.numismatics.bank_card.tooltip.summary": "_Kliknij prawym przyciskiem myszy_ aby powiązać, _kliknij z shiftem_ aby wyczyścić. Zezwala na dostęp do połączonego konta bankowego, gdy użyto w _Terminale bankowym_, lub może być umieszczona w _Automacie/Depozytorze_ aby automatycznie zebrać monety i dodać je do powiązanego konta.",
-  "item.numismatics.banking_guide": "Bankowa instrukcja",
-  "item.numismatics.banking_guide.tooltip": "BANKOWA INSTRUKCJA",
+  "item.numismatics.banking_guide": "Przewodnik bankowy",
+  "item.numismatics.banking_guide.tooltip": "PRZEWODNIK BANKOWY",
   "item.numismatics.banking_guide.tooltip.summary": "Użyj na _Płomiennym palniku_ aby zamienić go w _Płomiennego Bankiera_.",
   "item.numismatics.bevel": "Kant",
   "item.numismatics.black_card": "Czarna karta",
