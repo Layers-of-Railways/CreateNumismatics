@@ -36,11 +36,13 @@ public class NumismaticsClient {
     public static void init() {
         NumismaticsPackets.PACKETS.registerS2CListener();
 
-        NumismaticsPonderTags.register();
-        NumismaticsPonderIndex.register();
-
         NumismaticsPartialModels.init();
 
         bankAccountLabels.put(BlazeBankerBlockEntity.PONDER_ACCOUNT, "Blaze Banker");
+    }
+
+    public static void postRegistrationInit() {
+        NumismaticsPonderTags.register();
+        NumismaticsPonderIndex.register();
     }
 }
