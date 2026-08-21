@@ -60,8 +60,8 @@ import static com.mojang.blaze3d.platform.GlConst.GL_DEPTH_BUFFER_BIT;
 import static net.minecraft.client.Minecraft.ON_OSX;
 import static net.minecraft.client.Screenshot.SCREENSHOT_DIR;
 
-// TODO: strip the renderPonders() and renderPonder(ResourceLocation) methods
-//  from release jars to avoid freaking out Modrinth/Curseforge auto moderation
+// the renderPonders() and renderPonder(ResourceLocation) methods are stripped
+// from release jars to avoid freaking out Modrinth/Curseforge auto moderation
 @ApiStatus.Internal
 public class PonderExport {
     public static boolean active = false;
