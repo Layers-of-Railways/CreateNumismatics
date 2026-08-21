@@ -20,7 +20,6 @@
     "ServerGamePacketListenerImplMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
-    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
     "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
