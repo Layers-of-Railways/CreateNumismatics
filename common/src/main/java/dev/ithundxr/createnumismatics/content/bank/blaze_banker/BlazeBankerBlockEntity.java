@@ -46,6 +46,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -343,5 +344,11 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
         if (level == null || level.isClientSide)
             return;
         Utils.openScreen(player, this, this::sendToMenu);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        Containers.dropContents(level, worldPosition, trustListContainer);
     }
 }

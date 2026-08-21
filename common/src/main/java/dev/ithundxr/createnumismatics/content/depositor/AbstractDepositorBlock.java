@@ -189,6 +189,7 @@ public abstract class AbstractDepositorBlock<T extends AbstractDepositorBlockEnt
                     abstractDepositorBE.inventory.setDiscrete(coin, 0);
                 }
             }
+            Containers.dropContents(level, pos, abstractDepositorBE.trustListContainer);
         }
         IBE.onRemove(state, level, pos, newState);
     }

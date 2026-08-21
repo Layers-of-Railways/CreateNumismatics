@@ -440,6 +440,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     public void dropContents(Level level, BlockPos pos) {
         //Containers.dropContents(level, pos, this);
         Containers.dropContents(level, pos, cardContainer);
+        Containers.dropContents(level, pos, trustListContainer);
         //Containers.dropContents(level, pos, filterContainer);
         inventory.dropContents(level, pos);
     }
