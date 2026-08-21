@@ -296,6 +296,16 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
     }
 
     @Override
+    public boolean ensureOwned(Player defaultOwner) {
+        if (owner != null)
+            return false;
+
+        owner = defaultOwner.getUUID();
+        notifyUpdate();
+        return true;
+    }
+
+    @Override
     public ImmutableList<UUID> getTrustList() {
         return ImmutableList.copyOf(trustList);
     }

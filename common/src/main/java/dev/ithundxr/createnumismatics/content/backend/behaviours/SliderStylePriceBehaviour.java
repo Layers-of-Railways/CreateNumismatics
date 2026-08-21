@@ -101,6 +101,11 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
     }
 
     @Override
+    public boolean isSafeNBT() {
+        return true;
+    }
+
+    @Override
     public void read(CompoundTag tag, boolean clientPacket) {
         if (clientPacket && !clientReadEnabled)
             return;

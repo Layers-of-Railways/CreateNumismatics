@@ -239,6 +239,7 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
 
         boolean crouching = player.isShiftKeyDown();
         if (crouching) {
+            ensureOwned(player, level, pos);
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be.configMenuProvider, be::sendToMenu));

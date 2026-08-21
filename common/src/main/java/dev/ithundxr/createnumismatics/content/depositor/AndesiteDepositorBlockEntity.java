@@ -103,6 +103,13 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     }
 
     @Override
+    public void writeSafe(CompoundTag tag) {
+        super.writeSafe(tag);
+
+        tag.putInt("Coin", coin.ordinal());
+    }
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
 

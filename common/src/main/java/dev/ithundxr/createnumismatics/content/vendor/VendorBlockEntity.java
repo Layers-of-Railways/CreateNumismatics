@@ -174,6 +174,19 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
+    public void writeSafe(CompoundTag tag) {
+        super.writeSafe(tag);
+
+        if (!getFilterItem().isEmpty()) {
+            // safe (i.e. schematic load) NBT always gets a modern filter, even if this BE is legacy
+            tag.put("Filter", getFilterItem().save(new CompoundTag()));
+        }
+
+        tag.putInt("Mode", mode.ordinal());
+        tag.putBoolean("EnableAutomatedExtraction", enableAutomatedExtraction);
+    }
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
@@ -249,6 +262,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
             return owner == null || owner.equals(player.getUUID()) || trustList.contains(player.getUUID());
         }
+    }
+
+    @Override
+    public boolean ensureOwned(Player defaultOwner) {
+        if (owner != null)
+            return false;
+
+        owner = defaultOwner.getUUID();
+        notifyUpdate();
+        return true;
     }
 
     public void addCoin(Coin coin, int count) {

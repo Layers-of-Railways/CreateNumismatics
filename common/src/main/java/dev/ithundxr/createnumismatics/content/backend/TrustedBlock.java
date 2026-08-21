@@ -26,4 +26,10 @@ public interface TrustedBlock {
     default boolean isTrusted(Player player, BlockGetter level, BlockPos pos) {
         return level.getBlockEntity(pos) instanceof Trusted trusted && trusted.isTrusted(player);
     }
+
+    /** returns whether the owner was set to defaultOwner */
+    @SuppressWarnings("UnusedReturnValue")
+    default boolean ensureOwned(Player defaultOwner, BlockGetter level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof Trusted trusted && trusted.ensureOwned(defaultOwner);
+    }
 }

@@ -30,6 +30,9 @@ public interface Trusted {
     @OverrideOnly
     boolean isTrustedInternal(Player player);
 
+    /** returns whether the owner was set to defaultOwner */
+    boolean ensureOwned(Player defaultOwner);
+
     @NonExtendable
     default boolean isTrusted(Player player) {
         return isForceTrusted(player) || isTrustedInternal(player);

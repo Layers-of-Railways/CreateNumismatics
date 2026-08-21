@@ -60,6 +60,7 @@ public class BrassDepositorBlock extends AbstractDepositorBlock<BrassDepositorBl
         if (hit.getDirection().getAxis().isVertical()) {
             if (level.isClientSide)
                 return InteractionResult.SUCCESS;
+            ensureOwned(player, level, pos);
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));

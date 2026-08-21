@@ -112,6 +112,7 @@ public class BlazeBankerBlock extends Block implements IWrenchable, IBE<BlazeBan
             }
         });
 
+        ensureOwned(player, level, pos);
         if (isTrusted(player, level, pos)) {
             withBlockEntityDo(level, pos,
                 be -> be.openTrustListMenu((ServerPlayer) player));

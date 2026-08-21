@@ -144,6 +144,7 @@ public class VendorBlock extends Block implements IBE<VendorBlockEntity>, Truste
 
         boolean crouching = player.isShiftKeyDown();
         if (crouching) {
+            ensureOwned(player, level, pos);
             if (isTrusted(player, level, pos)) {
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be, be::sendToMenu));

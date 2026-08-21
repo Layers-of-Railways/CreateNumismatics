@@ -286,6 +286,16 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         }
     }
 
+    @Override
+    public boolean ensureOwned(Player defaultOwner) {
+        if (owner != null)
+            return false;
+
+        owner = defaultOwner.getUUID();
+        notifyUpdate();
+        return true;
+    }
+
     public void addCoin(Coin coin, int count) {
         UUID depositAccount = getDepositAccount();
         if (depositAccount != null) {
