@@ -33,6 +33,7 @@ import org.objectweb.asm.tree.AnnotationNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
+import org.slf4j.spi.LoggingEventBuilder;
 import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
 
@@ -43,7 +44,7 @@ public class ConditionalMixinHandler {
     public static final Logger LOGGER = LoggerFactory.getLogger("Numismatics/MixinPlugin");
 
     public static boolean shouldApply(String className) {
-        var logger = LOGGER.atLevel(Utils.isDevEnv() ? Level.INFO : Level.DEBUG);
+        LoggingEventBuilder logger = LOGGER.atLevel(Utils.isDevEnv() ? Level.INFO : Level.DEBUG);
         try {
             List<AnnotationNode> annotationNodes = MixinService.getService().getBytecodeProvider().getClassNode(className).visibleAnnotations;
             if (annotationNodes == null) return true;

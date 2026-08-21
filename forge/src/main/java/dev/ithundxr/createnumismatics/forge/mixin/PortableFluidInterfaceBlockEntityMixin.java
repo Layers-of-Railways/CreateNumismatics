@@ -57,7 +57,7 @@ import java.util.Objects;
 @Mixin(PortableFluidInterfaceBlockEntity.class)
 public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow protected LazyOptional<IFluidHandler> capability;
+    @Shadow(remap = false) protected LazyOptional<IFluidHandler> capability;
 
     @Unique
     private FluidSalepointTargetBehaviour railway$salepointBehaviour;
@@ -202,10 +202,10 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
 
     @Mixin(InterfaceFluidHandler.class)
     private interface InterfaceFluidHandlerAccessor {
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         IFluidHandler getWrapped();
 
-        @Accessor("wrapped")
+        @Accessor(value = "wrapped", remap = false)
         void setWrapped(IFluidHandler wrapped);
     }
 
@@ -216,7 +216,8 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
             at = @At(
                 value = "INVOKE",
                 target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableFluidInterfaceBlockEntity;isConnected()Z"
-            )
+            ),
+            remap = false
         )
         private boolean fakeConnect(PortableFluidInterfaceBlockEntity instance, Operation<Boolean> original) {
             return original.call(instance) || instance.getBehaviour(SalepointTargetBehaviour.TYPE).isControlledBySalepoint();

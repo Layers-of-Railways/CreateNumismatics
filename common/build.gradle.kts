@@ -30,24 +30,6 @@ loom {
     accessWidenerPath = file("src/main/resources/numismatics.accesswidener")
 }
 
-repositories {
-    // mavens for Create Fabric and dependencies
-    maven("https://api.modrinth.com/maven") // LazyDFU
-    maven("https://maven.terraformersmc.com/releases/") // Mod Menu
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-    maven("https://maven.cafeteria.dev/releases") // Fake Player API
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
-        name = "Siphalor's Maven"
-    }
-    maven("https://squiddev.cc/maven/") {// CC Tweaked
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-}
-
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader
@@ -62,17 +44,20 @@ dependencies {
     // required for proper remapping and compiling
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
+    // Mixin Extras
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
+
     // Steam 'n' Rails
     val buildNumber = if ("snr_build_number"() != "null") "-build." + "snr_build_number"() else ""
     modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
-
+    
     // CC: Tweaked
     compileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-common-api:${"cc_version"()}")
     
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 }
     
 

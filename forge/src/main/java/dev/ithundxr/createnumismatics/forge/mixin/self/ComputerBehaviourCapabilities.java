@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.function.Supplier;
 
@@ -37,10 +38,9 @@ public class ComputerBehaviourCapabilities extends AbstractComputerBehaviour {
         super(te);
     }
 
-    private static final Capability<IPeripheral> RAILWAYS$PERIPHERAL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-    LazyOptional<IPeripheral> railways$peripheral;
-    @Shadow
-    Supplier<IPeripheral> peripheralSupplier;
+    @Unique private static final Capability<IPeripheral> RAILWAYS$PERIPHERAL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    @Unique LazyOptional<IPeripheral> railways$peripheral;
+    @Shadow(remap = false) Supplier<IPeripheral> peripheralSupplier;
 
     @Override
     public <T> boolean isPeripheralCap(Capability<T> cap) {

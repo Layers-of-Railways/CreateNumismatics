@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.gui.widget.*;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
@@ -45,11 +46,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 
-public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
+public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implements VirtualizableScreen {
 
     private Indicator extractionIndicator;
     private IconButton extractionButton;
@@ -69,10 +71,53 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+    private @Nullable VirtualHandle virtualHandle = null;
+
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
         renderedItem = container.contentHolder.isCreativeVendor() ? NumismaticsBlocks.CREATIVE_VENDOR.asStack() : NumismaticsBlocks.VENDOR.asStack();
         background = container.contentHolder.isCreativeVendor() ? NumismaticsGuiTextures.CREATIVE_VENDOR : NumismaticsGuiTextures.VENDOR;
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+        virtualHandle = new VirtualHandle();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
+    }
+
+    public @NotNull VirtualHandle getVirtualHandle() {
+        if (virtualHandle == null)
+            throw new IllegalStateException("Not a virtual screen");
+        return virtualHandle;
+    }
+
+    public @Nullable VirtualHandle getVirtualHandleUnchecked() {
+        return virtualHandle;
+    }
+
+    public class VirtualHandle {
+        private VirtualHandle() {}
+
+        public void setPrice(Coin coin, int amount) {
+            ScrollInput input = coinScrollInputs[coin.ordinal()];
+            input.setState(amount);
+            input.onChanged();
+        }
+
+        public void setMode(Mode mode) {
+            modeScrollInput.setState(mode.ordinal());
+            modeScrollInput.onChanged();
+        }
+
+        public void toggleExtraction() {
+            extractionButton.onClick(extractionButton.getX() + 4, extractionButton.getY() + 4);
+        }
     }
 
     @Override
@@ -84,32 +129,33 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
         int x = leftPos;
         int y = topPos;
 
+        boolean extractionButtonActive = menu.contentHolder.getMode() == Mode.BUY;
+
         extractionIndicator = new Indicator(x + 29, y + background.height - 30, Components.immutableEmpty());
         extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
-            ? Indicator.State.GREEN
-            : Indicator.State.RED;
+            ? (extractionButtonActive ? Indicator.State.GREEN : Indicator.State.ON)
+            : (extractionButtonActive ? Indicator.State.RED : Indicator.State.OFF);
         addRenderableWidget(extractionIndicator);
 
         extractionButton = new IconButton(x + 29, y + background.height - 24, NumismaticsIcons.I_HOPPER);
         extractionButton.withCallback(() -> {
+            boolean extractionButtonActive$ = menu.contentHolder.getMode() == Mode.BUY;
             menu.contentHolder.toggleAutomatedExtraction();
             extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
-                ? Indicator.State.GREEN
-                : Indicator.State.RED;
+                ? (extractionButtonActive$ ? Indicator.State.GREEN : Indicator.State.ON)
+                : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
         });
-        extractionButton.setToolTip(Components.translatable("gui.numismatics.vendor.toggle_automated_extraction"));
+        extractionButton.setToolTip(Component.translatable("gui.numismatics.vendor.toggle_automated_extraction"));
+        extractionButton.active = extractionButtonActive;
         addRenderableWidget(extractionButton);
 
         trustListButton = new IconButton(x + 7, y + background.height - 24, AllIcons.I_VIEW_SCHEDULE);
-        trustListButton.withCallback(() -> {
-            menu.contentHolder.openTrustList();
-        });
+        trustListButton.setToolTip(Component.translatable("numismatics.trust_list.configure"));
+        trustListButton.withCallback(() -> menu.contentHolder.openTrustList());
         addRenderableWidget(trustListButton);
 
         confirmButton = new IconButton(x + background.width - 33, y + background.height - 24, AllIcons.I_CONFIRM);
-        confirmButton.withCallback(() -> {
-            onClose();
-        });
+        confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
         for (Coin coin : Coin.values()) {
@@ -147,6 +193,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
         modeScrollInput.titled(Components.translatable("block.numismatics.vendor.tooltip.mode"));
         modeScrollInput.calling(idx -> {
             menu.contentHolder.setMode(Mode.values()[idx]);
+
+            boolean extractionButtonActive$ = menu.contentHolder.getMode() == Mode.BUY;
+            extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
+                ? (extractionButtonActive$ ? Indicator.State.GREEN : Indicator.State.ON)
+                : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
+            extractionButton.active = extractionButtonActive$;
         });
         addRenderableWidget(modeScrollInput);
 
@@ -159,6 +211,12 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> {
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override

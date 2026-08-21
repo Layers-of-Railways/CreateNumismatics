@@ -42,7 +42,6 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class NumismaticsAdvancement {
-
 	static final ResourceLocation BACKGROUND = Numismatics.asResource("textures/gui/advancements.png");
 	static final String LANG = "advancement." + Numismatics.MOD_ID + ".";
 	static final String SECRET_SUFFIX = "\n\u00A77(Hidden Advancement)";
@@ -125,19 +124,16 @@ public class NumismaticsAdvancement {
 
 	@ApiStatus.Internal
 	public enum TaskType {
-
 		SILENT(FrameType.TASK, false, false, false),
 		NORMAL(FrameType.TASK, true, false, false),
 		NOISY(FrameType.TASK, true, true, false),
 		EXPERT(FrameType.GOAL, true, true, false),
-		SECRET(FrameType.GOAL, true, true, true),
+		SECRET(FrameType.GOAL, true, true, true);
 
-		;
-
-		private FrameType frame;
-		private boolean toast;
-		private boolean announce;
-		private boolean hide;
+		private final FrameType frame;
+		private final boolean toast;
+		private final boolean announce;
+		private final boolean hide;
 
 		TaskType(FrameType frame, boolean toast, boolean announce, boolean hide) {
 			this.frame = frame;
@@ -149,7 +145,6 @@ public class NumismaticsAdvancement {
 
 	@ApiStatus.Internal
 	public class Builder {
-
 		private TaskType type = TaskType.NORMAL;
 		private boolean externalTrigger;
 		private int keyIndex;
@@ -235,7 +230,5 @@ public class NumismaticsAdvancement {
 			keyIndex++;
 			return this;
 		}
-
 	}
-
 }

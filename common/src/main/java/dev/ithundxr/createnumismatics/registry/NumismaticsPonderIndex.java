@@ -18,30 +18,91 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.ponder.BankingScenes;
+import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
+import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
+import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
+import dev.ithundxr.createnumismatics.ponder.VendorScenes;
+
+import java.util.Iterator;
 
 public class NumismaticsPonderIndex {
     static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
 
     public static void register() {
-//        HELPER.forComponents(CRBlocks.SEMAPHORE)
-//                .addStoryBoard("semaphore", TrainScenes::signaling);
-//        HELPER.forComponents(CRBlocks.TRACK_COUPLER)
-//                .addStoryBoard("coupler", TrainScenes::coupling);
-//        HELPER.forComponents(CRItems.ITEM_CONDUCTOR_CAP.values())
-//                .addStoryBoard("conductor", ConductorScenes::constructing)
-//                .addStoryBoard("conductor_redstone", ConductorScenes::redstoning)
-//                .addStoryBoard("conductor", ConductorScenes::toolboxing);
-//        HELPER.forComponents(
-//                        AllBlocks.ANDESITE_DOOR,
-//                        AllBlocks.BRASS_DOOR,
-//                        AllBlocks.COPPER_DOOR,
-//                        AllBlocks.TRAIN_DOOR,
-//                        AllBlocks.FRAMED_GLASS_DOOR
-//                )
-//                .addStoryBoard("door_modes", DoorScenes::modes);
-//        HELPER.forComponents(CRBlocks.ANDESITE_SWITCH, CRBlocks.BRASS_SWITCH)
-//                .addStoryBoard("switch", TrainScenes::trackSwitch);
+        /* TODO
+            See https://discord.com/channels/1226981107401232545/1261067581469757511/1495869753343082636
+            Ponder Progress:
+            - Depositors are basically done
+            - Vendors are basically done
+            - Salepoints are basically done
+            - Blaze Bankers are basically done
+            - Bank Terminal maybe needs a coin-conversion-rate ponder
+            - Bank Terminal/Authorized Card needs a subaccount ponder
+            - Both types of payment Card need (shared) purchasing and fund-(source/target)-in-shops ponders
+            - ID Cards have a trust list ponder
+         */
+
+        HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
+            .addStoryBoard("depositors/intro", DepositorScenes::intro, NumismaticsPonderTags.SHOPS)
+            .addStoryBoard("depositors/redstone", DepositorScenes::redstone)
+            .addStoryBoard("depositors/pricing", DepositorScenes::pricing);
+
+        HELPER.forComponents(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
+            .addStoryBoard("vendors/intro", VendorScenes::intro, NumismaticsPonderTags.SHOPS)
+            .addStoryBoard("vendors/config_sell", VendorScenes::configSell)
+            .addStoryBoard("vendors/config_buy", VendorScenes::configBuy)
+            .addStoryBoard("vendors/config_emi", VendorScenes::configEmi);
+
+        HELPER.forComponents(NumismaticsBlocks.SALEPOINT)
+            .addStoryBoard("salepoint", SalepointScenes::item, NumismaticsPonderTags.SHOPS);
+
+        HELPER.forComponents(iterableThenVarArgs(
+                NumismaticsItems.ID_CARDS,
+                NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR,
+                NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR,
+                NumismaticsBlocks.SALEPOINT
+            ))
+            .addStoryBoard("trust_list", BankingScenes::trustList);
+    }
+
+    // Any ponders that should appear AFTER creates own ponders should go here
+    public static void registerAfterCreatePonders() {
+        HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
+            .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Iterable<? extends ItemProviderEntry<?>> iterableThenVarArgs(
+        Iterable<? extends ItemProviderEntry<?>> iter,
+        ItemProviderEntry<?>... items
+    ) {
+        if (items.length == 0)
+            return iter;
+
+        return () -> new Iterator<>() {
+            private int i = -1;
+            private final Iterator<? extends ItemProviderEntry<?>> iter$ = iter.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return i < items.length;
+            }
+
+            @Override
+            public ItemProviderEntry<?> next() {
+                if (i == -1) {
+                    if (iter$.hasNext())
+                        return iter$.next();
+                    else
+                        i = 0;
+                }
+                return items[i++];
+            }
+        };
     }
 }

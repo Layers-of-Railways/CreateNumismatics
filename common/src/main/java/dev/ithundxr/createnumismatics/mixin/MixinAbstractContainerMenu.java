@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractContainerMenu.class)
 public class MixinAbstractContainerMenu {
     @Inject(method = "moveItemStackTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
-    private void moveCoins(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection, CallbackInfoReturnable<Boolean> cir, @Local Slot slot) {
+    private void numismatics$moveCoins(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection, CallbackInfoReturnable<Boolean> cir, @Local Slot slot) {
         if (slot instanceof SlotDiscreteCoinBag slotDiscreteCoinBag && slotDiscreteCoinBag.tryPlace(stack))
             cir.setReturnValue(true); // special handling for Discrete Coin Bag, cancel default placement
     }

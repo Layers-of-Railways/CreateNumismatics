@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2023-2024 The Railways Team
+ * Copyright (c) 2026 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.base.data.fabric;
+package dev.ithundxr.createnumismatics.mixin.client.dev_export;
 
-import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import net.minecraft.data.tags.TagsProvider.TagAppender;
-import net.minecraft.tags.TagKey;
+import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Timer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class NumismaticsTagGenImpl {
-	public static <T> TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
-		return prov.addTag(tag);
-	}
+@DevMixin
+@Mixin(Minecraft.class)
+public interface AccessorMinecraft {
+    @Accessor("timer")
+    Timer numismatics$getTimer();
 }

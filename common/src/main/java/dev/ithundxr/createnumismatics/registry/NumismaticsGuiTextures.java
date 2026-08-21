@@ -28,9 +28,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
-/*
-Copied from Create
- */
+/* Copied from Create */
 public enum NumismaticsGuiTextures implements ScreenElement {
 
     ANDESITE_DEPOSITOR("andesite_depositor", 182, 79),

@@ -26,6 +26,7 @@ public class NumismaticsClientImpl implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         NumismaticsClient.init();
+        NumismaticsClient.postRegistrationInit();
         ClientEventsFabric.register();
     }
 }

@@ -41,24 +41,6 @@ loom {
     }
 }
 
-repositories {
-    // mavens for Fabric-exclusives
-    maven("https://api.modrinth.com/maven") // LazyDFU
-    maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-    maven("https://maven.cafeteria.dev/releases") // Fake Player API
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
-        name = "Siphalor's Maven"
-    }
-    maven("https://squiddev.cc/maven/") {// CC Tweaked
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-}
-
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${"fabric_loader_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
@@ -111,6 +93,9 @@ dependencies {
     if ("enable_cc"().toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-fabric:${"cc_version"()}")
     }
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
+    implementation(include("io.github.llamalad7:mixinextras-fabric:${"mixin_extras_version"()}")!!)!!
 }
 
 publishMods {

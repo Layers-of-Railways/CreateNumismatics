@@ -30,31 +30,42 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class BankAccountBehaviour extends BlockEntityBehaviour {
     public static final BehaviourType<BankAccountBehaviour> TYPE = new BehaviourType<>();
     private UUID accountUUID;
+    private @Nullable BankAccount virtualAccount;
+
     public BankAccountBehaviour(SmartBlockEntity be) {
         super(be);
     }
 
     public UUID getAccountUUID() {
         if (accountUUID == null) {
-            accountUUID = UUID.randomUUID();
+            accountUUID = blockEntity.isVirtual() ? BlazeBankerBlockEntity.PONDER_ACCOUNT : UUID.randomUUID();
             blockEntity.notifyUpdate();
         }
         return accountUUID;
     }
 
     public BankAccount getAccount() {
-        return Numismatics.BANK.getOrCreateAccount(getAccountUUID(), BankAccount.Type.BLAZE_BANKER);
+        if (blockEntity.isVirtual()) {
+            if (virtualAccount == null)
+                virtualAccount = new BankAccount(getAccountUUID(), 128, BankAccount.Type.BLAZE_BANKER);
+            return virtualAccount;
+        } else {
+            return Numismatics.BANK.getOrCreateAccount(getAccountUUID(), BankAccount.Type.BLAZE_BANKER);
+        }
     }
 
     public boolean hasAccount() {
         if (accountUUID == null)
             return false;
+        if (blockEntity.isVirtual())
+            return true;
         return Numismatics.BANK.getAccount(accountUUID) != null;
     }
 
@@ -82,6 +93,9 @@ public class BankAccountBehaviour extends BlockEntityBehaviour {
     @Override
     public void destroy() {
         super.destroy();
+        if (blockEntity.isVirtual()) {
+            return;
+        }
         BankAccount oldAccount = Numismatics.BANK.accounts.remove(accountUUID);
         if (oldAccount != null) {
             oldAccount.setLabel(null);

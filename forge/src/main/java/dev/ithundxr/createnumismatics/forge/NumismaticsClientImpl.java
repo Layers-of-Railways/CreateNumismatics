@@ -21,10 +21,16 @@ package dev.ithundxr.createnumismatics.forge;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class NumismaticsClientImpl {
     public static void init() {
         NumismaticsClient.init();
+        NumismaticsImpl.eventBus.addListener(NumismaticsClientImpl::clientInit);
+    }
+
+    public static void clientInit(final FMLClientSetupEvent event) {
+        event.enqueueWork(NumismaticsClient::postRegistrationInit);
     }
 }

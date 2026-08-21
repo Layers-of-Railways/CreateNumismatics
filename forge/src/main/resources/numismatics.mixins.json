@@ -3,6 +3,9 @@
   "minVersion": "0.8",
   "package": "dev.ithundxr.createnumismatics.forge.mixin",
   "compatibilityLevel": "JAVA_17",
+  "mixinextras": {
+    "minVersion": "0.5.3"
+  },
   "client": [
     "client.ClientPacketListenerMixin",
     "client.MixinGoggleOverlayRenderer",
@@ -17,7 +20,6 @@
     "ServerGamePacketListenerImplMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
-    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
     "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",

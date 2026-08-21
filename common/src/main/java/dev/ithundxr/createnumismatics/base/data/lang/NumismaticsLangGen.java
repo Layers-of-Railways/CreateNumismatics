@@ -20,11 +20,16 @@ package dev.ithundxr.createnumismatics.base.data.lang;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.simibubi.create.foundation.utility.FilesHelper;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
+import dev.ithundxr.createnumismatics.ponder.utils.NumismaticsSharedText;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 
 import java.util.Map;
@@ -36,11 +41,12 @@ public class NumismaticsLangGen {
 
         provideDefaultLang("interface", langConsumer);
         provideDefaultLang("tooltips", langConsumer);
+        providePonderLang(langConsumer);
         NumismaticsAdvancements.provideLang(langConsumer);
         AuthorizationType.provideLang(langConsumer);
         Coin.provideLang(langConsumer);
         NumismaticsTags.provideLang(langConsumer);
-
+        
         /* ================= */
         /* Special data keys */
         /* ================= */
@@ -61,5 +67,15 @@ public class NumismaticsLangGen {
             String value = entry.getValue().getAsString();
             consumer.accept(key, value);
         }
+    }
+
+    private static void providePonderLang(BiConsumer<String, String> consumer) {
+        NumismaticsPonderTags.register();
+        NumismaticsPonderIndex.register();
+
+        NumismaticsSharedText.gatherText();
+
+        PonderLocalization.generateSceneLang();
+        PonderLocalization.provideLang(Numismatics.MOD_ID, consumer);
     }
 }

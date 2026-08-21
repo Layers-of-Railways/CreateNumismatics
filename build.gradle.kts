@@ -17,16 +17,26 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import org.gradle.configurationcache.extensions.capitalized
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.tree.AnnotationNode
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.MethodNode
 import java.io.ByteArrayOutputStream
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
+import java.util.jar.JarOutputStream
+import java.util.zip.Deflater
 
 plugins {
     java
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.7.+" apply false
+    id("dev.architectury.loom") version "1.11.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
@@ -37,8 +47,14 @@ plugins {
 println("Numismatics v${"mod_version"()}")
 
 val isRelease = System.getenv("RELEASE_BUILD")?.toBoolean() ?: false
+// whether methods annotated with @StripFromRelease should be stripped, even if it's not a release build
+val removeDevMethodsAnyway = System.getenv("REMOVE_DEV_METHODS_ANYWAY")?.toBoolean() ?: false
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toInt()
 val gitHash = "\"${calculateGitHash() + (if (hasUnstaged()) "-modified" else "")}\""
+
+if (!isRelease && removeDevMethodsAnyway) {
+    println("Removing dev methods, even though it's not a release build")
+}
 
 extra["gitHash"] = gitHash
 
@@ -50,6 +66,12 @@ allprojects {
     apply(plugin = "java")
     apply(plugin = "architectury-plugin")
     apply(plugin = "maven-publish")
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
 
     base.archivesName.set("archives_base_name"())
     group = "maven_group"()
@@ -73,7 +95,9 @@ subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "net.kyori.blossom")
 
-    val capitalizedName = project.name.capitalized()
+    setupRepositories()
+
+    val capitalizedName = project.name.replaceFirstChar { it.uppercase() }
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
     loom.apply {
@@ -84,22 +108,6 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
-        }
-    }
-
-    repositories {
-        mavenCentral()
-        maven("https://maven.shedaniel.me/") // Cloth Config, REI
-        maven("https://maven.blamejared.com/") // JEI, Carry On
-        maven("https://maven.parchmentmc.org") // Parchment mappings
-        maven("https://modmaven.dev/") // Flywheel
-        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
-        maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
-        maven("https://maven.tterrag.com/") { // Flywheel
-            content {
-                // need to be specific here due to version overlaps
-                includeGroup("com.jozufozu.flywheel")
-            }
         }
     }
 
@@ -153,6 +161,9 @@ subprojects {
         injectAccessWidener = true
         dependsOn(shadowJar)
         archiveClassifier = null
+        doLast {
+            transformJar(outputs.files.singleFile)
+        }
     }
 
     val common: Configuration by configurations.creating
@@ -216,6 +227,63 @@ subprojects {
     }
 }
 
+fun transformJar(jar: File) {
+    val contents = linkedMapOf<String, ByteArray>();
+    JarFile(jar).use {
+        it.entries().asIterator().forEach { entry ->
+            if (!entry.isDirectory) {
+                contents[entry.name] = it.getInputStream(entry).readAllBytes();
+            }
+        }
+    }
+
+    jar.delete();
+
+    JarOutputStream(jar.outputStream()).use { out ->
+        out.setLevel(Deflater.BEST_COMPRESSION)
+        contents.forEach { var (name, data) = it
+            if (name.startsWith("architectury_inject_${project.name}_common"))
+                return@forEach
+
+            if (name.endsWith(".json") || name.endsWith(".mcmeta")) {
+                data = (JsonOutput.toJson(JsonSlurper().parse(data)).toByteArray())
+            } else if (name.endsWith(".class")) {
+                data = transformClass(data)
+            }
+
+            out.putNextEntry(JarEntry(name))
+            out.write(data)
+            out.closeEntry()
+        }
+        out.finish()
+        out.close()
+    }
+}
+
+fun transformClass(bytes: ByteArray): ByteArray {
+    val node = ClassNode()
+    ClassReader(bytes).accept(node, 0)
+
+    node.methods.removeIf { methodNode: MethodNode -> removeIfDevMethod(methodNode.visibleAnnotations) }
+
+    return ClassWriter(0).also { node.accept(it) }.toByteArray()
+}
+
+fun removeIfDevMethod(visibleAnnotations: List<AnnotationNode>?): Boolean {
+    // Don't remove methods if it's not a GHA build/Release build
+    if (!removeDevMethodsAnyway && buildNumber == null)
+        return false
+
+    if (visibleAnnotations != null) {
+        for (annotationNode in visibleAnnotations) {
+            if (annotationNode.desc == "Ldev/ithundxr/createnumismatics/annotation/mixin/StripFromRelease;")
+                return true;
+        }
+    }
+
+    return false
+}
+
 fun calculateGitHash(): String {
     try {
         val stdout = ByteArrayOutputStream()
@@ -236,7 +304,7 @@ fun hasUnstaged(): Boolean {
             commandLine("git", "status", "--porcelain")
             standardOutput = stdout
         }
-        val result = stdout.toString().replace("M gradlew", "").trimEnd()
+        val result = stdout.toString().replace(Regex("M gradlew(\\.bat)?"), "").trimEnd()
         if (result.isNotEmpty())
             println("Found stageable results:\n${result}\n")
         return result.isNotEmpty()
@@ -259,4 +327,56 @@ tasks.create("numismaticsPublish") {
 operator fun String.invoke(): String {
     return rootProject.ext[this] as? String
         ?: throw IllegalStateException("Property $this is not defined")
+}
+
+fun Project.setupRepositories() {
+    repositories {
+        mavenCentral()
+        maven("https://modmaven.dev/") // Create
+        exclusiveMaven("https://api.modrinth.com/maven", "maven.modrinth") // LazyDFU, Create Crafts and Additions
+        maven("https://maven.shedaniel.me/") // Cloth Config, REI
+        //maven("https://maven.terraformersmc.com/releases/") // Mod Menu, EMI
+        exclusiveMaven("https://maven.gnomecraft.net/releases/", "com.terraformersmc", "dev.emi") // Caching mirror of terraformersmc, which is currently (2026-07-14) flaky
+        maven("https://maven.blamejared.com/") // JEI, Carry On
+        maven("https://maven.parchmentmc.org") // Parchment mappings
+        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric, Steam 'n' Rails
+        maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
+        maven("https://maven.cafeteria.dev/releases") // Fake Player API
+        maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
+        maven("https://maven.tterrag.com/") { // Flywheel, Registrate, Create
+            content {
+                // need to be specific here due to version overlaps
+                includeGroup("com.simibubi.create")
+                includeGroup("com.tterrag.registrate")
+                includeGroup("com.jozufozu.flywheel")
+            }
+        }
+        maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
+        maven("https://jitpack.io/") { // Mixin Extras, Fabric ASM
+            content {
+                includeGroupByRegex("com.github.*")
+            }
+        }
+        maven("https://maven.siphalor.de/") { // Amecs API (required by Carry On)
+            name = "Siphalor's Maven"
+        }
+        maven("https://squiddev.cc/maven/") {// CC Tweaked
+            content {
+                includeGroup("cc.tweaked")
+            }
+        }
+        maven("https://maven.theillusivec4.top/") // Curios
+    }
+}
+
+@Suppress("UnstableApiUsage")
+fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            groups.forEach {
+                includeGroupAndSubgroups(it)
+            }
+        }
+    }
 }

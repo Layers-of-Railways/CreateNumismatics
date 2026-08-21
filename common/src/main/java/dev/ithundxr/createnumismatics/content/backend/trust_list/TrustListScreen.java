@@ -24,6 +24,7 @@ import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class TrustListScreen extends AbstractSimiContainerScreen<TrustListMenu> {
+public class TrustListScreen extends AbstractSimiContainerScreen<TrustListMenu> implements VirtualizableScreen {
 
     private IconButton confirmButton;
 
@@ -42,8 +43,20 @@ public class TrustListScreen extends AbstractSimiContainerScreen<TrustListMenu> 
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+
     public TrustListScreen(TrustListMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
     }
 
     @Override
@@ -67,6 +80,12 @@ public class TrustListScreen extends AbstractSimiContainerScreen<TrustListMenu> 
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override

@@ -19,6 +19,7 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.simibubi.create.infrastructure.command.AllCommands;
@@ -32,25 +33,31 @@ import static net.minecraft.commands.Commands.literal;
 
 public class NumismaticsCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
-        var numismaticsCommand = literal("numismatics")
+        LiteralArgumentBuilder<CommandSourceStack> numismaticsCommand = literal("numismatics")
             .requires(cs -> cs.hasPermission(0))
             .then(PayCommand.register())
             .then(DeductCommand.register())
             .then(ViewCommand.register())
             .then(PayAllCommand.register())
             .then(ToggleAdminModeCommand.register())
-            //.then(ClearCasingCacheCommand.register())
-            //.then(SplitTrainCommand.register())
-            //.then(TrainInfoCommand.register());
         ;
 
+        LiteralCommandNode<CommandSourceStack> util;
         if (Utils.isDevEnv()) {
+            util = UtilCommand.build();
             numismaticsCommand = numismaticsCommand
                 .then(ReloadCommandsCommand.register(dispatcher, dedicated))
+                .then(util)
             ;
+        } else {
+            util = null;
         }
 
         LiteralCommandNode<CommandSourceStack> numismaticsRoot = dispatcher.register(numismaticsCommand);
+
+        if (util != null) {
+            numismaticsRoot.addChild(AllCommands.buildRedirect("u", util));
+        }
 
         CommandNode<CommandSourceStack> nm = dispatcher.findNode(Collections.singleton("nm"));
         if (nm != null)

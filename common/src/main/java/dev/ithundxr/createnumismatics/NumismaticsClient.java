@@ -18,9 +18,11 @@
 
 package dev.ithundxr.createnumismatics;
 
+import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPartialModels;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderTags;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +36,13 @@ public class NumismaticsClient {
     public static void init() {
         NumismaticsPackets.PACKETS.registerS2CListener();
 
-        NumismaticsPonderIndex.register();
-
         NumismaticsPartialModels.init();
+
+        bankAccountLabels.put(BlazeBankerBlockEntity.PONDER_ACCOUNT, "Blaze Banker");
+    }
+
+    public static void postRegistrationInit() {
+        NumismaticsPonderTags.register();
+        NumismaticsPonderIndex.register();
     }
 }

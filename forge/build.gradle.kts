@@ -32,30 +32,6 @@ loom {
     }
 }
 
-repositories {
-    // mavens for Forge-exclusives
-    maven("https://api.modrinth.com/maven") // Create Crafts and Additions
-    maven("https://maven.theillusivec4.top/") // Curios
-    maven("https://maven.terraformersmc.com/releases/") // EMI
-    maven("https://jitpack.io/") // Mixin Extras, Fabric ASM
-    maven("https://maven.tterrag.com/") { // Create Forge and Registrate Forge
-        content {
-            includeGroup("com.tterrag.registrate")
-            includeGroup("com.simibubi.create")
-        }
-    }
-    maven("https://squiddev.cc/maven/") { // CC Tweaked
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-    maven("https://maven.blamejared.com/") { // JEI
-        content {
-            includeGroup("mezz.jei")
-        }
-    }
-}
-
 dependencies {
     forge("net.minecraftforge:forge:${"minecraft_version"()}-${"forge_version"()}")
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
@@ -106,8 +82,8 @@ dependencies {
         modLocalRuntime("maven.modrinth:createaddition:${"createaddition_forge_version"()}")
     }
 
-    compileOnly("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!)
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
+    implementation(include("io.github.llamalad7:mixinextras-forge:${"mixin_extras_version"()}")!!)!!
 }
 
 publishMods {

@@ -91,7 +91,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
         if (!filter.isEmpty() && salepointLevel.getBlockEntity(salepointPos) instanceof SalepointBlockEntity salepointBE) {
             BlockPos targetedPos = salepointBE.getTargetedPos();
             if (targetedPos != null) {
-                var behaviour = getBehaviour(salepointLevel, targetedPos);
+                SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(salepointLevel, targetedPos);
                 if (behaviour instanceof IFilteringSalepointBehaviour filteringSalepointBehaviour) {
                     if (!filteringSalepointBehaviour.canSetFilter(filter)) {
                         return false;

@@ -54,7 +54,7 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
         super(type, id, inv, extraData);
     }
 
-    protected BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, BlazeBankerBlockEntity contentHolder) {
+    public BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, BlazeBankerBlockEntity contentHolder) {
         super(type, id, inv, contentHolder);
     }
 

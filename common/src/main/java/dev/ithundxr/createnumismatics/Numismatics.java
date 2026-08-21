@@ -25,7 +25,6 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
@@ -42,6 +41,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.MethodVarHandleUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -66,7 +66,7 @@ public class Numismatics {
 
     public static void init() {
         String createVersion = MethodVarHandleUtils.getStaticField(Create.class, "VERSION", String.class, "UNKNOWN");
-        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, Create.VERSION, Loader.getFormatted());
+        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, createVersion, Loader.getFormatted());
         
         ModSetup.register();
         finalizeRegistrate();
@@ -98,8 +98,7 @@ public class Numismatics {
     public static void gatherData(DataGenerator.PackGenerator gen) {
         REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
         REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        PonderLocalization.provideRegistrateLang(REGISTRATE);
+        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);        
         gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
         gen.addProvider(NumismaticsStandardRecipeGen::new);
         gen.addProvider(NumismaticsAdvancements::new);
@@ -112,7 +111,7 @@ public class Numismatics {
 
     public static void crashDev(String message) {
         if (Utils.isDevEnv()) {
-            throw new RuntimeException(message);
+            throw Util.pauseInIde(new RuntimeException(message));
         } else {
             LOGGER.error(message);
         }

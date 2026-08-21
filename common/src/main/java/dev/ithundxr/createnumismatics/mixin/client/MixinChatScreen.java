@@ -34,14 +34,14 @@ public class MixinChatScreen {
     @Shadow private String initial;
 
     @Inject(method = "onEdited", at = @At("RETURN"))
-    private void replaceCoinNames(String value, CallbackInfo ci) {
+    private void numismatics$replaceCoinNames(String value, CallbackInfo ci) {
         String string = input.getValue();
 
         if (!string.startsWith("/") && !string.equals(initial)) {
             int originalLength = string.length();
 
             for (Coin coin : Coin.values()) {
-                string = string.replaceAll(":"+coin.getName()+":", coin.fontChar);
+                string = string.replaceAll(":" + coin.getName() + ":", coin.fontChar);
             }
 
             if (string.length() != originalLength)

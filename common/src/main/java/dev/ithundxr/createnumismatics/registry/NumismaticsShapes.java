@@ -40,6 +40,14 @@ public class NumismaticsShapes {
             .forDirectional(NORTH)
     ;
 
+    public static final VoxelShape
+        VENDOR = shape(0, 0, 0, 16, 8, 16)
+            .add(1, 8, 1, 15, 18, 15)
+            .build(),
+        VENDOR_VISUAL = shape(0, 0, 0, 16, 8, 16)
+            .build()
+    ;
+
     private static Builder shape(VoxelShape shape) {
         return new Builder(shape);
     }

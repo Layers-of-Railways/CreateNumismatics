@@ -30,6 +30,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Iterate;
 import dev.ithundxr.createnumismatics.base.client.rendering.UIRenderHelper;
+import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
@@ -55,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<SalepointPurchaseMenu> {
+public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<SalepointPurchaseMenu> implements VirtualizableScreen {
 
     private final ItemStack renderedItem = NumismaticsBlocks.SALEPOINT.asStack();
     private static final NumismaticsGuiTextures background = NumismaticsGuiTextures.SALEPOINT_PURCHASE;
@@ -72,8 +73,55 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
 
     private List<Rect2i> extraAreas = Collections.emptyList();
 
+    private boolean virtualMode = false;
+    private @Nullable VirtualHandle virtualHandle = null;
+
     public SalepointPurchaseScreen(SalepointPurchaseMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void markVirtual() {
+        virtualMode = true;
+        virtualHandle = new VirtualHandle();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtualMode;
+    }
+
+    public @NotNull VirtualHandle getVirtualHandle() {
+        if (virtualHandle == null)
+            throw new IllegalStateException("Not a virtual screen");
+        return virtualHandle;
+    }
+
+    public @Nullable VirtualHandle getVirtualHandleUnchecked() {
+        return virtualHandle;
+    }
+
+    public class VirtualHandle {
+        private VirtualHandle() {}
+
+        public void setUnitCount(int count) {
+            countScrollInput.setState(count);
+            countScrollInput.onChanged();
+        }
+
+        public void updateAction() {
+            SalepointPurchaseScreen.this.updateAction();
+        }
+
+        public void setClientsideMultiplier(int multiplier) {
+            menu.contentHolder.clientsideMultiplier = multiplier;
+            updateAction();
+        }
+
+        public void setClientsideProgress(int progress) {
+            menu.contentHolder.clientsideProgress = progress;
+            updateAction();
+        }
     }
 
     private @Nullable ISalepointState<?> getSalepointState() {
@@ -128,6 +176,12 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
     @Override
     public List<Rect2i> getExtraAreas() {
         return extraAreas;
+    }
+
+    @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+        if (!isVirtual())
+            super.renderBackground(guiGraphics);
     }
 
     @Override
@@ -263,7 +317,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
                 if (menu.serverSentCardMessage != null) {
                     action = Action.ALERT;
                     alert = menu.serverSentCardMessage;
-                } else if (menu.serverSentMaxWithdrawal < menu.contentHolder.getTotalPrice() * countScrollInput.getState()) {
+                } else if (!isVirtual() && menu.serverSentMaxWithdrawal < menu.contentHolder.getTotalPrice() * countScrollInput.getState()) {
                     action = Action.ALERT;
                     alert = Components.translatable("gui.numismatics.vendor.insufficient_funds");
                 }

@@ -28,6 +28,7 @@ import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
@@ -82,8 +83,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation {
-
+public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -250,6 +250,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             trustListContainer.load(tag.getCompound("TrustListInv"));
         }
 
+        salepointState = null;
         if (tag.contains("SalepointState", Tag.TAG_COMPOUND))
             salepointState = SalepointStateWrapper.deserialize(tag.getCompound("SalepointState"));
         onSalepointStateSet();
@@ -506,6 +507,20 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         return true;
     }
 
+    @Override
+    public ItemStack getCustomGoggleOverlayStack() {
+        ItemStack display = getDisplayItem();
+        return display.isEmpty() ? NumismaticsBlocks.SALEPOINT.asStack() : display;
+    }
+
+    public void createTooltipVirtual() {
+        if (!isVirtual()) {
+            Numismatics.LOGGER.warn("SalepointBlockEntity#createTooltipVirtual called on a non-virtual salepoint");
+            return;
+        }
+        createTooltip();
+    }
+
     private void createTooltip() {
         clientsideTooltip.clear();
         ISalepointState<?> state = getSalepointState();
@@ -600,9 +615,16 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             return tag;
         }
 
-        public static SalepointStateWrapper deserialize(CompoundTag tag) {
+        public static @Nullable SalepointStateWrapper deserialize(CompoundTag tag) {
+            if (!tag.contains("state", Tag.TAG_COMPOUND) || !tag.contains("pos", Tag.TAG_COMPOUND))
+                return null;
+
             ISalepointState<?> state = SalepointTypes.load(tag.getCompound("state"));
             BlockPos pos = NbtUtils.readBlockPos(tag.getCompound("pos"));
+
+            if (state == null)
+                return null;
+
             return new SalepointStateWrapper(state, pos);
         }
     }

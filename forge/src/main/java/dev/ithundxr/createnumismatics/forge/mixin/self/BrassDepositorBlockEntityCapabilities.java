@@ -39,7 +39,7 @@ public abstract class BrassDepositorBlockEntityCapabilities extends AbstractDepo
         super(type, pos, state);
     }
 
-    @Shadow AbstractComputerBehaviour computerBehaviour;
+    @Shadow(remap = false) AbstractComputerBehaviour computerBehaviour;
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {

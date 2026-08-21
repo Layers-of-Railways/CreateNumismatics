@@ -66,6 +66,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         addRenderableWidget(confirmButton);
 
         IconButton openSubAccountsButton = new IconButton(x + background.width - 61, y + background.height - 24, NumismaticsIcons.I_OPEN_SUB_LIST);
+        openSubAccountsButton.setToolTip(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.configure"));
         openSubAccountsButton.withCallback(menu.contentHolder::openSubAccountsMenu);
         addRenderableWidget(openSubAccountsButton);
 
@@ -102,5 +103,19 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         Component balanceLabel = Components.translatable("gui.numismatics.bank_terminal.balance",
             TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
+    }
+
+    @Override
+    protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
+        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
+            Component component = null;
+            if (hoveredSlot.index == BankMenu.CARD_SLOT_INDEX) {
+                component = Components.translatable("gui.numismatics.bank_terminal.switch_account");
+            }
+            if (component != null) {
+                guiGraphics.renderTooltip(font, component, x, y);
+            }
+        }
     }
 }

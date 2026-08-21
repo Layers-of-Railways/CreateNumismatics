@@ -38,7 +38,7 @@ import java.util.function.BiFunction;
 @Mixin(PickupHandler.class)
 public class MixinPickupHandler {
     @Inject(method = "tryPickUpBlock", at = @At("HEAD"), cancellable = true)
-    private static void preventNumismaticsPickup(ServerPlayer player, BlockPos pos, Level level, BiFunction<BlockState, BlockPos, Boolean> pickupCallback, CallbackInfoReturnable<Boolean> cir) {
+    private static void numismatics$preventNumismaticsPickup(ServerPlayer player, BlockPos pos, Level level, BiFunction<BlockState, BlockPos, Boolean> pickupCallback, CallbackInfoReturnable<Boolean> cir) {
         BlockState state = level.getBlockState(pos);
         if (BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace().equals(Numismatics.MOD_ID))
             cir.setReturnValue(false);

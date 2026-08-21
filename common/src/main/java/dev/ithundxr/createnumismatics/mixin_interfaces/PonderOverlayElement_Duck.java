@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2023-2024 The Railways Team
+ * Copyright (c) 2026 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.base.data.forge;
+package dev.ithundxr.createnumismatics.mixin_interfaces;
 
-import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import net.minecraft.data.tags.TagsProvider.TagAppender;
-import net.minecraft.tags.TagKey;
+import com.simibubi.create.foundation.ponder.SceneBuilder;
+import com.simibubi.create.foundation.ponder.element.PonderOverlayElement;
 
-public class NumismaticsTagGenImpl {
-	public static <T> TagAppender<T> tagAppender(RegistrateTagsProvider<T> prov, TagKey<T> tag) {
-		return prov.addTag(tag);
-	}
+public interface PonderOverlayElement_Duck {
+    void numismatics$setOverlayLayer(boolean isOverlay);
+    boolean numismatics$isOnOverlayLayer();
+
+    static void numismatics$applyOverlay(SceneBuilder builder, PonderOverlayElement element) {
+        ((PonderOverlayElement_Duck) element).numismatics$setOverlayLayer(((SceneBuilder_Duck) builder).numismatics$isOverlayLayerEnabled());
+    }
 }
