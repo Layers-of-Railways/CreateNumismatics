@@ -50,7 +50,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
     // Create - dependencies are added transitively
-    modImplementation("com.simibubi.create:create-fabric-${"minecraft_version"()}:${"create_fabric_version"()}")
+    modImplementation("com.simibubi.create:create-fabric:${"create_fabric_version"()}")
 
     // deprecated modules @ runtime only
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:${"fabric_api_version"()}")
