@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
+import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -37,11 +38,13 @@ public class MixinChatScreen {
     private void numismatics$replaceCoinNames(String value, CallbackInfo ci) {
         String string = input.getValue();
 
+        String prefix = NumismaticsConfig.client().coinEmojiPrefix.get().prefix;
+
         if (!string.startsWith("/") && !string.equals(initial)) {
             int originalLength = string.length();
 
             for (Coin coin : Coin.values()) {
-                string = string.replaceAll(":" + coin.getName() + ":", coin.fontChar);
+                string = string.replaceAll(":" + prefix + coin.getName() + ":", coin.fontChar);
             }
 
             if (string.length() != originalLength)

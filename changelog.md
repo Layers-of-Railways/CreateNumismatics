@@ -15,6 +15,7 @@ Additions
 - Brass Depositors with a price of zero can accept coins from item transfer (hoppers, chutes, etc.)
 - Bank Cards and Authorized Cards can be held in the offhand to pay at Create 6 tablecloth shops
 - Vendors provide a comparator output indicating how full their stock slots are (equivalent to a dispenser's output)
+- New client config to use `:coin-bevel:` or `:numi-bevel:` instead of `:bevel:` for coin emojis
 
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
