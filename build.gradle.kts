@@ -351,15 +351,6 @@ fun Project.setupRepositories() {
         maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
         maven("https://maven.cafeteria.dev/releases") // Fake Player API
         maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
-        /* TODO: check if this is indeed not needed
-        maven("https://maven.tterrag.com/") { // Flywheel, Registrate, Create
-            content {
-                // need to be specific here due to version overlaps
-                includeGroup("com.simibubi.create")
-                includeGroup("com.tterrag.registrate")
-                includeGroup("com.jozufozu.flywheel")
-            }
-        }*/
         maven("https://maven.createmod.net") // Create, Ponder, Flywheel
         maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
         maven("https://jitpack.io/") { // Mixin Extras, Fabric ASM
