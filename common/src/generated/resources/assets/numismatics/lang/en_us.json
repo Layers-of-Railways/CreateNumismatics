@@ -40,6 +40,7 @@
   "block.numismatics.vendor.tooltip.summary": "Allows for the trading of items through player made shops. _Right click_ to trade, or _shift click_ to configure it.",
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
   "command.numismatics.arguments.enum.invalid": "Error: Invalid enum value '%s'. Valid values are: %s",
+  "create.table_cloth.hand_to_shop_keeper.numismatics.card": "You can pay with a bank card in your offhand",
   "error.numismatics.authorized_card.account_not_found": "Sub Account not found",
   "error.numismatics.authorized_card.limit_reached": "Spending limit reached",
   "error.numismatics.card.account_not_found": "Account not found",

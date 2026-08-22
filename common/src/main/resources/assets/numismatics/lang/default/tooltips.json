@@ -18,6 +18,8 @@
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
   "block.numismatics.vendor.tooltip.stock": "Stock",
 
+  "create.table_cloth.hand_to_shop_keeper.numismatics.card": "You can pay with a bank card in your offhand",
+
   "block.numismatics.salepoint.tooltip.clear": "Cleared interface selection",
   "block.numismatics.salepoint.tooltip.set": "Interface selected",
   "block.numismatics.salepoint.tooltip.missing": "Right-click the targeted interface first",

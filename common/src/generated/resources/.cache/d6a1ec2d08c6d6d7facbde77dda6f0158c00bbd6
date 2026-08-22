@@ -1,4 +1,4 @@
-// 1.20.1	2026-08-22T19:37:57.777730279	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2026-08-22T20:51:36.884027974	Create: Numismatics/Registrate Provider for numismatics [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 2f1dad2a2e0086d54cf4b88378feacc04341d87f data/numismatics/tags/items/internal/ingots/iron_ingots.json
 dc5c60bbbaf3a5d7bc1f9bc0c9377757dbd8de49 data/numismatics/loot_tables/blocks/bank_terminal.json
 5b0244502972f49d063d98fa0cb3f6fc65af82b2 data/numismatics/tags/items/internal/string.json
@@ -8,7 +8,7 @@ a96d3d02794064cd9be1bca25a9ba6217675e6c5 assets/numismatics/models/item/white_id
 bb2a77462e6213eddde134f3cc3e9a3f07f07f3f assets/numismatics/models/item/yellow_authorized_card.json
 74a4c7ca7a48382782e5dba33018dfc8255192c5 assets/numismatics/models/block/brass_depositor_locked.json
 3f0d912779200aaaf55bef102d9b96acead1a636 data/numismatics/tags/items/internal/dyes/purple_dyes.json
-dd41b26675d1d33ced7f7a0fc237dcff6e8fa57c assets/numismatics/lang/en_us.json
+f54fd8b05698c0b9d0a3caad66beb4fb93e889f7 assets/numismatics/lang/en_us.json
 377e460c0dcf6d7de1b7ae235959105a7c45e4c4 assets/numismatics/models/item/cyan_authorized_card.json
 bde18ccd9c21484154597c6271750c0406082f61 data/forge/tags/blocks/relocation_not_supported.json
 eca751589c40725750e2c2baa6607e83255fd5f4 assets/numismatics/models/item/brown_authorized_card.json
@@ -18,7 +18,7 @@ ad712dd2a2a7268dfa773f38a50d526952758d5c data/numismatics/tags/items/internal/dy
 8550097149cebbfd50bdeac2003327b60a4aee9a assets/numismatics/models/item/light_gray_card.json
 95b492bd9230dc90fca9395c823cef39e644d8f2 assets/numismatics/models/item/sprocket.json
 70c481f36a9718ac48632e6939ac6ba785be4c9e assets/numismatics/models/item/black_id_card.json
-30a56dd2924dcab26c4ac35ba78367374797c133 assets/numismatics/lang/en_ud.json
+010280a7d1e66b8565222392dfde26342a3277b6 assets/numismatics/lang/en_ud.json
 1e78f650091a4a2c43e36fb815f23d0591e058a6 assets/numismatics/models/item/magenta_card.json
 909f5d14f23199c064f6b91a421bb7b15e0f1a7d assets/numismatics/models/item/orange_authorized_card.json
 d6f017479b3cc538f73d7fb0a1e65d1742bab266 assets/numismatics/models/item/light_blue_id_card.json

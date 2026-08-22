@@ -10,17 +10,17 @@
     "client.AccessorAbstractContainerMenu",
     "client.AccessorAbstractContainerScreen",
     "client.AccessorInputWindowElement",
+    "client.MixinAllCreatePonderScenes",
     "client.MixinBitmapProvider$Definition",
     "client.MixinBogeyBlockEntityRenderer",
     "client.MixinChatScreen",
     "client.MixinInputWindowElement",
     "client.MixinLocalPlayer",
-    "client.MixinAllCreatePonderScenes",
     "client.MixinPonderElementBase",
     "client.MixinPonderScene",
-    "client.MixinPonderUI",
     "client.MixinPonderSceneBuilder",
     "client.MixinPonderSceneBuilder$MixinPonderOverlayInstructions",
+    "client.MixinPonderUI",
     "client.MixinStandardBogeyBlockEntity",
     "client.MixinTextWindowElement",
     "client.MixinTextWindowElement$MixinBuilder",
@@ -35,7 +35,9 @@
     "AccessorSimpleContainer",
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
-    "compat.carryon.MixinPickupHandler"
+    "compat.carryon.MixinPickupHandler",
+    "compat.create.logistics.MixinShoppingListItem",
+    "compat.create.logistics.MixinStockTickerInteractionHandler"
   ],
   "injectors": {
     "defaultRequire": 1
