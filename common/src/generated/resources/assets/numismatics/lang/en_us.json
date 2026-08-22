@@ -198,6 +198,8 @@
   "numismatics.ponder.blaze_banker.text_3": "Players with access can use Blaze Bankers to configure them.",
   "numismatics.ponder.blaze_banker.text_4": "To bind a card to a Banker, place it into its card slot.",
   "numismatics.ponder.blaze_banker.text_5": "Unlike with Sub Accounts, players trusted directly in a Blaze Banker have full access, including to a Bank Terminal when using a bound Card.",
+  "numismatics.ponder.depositor_automation.header": "Depositors for Automation",
+  "numismatics.ponder.depositor_automation.text_1": "Brass Depositors with a price of zero accept coins from item transfer, but will not trigger redstone.",
   "numismatics.ponder.depositor_intro.header": "Using Depositors",
   "numismatics.ponder.depositor_intro.text_1": "Depositors emit a redstone pulse in exchange for payment.",
   "numismatics.ponder.depositor_pricing.header": "Depositor Pricing",
