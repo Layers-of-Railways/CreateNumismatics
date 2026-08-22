@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2024 The Railways Team
+ * Copyright (c) 2024-2025 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,8 +39,10 @@ dependencies {
 
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_forge_version"()}:slim") { isTransitive = false }
+    modImplementation("net.createmod.ponder:Ponder-Forge-${"minecraft_version"()}:${"ponder_version"()}")
     modImplementation("com.tterrag.registrate:Registrate:${"registrate_forge_version"()}")
-    modImplementation("com.jozufozu.flywheel:flywheel-forge-${"flywheel_forge_minecraft_version"()}:${"flywheel_forge_version"()}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${"minecraft_version"()}:${"flywheel_version"()}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${"minecraft_version"()}:${"flywheel_version"()}")
 
     modLocalRuntime("dev.emi:emi-forge:${"emi_version"()}")
 
@@ -71,7 +73,7 @@ dependencies {
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-forge-${"minecraft_version"()}:${"carryon_forge_version"()}")
     }
-    
+
     if ("enable_cc"().toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
     }

@@ -25,6 +25,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.simibubi.create.infrastructure.command.AllCommands;
 import dev.ithundxr.createnumismatics.registry.commands.*;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.command.CatnipCommands;
 import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Collections;
@@ -63,7 +64,6 @@ public class NumismaticsCommands {
         if (nm != null)
             return;
 
-        dispatcher.getRoot()
-            .addChild(AllCommands.buildRedirect("nm", numismaticsRoot));
+        CatnipCommands.createOrAddToShortcut(dispatcher, "nm", numismaticsRoot);
     }
 }

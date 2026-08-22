@@ -18,8 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Authorization;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
@@ -36,6 +34,7 @@ import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -334,12 +333,12 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     @Override
     public @NotNull Component getDisplayName() {
         if (getLabel() != null)
-            return Components.literal(getLabel());
+            return Component.literal(getLabel());
 
         String name = UsernameUtils.INSTANCE.getName(id, null);
         if (name != null)
-            return Components.literal(name);
-        return Components.translatable("block.numismatics.bank_terminal");
+            return Component.literal(name);
+        return Component.translatable("block.numismatics.bank_terminal");
     }
 
     @Nullable

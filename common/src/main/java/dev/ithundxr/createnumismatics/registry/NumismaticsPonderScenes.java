@@ -29,11 +29,16 @@ import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
 import dev.ithundxr.createnumismatics.ponder.VendorScenes;
 
 import java.util.Iterator;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
 
-public class NumismaticsPonderIndex {
-    static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Numismatics.MOD_ID);
+// TODO: fix up imports
 
-    public static void register() {
+public class NumismaticsPonderScenes {
+    public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
         /* TODO
             See https://discord.com/channels/1226981107401232545/1261067581469757511/1495869753343082636
             Ponder Progress:
@@ -73,6 +78,7 @@ public class NumismaticsPonderIndex {
 
     // Any ponders that should appear AFTER creates own ponders should go here
     public static void registerAfterCreatePonders() {
+        // FIXME: check how this works out with the new API
         HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
             .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }

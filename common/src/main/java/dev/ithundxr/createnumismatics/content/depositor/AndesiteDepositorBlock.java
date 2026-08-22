@@ -19,6 +19,8 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.AllSoundEvents;
+import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
@@ -27,6 +29,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;

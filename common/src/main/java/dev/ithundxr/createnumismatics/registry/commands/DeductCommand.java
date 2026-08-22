@@ -23,7 +23,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
@@ -34,6 +33,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class DeductCommand {
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                             if (bankAct == null) {
-                                ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                                 return -1;
                             }
 
@@ -79,7 +79,7 @@ public class DeductCommand {
                                 BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                                 if (bankAct == null) {
-                                    ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                    ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                                     return -1;
                                 }
 
@@ -128,15 +128,15 @@ public class DeductCommand {
         int spurValue = coin.toSpurs(amount);
         int result = deduct(account, spurValue, force, create, type);
         if (result == 1) {
-            ctx.getSource().sendSuccess(() -> Components.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
+            ctx.getSource().sendSuccess(() -> Component.literal("Deducted "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
         } else {
             if (result == -1) {
-                ctx.getSource().sendFailure(Components.literal("Could not find account for "+name+"."));
+                ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
             } else if (force) {
-                ctx.getSource().sendSuccess(() -> Components.literal("Force-deducted "+amount+" "+coin.getName(amount)+" from "+name+"."), true);
+                ctx.getSource().sendSuccess(() -> Component.literal("Force-deducted "+amount+" "+coin.getName(amount)+" from "+name+"."), true);
             } else {
-                ctx.getSource().sendFailure(Components.literal("Could not deduct "+amount+" "+coin.getName(amount)+" from "+name+"."));
+                ctx.getSource().sendFailure(Component.literal("Could not deduct "+amount+" "+coin.getName(amount)+" from "+name+"."));
             }
             return result;
         }

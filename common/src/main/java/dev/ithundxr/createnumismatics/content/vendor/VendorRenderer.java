@@ -20,7 +20,7 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

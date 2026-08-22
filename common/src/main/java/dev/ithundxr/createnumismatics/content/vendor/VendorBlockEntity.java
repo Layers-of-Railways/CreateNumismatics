@@ -21,12 +21,9 @@ package dev.ithundxr.createnumismatics.content.vendor;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
-import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
@@ -47,6 +44,8 @@ import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.lang.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -58,6 +57,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -362,15 +362,15 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         switch (mode) {
             case SELL -> {
                 if (!hasStock()) {
-                    Lang.builder()
-                        .add(Components.translatable("gui.numismatics.vendor.out_of_stock"))
+                    Lang.builder(Numismatics.MOD_ID)
+                        .add(Component.translatable("gui.numismatics.vendor.out_of_stock"))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(tooltip);
 
                     String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                     if (ownerName != null) {
-                        Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                        Lang.builder(Numismatics.MOD_ID)
+                            .add(Component.translatable("gui.numismatics.vendor.generic_named", ownerName))
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
@@ -378,28 +378,28 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             }
             case BUY -> {
                 if (!hasSpaceForSingleBuy()) {
-                    Lang.builder()
-                        .add(Components.translatable("gui.numismatics.vendor.full"))
+                    Lang.builder(Numismatics.MOD_ID)
+                        .add(Component.translatable("gui.numismatics.vendor.full"))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(tooltip);
 
                     String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                     if (ownerName != null) {
-                        Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                        Lang.builder(Numismatics.MOD_ID)
+                            .add(Component.translatable("gui.numismatics.vendor.generic_named", ownerName))
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
                 } else if (!(hasEnoughMoneyFromServer || isVirtual())) {
-                    Lang.builder()
-                        .add(Components.translatable("gui.numismatics.vendor.out_of_stock.funds"))
+                    Lang.builder(Numismatics.MOD_ID)
+                        .add(Component.translatable("gui.numismatics.vendor.out_of_stock.funds"))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(tooltip);
 
                     String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                     if (ownerName != null) {
-                        Lang.builder()
-                            .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                        Lang.builder(Numismatics.MOD_ID)
+                            .add(Component.translatable("gui.numismatics.vendor.generic_named", ownerName))
                             .style(ChatFormatting.DARK_RED)
                             .forGoggles(tooltip);
                     }
@@ -410,12 +410,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(getTotalPrice());
         int cogs = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        MutableComponent balanceLabel = Components.translatable("block.numismatics.vendor.tooltip.price",
+        MutableComponent balanceLabel = Component.translatable("block.numismatics.vendor.tooltip.price",
             TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
 
         // Selling/Buying
-        Lang.builder()
-            .add(Components.translatable(mode.getOpposite().getActionTranslationKey()))
+        Lang.builder(Numismatics.MOD_ID)
+            .add(Component.translatable(mode.getOpposite().getActionTranslationKey()))
             .forGoggles(tooltip);
 
         // Item
@@ -427,26 +427,26 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 isFirst = false;
                 if (filterStack.getCount() != 1) {
                     mutable.append(
-                        Components.translatable("gui.numismatics.vendor.count", filterStack.getCount())
+                        Component.translatable("gui.numismatics.vendor.count", filterStack.getCount())
                             .withStyle(ChatFormatting.GREEN)
                     );
                 }
             }
-            Lang.builder()
+            Lang.builder(Numismatics.MOD_ID)
                 .add(mutable)
                 .forGoggles(tooltip);
         }
 
-        tooltip.add(Components.immutableEmpty());
+        tooltip.add(CommonComponents.EMPTY);
 
         // For: ...
 
-        Lang.builder()
+        Lang.builder(Numismatics.MOD_ID)
             .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
             .forGoggles(tooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {
-            Lang.builder()
+            Lang.builder(Numismatics.MOD_ID)
                 .add(component)
                 .forGoggles(tooltip);
         }
@@ -462,7 +462,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Components.translatable(isCreativeVendor() ? "block.numismatics.creative_vendor" : "block.numismatics.vendor");
+        return Component.translatable(isCreativeVendor() ? "block.numismatics.creative_vendor" : "block.numismatics.vendor");
     }
 
     @Nullable
@@ -811,11 +811,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             // out of stock
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.named", ownerName)
+                player.displayClientMessage(Component.translatable("gui.numismatics.vendor.out_of_stock.named", ownerName)
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             } else {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock")
+                player.displayClientMessage(Component.translatable("gui.numismatics.vendor.out_of_stock")
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
@@ -848,7 +848,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         ItemStack handStack = player.getItemInHand(hand);
 
         if (handStack.isEmpty()) {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.no_item_in_hand")
+            player.displayClientMessage(Component.translatable("gui.numismatics.vendor.no_item_in_hand")
                 .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             return;
@@ -856,14 +856,14 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         // check if the held item matches our filter
         if (!matchesFilterItem(handStack)) {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.incorrect_item")
+            player.displayClientMessage(Component.translatable("gui.numismatics.vendor.incorrect_item")
                 .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             return;
         }
 
         if (handStack.getCount() < buying.getCount()) {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.too_few_items")
+            player.displayClientMessage(Component.translatable("gui.numismatics.vendor.too_few_items")
                 .withStyle(ChatFormatting.DARK_RED), true);
             level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             return;
@@ -882,11 +882,11 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (countMultiplier <= 0) {
             String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
             if (ownerName != null) {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full.named", ownerName)
+                player.displayClientMessage(Component.translatable("gui.numismatics.vendor.full.named", ownerName)
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             } else {
-                player.displayClientMessage(Components.translatable("gui.numismatics.vendor.full")
+                player.displayClientMessage(Component.translatable("gui.numismatics.vendor.full")
                     .withStyle(ChatFormatting.DARK_RED), true);
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
@@ -914,10 +914,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         // insufficient funds (return early on success)
         String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
         if (ownerName != null) {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.funds.named", ownerName)
+            player.displayClientMessage(Component.translatable("gui.numismatics.vendor.out_of_stock.funds.named", ownerName)
                 .withStyle(ChatFormatting.DARK_RED), true);
         } else {
-            player.displayClientMessage(Components.translatable("gui.numismatics.vendor.out_of_stock.funds")
+            player.displayClientMessage(Component.translatable("gui.numismatics.vendor.out_of_stock.funds")
                 .withStyle(ChatFormatting.DARK_RED), true);
         }
         level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
@@ -1007,7 +1007,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
             return ImmutableList.copyOf(
                 Arrays.stream(values())
                     .map(Mode::getTranslationKey)
-                    .map(Components::translatable)
+                    .map(Component::translatable)
                     .iterator()
             );
         }

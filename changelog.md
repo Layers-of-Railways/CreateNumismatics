@@ -29,7 +29,26 @@ Changes
   Backwards compatible with existing vendors, so the items will remain 'real' until you remove them.  
   Additionally, enchantments and dyes can be applied to some items by shift-dragging items when using EMI on fabric or JEI on forge
 - OP'ed players no longer automatically have access to all Numismatics blocks. Instead, they can use the command `/numismatics toggle_admin_mode` to toggle that ability
-- Update to Create 0.5.1-j
+------------------------------------------------------
+Numismatics 1.0.15
+------------------------------------------------------
+Changes
+- Fix crash on servers
+------------------------------------------------------
+Numismatics 1.0.13/1.0.14
+------------------------------------------------------
+Changes
+- Fix dependency range
+------------------------------------------------------
+Numismatics 1.0.12
+------------------------------------------------------
+Changes
+- Port to Create Update 6
+------------------------------------------------------
+Numismatics 1.0.11
+------------------------------------------------------
+Changes
+- You can now insert or extract items from all sides of a vendor
 ------------------------------------------------------
 Numismatics 1.0.10
 ------------------------------------------------------

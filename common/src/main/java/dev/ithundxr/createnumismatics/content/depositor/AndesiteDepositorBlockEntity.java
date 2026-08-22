@@ -19,13 +19,13 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Lang;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,11 +60,11 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     @Override
     public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         Coin coin = getCoin();
-        Lang.builder()
-            .add(Components.translatable("block.numismatics.andesite_depositor.tooltip.price",
+        Lang.builder(Numismatics.MOD_ID)
+            .add(Component.translatable("block.numismatics.andesite_depositor.tooltip.price",
                     1,
-                Components.translatable(coin.getTranslationKey())
-                    .append(Components.literal(" " + coin.fontChar).withStyle(ChatFormatting.WHITE)),
+                Component.translatable(coin.getTranslationKey())
+                    .append(Component.literal(" " + coin.fontChar).withStyle(ChatFormatting.WHITE)),
                 coin.value
                 ).withStyle(coin.rarity.color)
             )
@@ -82,7 +82,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Components.translatable("block.numismatics.andesite_depositor");
+        return Component.translatable("block.numismatics.andesite_depositor");
     }
 
     @Nullable

@@ -21,7 +21,6 @@ package dev.ithundxr.createnumismatics.content.backend.behaviours;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
@@ -31,6 +30,7 @@ import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -284,13 +284,13 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             int count = prices.getOrDefault(coin, 0);
             if (count > 0) {
                 if (current == null) {
-                    current = Components.empty();
+                    current = Component.empty();
                 }
 
                 if (countOnCurrent++ >= 3) {
                     components.add(current);
                     //components.add(Components.empty());
-                    current = Components.empty();
+                    current = Component.empty();
                     countOnCurrent = 1;
                 }
 
@@ -313,8 +313,8 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
             Coin coin = Coin.values()[i];
             int count = prices.getOrDefault(coin, 0);
             if (count > 0) {
-                components.add(Components.literal(count + " ")
-                    .append(Components.translatable(coin.getTranslationKey()))
+                components.add(Component.literal(count + " ")
+                    .append(Component.translatable(coin.getTranslationKey()))
                     .append(" " + coin.fontChar)
                 );
             }

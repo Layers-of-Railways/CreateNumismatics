@@ -22,7 +22,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
@@ -33,6 +32,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class PayCommand {
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                             if (bankAct == null) {
-                                ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                                 return -1;
                             }
 
@@ -71,7 +71,7 @@ public class PayCommand {
                                 BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                                 if (bankAct == null) {
-                                    ctx.getSource().sendFailure(Components.literal("There is no Blaze Banker at " + pos.toShortString()));
+                                    ctx.getSource().sendFailure(Component.literal("There is no Blaze Banker at " + pos.toShortString()));
                                     return -1;
                                 }
 
@@ -119,10 +119,10 @@ public class PayCommand {
     private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, int amount, Coin coin) {
         int spurValue = coin.toSpurs(amount);
         if (pay(account, spurValue, create, type)) {
-            ctx.getSource().sendSuccess(() -> Components.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
+            ctx.getSource().sendSuccess(() -> Component.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
             return spurValue;
         } else {
-            ctx.getSource().sendFailure(Components.literal("Could not find account for "+name+"."));
+            ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
             return 0;
         }
     }

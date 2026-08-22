@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.jozufozu.flywheel.core.PartialModel;
 import com.simibubi.create.Create;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.ithundxr.createnumismatics.Numismatics;
 
 public class NumismaticsPartialModels {
@@ -28,15 +28,15 @@ public class NumismaticsPartialModels {
         ;
 
     private static PartialModel createBlock(String path) {
-        return new PartialModel(Create.asResource("block/" + path));
+        return PartialModel.of(Create.asResource("block/" + path));
     }
 
     private static PartialModel block(String path) {
-        return new PartialModel(Numismatics.asResource("block/" + path));
+        return PartialModel.of(Numismatics.asResource("block/" + path));
     }
 
     private static PartialModel entity(String path) {
-        return new PartialModel(Numismatics.asResource("entity/" + path));
+        return PartialModel.of(Numismatics.asResource("entity/" + path));
     }
 
 

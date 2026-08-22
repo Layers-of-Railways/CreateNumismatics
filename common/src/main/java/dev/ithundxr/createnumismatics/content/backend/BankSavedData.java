@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.foundation.utility.NBTHelper;
 import dev.ithundxr.createnumismatics.Numismatics;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;

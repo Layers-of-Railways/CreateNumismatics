@@ -22,11 +22,8 @@ import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.*;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
@@ -40,8 +37,11 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -122,7 +122,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
     @Override
     protected void init() {
-        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.height);
+        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.getHeight());
         setWindowOffset(-20, 0);
         super.init();
 
@@ -166,13 +166,13 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
             int yIncrement = 22;
             int baseY = y + 45 + (yIncrement * (i%3));
 
-            coinLabels[i] = new Label(baseX + 18, baseY + 5, Components.immutableEmpty()).withShadow();
+            coinLabels[i] = new Label(baseX + 18, baseY + 5, CommonComponents.EMPTY).withShadow();
             addRenderableWidget(coinLabels[i]);
 
             coinScrollInputs[i] = new ScrollInput(baseX, baseY, 36, 18)
                 .withRange(0, 129)
                 .writingTo(coinLabels[i])
-                .titled(Components.literal(TextUtils.titleCaseConversion(coin.getName(0))))
+                .titled(Component.literal(TextUtils.titleCaseConversion(coin.getName(0))))
                 .calling((value) -> {
                     menu.contentHolder.setPrice(coin, value);
                     menu.contentHolder.disableClientPriceRead();
@@ -184,13 +184,13 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
             coinScrollInputs[i].onChanged();
         }
 
-        modeLabel = new Label(x + 90 + 3 + 9, y + 40 + 5, Components.immutableEmpty()).withShadow();
+        modeLabel = new Label(x + 90 + 3 + 9, y + 40 + 5, CommonComponents.EMPTY).withShadow();
         addRenderableWidget(modeLabel);
 
         modeScrollInput = new SelectionScrollInput(x + 90 + 9, y + 40, 46, 18);
         modeScrollInput.forOptions(Mode.getComponents());
         modeScrollInput.writingTo(modeLabel);
-        modeScrollInput.titled(Components.translatable("block.numismatics.vendor.tooltip.mode"));
+        modeScrollInput.titled(Component.translatable("block.numismatics.vendor.tooltip.mode"));
         modeScrollInput.calling(idx -> {
             menu.contentHolder.setMode(Mode.values()[idx]);
 
@@ -221,7 +221,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
+        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.getWidth());
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);
 
@@ -246,7 +246,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(menu.contentHolder.getTotalPrice());
         int reference = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        Component balanceLabel = Components.translatable("block.numismatics.brass_depositor.tooltip.price",
+        Component balanceLabel = Component.translatable("block.numismatics.brass_depositor.tooltip.price",
             TextUtils.formatInt(reference), NumismaticsConfig.common().referenceCoin.get().getName(reference), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
     }
@@ -257,9 +257,9 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             Component component = null;
             if (hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
-                component = Components.translatable("block.numismatics.vendor.tooltip.trade_item");
+                component = Component.translatable("block.numismatics.vendor.tooltip.trade_item");
             } else if (VendorMenu.INV_START_INDEX <= hoveredSlot.index && hoveredSlot.index < VendorMenu.INV_END_INDEX) {
-                component = Components.translatable("block.numismatics.vendor.tooltip.stock");
+                component = Component.translatable("block.numismatics.vendor.tooltip.stock");
             }
             if (component != null) {
                 guiGraphics.renderTooltip(font, component, x, y);

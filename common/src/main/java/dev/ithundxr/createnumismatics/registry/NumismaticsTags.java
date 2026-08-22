@@ -18,9 +18,9 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

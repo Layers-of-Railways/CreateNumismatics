@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.multiloader;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -208,7 +207,7 @@ public abstract class PacketSet {
 		public void handle(Minecraft mc) {
 			if (NumismaticsPackets.PACKETS.version == serverVersion)
 				return;
-			Component error = Components.translatable("numismatics.packets.mismatched_format", Numismatics.NAME);
+			Component error = Component.translatable("numismatics.packets.mismatched_format", Numismatics.NAME);
 			mc.getConnection().onDisconnect(error);
 		}
 	}

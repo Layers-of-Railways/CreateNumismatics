@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.forge.mixin.client;
 
-import com.simibubi.create.foundation.ponder.PonderTooltipHandler;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
+import net.createmod.ponder.foundation.PonderTooltipHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;

@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.events;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.event.MultiLoaderEvent;
 import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
@@ -31,6 +30,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -63,7 +63,7 @@ public class CommonEvents {
         }
 
         if (state.getBlock() instanceof TrustedBlock trustedBlock && !player.isCrouching() && trustedBlock.isTrusted(player, level, pos)) {
-            player.displayClientMessage(Components.translatable("block.numismatics.trusted_block.attempt_break", Components.keybind("key.sneak"))
+            player.displayClientMessage(Component.translatable("block.numismatics.trusted_block.attempt_break", Components.keybind("key.sneak"))
                     .withStyle(ChatFormatting.DARK_RED), true);
         }
 

@@ -21,7 +21,8 @@ package dev.ithundxr.createnumismatics;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlockEntity;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPartialModels;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPonderIndex;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderPlugin;
+import net.createmod.ponder.foundation.PonderIndex;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPonderTags;
 
 import java.util.HashMap;
@@ -43,6 +44,6 @@ public class NumismaticsClient {
 
     public static void postRegistrationInit() {
         NumismaticsPonderTags.register();
-        NumismaticsPonderIndex.register();
+        PonderIndex.addPlugin(new NumismaticsPonderPlugin());
     }
 }

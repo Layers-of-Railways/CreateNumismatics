@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.content.coins;
 
 import com.google.common.collect.ImmutableMap;
-import com.simibubi.create.foundation.utility.Components;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -137,15 +136,15 @@ public class CoinItem extends Item {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         Coin descriptor = coin.getDescription();
         if (descriptor == Coin.SPUR) {
-            tooltipComponents.add(Components.translatable("item.numismatics.coin.tooltip.value.basic", coin.value));
+            tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.value.basic", coin.value));
         } else {
             int relativeValue = coin.value / descriptor.value;
-            tooltipComponents.add(Components.translatable("item.numismatics.coin.tooltip.value", relativeValue, descriptor.getName(relativeValue), coin.value));
+            tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.value", relativeValue, descriptor.getName(relativeValue), coin.value));
         }
 
         int displayedCount;
         if (stack.getTag() != null && (displayedCount = stack.getTag().getInt("DisplayedCount")) > 0) {
-            tooltipComponents.add(Components.translatable("item.numismatics.coin.tooltip.count",
+            tooltipComponents.add(Component.translatable("item.numismatics.coin.tooltip.count",
                 TextUtils.formatInt(displayedCount), coin.getName(displayedCount))
                 .withStyle(ChatFormatting.GOLD));
         }

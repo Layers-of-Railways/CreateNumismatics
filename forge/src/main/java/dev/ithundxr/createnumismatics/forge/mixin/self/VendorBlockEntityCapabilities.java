@@ -43,7 +43,7 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     }
 
     @Shadow(remap = false) AbstractComputerBehaviour computerBehaviour;
-    
+
     @Unique LazyOptional<? extends IItemHandler> numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));
 
     @Override
@@ -61,14 +61,13 @@ public abstract class VendorBlockEntityCapabilities extends SmartBlockEntity imp
     @Override
     public void reviveCaps() {
         super.reviveCaps();
-        numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));
-    }
+        numismatics$handler = LazyOptional.of(() -> new SidedInvWrapper(this, Direction.NORTH));    }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         computerBehaviour.removePeripheral();
-        
+
         numismatics$handler.invalidate();
     }
 }

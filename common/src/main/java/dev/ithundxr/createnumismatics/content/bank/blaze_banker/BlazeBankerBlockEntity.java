@@ -22,10 +22,6 @@ import com.google.common.collect.ImmutableList;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.AngleHelper;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.VecHelper;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
@@ -33,6 +29,9 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContai
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.math.VecHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -321,7 +320,7 @@ public class BlazeBankerBlockEntity extends SmartBlockEntity implements Trusted,
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Components.translatable("block.numismatics.blaze_banker");
+        return Component.translatable("block.numismatics.blaze_banker");
     }
 
     @Nullable

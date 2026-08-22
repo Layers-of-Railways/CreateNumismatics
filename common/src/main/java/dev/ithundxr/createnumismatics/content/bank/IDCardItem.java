@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -93,15 +92,15 @@ public class IDCardItem extends Item {
         if (isBound(handStack)) {
             if (player.isShiftKeyDown()) {
                 clear(handStack);
-                player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
+                player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.cleared"), true);
                 return InteractionResultHolder.success(handStack);
             } else {
-                player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.already_bound")
+                player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.already_bound")
                     .withStyle(ChatFormatting.RED), true);
             }
         } else if (!player.isShiftKeyDown()) {
             set(handStack, player.getUUID());
-            player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.bound"), true);
+            player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.bound"), true);
             return InteractionResultHolder.success(handStack);
         }
 
@@ -112,10 +111,10 @@ public class IDCardItem extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         if (isBound(stack)) {
-            tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound.to", getPlayerName(stack))
+            tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound.to", getPlayerName(stack))
                 .withStyle(ChatFormatting.GREEN));
         } else {
-            tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.blank"));
+            tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.blank"));
         }
     }
 }

@@ -19,7 +19,7 @@
 package dev.ithundxr.createnumismatics.content.depositor;
 
 import com.google.common.collect.ImmutableList;
-import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;

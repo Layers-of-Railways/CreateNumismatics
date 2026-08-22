@@ -108,6 +108,9 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
+
+            if (project.name == "forge")
+                programArg("-mixin.config=create.mixins.json")
         }
     }
 
@@ -184,6 +187,13 @@ subprojects {
     }
 
     tasks.processResources {
+        val createForgeVersion = "create_forge_version"().split("-")[0] // cut off build number
+        val createForgeUpperBounds = {
+            val parts = createForgeVersion.split(".").map { it.toInt() }
+            val newMinor = parts[1] + 1
+            "${parts[0]}.$newMinor.0"
+        }
+
         // set up properties for filling into metadata
         val properties = mapOf(
             "version" to version,
@@ -191,8 +201,10 @@ subprojects {
             "fabric_api_version" to "fabric_api_version"(),
             "fabric_loader_version" to "fabric_loader_version"(),
             "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
-            "create_forge_version" to "create_forge_version"().split("-")[0], // cut off build number
-            "create_fabric_version" to "create_fabric_version"()
+            "create_forge_version" to createForgeVersion,
+            "create_forge_upper_bounds" to createForgeUpperBounds.invoke(),
+            "create_fabric_version" to "create_fabric_version"().split("+")[0], // Trim +mcX.XX.X from version string
+            "create_fabric_version_range" to "create_fabric_version_range"()
         )
 
         inputs.properties(properties)
@@ -286,34 +298,30 @@ fun removeIfDevMethod(visibleAnnotations: List<AnnotationNode>?): Boolean {
 
 fun calculateGitHash(): String {
     try {
-        val stdout = ByteArrayOutputStream()
-        exec {
+        val output = providers.exec {
             commandLine("git", "rev-parse", "HEAD")
-            standardOutput = stdout
         }
-        return stdout.toString().trim()
-    } catch(ignored: Throwable) {
+        return output.standardOutput.asText.get().trim()
+    } catch (ignored: Throwable) {
         return "unknown"
     }
 }
 
 fun hasUnstaged(): Boolean {
     try {
-        val stdout = ByteArrayOutputStream()
-        exec {
+        val output = providers.exec {
             commandLine("git", "status", "--porcelain")
-            standardOutput = stdout
         }
-        val result = stdout.toString().replace(Regex("M gradlew(\\.bat)?"), "").trimEnd()
+        val result = output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
         if (result.isNotEmpty())
             println("Found stageable results:\n${result}\n")
         return result.isNotEmpty()
-    }  catch(ignored: Throwable) {
+    } catch (ignored: Throwable) {
         return false
     }
 }
 
-tasks.create("numismaticsPublish") {
+tasks.register("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
             dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
@@ -343,6 +351,7 @@ fun Project.setupRepositories() {
         maven("https://mvn.devos.one/releases") // Porting Lib Releases, Steam 'n' Rails Releases
         maven("https://maven.cafeteria.dev/releases") // Fake Player API
         maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/") // Forge config api port
+        /* TODO: check if this is indeed not needed
         maven("https://maven.tterrag.com/") { // Flywheel, Registrate, Create
             content {
                 // need to be specific here due to version overlaps
@@ -350,7 +359,8 @@ fun Project.setupRepositories() {
                 includeGroup("com.tterrag.registrate")
                 includeGroup("com.jozufozu.flywheel")
             }
-        }
+        }*/
+        maven("https://maven.createmod.net") // Create, Ponder, Flywheel
         maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
         maven("https://jitpack.io/") { // Mixin Extras, Fabric ASM
             content {

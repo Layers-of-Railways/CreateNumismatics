@@ -19,12 +19,12 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -63,7 +63,7 @@ public abstract class BlockEntityConfigurationPacket<BE extends SyncedBlockEntit
                 Numismatics.LOGGER.error("Illegal configuration of %s at %s attempted by player %s".formatted(
                     blockEntity, pos, sender
                 ));
-                sender.connection.disconnect(Components.literal("Haxx: Illegal block entity configuration attempt"));
+                sender.connection.disconnect(Component.literal("Haxx: Illegal block entity configuration attempt"));
                 return;
             }
             applySettings(sender, (BE) blockEntity);

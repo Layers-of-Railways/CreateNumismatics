@@ -18,11 +18,11 @@
 
 package dev.ithundxr.createnumismatics.base.data.recipe;
 
-import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -234,7 +234,7 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
         }
 
         private ResourceLocation getRegistryName() {
-            return compatDatagenOutput == null ? RegisteredObjects.getKeyOrThrow(result.get()
+            return compatDatagenOutput == null ? CatnipServices.REGISTRIES.getKeyOrThrow(result.get()
                 .asItem()) : compatDatagenOutput;
         }
 
@@ -313,9 +313,7 @@ public class NumismaticsStandardRecipeGen extends NumismaticsRecipeProvider {
                             exp, (int) (cookingTime * cookingTimeModifier), serializer));
                     if (unlockedBy != null)
                         b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
-                    b.save(result -> {
-                        consumer.accept(result);
-                    }, createSimpleLocation(RegisteredObjects.getKeyOrThrow(serializer)
+                    b.save(consumer, createSimpleLocation(CatnipServices.REGISTRIES.getKeyOrThrow(serializer)
                         .getPath()));
                 });
             }

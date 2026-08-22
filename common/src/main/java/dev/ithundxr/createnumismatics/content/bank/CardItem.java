@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -93,14 +92,14 @@ public class CardItem extends Item {
         if (isBound(stack)) {
             String name = getPlayerName(stack);
             if (name == null) {
-                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound")
+                tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound")
                     .withStyle(ChatFormatting.GREEN));
             } else {
-                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound.to", name)
+                tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound.to", name)
                     .withStyle(ChatFormatting.GREEN));
             }
         } else {
-            tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.blank"));
+            tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.blank"));
         }
     }
 
@@ -113,14 +112,14 @@ public class CardItem extends Item {
         if (isBound(handStack)) {
             if(player.isShiftKeyDown()) {
                 clear(handStack);
-                player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
+                player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.cleared"), true);
                 return InteractionResultHolder.success(handStack);
             }
         }
         else {
             set(handStack, player.getUUID());
             level.playSound(null, new BlockPos(player.getBlockX(), player.getBlockY(), player.getBlockZ()), SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS, 0.5f, 1.0f);
-            player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.bound"), true);
+            player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.bound"), true);
             return InteractionResultHolder.success(handStack);
         } return InteractionResultHolder.pass(handStack);
     }
