@@ -2,7 +2,7 @@
 Numismatics 1.1.0
 ------------------------------------------------------
 Additions
-- Computer Craft: Tweaked compat for vendors, brass depositors, salepoint's and bank terminals
+- Computer Craft: Tweaked compat for vendors, brass depositors, salepoints and bank terminals
 - Common tag that all blocks have with another tag for items to make it easier to allow use of numismatics blocks/items with claims
 - Config option to select the default coin reference type to be used in UIs (default is suns & cogs)
 - Config option to pick how much money each player should receive the first time they open their bank account
@@ -11,11 +11,14 @@ Additions
 - Bulk buy/sell up to a stack of items to vendors by sneaking while using the vendor
 - Add Sub Accounts: created in the Bank Terminal, these allow binding Authorized Cards with spending limits and separate trust lists, drawing from and depositing to the parent Bank Account
 - Salepoint: Similar to the vendor, but allows players to queue a transaction made up of multiple purchases through a Portable Item/Fluid/Energy Interface
+- Add ponders for all shop blocks
 
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors
 - Texture inconsistency in the gui texture of blaze terminals, blaze bankers and trust lists
 - Creative vendors can no longer be modified by players in survival
+- Shops and Blaze Bankers drop ID Cards from their trust list when destroyed
+- Vendors and Depositors preserve price information and filter items in schematics
 
 Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)
