@@ -19,7 +19,6 @@
     "WrappedStorageAccessor",
     "compat.PortableEnergyInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
-    "compat.PortableEnergyInterfaceMovementMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin",
     "compat.PortableFuelInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin"
   ],
