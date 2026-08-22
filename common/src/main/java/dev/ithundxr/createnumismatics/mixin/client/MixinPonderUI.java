@@ -22,11 +22,12 @@ import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.GuiGraphics;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,10 +37,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-import static com.simibubi.create.foundation.ponder.ui.PonderUI.ponderPartialTicksPaused;
+import static net.createmod.ponder.foundation.ui.PonderUI.ponderPartialTicksPaused;
 
 @Mixin(PonderUI.class)
 public class MixinPonderUI implements PonderUI_Duck {
+    @Final
     @Shadow private List<PonderScene> scenes;
 
     @Shadow private int skipCooling;

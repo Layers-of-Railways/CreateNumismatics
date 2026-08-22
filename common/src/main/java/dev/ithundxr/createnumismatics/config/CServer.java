@@ -18,7 +18,8 @@
 
 package dev.ithundxr.createnumismatics.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
+import net.createmod.catnip.config.ConfigBase;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class CServer extends ConfigBase {
@@ -44,7 +45,7 @@ public class CServer extends ConfigBase {
     // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CServer.java
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "server";
     }
 

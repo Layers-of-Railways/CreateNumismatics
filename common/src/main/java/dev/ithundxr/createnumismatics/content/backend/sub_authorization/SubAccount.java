@@ -18,9 +18,13 @@
 
 package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.content.backend.*;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.IAuthorizationChecker;
+import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDeductable;
+import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -28,6 +32,7 @@ import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,7 +120,7 @@ public final class SubAccount implements IAuthorizationChecker {
 
     public boolean spend(Authorization authorization, int spurs, boolean simulate, ReasonHolder reasonHolder) {
         if (!isAuthorized(authorization)) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
             return false;
         }
 
@@ -124,7 +129,7 @@ public final class SubAccount implements IAuthorizationChecker {
         }
 
         if (!totalLimit.spend(spurs, simulate)) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.limit_reached"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.authorized_card.limit_reached"));
             return false;
         }
 

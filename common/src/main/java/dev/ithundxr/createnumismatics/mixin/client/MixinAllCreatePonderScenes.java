@@ -18,23 +18,19 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.simibubi.create.foundation.ponder.PonderRegistry;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.PonderStoryBoardEntry;
-import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
-import dev.ithundxr.createnumismatics.ponder.utils.NumismaticsSharedText;
+import com.simibubi.create.infrastructure.ponder.AllCreatePonderScenes;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPonderScenes;
+import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
-
-@DevMixin
-@Mixin(PonderRegistry.class)
-public class MixinPonderRegistry {
-    @Inject(method = "compile(Ljava/util/List;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/infrastructure/ponder/SharedText;gatherText()V"), remap = false)
-    private static void numismatics$injectNumismaticsSharedText(List<PonderStoryBoardEntry> entries, CallbackInfoReturnable<List<PonderScene>> cir) {
-        NumismaticsSharedText.gatherText();
+@Mixin(AllCreatePonderScenes.class)
+public class MixinAllCreatePonderScenes {
+    @Inject(method = "register(Lnet/createmod/ponder/api/registration/PonderSceneRegistrationHelper;)V", at = @At("TAIL"), remap = false)
+    private static void numismatics$injectPondersAfterCreates(PonderSceneRegistrationHelper<ResourceLocation> helper, CallbackInfo ci) {
+        NumismaticsPonderScenes.registerAfterCreatePonders();
     }
 }

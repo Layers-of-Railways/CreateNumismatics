@@ -19,12 +19,10 @@
 package dev.ithundxr.createnumismatics;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.simibubi.create.Create;
 import com.simibubi.create.CreateBuildInfo;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -39,10 +37,8 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
-import dev.ithundxr.createnumismatics.util.MethodVarHandleUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.lang.FontHelper.Palette;
-import net.createmod.ponder.foundation.registration.PonderLocalization;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
@@ -68,7 +64,7 @@ public class Numismatics {
     }
 
     public static void init() {
-        LOGGER.info("{} {} initializing! Create version: {} on platform: {}", NAME, VERSION, CreateBuildInfo.VERSION, Loader.getCurrent());
+        LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, CreateBuildInfo.VERSION, Loader.getFormatted());
 
         ModSetup.register();
         finalizeRegistrate();

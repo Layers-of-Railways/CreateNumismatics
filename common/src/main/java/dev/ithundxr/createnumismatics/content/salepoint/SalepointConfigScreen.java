@@ -22,13 +22,10 @@ import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidget;
 import dev.ithundxr.createnumismatics.base.client.rendering.ISalepointStateUpdatingWidget;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
@@ -41,12 +38,15 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -117,7 +117,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
 
     @Override
     protected void init() {
-        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.height);
+        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.getHeight());
         setWindowOffset(-20, 0);
         super.init();
 
@@ -141,13 +141,13 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
             final int yIncrement = 22;
             final int baseY = y + 45 + (yIncrement * (i%3));
 
-            coinLabels[i] = new Label(baseX + 18, baseY + 5, Components.immutableEmpty()).withShadow();
+            coinLabels[i] = new Label(baseX + 18, baseY + 5, CommonComponents.EMPTY).withShadow();
             addRenderableWidget(coinLabels[i]);
 
             coinScrollInputs[i] = new ScrollInput(baseX, baseY, 36, 18)
                 .withRange(0, 129)
                 .writingTo(coinLabels[i])
-                .titled(Components.literal(TextUtils.titleCaseConversion(coin.getName(0))))
+                .titled(Component.literal(TextUtils.titleCaseConversion(coin.getName(0))))
                 .calling((value) -> {
                     menu.contentHolder.setPrice(coin, value);
                     menu.contentHolder.disableClientPriceRead();
@@ -187,7 +187,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
 
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
+        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.getWidth());
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);
 
@@ -205,7 +205,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
         Couple<Integer> referenceAndSpurs = NumismaticsConfig.common().referenceCoin.get().convert(menu.contentHolder.getTotalPrice());
         int reference = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        Component balanceLabel = Components.translatable("gui.numismatics.salepoint.price",
+        Component balanceLabel = Component.translatable("gui.numismatics.salepoint.price",
             TextUtils.formatInt(reference), NumismaticsConfig.common().referenceCoin.get().getName(reference), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
 

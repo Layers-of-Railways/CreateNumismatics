@@ -110,6 +110,17 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
         }
     }
 
+    // Create Forge and Create Fabric add slots in a different order, so this ensures consistency
+    @Override
+    @SuppressWarnings({"RedundantMethodOverride", "RedundantSuppression", "DuplicatedCode"})
+    protected void addPlayerSlots(int x, int y) {
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
+            this.addSlot(new Slot(playerInventory, hotbarSlot, x + hotbarSlot * 18, y + 58));
+        for (int row = 0; row < 3; ++row)
+            for (int col = 0; col < 9; ++col)
+                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, x + col * 18, y + row * 18));
+    }
+
     @Override
     protected void saveData(SalepointBlockEntity contentHolder) {}
 

@@ -66,11 +66,11 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
     @Shadow(remap = false) protected LazyOptional<IFluidHandler> capability;
 
     @Unique
-    private FluidSalepointTargetBehaviour railway$salepointBehaviour;
+    private FluidSalepointTargetBehaviour numismatics$salepointBehaviour;
 
     @Unique
     @Nullable
-    private IFluidHandler railway$contraptionStorage;
+    private IFluidHandler numismatics$contraptionStorage;
 
     private PortableFuelInterfaceBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -87,7 +87,7 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
     private void keepControl(Contraption contraption, float distance, CallbackInfo ci,
                              @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap,
                              @Local(name = "finalCtw") CombinedTankWrapper finalCtw) {
-        railway$contraptionStorage = finalCtw;
+        numismatics$contraptionStorage = finalCtw;
 
         oldcap.ifPresent(fluidHandler -> {
             IFluidHandler existingWrapped = ((InterfaceFluidHandlerAccessor) fluidHandler).getWrapped();
@@ -108,7 +108,7 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
         remap = false
     )
     private void keepControl2(CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap) {
-        railway$contraptionStorage = null;
+        numismatics$contraptionStorage = null;
 
         oldcap.ifPresent(fluidHandler -> {
             IFluidHandler existingWrapped = ((InterfaceFluidHandlerAccessor) fluidHandler).getWrapped();
@@ -122,13 +122,13 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
 
     @Override
     public boolean canTransfer() {
-        return super.canTransfer() || railway$salepointBehaviour.isControlledBySalepoint();
+        return super.canTransfer() || numismatics$salepointBehaviour.isControlledBySalepoint();
     }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        railway$salepointBehaviour = new FluidSalepointTargetBehaviour(this) {
+        numismatics$salepointBehaviour = new FluidSalepointTargetBehaviour(this) {
             private boolean underControl = false;
 
             @Override
@@ -152,7 +152,7 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
             protected void relinquishControlInternal(@NotNull ISalepointState<MultiloaderFluidStack> state) {
                 capability.ifPresent(fluidHandler -> {
                     ((InterfaceFluidHandlerAccessor) fluidHandler).setWrapped(Objects.requireNonNullElseGet(
-                        railway$contraptionStorage,
+                        numismatics$contraptionStorage,
                         () -> new FluidTank(0)
                     ));
                 });
@@ -165,15 +165,15 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             public boolean hasSpaceFor(@NotNull MultiloaderFluidStack object) {
-                if (railway$contraptionStorage == null)
+                if (numismatics$contraptionStorage == null)
                     return false;
 
-                return railway$contraptionStorage.fill(((MultiloaderFluidStackImpl) object).getWrapped(), FluidAction.SIMULATE) == object.getAmount();
+                return numismatics$contraptionStorage.fill(((MultiloaderFluidStackImpl) object).getWrapped(), FluidAction.SIMULATE) == object.getAmount();
             }
 
             @Override
             public boolean doPurchase(@NotNull MultiloaderFluidStack object, @NotNull PurchaseProvider<MultiloaderFluidStack> purchaseProvider) {
-                if (railway$contraptionStorage == null)
+                if (numismatics$contraptionStorage == null)
                     return false;
 
                 if (!hasSpaceFor(object))
@@ -181,7 +181,7 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
 
                 List<MultiloaderFluidStack> extracted = purchaseProvider.extract();
                 for (MultiloaderFluidStack fluidStack : extracted) {
-                    if (railway$contraptionStorage.fill(((MultiloaderFluidStackImpl) fluidStack).getWrapped(), FluidAction.EXECUTE) != fluidStack.getAmount()) {
+                    if (numismatics$contraptionStorage.fill(((MultiloaderFluidStackImpl) fluidStack).getWrapped(), FluidAction.EXECUTE) != fluidStack.getAmount()) {
                         Numismatics.LOGGER.error("Failed to insert fluid into contraption storage, despite having space.");
                         return false;
                     }
@@ -216,7 +216,7 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
             }
         };
 
-        behaviours.add(railway$salepointBehaviour);
+        behaviours.add(numismatics$salepointBehaviour);
     }
 
     @Mixin(InterfaceFluidHandler.class)

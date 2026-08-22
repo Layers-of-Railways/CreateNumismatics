@@ -22,9 +22,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 
-import static com.simibubi.create.infrastructure.command.PonderCommand.ITEM_PONDERS;
+//import static com.simibubi.create.infrastructure.command.PonderCommand.ITEM_PONDERS;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -87,7 +87,7 @@ public class UtilCommand {
     private static ArgumentBuilder<CommandSourceStack, ?> export_ponder() {
         return literal("export_ponder")
             .then(argument("scene", ResourceLocationArgument.id())
-                .suggests(ITEM_PONDERS)
+                //.suggests(ITEM_PONDERS)
                 .executes(ctx -> $export_ponder(
                     ctx.getSource(),
                     ResourceLocationArgument.getId(ctx, "scene")

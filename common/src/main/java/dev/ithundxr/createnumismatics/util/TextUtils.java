@@ -133,7 +133,7 @@ public class TextUtils {
     }
 
     public static boolean isLeftToRight() {
-        return Components.translatable("numismatics.special.ltr")
+        return Component.translatable("numismatics.special.ltr")
             .getString()
             .toLowerCase(Locale.ROOT)
             .equals("true");

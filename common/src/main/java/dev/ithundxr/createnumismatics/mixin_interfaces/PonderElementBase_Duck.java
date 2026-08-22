@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2024-2026 The Railways Team
+ * Copyright (c) 2026 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,22 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.ponder.utils;
+package dev.ithundxr.createnumismatics.mixin_interfaces;
 
-import com.simibubi.create.foundation.ponder.PonderLocalization;
-import dev.ithundxr.createnumismatics.Numismatics;
 
-public class NumismaticsSharedText {
-    public static void gatherText() {
-        // Add entries used across several ponder scenes (Safe for hotswap)
+import net.createmod.ponder.api.element.PonderOverlayElement;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.foundation.element.PonderElementBase;
 
-        for (int i = 1; i < 10; i++) {
-            add("amount" + i + "x", i + "x");
-            add("amount_spaced_" + i + "x", i + "x ");
-        }
-    }
+public interface PonderElementBase_Duck {
+    void numismatics$setOverlayLayer(boolean isOverlay);
+    boolean numismatics$isOnOverlayLayer();
 
-    private static void add(String k, String v) {
-        PonderLocalization.registerShared(Numismatics.asResource(k), v);
+    static <T extends PonderElementBase & PonderOverlayElement> void numismatics$applyOverlay(SceneBuilder builder, T element) {
+        ((PonderElementBase_Duck) element).numismatics$setOverlayLayer(((SceneBuilder_Duck) builder).numismatics$isOverlayLayerEnabled());
     }
 }

@@ -19,9 +19,9 @@
 package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.mixin_interfaces.IAdminModePlayer;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -33,10 +33,10 @@ public class ToggleAdminModeCommand {
                 if (ctx.getSource().getPlayerOrException() instanceof IAdminModePlayer adminModePlayer) {
                     boolean newAdminMode = !adminModePlayer.numismatics$isAdminMode();
                     adminModePlayer.numismatics$setAdminMode(newAdminMode);
-                    ctx.getSource().sendSuccess(() -> Components.literal("Turned admin mode "+(newAdminMode ? "on" : "off")), true);
+                    ctx.getSource().sendSuccess(() -> Component.literal("Turned admin mode "+(newAdminMode ? "on" : "off")), true);
                     return 1;
                 } else {
-                    ctx.getSource().sendFailure(Components.literal("You are not a player!"));
+                    ctx.getSource().sendFailure(Component.literal("You are not a player!"));
                     return 0;
                 }
             });

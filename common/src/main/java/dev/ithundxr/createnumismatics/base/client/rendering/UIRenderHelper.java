@@ -24,26 +24,13 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.utility.Color;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import net.createmod.catnip.theme.Color;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
 
-public class UIRenderHelper extends com.simibubi.create.foundation.gui.UIRenderHelper {
-	public static void drawStretched(GuiGraphics graphics, int left, int top, int w, int h, int z, NumismaticsGuiTextures tex) {
-		tex.bind();
-		drawTexturedQuad(graphics.pose().last()
-			.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + tex.width) / 256f,
-			tex.startY / 256f, (tex.startY + tex.height) / 256f);
-	}
-
-	public static void drawCropped(GuiGraphics graphics, int left, int top, int w, int h, int z, NumismaticsGuiTextures tex) {
-		tex.bind();
-		drawTexturedQuad(graphics.pose().last()
-				.pose(), Color.WHITE, left, left + w, top, top + h, z, tex.startX / 256f, (tex.startX + w) / 256f,
-			tex.startY / 256f, (tex.startY + h) / 256f);
-	}
+public class UIRenderHelper extends net.createmod.catnip.gui.UIRenderHelper {
 
 	public static void drawCropped(GuiGraphics graphics, int left, int top, int minU, int minV, int maxU, int maxV, int z, NumismaticsGuiTextures tex) {
 		tex.bind();
@@ -59,8 +46,8 @@ public class UIRenderHelper extends com.simibubi.create.foundation.gui.UIRenderH
 		drawTexturedQuad(graphics.pose().last().pose(), Color.WHITE,
 			left, left + maxU - minU,
 			top, top + maxV - minV, z,
-			(tex.startX + minU) / 256f, (tex.startX + maxU) / 256f,
-			(tex.startY + minV) / 256f, (tex.startY + maxV) / 256f);
+			(tex.getStartX() + minU) / 256f, (tex.getStartX() + maxU) / 256f,
+			(tex.getStartY() + minV) / 256f, (tex.getStartY() + maxV) / 256f);
 	}
 
 	private static void drawTexturedQuad(Matrix4f m, Color c, int left, int right, int top, int bot, int z, float u1, float u2, float v1, float v2) {

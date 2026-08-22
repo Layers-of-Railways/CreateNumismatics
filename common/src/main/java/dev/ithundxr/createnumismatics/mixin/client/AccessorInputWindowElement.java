@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import net.createmod.catnip.gui.element.ScreenElement;
+import net.createmod.ponder.foundation.element.InputWindowElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ public interface AccessorInputWindowElement {
     ItemStack numismatics$getItem();
 
     @Accessor(value = "icon", remap = false)
-    AllIcons numismatics$getIcon();
+    ScreenElement numismatics$getIcon();
     
     @Accessor("key")
     void numismatics$setKey(ResourceLocation key);

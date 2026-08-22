@@ -20,12 +20,11 @@ package dev.ithundxr.createnumismatics.ponder.utils;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.PonderScene;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
 import dev.ithundxr.createnumismatics.util.FusedFunction;
-import net.minecraft.world.MenuProvider;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.foundation.PonderScene;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.phys.Vec2;
@@ -55,10 +54,12 @@ public record ScreenVec<
         }));
     }
 
+    @SuppressWarnings("DataFlowIssue") // no really, it is nullable. Ponder lib just doesn't understand that the passed function is nullable
     public @Nullable Vec2 toGlobal(PonderScene scene, float partialTicks) {
         return scene.applyTo(screen, s -> s.guiLocalToGlobal(vec, partialTicks));
     }
 
+    @SuppressWarnings("DataFlowIssue") // no really, it is nullable. Ponder lib just doesn't understand that the passed function is nullable
     public @Nullable Vec2 toLocal(PonderScene scene) {
         return scene.applyTo(screen, this::toLocal);
     }

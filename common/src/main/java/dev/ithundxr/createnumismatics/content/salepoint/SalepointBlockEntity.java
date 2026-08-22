@@ -20,18 +20,19 @@ package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
-import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Lang;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
-import dev.ithundxr.createnumismatics.content.backend.*;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
+import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
@@ -50,6 +51,8 @@ import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.lang.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -58,6 +61,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -540,8 +544,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
         ReasonHolder reasonHolder = new ReasonHolder();
         if (!state.isValidForPurchase(getLevel(), getTargetedPos(), reasonHolder)) {
-            Lang.builder()
-                .add(reasonHolder.getMessageOrDefault(Components.translatable("gui.numismatics.salepoint.invalid_state")))
+            Lang.builder(Numismatics.MOD_ID)
+                .add(reasonHolder.getMessageOrDefault(Component.translatable("gui.numismatics.salepoint.invalid_state")))
                 .style(ChatFormatting.DARK_RED)
                 .forGoggles(clientsideTooltip);
 
@@ -552,8 +556,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             if (showOwner) {
                 String ownerName = UsernameUtils.INSTANCE.getName(owner, null);
                 if (ownerName != null) {
-                    Lang.builder()
-                        .add(Components.translatable("gui.numismatics.vendor.generic_named", ownerName))
+                    Lang.builder(Numismatics.MOD_ID)
+                        .add(Component.translatable("gui.numismatics.vendor.generic_named", ownerName))
                         .style(ChatFormatting.DARK_RED)
                         .forGoggles(clientsideTooltip);
                 }
@@ -564,21 +568,21 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         Couple<Integer> referenceAndSpurs = referenceCoin.convert(getTotalPrice());
         int reference = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        MutableComponent balanceLabel = Components.translatable("gui.numismatics.salepoint.price",
+        MutableComponent balanceLabel = Component.translatable("gui.numismatics.salepoint.price",
             TextUtils.formatInt(reference), referenceCoin.getName(reference), spurs);
 
         state.createTooltip(clientsideTooltip, getLevel(), getTargetedPos());
 
-        clientsideTooltip.add(Components.immutableEmpty());
+        clientsideTooltip.add(CommonComponents.EMPTY);
 
         // For: ...
 
-        Lang.builder()
+        Lang.builder(Numismatics.MOD_ID)
             .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
             .forGoggles(clientsideTooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {
-            Lang.builder()
+            Lang.builder(Numismatics.MOD_ID)
                 .add(component)
                 .forGoggles(clientsideTooltip);
         }
@@ -595,7 +599,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     private class ConfigMenuProvider implements MenuProvider {
         @Override
         public @NotNull Component getDisplayName() {
-            return Components.translatable("block.numismatics.salepoint");
+            return Component.translatable("block.numismatics.salepoint");
         }
 
         @Nullable
@@ -608,7 +612,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     private class PurchaseMenuProvider implements MenuProvider {
         @Override
         public @NotNull Component getDisplayName() {
-            return Components.translatable("block.numismatics.salepoint");
+            return Component.translatable("block.numismatics.salepoint");
         }
 
         @Nullable

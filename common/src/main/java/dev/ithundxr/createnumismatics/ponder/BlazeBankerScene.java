@@ -18,10 +18,6 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerMenu;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerScreen;
@@ -33,6 +29,9 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -50,41 +49,42 @@ public class BlazeBankerScene {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos blazeBurner = util.grid.at(2, 1, 2);
-        Vec3 blazeBurnerText = util.vector.blockSurface(blazeBurner, Direction.WEST);
+        BlockPos blazeBurner = util.grid().at(2, 1, 2);
+        Vec3 blazeBurnerText = util.vector().blockSurface(blazeBurner, Direction.WEST);
 
-        scene.world.showSection(util.select.position(blazeBurner), Direction.DOWN);
+        scene.world().showSection(util.select().position(blazeBurner), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
                 .attachKeyFrame()
                 .text("Create a Blaze Banker by applying a Banking Guide to a Blaze Burner")
                 .pointAt(blazeBurnerText)
                 .placeNearTarget();
         scene.idle(80);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(blazeBurner), Pointing.DOWN).leftClick()
-                .withItem(NumismaticsItems.BANKING_GUIDE.asStack()), 15);
+        scene.overlay().showControls(util.vector().topOf(blazeBurner), Pointing.DOWN, 15)
+            .leftClick()
+            .withItem(NumismaticsItems.BANKING_GUIDE.asStack());
         scene.idle(7);
-        scene.world.setBlock(blazeBurner, NumismaticsBlocks.BLAZE_BANKER.getDefaultState(), false);
+        scene.world().setBlock(blazeBurner, NumismaticsBlocks.BLAZE_BANKER.getDefaultState(), false);
         scene.idle(20);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
                 .attachKeyFrame()
                 .text("The Blaze Banker is a way for players to manage money without using their own account.")
                 .pointAt(blazeBurnerText)
                 .placeNearTarget();
         scene.idle(80);
 
-        scene.overlay.showText(60)
+        scene.overlay().showText(60)
             .attachKeyFrame()
             .text("Players with access can use Blaze Bankers to configure them.")
             .pointAt(blazeBurnerText)
             .placeNearTarget();
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(blazeBurner), Pointing.DOWN)
-            .rightClick(), 10);
+        scene.overlay().showControls(util.vector().topOf(blazeBurner), Pointing.DOWN, 10)
+            .rightClick();
         scene.idle(15);
 
         var menu = scenex.showContainerMenu(

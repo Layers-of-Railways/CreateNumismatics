@@ -18,14 +18,15 @@
 
 package dev.ithundxr.createnumismatics.util.forge;
 
-import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.LangBuilder;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.lang.LangBuilder;
 
 public class TextUtilsImpl {
     public static String formatFluid(long amount) {
-        LangBuilder mb = Lang.translate("generic.unit.millibuckets");
+        LangBuilder mb = CreateLang.translate("generic.unit.millibuckets");
 
-        return Lang.number(amount)
+        return CreateLang
+            .number(amount)
             .add(mb)
             .string();
     }

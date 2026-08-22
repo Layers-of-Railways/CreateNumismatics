@@ -19,9 +19,9 @@
 package dev.ithundxr.createnumismatics.mixin.client.dev_export;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.simibubi.create.infrastructure.ponder.PonderIndex;
 import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
+import net.createmod.ponder.foundation.PonderIndex;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 

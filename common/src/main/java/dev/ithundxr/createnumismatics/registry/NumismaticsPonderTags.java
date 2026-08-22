@@ -18,45 +18,30 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.ponder.PonderRegistry;
-import com.simibubi.create.foundation.ponder.PonderTag;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.ithundxr.createnumismatics.Numismatics;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.ItemLike;
+import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
 
 public class NumismaticsPonderTags {
-    private static final CreateRegistrate REGISTRATE = Numismatics.registrate();
-
-    public static final PonderTag SHOPS = create("shops", NumismaticsBlocks.VENDOR, Registries.BLOCK)
-        .defaultLang("Shops", "Components which perform monetary transactions")
-        .addToIndex();
+    public static final ResourceLocation SHOPS = loc("shops");
 
     @SuppressWarnings("SameParameterValue")
-    private static <R extends ItemLike, T extends R> PonderTag create(String id, ItemProviderEntry<T> entry, ResourceKey<? extends Registry<R>> registry) {
-        PonderTag tag = new PonderTag(Numismatics.asResource(id));
-        ItemLike entry$ = entry.getUnchecked();
-        if (entry$ != null) {
-            tag.item(entry$);
-        } else {
-            REGISTRATE.addRegisterCallback(entry.getId().getPath(), registry, tag::item);
-        }
-        return tag;
+    private static ResourceLocation loc(String id) {
+        return Numismatics.asResource(id);
     }
 
-    public static void register() {
-        if (!REGISTRATE.isRegistered(Registries.BLOCK)) {
-            REGISTRATE.addRegisterCallback(Registries.BLOCK, NumismaticsPonderTags::$register);
-        } else {
-            $register();
-        }
-    }
+    public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
+        PonderTagRegistrationHelper<RegistryEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
-    private static void $register() {
-        PonderRegistry.TAGS.forTag(SHOPS)
+        helper.registerTag(SHOPS)
+            .addToIndex()
+            .item(NumismaticsBlocks.VENDOR.get(), true, false)
+            .title("Shops")
+            .description("Components which perform monetary transactions")
+            .register();
+
+        HELPER.addToTag(SHOPS)
             .add(NumismaticsBlocks.ANDESITE_DEPOSITOR)
             .add(NumismaticsBlocks.BRASS_DEPOSITOR)
             .add(NumismaticsBlocks.VENDOR)

@@ -19,26 +19,29 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import dev.ithundxr.createnumismatics.Numismatics;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.ithundxr.createnumismatics.ponder.BankingScenes;
 import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
 import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
 import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
 import dev.ithundxr.createnumismatics.ponder.VendorScenes;
-
-import java.util.Iterator;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Iterator;
 
 // TODO: fix up imports
 
 public class NumismaticsPonderScenes {
+    private static @Nullable PonderSceneRegistrationHelper<ResourceLocation> initialHelper;
+    private static boolean createPondersRegistered = false;
+
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        if (!createPondersRegistered)
+            initialHelper = helper;
         /* TODO
             See https://discord.com/channels/1226981107401232545/1261067581469757511/1495869753343082636
             Ponder Progress:
@@ -74,11 +77,20 @@ public class NumismaticsPonderScenes {
                 NumismaticsBlocks.SALEPOINT
             ))
             .addStoryBoard("trust_list", BankingScenes::trustList);
+
+        if (createPondersRegistered) {
+            HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
+                .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
+        }
     }
 
     // Any ponders that should appear AFTER creates own ponders should go here
     public static void registerAfterCreatePonders() {
-        // FIXME: check how this works out with the new API
+        createPondersRegistered = true;
+        if (initialHelper == null)
+            return;
+        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = initialHelper.withKeyFunction(RegistryEntry::getId);
+
         HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
             .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }

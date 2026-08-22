@@ -23,12 +23,12 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.TextWindowElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.mixin_interfaces.TextWindowElement_Builder_Duck;
 import dev.ithundxr.createnumismatics.mixin_interfaces.TextWindowElement_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.ScreenVec;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.TextWindowElement;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -56,7 +56,7 @@ public class MixinTextWindowElement implements TextWindowElement_Duck {
         this.vec = null;
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/utility/animation/LerpedFloat;settled()Z", ordinal = 0), cancellable = true)
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/createmod/catnip/animation/LerpedFloat;settled()Z", ordinal = 0), cancellable = true)
     private void applyScreenVec(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, float fade,
                                 CallbackInfo ci, @Local(name = "sceneToScreen") LocalRef<Vec2> sceneToScreen) {
         if (numismatics$screenVec != null) {
@@ -67,18 +67,18 @@ public class MixinTextWindowElement implements TextWindowElement_Duck {
         }
     }
 
-    @Definition(id = "vec", field = "Lcom/simibubi/create/foundation/ponder/element/TextWindowElement;vec:Lnet/minecraft/world/phys/Vec3;")
+    @Definition(id = "vec", field = "Lnet/createmod/ponder/foundation/element/TextWindowElement;vec:Lnet/minecraft/world/phys/Vec3;")
     @Expression("this.vec != null")
     @ModifyExpressionValue(
         method = "render",
         at = @At(value = "MIXINEXTRAS:EXPRESSION"),
-        slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/utility/Color;mixColors(IIF)I"))
+        slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/createmod/catnip/theme/Color;mixWith(Lnet/createmod/catnip/theme/Color;F)Lnet/createmod/catnip/theme/Color;"))
     )
     private boolean vecIsAlsoScreenVec(boolean orig) {
         return orig || numismatics$screenVec != null;
     }
 
-    @Mixin(TextWindowElement.Builder.class)
+    @Mixin(targets = "net.createmod.ponder.foundation.element.TextWindowElement$Builder")
     private static class MixinBuilder implements TextWindowElement_Builder_Duck {
         @Shadow @Final
         TextWindowElement this$0;

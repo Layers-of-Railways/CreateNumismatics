@@ -20,7 +20,6 @@ package dev.ithundxr.createnumismatics.content.salepoint.widgets;
 
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -85,14 +84,14 @@ public class SalepointEnergyConfigWidget extends SalepointEnergyDisplayWidget {
     }
 
     @Override
-    public List<Component> getToolTip() {
+    public @NotNull List<Component> getToolTip() {
         Energy filter = state.getFilter();
 
         return List.of(
-            Components.translatable("gui.numismatics.salepoint.energy"),
-            Components.literal(TextUtils.formatEnergy(filter.getAmount())),
-            Components.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
-            Components.translatable("create.gui.scrollInput.shiftScrollsFaster")
+            Component.translatable("gui.numismatics.salepoint.energy"),
+            Component.literal(TextUtils.formatEnergy(filter.getAmount())),
+            Component.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
+            Component.translatable("create.gui.scrollInput.shiftScrollsFaster")
         );
     }
 }

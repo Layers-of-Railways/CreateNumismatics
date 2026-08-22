@@ -19,11 +19,10 @@
 package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
+import net.createmod.catnip.outliner.Outliner;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -31,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -63,7 +63,7 @@ public class SalepointBlockItem extends BlockItem {
         if (player.isShiftKeyDown() && stack.hasTag()) {
             if (level.isClientSide)
                 return InteractionResult.SUCCESS;
-            player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.clear"), true);
+            player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.clear"), true);
             stack.setTag(null);
             AllSoundEvents.CONTROLLER_CLICK.play(level, null, pos, 1, .5f);
             return InteractionResult.SUCCESS;
@@ -76,14 +76,14 @@ public class SalepointBlockItem extends BlockItem {
 
             CompoundTag stackTag = stack.getOrCreateTag();
             stackTag.put("SelectedPos", NbtUtils.writeBlockPos(pos));
-            player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.set"), true);
+            player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.set"), true);
             stack.setTag(stackTag);
             AllSoundEvents.CONTROLLER_CLICK.play(level, null, pos, 1, 1);
             return InteractionResult.SUCCESS;
         }
 
         if (!stack.hasTag()) {
-            player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.missing")
+            player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.missing")
                 .withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
@@ -96,14 +96,14 @@ public class SalepointBlockItem extends BlockItem {
         BlockPos placedPos = pos.relative(context.getClickedFace(), state.canBeReplaced() ? 0 : 1);
 
         if (!selectedPos.closerThan(placedPos, 16)) {
-            player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.too_far")
+            player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.too_far")
                 .withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
 
         SalepointTargetBehaviour<?> selectedBehaviour = BlockEntityBehaviour.get(level, selectedPos, SalepointTargetBehaviour.TYPE);
         if (selectedBehaviour == null) {
-            player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.not_found")
+            player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.not_found")
                 .withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
@@ -113,7 +113,7 @@ public class SalepointBlockItem extends BlockItem {
             salepointState = selectedBehaviour.tryBindToSalepoint();
 
             if (salepointState == null) {
-                player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.not_found")
+                player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.not_found")
                     .withStyle(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }
@@ -139,7 +139,7 @@ public class SalepointBlockItem extends BlockItem {
         ItemStack itemInHand = player.getItemInHand(context.getHand());
         if (!itemInHand.isEmpty())
             itemInHand.setTag(null);
-        player.displayClientMessage(Components.translatable("block.numismatics.salepoint.tooltip.success")
+        player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.success")
             .withStyle(ChatFormatting.GREEN), true);
 
         // TODO perhaps an advancement here?
@@ -171,9 +171,10 @@ public class SalepointBlockItem extends BlockItem {
             lastShownPos = selectedPos;
         }
 
-        CreateClient.OUTLINER.showAABB("target", lastShownAABB)
-            .colored(0xffcb74)
-            .lineWidth(1 / 16f);
+        if (lastShownAABB != null)
+            Outliner.getInstance().showAABB("target", lastShownAABB)
+                .colored(0xffcb74)
+                .lineWidth(1 / 16f);
     }
 
     @Environment(EnvType.CLIENT)

@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.config.forge;
 
-import com.simibubi.create.foundation.config.ConfigBase;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
+import net.createmod.catnip.config.ConfigBase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;

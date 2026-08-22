@@ -94,6 +94,17 @@ public class BankMenu extends MenuBase<BankAccount> {
         addPlayerSlots(40, 152);
     }
 
+    // Create Forge and Create Fabric add slots in a different order, so this ensures consistency
+    @Override
+    @SuppressWarnings({"RedundantMethodOverride", "RedundantSuppression", "DuplicatedCode"})
+    protected void addPlayerSlots(int x, int y) {
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
+            this.addSlot(new Slot(playerInventory, hotbarSlot, x + hotbarSlot * 18, y + 58));
+        for (int row = 0; row < 3; ++row)
+            for (int col = 0; col < 9; ++col)
+                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, x + col * 18, y + row * 18));
+    }
+
     private boolean switchTo(UUID otherAccount) {
         if (player instanceof ServerPlayer serverPlayer) {
             BankAccount account = Numismatics.BANK.getAccount(otherAccount);

@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
@@ -108,22 +107,22 @@ public class AuthorizedCardItem extends Item {
             String label = getAccountLabel(stack);
 
             if (name == null) {
-                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound")
+                tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound")
                     .withStyle(ChatFormatting.GREEN));
             } else {
-                tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.bound.to", name)
+                tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound.to", name)
                     .withStyle(ChatFormatting.GREEN));
             }
 
             if (label == null) {
-                tooltipComponents.add(Components.translatable("item.numismatics.authorized_card.tooltip.bound.no_label")
+                tooltipComponents.add(Component.translatable("item.numismatics.authorized_card.tooltip.bound.no_label")
                     .withStyle(ChatFormatting.GREEN));
             } else {
-                tooltipComponents.add(Components.translatable("item.numismatics.authorized_card.tooltip.bound.with_label", label)
+                tooltipComponents.add(Component.translatable("item.numismatics.authorized_card.tooltip.bound.with_label", label)
                     .withStyle(ChatFormatting.GREEN));
             }
         } else {
-            tooltipComponents.add(Components.translatable("item.numismatics.card.tooltip.blank"));
+            tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.blank"));
         }
     }
 
@@ -136,11 +135,11 @@ public class AuthorizedCardItem extends Item {
         if (isBound(handStack)) {
             if(player.isShiftKeyDown()) {
                 clear(handStack);
-                player.displayClientMessage(Components.translatable("item.numismatics.id_card.tooltip.cleared"), true);
+                player.displayClientMessage(Component.translatable("item.numismatics.id_card.tooltip.cleared"), true);
                 return InteractionResultHolder.success(handStack);
             }
         } else {
-            player.displayClientMessage(Components.translatable("item.numismatics.authorized_card.tooltip.hold_shift"), true);
+            player.displayClientMessage(Component.translatable("item.numismatics.authorized_card.tooltip.hold_shift"), true);
             return InteractionResultHolder.success(handStack);
         }
 

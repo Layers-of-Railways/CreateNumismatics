@@ -131,7 +131,7 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
         boolean extractionButtonActive = menu.contentHolder.getMode() == Mode.BUY;
 
-        extractionIndicator = new Indicator(x + 29, y + background.height - 30, Components.immutableEmpty());
+        extractionIndicator = new Indicator(x + 29, y + background.height - 30, CommonComponents.EMPTY);
         extractionIndicator.state = menu.contentHolder.isAutomatedExtractionEnabled()
             ? (extractionButtonActive ? Indicator.State.GREEN : Indicator.State.ON)
             : (extractionButtonActive ? Indicator.State.RED : Indicator.State.OFF);

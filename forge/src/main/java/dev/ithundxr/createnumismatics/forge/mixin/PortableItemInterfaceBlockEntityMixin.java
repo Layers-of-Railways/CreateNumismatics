@@ -53,11 +53,11 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
     @Shadow(remap = false) protected LazyOptional<IItemHandlerModifiable> capability;
 
     @Unique
-    private ItemSalepointTargetBehaviour railway$salepointBehaviour;
+    private ItemSalepointTargetBehaviour numismatics$salepointBehaviour;
 
     @Unique
     @Nullable
-    private IItemHandlerModifiable railway$contraptionStorage;
+    private IItemHandlerModifiable numismatics$contraptionStorage;
 
     private PortableItemInterfaceBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -72,7 +72,7 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
         remap = false
     )
     private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
-        railway$contraptionStorage = contraption.getSharedInventory();
+        numismatics$contraptionStorage = contraption.getStorage().getAllItems();
 
         oldCap.ifPresent(itemHandler -> {
             IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
@@ -93,7 +93,7 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
         remap = false
     )
     private void keepControl2(CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
-        railway$contraptionStorage = null;
+        numismatics$contraptionStorage = null;
 
         oldCap.ifPresent(itemHandler -> {
             IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
@@ -107,13 +107,13 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
     @Override
     public boolean canTransfer() {
-        return super.canTransfer() || railway$salepointBehaviour.isControlledBySalepoint();
+        return super.canTransfer() || numismatics$salepointBehaviour.isControlledBySalepoint();
     }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        railway$salepointBehaviour = new ItemSalepointTargetBehaviour(this) {
+        numismatics$salepointBehaviour = new ItemSalepointTargetBehaviour(this) {
             private boolean underControl = false;
 
             @Override
@@ -137,7 +137,7 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
             protected void relinquishControlInternal(@NotNull ISalepointState<ItemStack> state) {
                 capability.ifPresent(itemHandler -> {
                     ((ItemHandlerWrapperAccessor) itemHandler).setWrapped(Objects.requireNonNullElseGet(
-                        railway$contraptionStorage,
+                        numismatics$contraptionStorage,
                         () -> new ItemStackHandler(0)
                     ));
                 });
@@ -150,15 +150,15 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             public boolean hasSpaceFor(@NotNull ItemStack object) {
-                if (railway$contraptionStorage == null)
+                if (numismatics$contraptionStorage == null)
                     return false;
 
-                return ItemHandlerHelper.insertItem(railway$contraptionStorage, object, true).isEmpty();
+                return ItemHandlerHelper.insertItem(numismatics$contraptionStorage, object, true).isEmpty();
             }
 
             @Override
             public boolean doPurchase(@NotNull ItemStack object, @NotNull PurchaseProvider<ItemStack> purchaseProvider) {
-                if (railway$contraptionStorage == null)
+                if (numismatics$contraptionStorage == null)
                     return false;
 
                 if (!hasSpaceFor(object))
@@ -166,7 +166,7 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
                 List<ItemStack> extracted = purchaseProvider.extract();
                 for (ItemStack stack : extracted) {
-                    if (!ItemHandlerHelper.insertItem(railway$contraptionStorage, stack, false).isEmpty()) {
+                    if (!ItemHandlerHelper.insertItem(numismatics$contraptionStorage, stack, false).isEmpty()) {
                         Numismatics.LOGGER.error("Failed to insert item into contraption storage, despite having space.");
                         return false;
                     }
@@ -190,6 +190,6 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
             }
         };
 
-        behaviours.add(railway$salepointBehaviour);
+        behaviours.add(numismatics$salepointBehaviour);
     }
 }

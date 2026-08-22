@@ -21,9 +21,6 @@ package dev.ithundxr.createnumismatics.content.salepoint.widgets;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.CustomLightingSettings;
-import com.simibubi.create.foundation.gui.ILightingSettings;
-import com.simibubi.create.foundation.gui.widget.AbstractSimiWidget;
-import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.client.rendering.ISalepointStateUpdatingWidget;
 import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
@@ -31,6 +28,8 @@ import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.gui.ILightingSettings;
+import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -146,16 +145,16 @@ public class SalepointFluidDisplayWidget extends AbstractSimiWidget implements I
     }
 
     @Override
-    public List<Component> getToolTip() {
+    public @NotNull List<Component> getToolTip() {
         MultiloaderFluidStack filter = state.getFilter();
         if (filter.isEmpty())
             return List.of(
-                Components.translatable("gui.numismatics.salepoint.fluid_empty")
+                Component.translatable("gui.numismatics.salepoint.fluid_empty")
             );
 
         return List.of(
             filter.getDisplayName(),
-            Components.literal(TextUtils.formatFluid(filter.getAmount()))
+            Component.literal(TextUtils.formatFluid(filter.getAmount()))
         );
     }
 

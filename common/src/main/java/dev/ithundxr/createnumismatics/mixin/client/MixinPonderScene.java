@@ -20,11 +20,11 @@ package dev.ithundxr.createnumismatics.mixin.client;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.PonderElement;
-import com.simibubi.create.foundation.ponder.element.PonderOverlayElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
-import dev.ithundxr.createnumismatics.mixin_interfaces.PonderOverlayElement_Duck;
+import dev.ithundxr.createnumismatics.mixin_interfaces.PonderElementBase_Duck;
+import net.createmod.ponder.api.element.PonderElement;
+import net.createmod.ponder.api.element.PonderOverlayElement;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,9 +38,9 @@ import java.util.function.Consumer;
 public abstract class MixinPonderScene {
     @Shadow public abstract <T extends PonderElement> void forEachVisible(Class<T> type, Consumer<T> function);
 
-    @WrapWithCondition(method = "lambda$renderOverlay$7", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/ponder/element/PonderOverlayElement;render(Lcom/simibubi/create/foundation/ponder/PonderScene;Lcom/simibubi/create/foundation/ponder/ui/PonderUI;Lnet/minecraft/client/gui/GuiGraphics;F)V"))
+    @WrapWithCondition(method = "lambda$renderOverlay$7", at = @At(value = "INVOKE", target = "Lnet/createmod/ponder/api/element/PonderOverlayElement;render(Lnet/createmod/ponder/foundation/PonderScene;Lnet/createmod/ponder/foundation/ui/PonderUI;Lnet/minecraft/client/gui/GuiGraphics;F)V"))
     private boolean renderNonOverlayFirst(PonderOverlayElement instance, PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks) {
-        return !((PonderOverlayElement_Duck) instance).numismatics$isOnOverlayLayer();
+        return !(instance instanceof PonderElementBase_Duck duck) || !duck.numismatics$isOnOverlayLayer();
     }
 
     @Inject(method = "renderOverlay", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
@@ -49,7 +49,7 @@ public abstract class MixinPonderScene {
         ms.pushPose();
         ms.translate(0, 0, 3000);
         forEachVisible(PonderOverlayElement.class, e -> {
-            if (((PonderOverlayElement_Duck) e).numismatics$isOnOverlayLayer())
+            if (e instanceof PonderElementBase_Duck duck && duck.numismatics$isOnOverlayLayer())
                 e.render((PonderScene) (Object) this, screen, graphics, partialTicks);
         });
         ms.popPose();

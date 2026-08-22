@@ -18,12 +18,12 @@
 
 package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,7 +131,7 @@ public class Limit {
 
     public MutableComponent describe(boolean monetary) {
         if (limit == null) {
-            return Components.translatable("gui.numismatics.limit.none");
+            return Component.translatable("gui.numismatics.limit.none");
         } else {
             if (monetary) {
                 Couple<Integer> cogsAndSpursSpent = Coin.COG.convert(spent);
@@ -142,13 +142,13 @@ public class Limit {
                 int cogsLimit = cogsAndSpursLimit.getFirst();
                 int spursLimit = cogsAndSpursLimit.getSecond();
 
-                return Components.translatable(
+                return Component.translatable(
                     "gui.numismatics.limit.monetary",
                     TextUtils.formatInt(cogsSpent), Coin.COG.getName(cogsSpent), spursSpent,
                     TextUtils.formatInt(cogsLimit), Coin.COG.getName(cogsLimit), spursLimit
                 );
             } else {
-                return Components.translatable("gui.numismatics.limit", spent, limit);
+                return Component.translatable("gui.numismatics.limit", spent, limit);
             }
         }
     }

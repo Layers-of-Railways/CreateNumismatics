@@ -314,7 +314,7 @@ fun hasUnstaged(): Boolean {
         }
         val result = output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
         if (result.isNotEmpty())
-            println("Found stageable results:\n${result}\n")
+            println("Found stageable results:\n ${result}\n")
         return result.isNotEmpty()
     } catch (ignored: Throwable) {
         return false

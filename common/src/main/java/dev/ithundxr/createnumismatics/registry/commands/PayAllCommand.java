@@ -20,13 +20,13 @@ package dev.ithundxr.createnumismatics.registry.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount.Type;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import java.util.Set;
 import java.util.UUID;
@@ -69,7 +69,7 @@ public class PayAllCommand {
         }
 
         int finalSum = sum;
-        ctx.getSource().sendSuccess(() -> Components.literal("Paid "+amount+" "+coin.getName(amount)+" to "+ finalSum +" account(s)."), true);
+        ctx.getSource().sendSuccess(() -> Component.literal("Paid "+amount+" "+coin.getName(amount)+" to "+ finalSum +" account(s)."), true);
 
         return sum;
     }

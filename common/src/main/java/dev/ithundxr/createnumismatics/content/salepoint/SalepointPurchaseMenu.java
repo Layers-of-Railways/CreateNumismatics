@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.content.salepoint;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
@@ -110,7 +109,7 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
                         IDeductable deductable = IDeductable.get(card, player, reasonHolder);
 
                         if (deductable == null) {
-                            serverSentCardMessage = reasonHolder.getMessageOrDefault(Components.translatable("gui.numismatics.salepoint.invalid_card"));
+                            serverSentCardMessage = reasonHolder.getMessageOrDefault(Component.translatable("gui.numismatics.salepoint.invalid_card"));
                         } else {
                             serverSentMaxWithdrawal = deductable.getMaxWithdrawal();
                         }
@@ -132,6 +131,17 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
             //noinspection DataFlowIssue
             addSlot(salepointState.createPurchaseGuiDisplaySlot(contentHolder.getLevel(), contentHolder.getBlockPos(), player));
         }
+    }
+
+    // Create Forge and Create Fabric add slots in a different order, so this ensures consistency
+    @Override
+    @SuppressWarnings({"RedundantMethodOverride", "RedundantSuppression", "DuplicatedCode"})
+    protected void addPlayerSlots(int x, int y) {
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
+            this.addSlot(new Slot(playerInventory, hotbarSlot, x + hotbarSlot * 18, y + 58));
+        for (int row = 0; row < 3; ++row)
+            for (int col = 0; col < 9; ++col)
+                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, x + col * 18, y + row * 18));
     }
 
     @Override
@@ -213,11 +223,11 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
 
         ISalepointState<?> salepointState = getSalepointState();
         if (salepointState == null) {
-            serverSentStateMessage = Components.translatable("gui.numismatics.salepoint.no_state");
+            serverSentStateMessage = Component.translatable("gui.numismatics.salepoint.no_state");
         } else {
             ReasonHolder reasonHolder = new ReasonHolder();
             if (!salepointState.isValidForPurchase(contentHolder.getLevel(), contentHolder.getTargetedPos(), reasonHolder)) {
-                serverSentStateMessage = reasonHolder.getMessageOrDefault(Components.translatable("gui.numismatics.salepoint.invalid_state"));
+                serverSentStateMessage = reasonHolder.getMessageOrDefault(Component.translatable("gui.numismatics.salepoint.invalid_state"));
             }
         }
 

@@ -20,18 +20,8 @@ package dev.ithundxr.createnumismatics.ponder.utils.elements;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
-import com.simibubi.create.foundation.ponder.PonderPalette;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.AnimatedOverlayElement;
-import com.simibubi.create.foundation.ponder.element.OutlinerElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
@@ -40,6 +30,16 @@ import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerScre
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
+import net.createmod.catnip.animation.AnimationTickHolder;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.Ponder;
+import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.foundation.PonderIndex;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.AnimatedOverlayElementBase;
+import net.createmod.ponder.foundation.element.OutlinerElement;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -61,7 +61,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class VirtualScreenElement<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends AnimatedOverlayElement {
+public class VirtualScreenElement<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends AnimatedOverlayElementBase {
     private final BlockPos bePos;
     private final BlockEntityType<B> beType;
     private final BiFunction<B, Inventory, M> menuFactory;
@@ -212,7 +212,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     }
 
     @Override
-    public void tick(PonderScene scene) {
+    public void tick(@NotNull PonderScene scene) {
         super.tick(scene);
         updateState(scene, Minecraft.getInstance());
         if (state != null) {
@@ -222,7 +222,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
     }
 
     @Override
-    protected void render(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, float fade) {
+    public void render(@NotNull PonderScene scene, @NotNull PonderUI screen, @NotNull GuiGraphics graphics, float partialTicks, float fade) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
         updateStateWidth(mc, window);
@@ -293,7 +293,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
                 ms.mulPoseMatrix(new Matrix4f().scaling(1/scale, 1/scale, 1));
                 cursor.render(graphics, 0, 0);
                 if (cursorSneak) {
-                    String text = PonderLocalization.getShared(Create.asResource("sneak_and"));
+                    String text = PonderIndex.getLangAccess().getShared(Ponder.asResource("sneak_and"));
                     Font font = screen.getFontRenderer();
                     int textWidth = font.width(text);
                     PonderUI.renderSpeechBox(graphics, -2, 4, textWidth + 4, 9, false, Pointing.RIGHT, true);

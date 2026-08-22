@@ -19,16 +19,16 @@
 package dev.ithundxr.createnumismatics.ponder.utils.elements;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.gui.Theme;
-import com.simibubi.create.foundation.gui.element.BoxElement;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
-import com.simibubi.create.foundation.ponder.PonderPalette;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.PonderScene.SceneTransform;
-import com.simibubi.create.foundation.ponder.element.AnimatedOverlayElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
-import com.simibubi.create.foundation.utility.Color;
 import dev.ithundxr.createnumismatics.ponder.utils.PonderConstants;
+import net.createmod.catnip.gui.element.BoxElement;
+import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.theme.Color;
+import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.PonderScene.SceneTransform;
+import net.createmod.ponder.foundation.element.AnimatedOverlayElementBase;
+import net.createmod.ponder.foundation.element.TextWindowElement;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
@@ -39,6 +39,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class TextComponentWindowElement extends AnimatedOverlayElement {
+public class TextComponentWindowElement extends AnimatedOverlayElementBase {
     List<Component> bakedComponents;
     @Nullable ItemStack bakedItem;
 
@@ -154,7 +155,7 @@ public class TextComponentWindowElement extends AnimatedOverlayElement {
     }
 
     @Override
-    public void tick(PonderScene scene) {
+    public void tick(@NotNull PonderScene scene) {
         super.tick(scene);
 
         if (bakedComponents == null) {
@@ -172,7 +173,7 @@ public class TextComponentWindowElement extends AnimatedOverlayElement {
 
     @Override
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
-    protected void render(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, float fade) {
+    public void render(@NotNull PonderScene scene, @NotNull PonderUI screen, @NotNull GuiGraphics graphics, float partialTicks, float fade) {
         if (fade < 1 / 16f)
             return;
 
@@ -231,8 +232,9 @@ public class TextComponentWindowElement extends AnimatedOverlayElement {
         ms.pushPose();
         ms.translate(0, pY, 400);
 
-        new BoxElement().withBackground(Theme.c(Theme.Key.PONDER_BACKGROUND_FLAT))
-            .gradientBorder(Theme.p(Theme.Key.TEXT_WINDOW_BORDER))
+        new BoxElement()
+            .withBackground(PonderUI.BACKGROUND_FLAT)
+            .gradientBorder(TextWindowElement.COLOR_WINDOW_BORDER)
             .at(targetX - 10, 3, 100)
             .withBounds(boxWidth, boxHeight - 1)
             .render(graphics);

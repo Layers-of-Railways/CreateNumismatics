@@ -20,9 +20,9 @@ package dev.ithundxr.createnumismatics.mixin.client.dev_export;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
 import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
+import net.createmod.ponder.foundation.registration.PonderLocalization;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -32,14 +32,13 @@ public class MixinPonderLocalization {
     @WrapOperation(
         method = {
             "getShared",
-            "getTag",
+            "getTagName",
             "getTagDescription",
-            "getChapter",
             "getSpecific"
         },
         at = @At(
             value = "INVOKE",
-            target = "Lcom/simibubi/create/infrastructure/ponder/PonderIndex;editingModeActive()Z"
+            target = "Lnet/createmod/ponder/foundation/PonderIndex;editingModeActive()Z"
         ),
         remap = false
     )

@@ -18,10 +18,6 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListScreen;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
@@ -35,6 +31,10 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.foundation.element.InputWindowElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -54,22 +54,22 @@ public class BankingScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos depositor = util.grid.at(1, 1, 1);
-        Vec3 depositorText = util.vector.blockSurface(depositor, Direction.WEST);
+        BlockPos depositor = util.grid().at(1, 1, 1);
+        Vec3 depositorText = util.vector().blockSurface(depositor, Direction.WEST);
 
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(60)
+        scene.overlay().showText(60)
             .attachKeyFrame()
             .text("Players with access can sneak-use most Numismatics blocks to configure their Trust List.")
             .pointAt(depositorText)
             .placeNearTarget();
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(depositor), Pointing.DOWN)
+        scene.overlay().showControls(util.vector().topOf(depositor), Pointing.DOWN, 10)
             .rightClick()
-            .whileSneaking(), 10);
+            .whileSneaking();
         scene.idle(15);
 
         Consumer<Inventory> invFiller = inv -> {
@@ -119,7 +119,7 @@ public class BankingScenes {
 
         scene.idle(5);
 
-        scene.overlay.showText(80)
+        scene.overlay().showText(80)
             .text("Players in the Trust List have full access to the shop, including the ability to modify the Trust List.")
             .independent(50);
 

@@ -459,18 +459,18 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
 
     public @Nullable SubAccount getSubAccount(Authorization authorization, ReasonHolder reasonHolder) {
         if (subAccounts == null) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.authorized_card.account_not_found"));
             return null;
         }
 
         SubAccount subAccount = subAccounts.get(authorization.getAuthorizationID());
         if (subAccount == null) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.authorized_card.account_not_found"));
             return null;
         }
 
         if (!subAccount.isAuthorized(authorization)) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
             return null;
         }
 
@@ -504,9 +504,9 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
                 for_ = UsernameUtils.INSTANCE.getName(id, null);
 
             if (for_ != null) {
-                return Components.translatable("gui.numismatics.bank_terminal.sub_accounts.named", for_);
+                return Component.translatable("gui.numismatics.bank_terminal.sub_accounts.named", for_);
             } else {
-                return Components.translatable("gui.numismatics.bank_terminal.sub_accounts");
+                return Component.translatable("gui.numismatics.bank_terminal.sub_accounts");
             }
         }
 

@@ -23,14 +23,13 @@ import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsScreen;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueHandler;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.gui.widget.AbstractSimiWidget;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.CreateLang;
 import dev.ithundxr.createnumismatics.base.client.rendering.UIRenderHelper;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -224,9 +223,9 @@ public class TripleCoinSliderWidget extends AbstractSimiWidget {
             coin.getIcon().render(ms, graphics.bufferSource(), 0xffffff);
             ms.popPose();
 
-            for (int w = 0; w < valueBarWidth; w += AllGuiTextures.VALUE_SETTINGS_BAR.width - 1)
+            for (int w = 0; w < valueBarWidth; w += AllGuiTextures.VALUE_SETTINGS_BAR.getWidth() - 1)
                 UIRenderHelper.drawCropped(graphics, valueBarX + w, trackY + 1,
-                    Math.min(AllGuiTextures.VALUE_SETTINGS_BAR.width - 1, valueBarWidth - w), 8,
+                    Math.min(AllGuiTextures.VALUE_SETTINGS_BAR.getWidth() - 1, valueBarWidth - w), 8,
                     zLevel, AllGuiTextures.VALUE_SETTINGS_BAR);
             graphics.drawString(font, displayName, x + 7, labelY + 2, 0x442000, false);
 
@@ -264,7 +263,7 @@ public class TripleCoinSliderWidget extends AbstractSimiWidget {
             int value = values[row];
             Vec2 coordinate = getCoordinateOfValue(row, value);
             // 221E = infinity symbol
-            Component cursorText = infinite ? Components.literal("\u221E") : Lang.number(value).component();
+            Component cursorText = infinite ? Component.literal("\u221E") : CreateLang.number(value).component();
 
             int cursorWidth = (font.width(cursorText) / 2) * 2 + 3;
             int cursorX = ((int) (coordinate.x)) - cursorWidth / 2;

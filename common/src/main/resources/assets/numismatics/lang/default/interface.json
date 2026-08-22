@@ -36,6 +36,7 @@
   "gui.numismatics.salepoint.cancel": "Cancel transaction",
 
   "gui.numismatics.salepoint.no_card": "No card",
+  "gui.numismatics.salepoint.invalid_card": "Invalid card",
   "gui.numismatics.salepoint.no_state": "Not configured",
   "gui.numismatics.salepoint.invalid_state": "Invalid state",
   "gui.numismatics.salepoint.no_target": "Target not found",

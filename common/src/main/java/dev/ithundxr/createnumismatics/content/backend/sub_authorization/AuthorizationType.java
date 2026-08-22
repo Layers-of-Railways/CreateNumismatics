@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
 import com.google.common.collect.ImmutableList;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
@@ -65,11 +64,11 @@ public enum AuthorizationType implements StringRepresentable {
     }
 
     public Component title() {
-        return Components.translatable(titleKey());
+        return Component.translatable(titleKey());
     }
 
     public Component description() {
-        return Components.translatable(descriptionKey());
+        return Component.translatable(descriptionKey());
     }
 
     public static void provideLang(BiConsumer<String, String> consumer) {

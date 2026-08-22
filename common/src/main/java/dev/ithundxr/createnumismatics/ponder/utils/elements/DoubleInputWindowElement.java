@@ -20,31 +20,28 @@ package dev.ithundxr.createnumismatics.ponder.utils.elements;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
-import com.simibubi.create.foundation.ponder.PonderPalette;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.mixin.client.AccessorInputWindowElement;
+import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.gui.element.ScreenElement;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.foundation.PonderIndex;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.InputWindowElement;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class DoubleInputWindowElement extends InputWindowElement {
     private final Vec3 sceneSpace;
     private final Pointing direction;
     public final InputWindowElement firstElement;
     public final InputWindowElement secondElement;
-
-    public DoubleInputWindowElement clone() {
-        return new DoubleInputWindowElement(sceneSpace, direction, firstElement.clone(), secondElement.clone());
-    }
 
     public DoubleInputWindowElement(Vec3 sceneSpace, Pointing direction, InputWindowElement firstElement, InputWindowElement secondElement) {
         super(sceneSpace, direction);
@@ -55,7 +52,7 @@ public class DoubleInputWindowElement extends InputWindowElement {
     }
 
     @Override
-    protected void render(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks, float fade) {
+    public void render(@NotNull PonderScene scene, PonderUI screen, @NotNull GuiGraphics graphics, float partialTicks, float fade) {
         Font font = screen.getFontRenderer();
 
         float xFade = direction == Pointing.RIGHT ? -1 : direction == Pointing.LEFT ? 1 : 0;
@@ -68,10 +65,10 @@ public class DoubleInputWindowElement extends InputWindowElement {
 
         ItemStack item1 = firstElementAccessor.numismatics$getItem();
         ResourceLocation key1 = firstElementAccessor.numismatics$getKey();
-        AllIcons icon1 = firstElementAccessor.numismatics$getIcon();
+        ScreenElement icon1 = firstElementAccessor.numismatics$getIcon();
         ItemStack item2 = secondElementAccessor.numismatics$getItem();
         ResourceLocation key2 = secondElementAccessor.numismatics$getKey();
-        AllIcons icon2 = secondElementAccessor.numismatics$getIcon();
+        ScreenElement icon2 = secondElementAccessor.numismatics$getIcon();
 
         boolean hasItem1 = !item1.isEmpty();
         boolean hasText1 = key1 != null;
@@ -89,8 +86,8 @@ public class DoubleInputWindowElement extends InputWindowElement {
         int keyWidth1 = 0;
         int keyWidth2 = 0;
 
-        String text1 = hasText1 ? PonderLocalization.getShared(key1) : "";
-        String text2 = hasText2 ? PonderLocalization.getShared(key2) : "";
+        String text1 = hasText1 ? PonderIndex.getLangAccess().getShared(key1) : "";
+        String text2 = hasText2 ? PonderIndex.getLangAccess().getShared(key2) : "";
 
         if (fade < 1 / 16f)
             return;

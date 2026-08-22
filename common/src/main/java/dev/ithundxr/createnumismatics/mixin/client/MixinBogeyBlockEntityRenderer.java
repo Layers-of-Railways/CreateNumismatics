@@ -19,12 +19,12 @@
 package dev.ithundxr.createnumismatics.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.content.trains.bogey.AbstractBogeyBlockEntity;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityRenderer;
 import com.simibubi.create.content.trains.bogey.StandardBogeyBlockEntity;
 import dev.ithundxr.createnumismatics.mixin_interfaces.StandardBogeyBlockEntity_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.rendering.VirtualCouplerRendering;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,8 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BogeyBlockEntityRenderer.class)
 public class MixinBogeyBlockEntityRenderer {
-    @Inject(method = "renderSafe", at = @At("RETURN"))
-    private <T extends BlockEntity> void numismatics$renderVirtualCoupling(T be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
+    @Inject(method = "renderSafe(Lcom/simibubi/create/content/trains/bogey/AbstractBogeyBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At("RETURN"))
+    private <T extends AbstractBogeyBlockEntity> void numismatics$renderVirtualCoupling(T be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
         if (be instanceof StandardBogeyBlockEntity sb && be instanceof StandardBogeyBlockEntity_Duck duck) {
             double couplingDistance = duck.numismatics$getCouplingDistance();
             if (couplingDistance > 0) {

@@ -20,19 +20,21 @@ package dev.ithundxr.createnumismatics.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.ponder.element.TextWindowElement;
-import dev.ithundxr.createnumismatics.mixin_interfaces.PonderOverlayElement_Duck;
+import dev.ithundxr.createnumismatics.mixin_interfaces.PonderElementBase_Duck;
 import dev.ithundxr.createnumismatics.mixin_interfaces.SceneBuilder_Duck;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.foundation.PonderSceneBuilder;
+import net.createmod.ponder.foundation.element.InputWindowElement;
+import net.createmod.ponder.foundation.element.TextWindowElement;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(SceneBuilder.class)
-public class MixinSceneBuilder implements SceneBuilder_Duck {
+@Mixin(PonderSceneBuilder.class)
+public class MixinPonderSceneBuilder implements SceneBuilder_Duck {
     @Unique
     private boolean numismatics$isOverlayLayer = false;
 
@@ -46,29 +48,29 @@ public class MixinSceneBuilder implements SceneBuilder_Duck {
         return numismatics$isOverlayLayer;
     }
 
-    @Mixin(SceneBuilder.OverlayInstructions.class)
-    private static class MixinOverlayInstructions {
+    @Mixin(PonderSceneBuilder.PonderOverlayInstructions.class)
+    private static class MixinPonderOverlayInstructions {
         @Shadow @Final
-        SceneBuilder this$0;
+        PonderSceneBuilder this$0;
 
-        @WrapOperation(method = "showText", at = @At(value = "NEW", target = "()Lcom/simibubi/create/foundation/ponder/element/TextWindowElement;"), remap = false)
+        @WrapOperation(method = "showText", at = @At(value = "NEW", target = "()Lnet/createmod/ponder/foundation/element/TextWindowElement;"), remap = false)
         private TextWindowElement storeOverlayText(Operation<TextWindowElement> original) {
             TextWindowElement ret = original.call();
-            PonderOverlayElement_Duck.numismatics$applyOverlay(this$0, ret);
+            PonderElementBase_Duck.numismatics$applyOverlay(this$0, ret);
             return ret;
         }
 
-        @WrapOperation(method = "showSelectionWithText", at = @At(value = "NEW", target = "()Lcom/simibubi/create/foundation/ponder/element/TextWindowElement;"), remap = false)
+        @WrapOperation(method = "showOutlineWithText", at = @At(value = "NEW", target = "()Lnet/createmod/ponder/foundation/element/TextWindowElement;"), remap = false)
         private TextWindowElement storeOverlaySelectionText(Operation<TextWindowElement> original) {
             TextWindowElement ret = original.call();
-            PonderOverlayElement_Duck.numismatics$applyOverlay(this$0, ret);
+            PonderElementBase_Duck.numismatics$applyOverlay(this$0, ret);
             return ret;
         }
 
-        @WrapOperation(method = "showControls", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/ponder/element/InputWindowElement;clone()Lcom/simibubi/create/foundation/ponder/element/InputWindowElement;"), remap = false)
-        private InputWindowElement storeOverlayControls(InputWindowElement instance, Operation<InputWindowElement> original) {
-            InputWindowElement ret = original.call(instance);
-            PonderOverlayElement_Duck.numismatics$applyOverlay(this$0, ret);
+        @WrapOperation(method = "showControls", at = @At(value = "NEW", target = "(Lnet/minecraft/world/phys/Vec3;Lnet/createmod/catnip/math/Pointing;)Lnet/createmod/ponder/foundation/element/InputWindowElement;"), remap = false)
+        private InputWindowElement storeOverlayControls(Vec3 sceneSpace, Pointing direction, Operation<InputWindowElement> original) {
+            InputWindowElement ret = original.call(sceneSpace, direction);
+            PonderElementBase_Duck.numismatics$applyOverlay(this$0, ret);
             return ret;
         }
     }

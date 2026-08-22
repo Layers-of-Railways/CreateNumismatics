@@ -18,8 +18,9 @@
 
 package dev.ithundxr.createnumismatics.config;
 
-import com.simibubi.create.foundation.config.ConfigBase;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import net.createmod.catnip.config.ConfigBase;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class CCommon extends ConfigBase {
@@ -31,7 +32,7 @@ public class CCommon extends ConfigBase {
     // Based off of https://github.com/Layers-of-Railways/Railway/blob/68713f0fbb20080b7e207c070b1595bdbbc1bc00/common/src/main/java/com/railwayteam/railways/config/CCommon.java
     
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "common";
     }
 

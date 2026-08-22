@@ -18,13 +18,6 @@
 
 package dev.ithundxr.createnumismatics.ponder;
 
-import com.simibubi.create.foundation.ponder.PonderPalette;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.utility.Iterate;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
@@ -37,6 +30,14 @@ import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.ClientCraftingUtils;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.InputWindowElement;
+import net.createmod.ponder.foundation.instruction.ShowInputInstruction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -67,15 +68,15 @@ public class VendorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos vendorSell = util.grid.at(1, 1, 1);
-        BlockPos vendorBuy = util.grid.at(0, 1, 1);
-        Vec3 vendorText = util.vector.blockSurface(vendorSell, Direction.WEST).add(0, 0.5, 0);
+        BlockPos vendorSell = util.grid().at(1, 1, 1);
+        BlockPos vendorBuy = util.grid().at(0, 1, 1);
+        Vec3 vendorText = util.vector().blockSurface(vendorSell, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        var vendorSellLink = scene.world.showIndependentSection(util.select.position(vendorSell), Direction.DOWN);
+        var vendorSellLink = scene.world().showIndependentSection(util.select().position(vendorSell), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .text("This vendor is selling 8 apples for a cog and a bevel.")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -91,7 +92,7 @@ public class VendorScenes {
             .placeNearTarget();
         scene.idle(110);
 
-        scene.overlay.showText(130)
+        scene.overlay().showText(130)
             .text("Use the vendor to buy 8 apples, sneak-use it to buy a whole stack")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -112,13 +113,13 @@ public class VendorScenes {
 
         scene.idle(20);
 
-        scene.world.hideIndependentSection(vendorSellLink, Direction.EAST);
+        scene.world().hideIndependentSection(vendorSellLink, Direction.EAST);
         scene.idle(5);
-        var vendorBuyLink = scene.world.showIndependentSection(util.select.position(vendorBuy), Direction.EAST);
-        scene.world.moveSection(vendorBuyLink, Vec3.atLowerCornerOf(vendorSell.subtract(vendorBuy)), 20);
+        var vendorBuyLink = scene.world().showIndependentSection(util.select().position(vendorBuy), Direction.EAST);
+        scene.world().moveSection(vendorBuyLink, Vec3.atLowerCornerOf(vendorSell.subtract(vendorBuy)), 20);
         scene.idle(30);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .text("This vendor is buying 16 oak logs for a bevel.")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -134,7 +135,7 @@ public class VendorScenes {
             .placeNearTarget();
         scene.idle(110);
 
-        scene.overlay.showText(130)
+        scene.overlay().showText(130)
             .text("Use the vendor to sell 16 oak logs, sneak-use it to sell a whole stack")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -161,14 +162,14 @@ public class VendorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos vendorPos = util.grid.at(1, 1, 1);
-        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
+        BlockPos vendorPos = util.grid().at(1, 1, 1);
+        Vec3 vendorText = util.vector().blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
+        scene.world().showIndependentSection(util.select().position(vendorPos), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(60)
+        scene.overlay().showText(60)
             .text("Players with access to a vendor can sneak-use to configure it.")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -176,10 +177,9 @@ public class VendorScenes {
 
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
+        scene.overlay().showControls(util.vector().topOf(vendorPos), Pointing.DOWN, 10)
             .rightClick()
-            .whileSneaking(),
-            10);
+            .whileSneaking();
         scene.idle(15);
 
         var menu = scenex.showContainerMenu(
@@ -248,7 +248,7 @@ public class VendorScenes {
         scenex.clickSlot(menu, VendorMenu.INV_START_INDEX + 1);
         scene.idle(5);
 
-        scene.overlay.showText(150)
+        scene.overlay().showText(150)
             .text("Configure each coin to set the price")
             .independent(50);
         scene.idle(5);
@@ -314,14 +314,14 @@ public class VendorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos vendorPos = util.grid.at(1, 1, 1);
-        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
+        BlockPos vendorPos = util.grid().at(1, 1, 1);
+        Vec3 vendorText = util.vector().blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
+        scene.world().showIndependentSection(util.select().position(vendorPos), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(60)
+        scene.overlay().showText(60)
             .text("Players with access to a vendor can sneak-use to configure it.")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -329,10 +329,9 @@ public class VendorScenes {
 
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
-                .rightClick()
-                .whileSneaking(),
-            10);
+        scene.overlay().showControls(util.vector().topOf(vendorPos), Pointing.DOWN, 10)
+            .rightClick()
+            .whileSneaking();
         scene.idle(15);
 
         var menu = scenex.showContainerMenu(
@@ -479,14 +478,14 @@ public class VendorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos vendorPos = util.grid.at(1, 1, 1);
-        Vec3 vendorText = util.vector.blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
+        BlockPos vendorPos = util.grid().at(1, 1, 1);
+        Vec3 vendorText = util.vector().blockSurface(vendorPos, Direction.WEST).add(0, 0.5, 0);
 
         // for some reason the lighting is broken if we show it normally
-        scene.world.showIndependentSection(util.select.position(vendorPos), Direction.DOWN);
+        scene.world().showIndependentSection(util.select().position(vendorPos), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(60)
+        scene.overlay().showText(60)
             .text("Players with access to a vendor can sneak-use to configure it.")
             .attachKeyFrame()
             .pointAt(vendorText)
@@ -494,10 +493,9 @@ public class VendorScenes {
 
         scene.idle(50);
 
-        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
-                .rightClick()
-                .whileSneaking(),
-            10);
+        scene.overlay().showControls(util.vector().topOf(vendorPos), Pointing.DOWN, 10)
+            .rightClick()
+            .whileSneaking();
         scene.idle(15);
 
         List<ItemStack> fakeEmiItems = new ArrayList<>();
@@ -554,11 +552,11 @@ public class VendorScenes {
             .teleport(-20, -30)
             .snapFrame());
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .text("To set the filter item of a vendor (or salepoint) to an item you don't have...")
             .independent(65);
         scene.idle(20);
-        scene.overlay.showText(90)
+        scene.overlay().showText(90)
             .text("...use a recipe viewer such as EMI or JEI and drag items to the filter slot.")
             .independent(105);
         scene.idle(10);
@@ -590,7 +588,7 @@ public class VendorScenes {
         scenex.modifyScreen(menu, $ -> $.menu().setCarried(ItemStack.EMPTY));
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .text("Items such as dyes and enchanted books can be sneak-dragged to modify the filter item.")
             .independent(105)
             .attachKeyFrame();
@@ -667,23 +665,24 @@ public class VendorScenes {
 
     private static void tradeInteraction(SceneBuilder scene, SceneBuildingUtil util, BlockPos vendorPos,
                                          ItemStack intoVendor, ItemStack fromVendor, boolean bulk) {
-        InputWindowElement iwe = new InputWindowElement(util.vector.topOf(vendorPos), Pointing.DOWN)
+        InputWindowElement iwe = new InputWindowElement(util.vector().topOf(vendorPos), Pointing.DOWN);
+        iwe.builder()
             .withItem(intoVendor)
             .rightClick();
-        if (bulk) iwe.whileSneaking();
+        if (bulk) iwe.builder().whileSneaking();
         ((InputWindowElement_Duck) iwe).numismatics$showItemCount(true);
-        scene.overlay.showControls(iwe, 40);
+        scene.addInstruction(new ShowInputInstruction(iwe, 40));
         scene.idle(6);
 
-        scene.effects.indicateSuccess(vendorPos);
-        var item = scene.world.createItemEntity(
-            util.vector.blockSurface(vendorPos, Direction.NORTH),
+        scene.effects().indicateSuccess(vendorPos);
+        var item = scene.world().createItemEntity(
+            util.vector().blockSurface(vendorPos, Direction.NORTH),
             new Vec3(0, 0.15, -0.15),
             fromVendor
         );
         scene.idle(36);
         scene.idle(10);
 
-        scene.world.modifyEntity(item, Entity::discard);
+        scene.world().modifyEntity(item, Entity::discard);
     }
 }

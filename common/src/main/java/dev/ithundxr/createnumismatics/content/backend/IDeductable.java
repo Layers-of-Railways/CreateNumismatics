@@ -20,7 +20,6 @@ package dev.ithundxr.createnumismatics.content.backend;
 
 import com.mojang.datafixers.util.Either;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Authorization;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
@@ -28,6 +27,7 @@ import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
 import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.AuthorizationPair;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -99,18 +99,18 @@ public interface IDeductable {
                     }
                     return account;
                 } else if (account == null) {
-                    reasonHolder.setMessage(Components.translatable("error.numismatics.card.account_not_found"));
+                    reasonHolder.setMessage(Component.translatable("error.numismatics.card.account_not_found"));
                 } else {
-                    reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+                    reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
                 }
             } else {
-                reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_bound"));
+                reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_bound"));
             }
         } else if (NumismaticsTags.AllItemTags.AUTHORIZED_CARDS.matches(stack)) {
             AuthorizationPair authorizedPair = AuthorizedCardItem.get(stack);
 
             if (authorizedPair == null) {
-                reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_bound"));
+                reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_bound"));
                 return null;
             }
 
@@ -129,7 +129,7 @@ public interface IDeductable {
             BankAccount account = Numismatics.BANK.getAccount(authorizedPair.accountID());
 
             if (account == null) {
-                reasonHolder.setMessage(Components.translatable("error.numismatics.card.account_not_found"));
+                reasonHolder.setMessage(Component.translatable("error.numismatics.card.account_not_found"));
                 return null;
             }
 
@@ -138,14 +138,14 @@ public interface IDeductable {
             if (subAccount != null) {
                 IDeductable deductor = subAccount.getDeductor(authorization);
                 if (deductor == null) {
-                    reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+                    reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
                 }
                 if (mustBeAuthorizedDeductible) {
                     return IAuthorizationCheckingDeductable.of(deductor, authorization, subAccount);
                 }
                 return deductor;
             } else if (!reasonHolder.hasMessage()) {
-                reasonHolder.setMessage(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+                reasonHolder.setMessage(Component.translatable("error.numismatics.authorized_card.account_not_found"));
             }
         }
 

@@ -19,9 +19,9 @@
 package dev.ithundxr.createnumismatics.content.salepoint.widgets.forge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.fluid.FluidRenderer;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import dev.ithundxr.createnumismatics.multiloader.fluid.forge.MultiloaderFluidStackImpl;
+import net.createmod.catnip.platform.ForgeCatnipServices;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,6 +32,6 @@ public class SalepointFluidDisplayWidgetImpl {
     public static void renderFluidBox(@NotNull MultiloaderFluidStack fluidStack, float xMin, float yMin, float zMin,
                                       float xMax, float yMax, float zMax, @NotNull MultiBufferSource buffer,
                                       @NotNull PoseStack ms, int light, boolean renderBottom) {
-        FluidRenderer.renderFluidBox(((MultiloaderFluidStackImpl) fluidStack).getWrapped(), xMin, yMin, zMin, xMax, yMax, zMax, buffer, ms, light, renderBottom);
+        ForgeCatnipServices.FLUID_RENDERER.renderFluidBox(((MultiloaderFluidStackImpl) fluidStack).getWrapped(), xMin, yMin, zMin, xMax, yMax, zMax, buffer, ms, light, renderBottom, false);
     }
 }

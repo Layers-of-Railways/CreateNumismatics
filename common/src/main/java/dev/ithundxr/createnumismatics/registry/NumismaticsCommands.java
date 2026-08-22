@@ -22,8 +22,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.simibubi.create.infrastructure.command.AllCommands;
-import dev.ithundxr.createnumismatics.registry.commands.*;
+import dev.ithundxr.createnumismatics.registry.commands.DeductCommand;
+import dev.ithundxr.createnumismatics.registry.commands.PayAllCommand;
+import dev.ithundxr.createnumismatics.registry.commands.PayCommand;
+import dev.ithundxr.createnumismatics.registry.commands.ReloadCommandsCommand;
+import dev.ithundxr.createnumismatics.registry.commands.ToggleAdminModeCommand;
+import dev.ithundxr.createnumismatics.registry.commands.UtilCommand;
+import dev.ithundxr.createnumismatics.registry.commands.ViewCommand;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.command.CatnipCommands;
 import net.minecraft.commands.CommandSourceStack;
@@ -57,7 +62,7 @@ public class NumismaticsCommands {
         LiteralCommandNode<CommandSourceStack> numismaticsRoot = dispatcher.register(numismaticsCommand);
 
         if (util != null) {
-            numismaticsRoot.addChild(AllCommands.buildRedirect("u", util));
+            numismaticsRoot.addChild(CatnipCommands.buildRedirect("u", util));
         }
 
         CommandNode<CommandSourceStack> nm = dispatcher.findNode(Collections.singleton("nm"));

@@ -20,12 +20,11 @@ package dev.ithundxr.createnumismatics.ponder.utils.instructions;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.instruction.TickingInstruction;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
-import net.minecraft.world.MenuProvider;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.instruction.TickingInstruction;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class VirtualScreenCloseInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends TickingInstruction {

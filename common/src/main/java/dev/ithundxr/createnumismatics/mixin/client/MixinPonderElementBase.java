@@ -16,16 +16,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.mixin_interfaces;
+package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.element.PonderOverlayElement;
+import dev.ithundxr.createnumismatics.mixin_interfaces.PonderElementBase_Duck;
+import net.createmod.ponder.foundation.element.PonderElementBase;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
-public interface PonderOverlayElement_Duck {
-    void numismatics$setOverlayLayer(boolean isOverlay);
-    boolean numismatics$isOnOverlayLayer();
+@Mixin(PonderElementBase.class)
+public class MixinPonderElementBase implements PonderElementBase_Duck {
+    @Unique
+    private boolean numismatics$isOverlayLayer = false;
 
-    static void numismatics$applyOverlay(SceneBuilder builder, PonderOverlayElement element) {
-        ((PonderOverlayElement_Duck) element).numismatics$setOverlayLayer(((SceneBuilder_Duck) builder).numismatics$isOverlayLayerEnabled());
+    @Override
+    public void numismatics$setOverlayLayer(boolean isOverlay) {
+        numismatics$isOverlayLayer = isOverlay;
+    }
+
+    @Override
+    public boolean numismatics$isOnOverlayLayer() {
+        return numismatics$isOverlayLayer;
     }
 }

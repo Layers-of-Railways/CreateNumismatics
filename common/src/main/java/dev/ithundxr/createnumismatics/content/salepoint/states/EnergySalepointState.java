@@ -18,9 +18,8 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableAbstractBuffer;
@@ -31,6 +30,7 @@ import dev.ithundxr.createnumismatics.content.salepoint.types.SimpleEnergyBuffer
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyConfigWidget;
 import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointEnergyDisplayWidget;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.lang.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -176,27 +176,27 @@ public class EnergySalepointState implements ISalepointState<Energy> {
 
     private boolean isValidForPurchase(@Nullable SalepointTargetBehaviour<Energy> behaviour, ReasonHolder reasonHolder) {
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
         if (!behaviour.isUnderControl(this)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_not_controlled"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_not_controlled"));
             return false;
         }
 
         if (filter.getAmount() == 0) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_filter"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_filter"));
             return false;
         }
 
         if (!hasBufferEnergyForPurchase()) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.vendor.out_of_stock"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.vendor.out_of_stock"));
             return false;
         }
 
         if (!behaviour.hasSpaceFor(filter.copy())) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.insufficient_space"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.insufficient_space"));
             return false;
         }
 
@@ -207,7 +207,7 @@ public class EnergySalepointState implements ISalepointState<Energy> {
     public boolean doPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
         SalepointTargetBehaviour<Energy> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
@@ -215,7 +215,7 @@ public class EnergySalepointState implements ISalepointState<Energy> {
             return false;
 
         if (!behaviour.doPurchase(filter.copy(), this::removeBufferEnergyForPurchase)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_failed_purchase"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_failed_purchase"));
             return false;
         }
 
@@ -276,12 +276,12 @@ public class EnergySalepointState implements ISalepointState<Energy> {
 
     @Override
     public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
-        Lang.builder()
-            .add(Components.translatable("gui.numismatics.salepoint.energy"))
+        Lang.builder(Numismatics.MOD_ID)
+            .add(Component.translatable("gui.numismatics.salepoint.energy"))
             .forGoggles(tooltip);
 
-        Lang.builder()
-            .add(Components.literal(TextUtils.formatEnergy(filter.getAmount())))
+        Lang.builder(Numismatics.MOD_ID)
+            .add(Component.literal(TextUtils.formatEnergy(filter.getAmount())))
             .style(ChatFormatting.GREEN)
             .forGoggles(tooltip);
     }

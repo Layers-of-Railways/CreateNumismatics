@@ -18,9 +18,8 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
@@ -31,6 +30,7 @@ import dev.ithundxr.createnumismatics.content.salepoint.widgets.SalepointFluidDi
 import dev.ithundxr.createnumismatics.multiloader.fluid.FluidUnits;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.lang.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -162,27 +162,27 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
 
     private boolean isValidForPurchase(@Nullable SalepointTargetBehaviour<MultiloaderFluidStack> behaviour, ReasonHolder reasonHolder) {
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
         if (!behaviour.isUnderControl(this)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_not_controlled"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_not_controlled"));
             return false;
         }
 
         if (filter.isEmpty()) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_filter"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_filter"));
             return false;
         }
 
         if (!hasBufferFluidForPurchase()) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.vendor.out_of_stock"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.vendor.out_of_stock"));
             return false;
         }
 
         if (!behaviour.hasSpaceFor(filter.copy())) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.insufficient_space"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.insufficient_space"));
             return false;
         }
 
@@ -193,7 +193,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     public final boolean doPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
         SalepointTargetBehaviour<MultiloaderFluidStack> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
@@ -201,7 +201,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
             return false;
 
         if (!behaviour.doPurchase(filter.copy(), this::removeBufferFluidForPurchase)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_failed_purchase"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_failed_purchase"));
             return false;
         }
 
@@ -263,18 +263,18 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     @Override
     public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
         if (filter.isEmpty()) {
-            Lang.builder()
-                .add(Components.translatable("gui.numismatics.salepoint.fluid_empty"))
+            Lang.builder(Numismatics.MOD_ID)
+                .add(Component.translatable("gui.numismatics.salepoint.fluid_empty"))
                 .forGoggles(tooltip);
             return;
         }
 
-        Lang.builder()
+        Lang.builder(Numismatics.MOD_ID)
             .add(filter.getDisplayName().copy())
             .forGoggles(tooltip);
 
-        Lang.builder()
-            .add(Components.literal(TextUtils.formatFluid(filter.getAmount())))
+        Lang.builder(Numismatics.MOD_ID)
+            .add(Component.literal(TextUtils.formatFluid(filter.getAmount())))
             .style(ChatFormatting.GREEN)
             .forGoggles(tooltip);
     }

@@ -21,15 +21,9 @@ package dev.ithundxr.createnumismatics.ponder.utils;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.Selection;
-import com.simibubi.create.foundation.ponder.element.TextWindowElement;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
-import dev.ithundxr.createnumismatics.mixin.AccessorSceneBuilder;
-import dev.ithundxr.createnumismatics.mixin_interfaces.PonderOverlayElement_Duck;
+import dev.ithundxr.createnumismatics.mixin_interfaces.PonderElementBase_Duck;
 import dev.ithundxr.createnumismatics.mixin_interfaces.SceneBuilder_Duck;
 import dev.ithundxr.createnumismatics.mixin_interfaces.TextWindowElement_Builder_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.TextComponentWindowElement;
@@ -38,6 +32,11 @@ import dev.ithundxr.createnumismatics.ponder.utils.instructions.TextComponentIns
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenCloseInstruction;
 import dev.ithundxr.createnumismatics.ponder.utils.instructions.VirtualScreenOpenInstruction;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.api.element.TextElementBuilder;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.Selection;
+import net.createmod.ponder.foundation.PonderScene;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -69,30 +68,30 @@ public class SceneBuilderExtension {
         ((SceneBuilder_Duck) wrapped).numismatics$setOverlayLayer(false);
     }
 
-    public TextWindowElement.Builder showText(int duration, ScreenVec<?, ?, ?> pixelPointAt) {
-        TextWindowElement.Builder builder = wrapped.overlay.showText(duration);
+    public TextElementBuilder showText(int duration, ScreenVec<?, ?, ?> pixelPointAt) {
+        TextElementBuilder builder = wrapped.overlay().showText(duration);
         ((TextWindowElement_Builder_Duck) builder).numismatics$pointAtPixel(pixelPointAt);
         return builder;
     }
 
-    public TextWindowElement.Builder showSelectionWithText(Selection selection, int duration, ScreenVec<?, ?, ?> pixelPointAt) {
-        TextWindowElement.Builder builder = wrapped.overlay.showSelectionWithText(selection, duration);
+    public TextElementBuilder showSelectionWithText(Selection selection, int duration, ScreenVec<?, ?, ?> pixelPointAt) {
+        TextElementBuilder builder = wrapped.overlay().showOutlineWithText(selection, duration);
         ((TextWindowElement_Builder_Duck) builder).numismatics$pointAtPixel(pixelPointAt);
         return builder;
     }
 
     public TextComponentWindowElement.Builder showTextComponent(int duration) {
         TextComponentWindowElement textWindowElement = new TextComponentWindowElement();
-        PonderOverlayElement_Duck.numismatics$applyOverlay(wrapped, textWindowElement);
+        PonderElementBase_Duck.numismatics$applyOverlay(wrapped, textWindowElement);
         wrapped.addInstruction(new TextComponentInstruction(textWindowElement, duration));
-        return textWindowElement.new Builder(((AccessorSceneBuilder) wrapped).numismatics$getScene());
+        return textWindowElement.new Builder(wrapped.getScene());
     }
 
     public TextComponentWindowElement.Builder showSelectionWithTextComponent(Selection selection, int duration) {
         TextComponentWindowElement textWindowElement = new TextComponentWindowElement();
-        PonderOverlayElement_Duck.numismatics$applyOverlay(wrapped, textWindowElement);
+        PonderElementBase_Duck.numismatics$applyOverlay(wrapped, textWindowElement);
         wrapped.addInstruction(new TextComponentInstruction(textWindowElement, duration, selection));
-        return textWindowElement.new Builder(((AccessorSceneBuilder) wrapped).numismatics$getScene()).pointAt(selection.getCenter());
+        return textWindowElement.new Builder(wrapped.getScene()).pointAt(selection.getCenter());
     }
 
     public <M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity & MenuProvider> VirtualScreenElement<M, S, B>.Builder showContainerMenu(int fadeInTicks, BlockPos bePos, BlockEntityType<B> beType, BiFunction<B, Inventory, M> menuFactory, VirtualScreenElement.ScreenFactory<M, S> screenFactory) {
@@ -103,7 +102,7 @@ public class SceneBuilderExtension {
         VirtualScreenElement<M, S, B> element = new VirtualScreenElement<>(bePos, beType, menuFactory, screenFactory, titleFactory);
         VirtualScreenOpenInstruction<M, S, B> instruction = new VirtualScreenOpenInstruction<>(element, fadeInTicks);
         wrapped.addInstruction(instruction);
-        PonderScene scene = ((AccessorSceneBuilder) wrapped).numismatics$getScene();
+        PonderScene scene = wrapped.getScene();
         return element.new Builder(scene, instruction.createLink(scene));
     }
 
@@ -115,7 +114,7 @@ public class SceneBuilderExtension {
         VirtualScreenElement<M, S, B> element = new VirtualScreenElement<>(bePos, beType, menuFactory, screenFactory, titleFactory);
         VirtualScreenOpenInstruction<M, S, B> instruction = new VirtualScreenOpenInstruction<>(element, fadeInTicks, selection);
         wrapped.addInstruction(instruction);
-        PonderScene scene = ((AccessorSceneBuilder) wrapped).numismatics$getScene();
+        PonderScene scene = wrapped.getScene();
         return element.new Builder(scene, instruction.createLink(scene));
     }
 

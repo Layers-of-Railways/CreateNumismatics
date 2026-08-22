@@ -18,15 +18,15 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Lang;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableAbstractBuffer;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingItemBuffer;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -386,27 +386,27 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
 
     private boolean isValidForPurchase(@Nullable SalepointTargetBehaviour<ItemStack> behaviour, ReasonHolder reasonHolder) {
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
         if (!behaviour.isUnderControl(this)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_not_controlled"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_not_controlled"));
             return false;
         }
 
         if (filter.isEmpty()) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_filter"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_filter"));
             return false;
         }
 
         if (!hasBufferItemsForPurchase()) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.vendor.out_of_stock"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.vendor.out_of_stock"));
             return false;
         }
 
         if (!behaviour.hasSpaceFor(filter.copy())) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.insufficient_space"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.insufficient_space"));
             return false;
         }
 
@@ -417,7 +417,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
     public boolean doPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
         SalepointTargetBehaviour<ItemStack> behaviour = getBehaviour(level, targetedPos);
         if (behaviour == null) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.no_target"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.no_target"));
             return false;
         }
 
@@ -425,7 +425,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
             return false;
 
         if (!behaviour.doPurchase(filter.copy(), this::removeBufferItemsForPurchase)) {
-            reasonHolder.setMessage(Components.translatable("gui.numismatics.salepoint.target_failed_purchase"));
+            reasonHolder.setMessage(Component.translatable("gui.numismatics.salepoint.target_failed_purchase"));
             return false;
         }
 
@@ -471,8 +471,8 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
     @Override
     public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
         if (filter.isEmpty()) {
-            Lang.builder()
-                .add(Components.translatable("gui.numismatics.salepoint.fluid_empty"))
+            Lang.builder(Numismatics.MOD_ID)
+                .add(Component.translatable("gui.numismatics.salepoint.fluid_empty"))
                 .forGoggles(tooltip);
             return;
         }
@@ -484,12 +484,12 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
                 isFirst = false;
                 if (filter.getCount() != 1) {
                     mutable.append(
-                        Components.translatable("gui.numismatics.vendor.count", filter.getCount())
+                        Component.translatable("gui.numismatics.vendor.count", filter.getCount())
                             .withStyle(ChatFormatting.GREEN)
                     );
                 }
             }
-            Lang.builder()
+            Lang.builder(Numismatics.MOD_ID)
                 .add(mutable)
                 .forGoggles(tooltip);
         }

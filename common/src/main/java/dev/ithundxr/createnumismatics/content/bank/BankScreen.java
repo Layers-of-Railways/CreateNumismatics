@@ -110,7 +110,7 @@ public class BankScreen extends AbstractSimiContainerScreen<BankMenu> {
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             Component component = null;
             if (hoveredSlot.index == BankMenu.CARD_SLOT_INDEX) {
-                component = Components.translatable("gui.numismatics.bank_terminal.switch_account");
+                component = Component.translatable("gui.numismatics.bank_terminal.switch_account");
             }
             if (component != null) {
                 guiGraphics.renderTooltip(font, component, x, y);

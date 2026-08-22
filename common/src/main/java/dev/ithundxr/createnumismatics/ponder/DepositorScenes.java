@@ -19,14 +19,7 @@
 package dev.ithundxr.createnumismatics.ponder;
 
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.SceneBuilder;
-import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
-import com.simibubi.create.foundation.ponder.element.EntityElement;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.ponder.instruction.ShowInputInstruction;
 import com.simibubi.create.foundation.utility.BlockHelper;
-import com.simibubi.create.foundation.utility.Pointing;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
@@ -34,6 +27,13 @@ import dev.ithundxr.createnumismatics.mixin.client.AccessorInputWindowElement;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.DoubleInputWindowElement;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.api.element.EntityElement;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.foundation.element.InputWindowElement;
+import net.createmod.ponder.foundation.instruction.ShowInputInstruction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -52,18 +52,18 @@ public class DepositorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos depositor = util.grid.at(2, 1, 2);
+        BlockPos depositor = util.grid().at(2, 1, 2);
         BlockPos redstoneLamp = depositor.above();
 
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(10);
-        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.world().showSection(util.select().position(redstoneLamp), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .text("Depositors emit a redstone pulse in exchange for payment.")
             .attachKeyFrame()
-            .pointAt(util.vector.centerOf(depositor))
+            .pointAt(util.vector().centerOf(depositor))
             .placeNearTarget();
         scene.idle(30);
 
@@ -76,27 +76,27 @@ public class DepositorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos depositor = util.grid.at(2, 1, 2);
+        BlockPos depositor = util.grid().at(2, 1, 2);
         BlockPos redstoneLamp = depositor.above();
-        BlockPos repeater = util.grid.at(1, 1, 2);
-        BlockPos lever = util.grid.at(0, 1, 2);
+        BlockPos repeater = util.grid().at(1, 1, 2);
+        BlockPos lever = util.grid().at(0, 1, 2);
 
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(10);
-        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.world().showSection(util.select().position(redstoneLamp), Direction.DOWN);
         scene.idle(10);
 
-        scene.world.showSection(util.select.fromTo(lever, repeater), Direction.EAST);
+        scene.world().showSection(util.select().fromTo(lever, repeater), Direction.EAST);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .attachKeyFrame()
             .text("Redstone power will lock depositors.")
-            .pointAt(util.vector.centerOf(depositor))
+            .pointAt(util.vector().centerOf(depositor))
             .placeNearTarget();
         scene.idle(80);
 
         // lock
-        scene.effects.indicateRedstone(lever);
+        scene.effects().indicateRedstone(lever);
         cycleState(lever, LeverBlock.POWERED, scene);
         cycleState(repeater, RepeaterBlock.POWERED, scene);
         scene.idle(2);
@@ -108,7 +108,7 @@ public class DepositorScenes {
         scene.idle(10);
 
         // unlock
-        scene.effects.indicateRedstone(lever);
+        scene.effects().indicateRedstone(lever);
         cycleState(lever, LeverBlock.POWERED, scene);
         cycleState(repeater, RepeaterBlock.POWERED, scene);
         scene.idle(2);
@@ -126,18 +126,18 @@ public class DepositorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos depositor = util.grid.at(2, 1, 2);
-        BlockPos redstoneLamp = util.grid.at(3, 1, 2);
+        BlockPos depositor = util.grid().at(2, 1, 2);
+        BlockPos redstoneLamp = util.grid().at(3, 1, 2);
 
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(10);
-        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.world().showSection(util.select().position(redstoneLamp), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .attachKeyFrame()
             .text("Andesite depositors can accept any single coin.")
-            .pointAt(util.vector.topOf(depositor))
+            .pointAt(util.vector().topOf(depositor))
             .placeNearTarget();
         scene.idle(80);
 
@@ -145,7 +145,7 @@ public class DepositorScenes {
         int cascadeCount = Coin.values().length*2 - 1;
         int cascadeInterval = 7;
         InputWindowElement price = createElement(
-            util.vector.topOf(depositor),
+            util.vector().topOf(depositor),
             "amount_spaced_1x", Coin.SPUR.getIcon()
         );
         scene.addInstruction(new ShowInputInstruction(price, cascadeInterval * cascadeCount));
@@ -164,16 +164,16 @@ public class DepositorScenes {
         scene.idle(10);
 
         // convert to brass
-        scene.world.hideSection(util.select.position(depositor), Direction.UP);
+        scene.world().hideSection(util.select().position(depositor), Direction.UP);
         scene.idle(20);
-        scene.world.modifyBlock(depositor, state -> BlockHelper.copyProperties(state, NumismaticsBlocks.BRASS_DEPOSITOR.getDefaultState()), false);
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().modifyBlock(depositor, state -> BlockHelper.copyProperties(state, NumismaticsBlocks.BRASS_DEPOSITOR.getDefaultState()), false);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(20);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .attachKeyFrame()
             .text("Brass depositors can accept complex prices consisting of multiple coins.")
-            .pointAt(util.vector.topOf(depositor))
+            .pointAt(util.vector().topOf(depositor))
             .placeNearTarget();
         scene.idle(80);
 
@@ -192,7 +192,7 @@ public class DepositorScenes {
             {1, 6},
         };
         DoubleInputWindowElement combinedPrice = createElement(
-            util.vector.topOf(depositor),
+            util.vector().topOf(depositor),
             "amount_spaced_1x", Coin.SPROCKET.getIcon(),
             "amount_spaced_1x", Coin.COG.getIcon()
         );
@@ -215,30 +215,30 @@ public class DepositorScenes {
         scene.showBasePlate();
         scene.idle(10);
 
-        BlockPos redstoneLamp = util.grid.at(3, 1, 2);
-        BlockPos depositor = util.grid.at(2, 1, 2);
-        BlockPos hopper = util.grid.at(1, 1, 2);
+        BlockPos redstoneLamp = util.grid().at(3, 1, 2);
+        BlockPos depositor = util.grid().at(2, 1, 2);
+        BlockPos hopper = util.grid().at(1, 1, 2);
 
-        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.world().showSection(util.select().position(depositor), Direction.DOWN);
         scene.idle(10);
-        scene.world.showSection(util.select.position(hopper), Direction.DOWN);
+        scene.world().showSection(util.select().position(hopper), Direction.DOWN);
         scene.idle(10);
-        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.world().showSection(util.select().position(redstoneLamp), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay.showText(70)
+        scene.overlay().showText(70)
             .attachKeyFrame()
             .text("Brass Depositors with a price of zero accept coins from item transfer, but will not trigger redstone.")
-            .pointAt(util.vector.centerOf(depositor))
+            .pointAt(util.vector().centerOf(depositor))
             .placeNearTarget();
         scene.idle(80);
 
         for (Coin coin : Coin.values()) {
-            ElementLink<EntityElement> item = scene.world.createItemEntity(util.vector.centerOf(hopper.above()), Vec3.ZERO, coin.asStack());
+            ElementLink<EntityElement> item = scene.world().createItemEntity(util.vector().centerOf(hopper.above()), Vec3.ZERO, coin.asStack());
             scene.idle(6);
-            scene.world.modifyEntity(item, Entity::discard);
+            scene.world().modifyEntity(item, Entity::discard);
             scene.idle(2);
-            scene.effects.indicateSuccess(depositor.north());
+            scene.effects().indicateSuccess(depositor.north());
 
             scene.idle(20);
         }
@@ -246,7 +246,7 @@ public class DepositorScenes {
 
     // <--------------------------------------------> Utilities <-------------------------------------------->
     private static <T extends Comparable<T>> void cycleState(BlockPos pos, Property<T> property, SceneBuilder scene) {
-        scene.world.modifyBlock(pos, state -> state.cycle(property), false);
+        scene.world().modifyBlock(pos, state -> state.cycle(property), false);
     }
 
     private static void depositorSuccess(BlockPos depositor, BlockPos redstoneLamp, Coin coin, SceneBuilder scene, SceneBuildingUtil util) {
@@ -254,16 +254,14 @@ public class DepositorScenes {
     }
 
     private static void depositorSuccess(BlockPos depositor, BlockPos redstoneLamp, ItemStack stack, SceneBuilder scene, SceneBuildingUtil util) {
-        Vec3 depositorFace = util.vector.blockSurface(depositor, Direction.NORTH);
+        Vec3 depositorFace = util.vector().blockSurface(depositor, Direction.NORTH);
 
-        scene.overlay.showControls(new InputWindowElement(depositorFace, Pointing.RIGHT)
-                .withItem(stack)
-                .rightClick(),
-            40
-        );
+        scene.overlay().showControls(depositorFace, Pointing.RIGHT, 40)
+            .withItem(stack)
+            .rightClick();
         scene.idle(6);
 
-        scene.effects.indicateSuccess(depositor.north());
+        scene.effects().indicateSuccess(depositor.north());
         cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
         scene.idle(2 + 4);
         cycleState(redstoneLamp, RedstoneLampBlock.LIT, scene);
@@ -272,23 +270,22 @@ public class DepositorScenes {
     }
 
     private static void depositorFailure(BlockPos depositor, Coin coin, SceneBuilder scene, SceneBuildingUtil util) {
-        Vec3 depositorFace = util.vector.blockSurface(depositor, Direction.NORTH);
+        Vec3 depositorFace = util.vector().blockSurface(depositor, Direction.NORTH);
 
-        scene.overlay.showControls(new InputWindowElement(depositorFace, Pointing.RIGHT)
-                .withItem(coin.asStack())
-                .rightClick(),
-            40
-        );
+        scene.overlay().showControls(depositorFace, Pointing.RIGHT, 40)
+            .withItem(coin.asStack())
+            .rightClick();
         scene.idle(6);
 
-        scene.effects.indicateRedstone(depositor.north());
+        scene.effects().indicateRedstone(depositor.north());
         scene.idle(34);
     }
 
 
 
     private static InputWindowElement createElement(Vec3 sceneSpace, String sharedTextValue, AllIcons icon) {
-        InputWindowElement element = new InputWindowElement(sceneSpace, Pointing.DOWN).showing(icon);
+        InputWindowElement element = new InputWindowElement(sceneSpace, Pointing.DOWN);
+        element.builder().showing(icon);
         ((AccessorInputWindowElement) element).numismatics$setKey(Numismatics.asResource(sharedTextValue));
 
         return element;
@@ -302,7 +299,7 @@ public class DepositorScenes {
     }
 
     private static void changeIcon(SceneBuilder scene, InputWindowElement element, AllIcons icon, int interval) {
-        scene.addInstruction(s -> element.showing(icon));
+        scene.addInstruction(s -> element.builder().showing(icon));
         scene.idle(interval);
     }
 

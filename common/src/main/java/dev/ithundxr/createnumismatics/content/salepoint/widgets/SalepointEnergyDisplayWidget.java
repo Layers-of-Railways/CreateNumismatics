@@ -20,9 +20,6 @@ package dev.ithundxr.createnumismatics.content.salepoint.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.CustomLightingSettings;
-import com.simibubi.create.foundation.gui.ILightingSettings;
-import com.simibubi.create.foundation.gui.widget.AbstractSimiWidget;
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.base.client.rendering.ISalepointStateUpdatingWidget;
 import dev.ithundxr.createnumismatics.base.client.rendering.UIRenderHelper;
 import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
@@ -30,6 +27,8 @@ import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.gui.ILightingSettings;
+import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -102,12 +101,12 @@ public class SalepointEnergyDisplayWidget extends AbstractSimiWidget implements 
     }
 
     @Override
-    public List<Component> getToolTip() {
+    public @NotNull List<Component> getToolTip() {
         Energy filter = state.getFilter();
 
         return List.of(
-            Components.translatable("gui.numismatics.salepoint.energy"),
-            Components.literal(TextUtils.formatEnergy(filter.getAmount()))
+            Component.translatable("gui.numismatics.salepoint.energy"),
+            Component.literal(TextUtils.formatEnergy(filter.getAmount()))
         );
     }
 }

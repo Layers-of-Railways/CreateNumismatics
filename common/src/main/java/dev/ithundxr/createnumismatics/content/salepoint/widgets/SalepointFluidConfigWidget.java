@@ -20,7 +20,6 @@ package dev.ithundxr.createnumismatics.content.salepoint.widgets;
 
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.foundation.utility.Components;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidget;
 import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
@@ -109,19 +108,19 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
     }
 
     @Override
-    public List<Component> getToolTip() {
+    public @NotNull List<Component> getToolTip() {
         MultiloaderFluidStack filter = state.getFilter();
         if (filter.isEmpty())
             return List.of(
-                Components.translatable("gui.numismatics.salepoint.fluid_filter_empty.0"),
-                Components.translatable("gui.numismatics.salepoint.fluid_filter_empty.1")
+                Component.translatable("gui.numismatics.salepoint.fluid_filter_empty.0"),
+                Component.translatable("gui.numismatics.salepoint.fluid_filter_empty.1")
             );
 
         return List.of(
             filter.getDisplayName(),
-            Components.literal(TextUtils.formatFluid(filter.getAmount())),
-            Components.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
-            Components.translatable("create.gui.scrollInput.shiftScrollsFaster")
+            Component.literal(TextUtils.formatFluid(filter.getAmount())),
+            Component.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
+            Component.translatable("create.gui.scrollInput.shiftScrollsFaster")
         );
     }
 }

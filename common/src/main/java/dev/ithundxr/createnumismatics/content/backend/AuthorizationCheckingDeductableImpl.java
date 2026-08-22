@@ -18,8 +18,8 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.foundation.utility.Components;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Authorization;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 class AuthorizationCheckingDeductableImpl implements IAuthorizationCheckingDeductable {
@@ -36,7 +36,7 @@ class AuthorizationCheckingDeductableImpl implements IAuthorizationCheckingDeduc
     @Override
     public boolean deduct(Coin coin, int amount, ReasonHolder reasonHolder) {
         if (!authorizationChecker.isAuthorized(authorization)) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
             return false;
         }
 
@@ -46,7 +46,7 @@ class AuthorizationCheckingDeductableImpl implements IAuthorizationCheckingDeduc
     @Override
     public boolean deduct(int spurs, ReasonHolder reasonHolder) {
         if (!authorizationChecker.isAuthorized(authorization)) {
-            reasonHolder.setMessage(Components.translatable("error.numismatics.card.not_authorized"));
+            reasonHolder.setMessage(Component.translatable("error.numismatics.card.not_authorized"));
             return false;
         }
 

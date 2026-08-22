@@ -19,7 +19,6 @@
 package dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals;
 
 import com.simibubi.create.compat.computercraft.implementation.peripherals.SyncedPeripheral;
-import com.simibubi.create.foundation.utility.Components;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dev.ithundxr.createnumismatics.Numismatics;
@@ -116,7 +115,7 @@ public class SalepointPeripheral extends SyncedPeripheral<SalepointBlockEntity> 
         SubAccount subAccount = account.getSubAccount(authorization, reasonHolder);
 
         if (subAccount == null) {
-            Component errorMessage = reasonHolder.getMessageOrDefault(Components.translatable("error.numismatics.authorized_card.account_not_found"));
+            Component errorMessage = reasonHolder.getMessageOrDefault(Component.translatable("error.numismatics.authorized_card.account_not_found"));
             throw new LuaException(errorMessage.getString());
         }
 

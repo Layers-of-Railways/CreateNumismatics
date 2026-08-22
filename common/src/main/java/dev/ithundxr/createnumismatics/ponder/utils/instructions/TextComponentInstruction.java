@@ -18,11 +18,11 @@
 
 package dev.ithundxr.createnumismatics.ponder.utils.instructions;
 
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.Selection;
-import com.simibubi.create.foundation.ponder.element.OutlinerElement;
-import com.simibubi.create.foundation.ponder.instruction.FadeInOutInstruction;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.TextComponentWindowElement;
+import net.createmod.ponder.api.scene.Selection;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.OutlinerElement;
+import net.createmod.ponder.foundation.instruction.FadeInOutInstruction;
 
 public class TextComponentInstruction extends FadeInOutInstruction {
 

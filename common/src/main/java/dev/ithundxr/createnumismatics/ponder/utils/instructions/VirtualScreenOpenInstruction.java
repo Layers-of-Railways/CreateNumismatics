@@ -20,14 +20,14 @@ package dev.ithundxr.createnumismatics.ponder.utils.instructions;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.ponder.ElementLink;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.Selection;
-import com.simibubi.create.foundation.ponder.element.OutlinerElement;
-import com.simibubi.create.foundation.ponder.instruction.TickingInstruction;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement;
-import net.minecraft.world.MenuProvider;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.api.scene.Selection;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.ElementLinkImpl;
+import net.createmod.ponder.foundation.element.OutlinerElement;
+import net.createmod.ponder.foundation.instruction.TickingInstruction;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class VirtualScreenOpenInstruction<M extends AbstractContainerMenu, S extends AbstractSimiContainerScreen<M> & VirtualizableScreen, B extends SmartBlockEntity> extends TickingInstruction {
@@ -75,7 +75,7 @@ public class VirtualScreenOpenInstruction<M extends AbstractContainerMenu, S ext
     }
 
     public ElementLink<VirtualScreenElement<M, S, B>> createLink(PonderScene scene) {
-        elementLink = new ElementLink<>(VirtualScreenElement.genericClass());
+        elementLink = new ElementLinkImpl<>(VirtualScreenElement.genericClass());
         scene.linkElement(element, elementLink);
         return elementLink;
     }

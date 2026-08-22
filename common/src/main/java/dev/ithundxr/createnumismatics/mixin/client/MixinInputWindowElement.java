@@ -18,13 +18,12 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.ponder.PonderScene;
-import com.simibubi.create.foundation.ponder.element.InputWindowElement;
-import com.simibubi.create.foundation.ponder.ui.PonderUI;
 import dev.ithundxr.createnumismatics.mixin_interfaces.InputWindowElement_Duck;
+import net.createmod.ponder.foundation.PonderScene;
+import net.createmod.ponder.foundation.element.InputWindowElement;
+import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +47,7 @@ public class MixinInputWindowElement implements InputWindowElement_Duck {
         numismatics$showItemCount = show;
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/gui/element/GuiGameElement;of(Lnet/minecraft/world/item/ItemStack;)Lcom/simibubi/create/foundation/gui/element/GuiGameElement$GuiRenderBuilder;"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/createmod/catnip/gui/element/GuiGameElement;of(Lnet/minecraft/world/item/ItemStack;)Lnet/createmod/catnip/gui/element/GuiGameElement$GuiRenderBuilder;"))
     private void renderItemCount(PonderScene scene, PonderUI screen, GuiGraphics graphics, float partialTicks,
                                  float fade, CallbackInfo ci, @Local(name = "keyWidth") int keyWidth,
                                  @Local(name = "hasIcon") boolean hasIcon) {
@@ -75,11 +74,5 @@ public class MixinInputWindowElement implements InputWindowElement_Duck {
         graphics.drawString(font, count$, 0, 0, 0xffffff, true);
 
         ms.popPose();
-    }
-
-    @ModifyReturnValue(method = "clone()Lcom/simibubi/create/foundation/ponder/element/InputWindowElement;", at = @At("RETURN"), remap = false)
-    private InputWindowElement cloneShowItemCount(InputWindowElement original) {
-        ((InputWindowElement_Duck) original).numismatics$showItemCount(numismatics$showItemCount);
-        return original;
     }
 }

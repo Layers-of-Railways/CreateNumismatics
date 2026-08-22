@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.foundation.utility.Components;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +46,7 @@ public class ReasonHolder {
 
     @Deprecated
     public void setMessage(@NotNull String message) {
-        this.message = Components.literal(message);
+        this.message = Component.literal(message);
     }
 
     public boolean hasMessage() {
@@ -59,7 +58,7 @@ public class ReasonHolder {
     }
 
     public @NotNull MutableComponent getMessageOrDefault() {
-        return getMessageOrDefault(Components.translatable("gui.numismatics.vendor.insufficient_funds"));
+        return getMessageOrDefault(Component.translatable("gui.numismatics.vendor.insufficient_funds"));
     }
 
     public @NotNull MutableComponent getMessageOrDefault(@NotNull Component defaultMessage) {

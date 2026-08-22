@@ -18,11 +18,11 @@
 
 package dev.ithundxr.createnumismatics.config.fabric;
 
-import com.simibubi.create.foundation.config.ConfigBase;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import fuzs.forgeconfigapiport.api.config.v2.ModConfigEvents;
+import net.createmod.catnip.config.ConfigBase;
 import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.Map;

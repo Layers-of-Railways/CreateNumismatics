@@ -18,21 +18,21 @@
 
 package dev.ithundxr.createnumismatics.util.fabric;
 
-import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.LangBuilder;
+import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import io.github.fabricators_of_create.porting_lib.util.FluidTextUtil;
 import io.github.fabricators_of_create.porting_lib.util.FluidUnit;
+import net.createmod.catnip.lang.LangBuilder;
 
 public class TextUtilsImpl {
     public static String formatFluid(long amount) {
         FluidUnit unit = AllConfigs.client().fluidUnitType.get();
         boolean simplify = AllConfigs.client().simplifyFluidUnit.get();
-        LangBuilder mb = Lang.translate(unit.getTranslationKey());
+        LangBuilder mb = CreateLang.translate(unit.getTranslationKey());
 
         String amountStr = FluidTextUtil.getUnicodeMillibuckets(amount, unit, simplify);
 
-        return Lang.text(amountStr)
+        return CreateLang.text(amountStr)
             .add(mb)
             .string();
     }

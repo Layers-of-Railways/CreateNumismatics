@@ -21,14 +21,10 @@ package dev.ithundxr.createnumismatics.content.salepoint;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Iterate;
 import dev.ithundxr.createnumismatics.base.client.rendering.UIRenderHelper;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
@@ -40,12 +36,16 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointPurchasePacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.gui.element.GuiGameElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -130,7 +130,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
 
     @Override
     protected void init() {
-        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.height);
+        setWindowSize(background.width, background.height + 2 + AllGuiTextures.PLAYER_INVENTORY.getHeight());
         setWindowOffset(-20, 0);
         super.init();
 
@@ -145,13 +145,13 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
         confirmButton.withCallback(this::onClose);
         addRenderableWidget(confirmButton);
 
-        countLabel = new Label(x + 104 + 3, y + 81 + 5, Components.immutableEmpty()).withShadow();
+        countLabel = new Label(x + 104 + 3, y + 81 + 5, CommonComponents.EMPTY).withShadow();
         addRenderableWidget(countLabel);
 
         countScrollInput = new ScrollInput(x + 104, y + 81, 45, 18);
         countScrollInput.withRange(1, 65);
         countScrollInput.writingTo(countLabel);
-        countScrollInput.titled(Components.translatable("gui.numismatics.salepoint.count"));
+        countScrollInput.titled(Component.translatable("gui.numismatics.salepoint.count"));
         addRenderableWidget(countScrollInput);
 
         countScrollInput.setState(1);
@@ -186,7 +186,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
 
     @Override
     protected void renderBg(@NotNull GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.width);
+        int invX = getLeftOfCentered(AllGuiTextures.PLAYER_INVENTORY.getWidth());
         int invY = topPos + background.height + 2;
         renderPlayerInventory(graphics, invX, invY);
 
@@ -205,7 +205,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
         Couple<Integer> referenceAndSpurs = referenceCoin.convert(menu.contentHolder.getTotalPrice());
         int reference = referenceAndSpurs.getFirst();
         int spurs = referenceAndSpurs.getSecond();
-        Component balanceLabel = Components.translatable("gui.numismatics.salepoint.price",
+        Component balanceLabel = Component.translatable("gui.numismatics.salepoint.price",
             TextUtils.formatInt(reference), referenceCoin.getName(reference), spurs);
         graphics.drawCenteredString(font, balanceLabel, x + (background.width - 8) / 2, y + 21, 0xFFFFFF);
 
@@ -252,7 +252,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
         Coin.SPUR.getIcon().render(graphics, x+133, y+63);
 
         for (boolean spur : Iterate.falseAndTrue) {
-            FormattedCharSequence seq = Components.literal(TextUtils.formatInt(spur ? spurs : reference))
+            FormattedCharSequence seq = Component.literal(TextUtils.formatInt(spur ? spurs : reference))
                 .getVisualOrderText();
 
             int width = font.width(seq);
@@ -301,7 +301,7 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
 
     private void updateAction() {
         action = Action.GO;
-        Component alert = Components.translatable("gui.numismatics.salepoint.go");
+        Component alert = Component.translatable("gui.numismatics.salepoint.go");
 
         if (menu.serverSentStateMessage != null) {
             action = Action.ALERT;
@@ -312,14 +312,14 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
             ItemStack card = menu.getCard();
             if (card.isEmpty()) {
                 action = Action.ALERT;
-                alert = Components.translatable("gui.numismatics.salepoint.no_card");
+                alert = Component.translatable("gui.numismatics.salepoint.no_card");
             } else {
                 if (menu.serverSentCardMessage != null) {
                     action = Action.ALERT;
                     alert = menu.serverSentCardMessage;
                 } else if (!isVirtual() && menu.serverSentMaxWithdrawal < menu.contentHolder.getTotalPrice() * countScrollInput.getState()) {
                     action = Action.ALERT;
-                    alert = Components.translatable("gui.numismatics.vendor.insufficient_funds");
+                    alert = Component.translatable("gui.numismatics.vendor.insufficient_funds");
                 }
             }
         }
@@ -327,14 +327,14 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
         if (action == Action.GO) {
             if (menu.contentHolder.clientsideMultiplier > 0) {
                 action = Action.CANCEL;
-                alert = Components.translatable("gui.numismatics.salepoint.cancel");
+                alert = Component.translatable("gui.numismatics.salepoint.cancel");
             }
         }
 
         actionButton.setIcon(action.icon);
         actionButton.setToolTip(alert);
         if (action == Action.ALERT && menu.contentHolder.clientsideMultiplier > 0)
-            actionButton.getToolTip().add(Components.translatable("gui.numismatics.salepoint.cancel"));
+            actionButton.getToolTip().add(Component.translatable("gui.numismatics.salepoint.cancel"));
     }
 
     private enum Action {

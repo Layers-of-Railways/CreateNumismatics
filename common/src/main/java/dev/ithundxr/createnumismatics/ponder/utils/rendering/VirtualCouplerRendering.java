@@ -23,8 +23,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.trains.bogey.AbstractBogeyBlock;
 import com.simibubi.create.content.trains.bogey.StandardBogeyBlockEntity;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.utility.AngleHelper;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
@@ -56,9 +56,9 @@ public final class VirtualCouplerRendering {
             ms.pushPose();
             ms.pushPose();
             ms.translate(anchor.x, anchor.y, anchor.z);
-            CachedBufferer.partial(AllPartialModels.TRAIN_COUPLING_HEAD, air)
-                .rotateY(-yRot)
-                .rotateX(xRot)
+            CachedBuffers.partial(AllPartialModels.TRAIN_COUPLING_HEAD, air)
+                .rotateYDegrees(-yRot)
+                .rotateXDegrees(xRot)
                 .light(light)
                 .renderInto(ms, vb);
 
@@ -67,9 +67,9 @@ public final class VirtualCouplerRendering {
             double stretch = 1.0;
 
             for (int j = 0; j < couplingSegments; j++) {
-                CachedBufferer.partial(AllPartialModels.TRAIN_COUPLING_CABLE, air)
-                    .rotateY(-yRot + 180)
-                    .rotateX(-xRot)
+                CachedBuffers.partial(AllPartialModels.TRAIN_COUPLING_CABLE, air)
+                    .rotateYDegrees(-yRot + 180)
+                    .rotateXDegrees(-xRot)
                     .translate(0, 0, margin + 2 / 16f)
                     .scale(1, 1, (float) stretch)
                     .translate(0, 0, j / 4f)
@@ -81,9 +81,9 @@ public final class VirtualCouplerRendering {
 
             ms.pushPose();
             ms.translate(anchor2.x, anchor2.y, anchor2.z);
-            CachedBufferer.partial(AllPartialModels.TRAIN_COUPLING_HEAD, air)
-                .rotateY(-yRot + 180)
-                .rotateX(-xRot)
+            CachedBuffers.partial(AllPartialModels.TRAIN_COUPLING_HEAD, air)
+                .rotateYDegrees(-yRot + 180)
+                .rotateXDegrees(-xRot)
                 .light(light)
                 .renderInto(ms, vb);
             ms.popPose();

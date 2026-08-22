@@ -57,11 +57,11 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
     protected InterfaceEnergyHandler capability;
 
     @Unique
-    private EnergySalepointTargetBehaviour railway$salepointBehaviour;
+    private EnergySalepointTargetBehaviour numismatics$salepointBehaviour;
 
     @Unique
     @Nullable
-    private EnergyStorage railway$contraptionStorage;
+    private EnergyStorage numismatics$contraptionStorage;
 
     private PortableEnergyInterfaceBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -80,7 +80,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
         if (!(existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage)) {
             original.call(instance, wrapped);
         }
-        railway$contraptionStorage = wrapped;
+        numismatics$contraptionStorage = wrapped;
     }
 
     @WrapOperation(
@@ -96,18 +96,18 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
         if (!(existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage)) {
             original.call(instance, wrapped);
         }
-        railway$contraptionStorage = null;
+        numismatics$contraptionStorage = null;
     }
 
     @Override
     public boolean canTransfer() {
-        return super.canTransfer() || railway$salepointBehaviour.isControlledBySalepoint();
+        return super.canTransfer() || numismatics$salepointBehaviour.isControlledBySalepoint();
     }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        railway$salepointBehaviour = new EnergySalepointTargetBehaviour(this) {
+        numismatics$salepointBehaviour = new EnergySalepointTargetBehaviour(this) {
             private boolean underControl = false;
             @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
             private boolean debug = false;
@@ -130,7 +130,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<Energy> state) {
                 ((InterfaceEnergyHandlerAccessor) capability).setWrapped(Objects.requireNonNullElseGet(
-                    railway$contraptionStorage,
+                    numismatics$contraptionStorage,
                     () -> new SimpleEnergyStorage(0, 0, 0)
                 ));
 
@@ -142,14 +142,14 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             public boolean hasSpaceFor(@NotNull Energy object) {
-                if (railway$contraptionStorage == null) {
+                if (numismatics$contraptionStorage == null) {
                     if (debug) {
                         Numismatics.LOGGER.error("Contraption storage is null, cannot check for space.");
                     }
                     return false;
                 }
 
-                if (!railway$contraptionStorage.supportsInsertion()) {
+                if (!numismatics$contraptionStorage.supportsInsertion()) {
                     if (debug) {
                         Numismatics.LOGGER.error("Contraption storage does not support insertion, cannot check for space.");
                     }
@@ -159,7 +159,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
                 try (Transaction transaction = Transaction.openOuter()) {
                     long totalInserted = 0;
                     while (totalInserted < object.getAmount()) {
-                        long inserted = railway$contraptionStorage.insert(object.getAmount() - totalInserted, transaction);
+                        long inserted = numismatics$contraptionStorage.insert(object.getAmount() - totalInserted, transaction);
                         if (inserted == 0)
                             break;
                         totalInserted += inserted;
@@ -177,7 +177,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             public boolean doPurchase(@NotNull Energy object, @NotNull PurchaseProvider<Energy> purchaseProvider) {
-                if (railway$contraptionStorage == null)
+                if (numismatics$contraptionStorage == null)
                     return false;
 
                 if (!hasSpaceFor(object))
@@ -188,7 +188,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
                     for (Energy energy : extracted) {
                         long totalInserted = 0;
                         while (totalInserted < energy.getAmount()) {
-                            long inserted = railway$contraptionStorage.insert(energy.getAmount() - totalInserted, transaction);
+                            long inserted = numismatics$contraptionStorage.insert(energy.getAmount() - totalInserted, transaction);
                             if (inserted == 0)
                                 break;
                             totalInserted += inserted;
@@ -219,7 +219,7 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
             }
         };
 
-        behaviours.add(railway$salepointBehaviour);
+        behaviours.add(numismatics$salepointBehaviour);
     }
 
     @ConditionalMixin(mods = Mods.CREATEADDITION)

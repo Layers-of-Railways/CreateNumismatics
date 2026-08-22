@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.registry;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.ithundxr.createnumismatics.Numismatics;
+import net.createmod.catnip.gui.TextureSheetSegment;
 import net.createmod.catnip.gui.UIRenderHelper;
 import net.createmod.catnip.gui.element.ScreenElement;
 import net.createmod.catnip.theme.Color;
@@ -27,9 +28,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 /* Copied from Create */
-public enum NumismaticsGuiTextures implements ScreenElement {
+public enum NumismaticsGuiTextures implements ScreenElement, TextureSheetSegment {
 
     ANDESITE_DEPOSITOR("andesite_depositor", 182, 79),
     BRASS_DEPOSITOR("brass_depositor", 208, 145),
@@ -60,8 +62,8 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     public static final int FONT_COLOR = 0x575F7A;
 
     public final ResourceLocation location;
-    public int width, height;
-    public int startX, startY;
+    public final int width, height;
+    public final int startX, startY;
 
     private NumismaticsGuiTextures(String location, int width, int height) {
         this(location, 0, 0, width, height);
@@ -88,6 +90,11 @@ public enum NumismaticsGuiTextures implements ScreenElement {
         RenderSystem.setShaderTexture(0, location);
     }
 
+    @Override
+    public @NotNull ResourceLocation getLocation() {
+        return location;
+    }
+
     @Environment(EnvType.CLIENT)
     @Override
     public void render(GuiGraphics graphics, int x, int y) {
@@ -99,5 +106,26 @@ public enum NumismaticsGuiTextures implements ScreenElement {
     public void render(GuiGraphics graphics, int x, int y, Color c) {
         bind();
         UIRenderHelper.drawColoredTexture(graphics, c, x, y, startX, startY, width, height);
+    }
+
+
+    @Override
+    public int getStartX() {
+        return startX;
+    }
+
+    @Override
+    public int getStartY() {
+        return startY;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 }

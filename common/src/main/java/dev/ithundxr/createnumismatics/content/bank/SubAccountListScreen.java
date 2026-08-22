@@ -25,15 +25,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.trains.station.NoShadowFontWrapper;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
-import com.simibubi.create.foundation.gui.UIRenderHelper;
-import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
-import com.simibubi.create.foundation.utility.Color;
-import com.simibubi.create.foundation.utility.Components;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
+import dev.ithundxr.createnumismatics.base.client.rendering.UIRenderHelper;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Limit;
@@ -42,12 +38,16 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.sub_account.OpenSubAccountEditScreenPacket;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
@@ -129,7 +129,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         addButton.setToolTip(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.new"));
         addRenderableWidget(addButton);
 
-        nameBox = new EditBox(this.font, x + 12+1, y + 197+4, 152, 16, Components.translatable("gui.numismatics.bank_terminal.sub_accounts.name_box"));
+        nameBox = new EditBox(this.font, x + 12+1, y + 197+4, 152, 16, Component.translatable("gui.numismatics.bank_terminal.sub_accounts.name_box"));
         nameBox.setBordered(false);
         nameBox.setMaxLength(25);
         nameBox.setValue("");
@@ -165,12 +165,12 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
 
         int x = leftPos - 12;
         int y = topPos - 5;
-        Label authorizationTypeLabel = new ScrollingLabel(x + 67 + 3, y + 89 + 5, Components.immutableEmpty(), 108 - 6).withShadow();
+        Label authorizationTypeLabel = new ScrollingLabel(x + 67 + 3, y + 89 + 5, CommonComponents.EMPTY, 108 - 6).withShadow();
 
         SelectionScrollInput authorizationTypeScroll = new SelectionScrollInput(x + 67, y + 89, 108, 18);
         authorizationTypeScroll.forOptions(AuthorizationType.labeledComponents());
         authorizationTypeScroll.writingTo(authorizationTypeLabel);
-        authorizationTypeScroll.titled(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.authorization_type"));
+        authorizationTypeScroll.titled(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.authorization_type"));
         authorizationTypeScroll.calling(idx -> {
             SubAccountListMenu.OpenSubAccountInformation osa = menu.getOpenSubAccount();
             if (osa == null)
@@ -199,7 +199,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
 
         Consumer<String> onTextChanged = s -> editorLabelBox.setX(nameBoxX(s, editorLabelBox));
         editorLabelBox = new EditBox(new NoShadowFontWrapper(font), x + 23, y + 4, background.width - 20, 10,
-            Components.literal(existingLabel));
+            Component.literal(existingLabel));
         editorLabelBox.setBordered(false);
         editorLabelBox.setMaxLength(25);
         editorLabelBox.setTextColor(0x592424);
@@ -408,14 +408,14 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         UIRenderHelper.drawStretched(graphics, 9, cardHeader + 1, cardWidth - 16, 1, zLevel, dark);
 
         graphics.drawCenteredString(
-            font, Components.translatable("gui.numismatics.bank_terminal.sub_accounts.help"),
+            font, Component.translatable("gui.numismatics.bank_terminal.sub_accounts.help"),
             cardWidth / 2, 6,
             0xFFFFFF
         );
 
         for (int i = 0; i < 6; i++) {
             graphics.drawString(
-                font, Components.translatable("gui.numismatics.bank_terminal.sub_accounts.help.line."+(i+1)),
+                font, Component.translatable("gui.numismatics.bank_terminal.sub_accounts.help.line."+(i+1)),
                 6, CARD_HEADER + 6 + (i * font.lineHeight),
                 0xC0C0C0
             );
@@ -463,9 +463,9 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
                     boolean ready = removeProgress.settled() && removeProgress.getValue() > 0.9f
                         && removeTarget != null && removeTarget.equals(subAccount.getAuthorizationID());
                     if (ready) {
-                        renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.remove.confirm")), mx, my);
+                        renderActionTooltip(graphics, ImmutableList.of(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.remove.confirm")), mx, my);
                     } else {
-                        renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.remove")), mx, my);
+                        renderActionTooltip(graphics, ImmutableList.of(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.remove")), mx, my);
                     }
                     if (click == 0) {
                         clickSound();
@@ -486,7 +486,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
                     removeTarget = null;
                 }
                 if (cx >= 195 && cx <= 203) {
-                    renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.edit")), mx, my);
+                    renderActionTooltip(graphics, ImmutableList.of(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.edit")), mx, my);
                     if (click == 0) {
                         clickSound();
                         editSubAccount(subAccount.getAuthorizationID());
@@ -500,7 +500,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
             }
             if (cy >= 26 && cy <= 37) {
                 if (cx >= 193 && cx <= 204) {
-                    renderActionTooltip(graphics, ImmutableList.of(Components.translatable("gui.numismatics.bank_terminal.sub_accounts.reset_spending")), mx, my);
+                    renderActionTooltip(graphics, ImmutableList.of(Component.translatable("gui.numismatics.bank_terminal.sub_accounts.reset_spending")), mx, my);
                     if (click == 0) {
                         clickSound();
                         menu.resetSubAccountSpending(subAccount.getAuthorizationID());
@@ -603,7 +603,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
     }
 
     @Override
-    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.renderForeground(graphics, mouseX, mouseY, partialTicks);
 
         GuiGameElement.of(renderedItem).<GuiGameElement
@@ -666,7 +666,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
             Component component = null;
             if (hasPopup && hoveredSlot.index == SubAccountListMenu.CARD_WRITING_INDEX) {
-                component = Components.translatable("gui.numismatics.bank_terminal.sub_accounts.bind_card");
+                component = Component.translatable("gui.numismatics.bank_terminal.sub_accounts.bind_card");
             }
             if (component != null) {
                 guiGraphics.renderTooltip(font, component, x, y);
