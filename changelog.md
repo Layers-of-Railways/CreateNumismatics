@@ -12,6 +12,7 @@ Additions
 - Add Sub Accounts: created in the Bank Terminal, these allow binding Authorized Cards with spending limits and separate trust lists, drawing from and depositing to the parent Bank Account
 - Salepoint: Similar to the vendor, but allows players to queue a transaction made up of multiple purchases through a Portable Item/Fluid/Energy Interface
 - Add ponders for all shop blocks
+- Brass Depositors with a price of zero can accept coins from item transfer (hoppers, chutes, etc.)
 
 Fixes
 - Fix coins stacked above 127 visually disappearing on the client in Brass Depositors

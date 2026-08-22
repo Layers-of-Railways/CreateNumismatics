@@ -20,15 +20,18 @@ package dev.ithundxr.createnumismatics.base.data.forge;
 
 import com.simibubi.create.Create;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
+import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 public class BuilderTransformersImpl {
@@ -94,5 +97,10 @@ public class BuilderTransformersImpl {
                 SalepointBlock.POWERED
             )
         );
+    }
+
+    public static <B extends BlockEntity & DiscreteCoinBag.StorageTarget, P> NonNullUnaryOperator<BlockEntityBuilder<B, P>> discreteCoinBagStorage() {
+        // must be implemented via self-mixin on forge
+        return b -> b;
     }
 }

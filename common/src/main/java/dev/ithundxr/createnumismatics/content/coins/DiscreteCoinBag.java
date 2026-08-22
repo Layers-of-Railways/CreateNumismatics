@@ -28,9 +28,13 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class DiscreteCoinBag implements CoinBag {
     private final Map<Coin, Integer> coins = new HashMap<>();
@@ -154,5 +158,39 @@ public class DiscreteCoinBag implements CoinBag {
         coins.forEach((coin, amount) -> {
             Containers.dropItemStack(level, x, y, z, coin.asStack(amount));
         });
+    }
+
+    public interface StorageTarget {
+        @ApiStatus.Internal
+        @NotNull SidedStorageParams $discreteCoinBag$getParams();
+
+        @ApiStatus.Internal
+        @NotNull DiscreteCoinBag $discreteCoinBag$getDiscreteCoinBag();
+
+        @ApiStatus.Internal
+        void $discreteCoinBag$setChanged();
+
+        @ApiStatus.Internal
+        <T> @NotNull T $discreteCoinBag$getOrComputeCached(Supplier<@NotNull T> supplier);
+    }
+
+    public static class SidedStorageParams {
+        private final BooleanSupplier allowExtraction;
+        private final BooleanSupplier allowInsertion;
+
+        public SidedStorageParams(BooleanSupplier allowExtraction, BooleanSupplier allowInsertion) {
+            this.allowExtraction = allowExtraction;
+            this.allowInsertion = allowInsertion;
+        }
+
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+        public boolean allowExtraction() {
+            return this.allowExtraction.getAsBoolean();
+        }
+
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+        public boolean allowInsertion() {
+            return this.allowInsertion.getAsBoolean();
+        }
     }
 }

@@ -28,6 +28,7 @@ import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListMenu;
+import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
@@ -46,11 +47,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
-public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider {
+public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity implements MenuProvider, DiscreteCoinBag.StorageTarget {
 
     private SliderStylePriceBehaviour price;
-    public AbstractComputerBehaviour computerBehaviour;
+    AbstractComputerBehaviour computerBehaviour;
+    protected final DiscreteCoinBag.SidedStorageParams storageParams = new DiscreteCoinBag.SidedStorageParams(
+        () -> false,
+        () -> price.getTotalPrice() == 0
+    );
+    protected @Nullable Object $discreteCoinBag$cache = null;
 
     public BrassDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -61,6 +68,29 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         price = new SliderStylePriceBehaviour(this, this::addCoin, this::getCoinCount);
         behaviours.add(computerBehaviour = ComputerCraftProxy.behaviour(this));
         behaviours.add(price);
+    }
+
+    @Override
+    public DiscreteCoinBag.@NotNull SidedStorageParams $discreteCoinBag$getParams() {
+        return storageParams;
+    }
+
+    @Override
+    public @NotNull DiscreteCoinBag $discreteCoinBag$getDiscreteCoinBag() {
+        return inventory;
+    }
+
+    @Override
+    public void $discreteCoinBag$setChanged() {
+        setChanged();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> @NotNull T $discreteCoinBag$getOrComputeCached(Supplier<@NotNull T> supplier) {
+        if ($discreteCoinBag$cache == null)
+            $discreteCoinBag$cache = supplier.get();
+        return (T) $discreteCoinBag$cache;
     }
 
     public int getCoinCount(Coin coin) {

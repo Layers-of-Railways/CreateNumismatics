@@ -19,15 +19,18 @@
 package dev.ithundxr.createnumismatics.base.data;
 
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
+import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BuilderTransformers {
     @ExpectPlatform
@@ -57,6 +60,11 @@ public class BuilderTransformers {
 
     @ExpectPlatform
     public static <B extends SalepointBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> salepoint() {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <B extends BlockEntity & DiscreteCoinBag.StorageTarget, P> NonNullUnaryOperator<BlockEntityBuilder<B, P>> discreteCoinBagStorage() {
         throw new AssertionError();
     }
 }

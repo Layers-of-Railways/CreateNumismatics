@@ -20,16 +20,21 @@ package dev.ithundxr.createnumismatics.base.data.fabric;
 
 import com.simibubi.create.Create;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.bank.BankTerminalBlock;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerBlock;
+import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
+import dev.ithundxr.createnumismatics.content.coins.fabric.DiscreteCoinBagStorage;
 import dev.ithundxr.createnumismatics.content.depositor.AbstractDepositorBlock;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlock;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
 import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BuilderTransformersImpl {
     public static <B extends AbstractDepositorBlock<?>, P> NonNullUnaryOperator<BlockBuilder<B, P>> depositor(String material) {
@@ -93,6 +98,13 @@ public class BuilderTransformersImpl {
                 .build(),
                 SalepointBlock.POWERED
             )
+        );
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static <B extends BlockEntity & DiscreteCoinBag.StorageTarget, P> NonNullUnaryOperator<BlockEntityBuilder<B, P>> discreteCoinBagStorage() {
+        return b -> b.onRegister(bet -> ItemStorage.SIDED.registerForBlockEntity(
+            (be, $) -> be.$discreteCoinBag$getOrComputeCached(() -> new DiscreteCoinBagStorage(be)), bet)
         );
     }
 }
