@@ -19,8 +19,10 @@
 package dev.ithundxr.createnumismatics.ponder;
 
 import com.simibubi.create.foundation.gui.AllIcons;
+import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
+import com.simibubi.create.foundation.ponder.element.EntityElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.ponder.instruction.ShowInputInstruction;
 import com.simibubi.create.foundation.utility.BlockHelper;
@@ -34,6 +36,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.LeverBlock;
@@ -204,6 +207,41 @@ public class DepositorScenes {
 
         depositorSuccess(depositor, redstoneLamp, NumismaticsItems.CARDS.get(DyeColor.RED).asStack(), scene, util);
         scene.idle(10);
+    }
+
+    public static void automatedStorage(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("depositor_automation", "Depositors for Automation");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+        scene.idle(10);
+
+        BlockPos redstoneLamp = util.grid.at(3, 1, 2);
+        BlockPos depositor = util.grid.at(2, 1, 2);
+        BlockPos hopper = util.grid.at(1, 1, 2);
+
+        scene.world.showSection(util.select.position(depositor), Direction.DOWN);
+        scene.idle(10);
+        scene.world.showSection(util.select.position(hopper), Direction.DOWN);
+        scene.idle(10);
+        scene.world.showSection(util.select.position(redstoneLamp), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(70)
+            .attachKeyFrame()
+            .text("Brass Depositors with a price of zero accept coins from item transfer, but will not trigger redstone.")
+            .pointAt(util.vector.centerOf(depositor))
+            .placeNearTarget();
+        scene.idle(80);
+
+        for (Coin coin : Coin.values()) {
+            ElementLink<EntityElement> item = scene.world.createItemEntity(util.vector.centerOf(hopper.above()), Vec3.ZERO, coin.asStack());
+            scene.idle(6);
+            scene.world.modifyEntity(item, Entity::discard);
+            scene.idle(2);
+            scene.effects.indicateSuccess(depositor.north());
+
+            scene.idle(20);
+        }
     }
 
     // <--------------------------------------------> Utilities <-------------------------------------------->

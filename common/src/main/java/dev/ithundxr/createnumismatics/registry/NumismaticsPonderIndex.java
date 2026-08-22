@@ -50,7 +50,8 @@ public class NumismaticsPonderIndex {
         HELPER.forComponents(NumismaticsBlocks.ANDESITE_DEPOSITOR, NumismaticsBlocks.BRASS_DEPOSITOR)
             .addStoryBoard("depositors/intro", DepositorScenes::intro, NumismaticsPonderTags.SHOPS)
             .addStoryBoard("depositors/redstone", DepositorScenes::redstone)
-            .addStoryBoard("depositors/pricing", DepositorScenes::pricing);
+            .addStoryBoard("depositors/pricing", DepositorScenes::pricing)
+            .addStoryBoard("depositors/automated_storage", DepositorScenes::automatedStorage);
 
         HELPER.forComponents(NumismaticsBlocks.VENDOR, NumismaticsBlocks.CREATIVE_VENDOR)
             .addStoryBoard("vendors/intro", VendorScenes::intro, NumismaticsPonderTags.SHOPS)
