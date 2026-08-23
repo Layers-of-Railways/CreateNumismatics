@@ -16,24 +16,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.content.salepoint.states.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingItemBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge.InvalidatableWrappingItemBufferHandler;
+import net.minecraft.world.SimpleContainer;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+public class ItemSalepointStateImpl {
+    public static InvalidatableWrappingItemBuffer createBufferWrapper(SimpleContainer buffer) {
+        return new InvalidatableWrappingItemBufferHandler(buffer);
     }
 }

@@ -16,24 +16,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.compat.computercraft.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+public class ComputerCraftProxyImpl {
+    public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {
+        if (ComputerCraftProxy.computerFactory == null)
+            return ComputerCraftProxy.fallbackFactory.apply(sbe);
+        return ComputerCraftProxy.computerFactory.apply(sbe);
     }
 }

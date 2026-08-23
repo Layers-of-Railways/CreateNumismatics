@@ -1,6 +1,6 @@
 /*
  * Numismatics
- * Copyright (c) 2024-2026 The Railways Team
+ * Copyright (c) 2026 The Railways Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,24 +16,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.compat.computercraft.implementation.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
+import org.jetbrains.annotations.ApiStatus;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+public class ComputerBehaviourImpl {
+    @ApiStatus.Internal
+    public static void removePeripheral(ComputerBehaviour behaviour) {
+        behaviour.getWorld().invalidateCapabilities(behaviour.getPos());
     }
 }

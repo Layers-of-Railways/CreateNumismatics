@@ -20,7 +20,7 @@ package dev.ithundxr.createnumismatics.neoforge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.config.forge.NumismaticsConfigImpl;
+import dev.ithundxr.createnumismatics.config.neoforge.NumismaticsConfigImpl;
 import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTriggers;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
@@ -34,18 +34,14 @@ import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.i18n.MavenVersionTranslator;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforgespi.language.IModInfo;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
@@ -54,16 +50,13 @@ import java.util.function.BiConsumer;
 public class NumismaticsImpl {
     static IEventBus modEventBus;
 
-    public NumismaticsImpl(IEventBus modEventBus) {
+    public NumismaticsImpl(IEventBus modEventBus, ModContainer modContainer) {
         NumismaticsImpl.modEventBus = modEventBus;
         NumismaticsCreativeModeTabsImpl.register(modEventBus);
         NumismaticsDataComponentsImpl.register(modEventBus);
         Numismatics.init();
-        /*fixme merged should this stay
-        NumismaticsConfigImpl.register(ModLoadingContext.get());
-        //noinspection Convert2MethodRef
-        Env.CLIENT.runIfCurrent(() -> () -> NumismaticsClientImpl.init());
-        eventBus.addListener(NumismaticsImpl::registerArgumentTypes);*/
+
+        NumismaticsConfigImpl.register(ModLoadingContext.get(), modContainer);
 
         modEventBus.addListener(NumismaticsImpl::registerArgumentTypes);
         modEventBus.addListener(NumismaticsImpl::onRegisterEvent);

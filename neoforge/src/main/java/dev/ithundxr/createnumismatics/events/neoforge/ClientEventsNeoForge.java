@@ -16,24 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.events.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.events.ClientEvents;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+@EventBusSubscriber(Dist.CLIENT)
+public class ClientEventsNeoForge {
+    @SubscribeEvent
+    public static void onTick(ClientTickEvent.Post event) {
+        ClientEvents.onTick();
     }
 }

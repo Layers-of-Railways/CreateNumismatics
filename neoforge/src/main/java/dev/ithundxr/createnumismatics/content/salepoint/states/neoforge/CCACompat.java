@@ -16,24 +16,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.content.salepoint.states.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingEnergyBuffer;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge.InvalidatableWrappingEnergyBufferStorage;
+import dev.ithundxr.createnumismatics.content.salepoint.types.EnergyBuffer;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+public class CCACompat {
+    public static InvalidatableWrappingEnergyBuffer createBufferWrapper(EnergyBuffer buffer) {
+        return new InvalidatableWrappingEnergyBufferStorage(buffer);
     }
 }

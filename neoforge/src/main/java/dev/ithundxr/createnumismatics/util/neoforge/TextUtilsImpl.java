@@ -16,24 +16,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.config;
+package dev.ithundxr.createnumismatics.util.neoforge;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.lang.LangBuilder;
 
-@SuppressWarnings("unused")
-public class NumismaticsConfig {
-    @ExpectPlatform
-    public static CClient client() {
-        throw new AssertionError();
-    }
+public class TextUtilsImpl {
+    public static String formatFluid(long amount) {
+        LangBuilder mb = CreateLang.translate("generic.unit.millibuckets");
 
-    @ExpectPlatform
-    public static CCommon common() {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static CServer server() {
-        throw new AssertionError();
+        return CreateLang
+            .number(amount)
+            .add(mb)
+            .string();
     }
 }
