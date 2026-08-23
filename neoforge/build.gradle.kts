@@ -66,6 +66,22 @@ dependencies {
     if ("enable_carryon"().toBoolean()) {
         modLocalRuntime("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
     }
+
+    // Create Crafts and Additions
+    modCompileOnly("maven.modrinth:createaddition:${"createaddition_neoforge_version"()}")
+    if ("enable_createaddition"().toBoolean()) {
+        modLocalRuntime("maven.modrinth:createaddition:${"createaddition_neoforge_version"()}")
+    }
+
+    // CC: Tweaked
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-core-api:${"cc_version"()}")
+    modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge-api:${"cc_version"()}")
+    if ("enable_cc"().toBoolean()) {
+        modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+    }
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
+    implementation(include("io.github.llamalad7:mixinextras-fabric:${"mixin_extras_version"()}")!!)!!
 }
 
 operator fun String.invoke(): String {

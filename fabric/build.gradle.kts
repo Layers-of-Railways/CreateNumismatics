@@ -62,12 +62,12 @@ dependencies {
     modCompileOnly("dev.emi:emi-fabric:${"emi_version"()}:api")
     modLocalRuntime("dev.emi:emi-fabric:${"emi_version"()}")
 
-    // Steam 'n' Rails
+    /*// Steam 'n' Rails
     val buildNumber = if ("snr_build_number"() != "null") "-build." + "snr_build_number"() else ""
     modCompileOnly("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
     if ("enable_snr"().toBoolean()) {
         modLocalRuntime("com.railwayteam.railways:Steam_Rails-fabric-${"minecraft_version"()}:${"snr_version"()}+fabric-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
-    }
+    }*/
 
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")

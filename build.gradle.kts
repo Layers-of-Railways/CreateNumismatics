@@ -72,7 +72,7 @@ allprojects {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
@@ -200,7 +200,7 @@ subprojects {
             val newMinor = parts[1] + 1
             "${parts[0]}.$newMinor.0"
         }()
-val createFabricVersionRange = {
+        val createFabricVersionRange = {
             val regex = Regex("(([0-9]\\.[0-9])\\.[0-9])\\.[0-9]")
             val match = regex.find("create_fabric_version"())
             val groups = match?.groups;
@@ -392,6 +392,7 @@ fun Project.setupRepositories() {
         maven("https://mvn.devos.one/snapshots/") // Create Fabric, Registrate Fabric, Milk Lib, Dripstone Lib
 
         exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
+        exclusiveMaven("https://api.modrinth.com/maven", "maven.modrinth") // Create Crafts and Additions
         exclusiveMaven("https://mvn.devos.one/releases", "io.github.fabricators_of_create.Porting-Lib") // Porting Lib Releases
         exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate") // Registrate
         exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon") // Carry On
@@ -399,6 +400,7 @@ fun Project.setupRepositories() {
         exclusiveMaven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven", "fuzs.forgeconfigapiport") // Forge config api port
         exclusiveMaven("https://maven.jamieswhiteshirt.com/libs-release", "com.jamieswhiteshirt") // Reach Entity Attributes
         exclusiveMaven("https://maven.siphalor.de/", "de.siphalor") // Amecs API (required by Carry On)
+        exclusiveMaven("https://maven.squiddev.cc/", "cc.tweaked") // CC Tweaked
     }
 }
 
