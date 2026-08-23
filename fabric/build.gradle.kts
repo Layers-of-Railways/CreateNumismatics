@@ -56,7 +56,6 @@ dependencies {
     modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:${"fabric_api_version"()}")
 
     // Development QOL
-    modLocalRuntime("maven.modrinth:lazydfu:${"lazydfu_version"()}")
     modLocalRuntime("com.terraformersmc:modmenu:${"modmenu_version"()}")
     modLocalRuntime("maven.modrinth:jade:${"jade_version"()}")
 
@@ -71,9 +70,9 @@ dependencies {
     }
 
     // Carry On
-    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
     if ("enable_carryon"().toBoolean()) {
-        modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_forge_version"()}")
+        modLocalRuntime("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
     }
 
     // Create Crafts and Additions

@@ -21,63 +21,49 @@ package dev.ithundxr.createnumismatics.registry.packets;
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.AdventureUtil;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-// Copied from Create and adapted to use Numismatics' multiloader packet system
-public abstract class BlockEntityBehaviourConfigurationPacket<B extends BlockEntityBehaviour> implements C2SPacket {
-
+// Copied from Create
+public abstract class BlockEntityBehaviourConfigurationPacket<B extends BlockEntityBehaviour> implements ServerboundPacketPayload {
     protected BlockPos pos;
-
-    public BlockEntityBehaviourConfigurationPacket(FriendlyByteBuf buf) {
-        pos = buf.readBlockPos();
-        readSettings(buf);
-    }
-
+    
     public BlockEntityBehaviourConfigurationPacket(BlockPos pos) {
         this.pos = pos;
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        writeSettings(buffer);
-    }
-
     protected abstract BehaviourType<B> getType();
-
-    @SuppressWarnings({"ConstantValue", "unchecked"})
+    
     @Override
-    public void handle(ServerPlayer sender) {
-        Level world = sender.level();
-        if (world == null || !world.isLoaded(pos))
+    public void handle(ServerPlayer player) {
+        if (player == null || player.isSpectator() || AdventureUtil.isAdventure(player))
             return;
-        if (!pos.closerThan(sender.blockPosition(), maxRange()))
+        Level world = player.level();
+        if (!world.isLoaded(this.pos))
             return;
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!this.pos.closerThan(player.blockPosition(), maxRange()))
+            return;
+        BlockEntity blockEntity = world.getBlockEntity(this.pos);
         if (blockEntity instanceof SyncedBlockEntity sbe) {
-            if (blockEntity instanceof Trusted trusted && !trusted.isTrusted(sender)) {
-                Numismatics.LOGGER.error("Illegal configuration of %s at %s attempted by player %s".formatted(
-                    blockEntity, pos, sender
-                ));
-                sender.connection.disconnect(Component.literal("Haxx: Illegal block entity configuration attempt"));
+            if (blockEntity instanceof Trusted trusted && !trusted.isTrusted(player)) {
+                Numismatics.LOGGER.error("Illegal configuration of {} at {} attempted by player {}", blockEntity, pos, player);
+                player.connection.disconnect(Component.literal("Haxx: Illegal block entity configuration attempt"));
                 return;
             }
+
             B behaviour = BlockEntityBehaviour.get(sbe, getType());
-            if (behaviour != null) {
-                applySettings(sender, behaviour);
-                if (!causeUpdate())
-                    return;
-                ((SyncedBlockEntity) blockEntity).sendData();
-                blockEntity.setChanged();
-            }
+            applySettings(player, behaviour);
+            if (!causeUpdate())
+                return;
+            sbe.sendData();
+            blockEntity.setChanged();
         }
     }
 
@@ -85,17 +71,9 @@ public abstract class BlockEntityBehaviourConfigurationPacket<B extends BlockEnt
         return 20;
     }
 
-    protected abstract void writeSettings(FriendlyByteBuf buffer);
-
-    protected abstract void readSettings(FriendlyByteBuf buf);
-
-    protected void applySettings(ServerPlayer player, B behaviour) {
-        applySettings(behaviour);
-    }
-
     protected boolean causeUpdate() {
         return true;
     }
 
-    protected abstract void applySettings(B behaviour);
+    protected abstract void applySettings(ServerPlayer player, B behaviour);
 }

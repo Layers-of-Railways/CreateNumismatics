@@ -20,25 +20,20 @@ package dev.ithundxr.createnumismatics.content.backend.trust_list;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
-import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardSlot.BoundIDCardSlot;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
-import dev.ithundxr.createnumismatics.content.depositor.ProtectedScrollOptionBehaviour;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +42,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class TrustListMenu extends MenuBase<TrustListHolder> {
@@ -58,7 +52,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
 
     ItemStack renderedItem;
 
-    public TrustListMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public TrustListMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -81,13 +75,14 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         };
     }
 
+
     @Override
-    protected TrustListHolder createOnClient(FriendlyByteBuf extraData) {
-        renderedItem = extraData.readItem();
+    protected TrustListHolder createOnClient(RegistryFriendlyByteBuf extraData) {
+        renderedItem = ItemStack.STREAM_CODEC.decode(extraData);
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof SyncedBlockEntity syncedBE && syncedBE instanceof TrustListHolder trustListHolder) {
-            syncedBE.readClient(extraData.readNbt());
+            syncedBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return trustListHolder;
         }
         return null;
@@ -178,7 +173,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 slot = this.slots.get(i);
                 itemStack = slot.getItem();
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack)) {
+                if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack)) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxStackSize()) {
                         stack.setCount(0);
@@ -238,36 +233,12 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         }
     }
 
-    public static <BE extends SmartBlockEntity & Trusted & TrustListHolder> ScrollOptionBehaviour<TrustListSham> makeConfigureButton(BE be, ValueBoxTransform slot, ItemStack displayStack) {
-        return new ProtectedScrollOptionBehaviour<>(TrustListSham.class, Component.translatable("numismatics.trust_list.configure"), be,
-            slot, be::isTrusted) {
-            @Override
-            public void onShortInteract(Player player, InteractionHand hand, Direction side, BlockHitResult hitResult) {
-                if (be.isTrusted(player) && player instanceof ServerPlayer serverPlayer) {
-                    Utils.openScreen(serverPlayer,
-                        TrustListMenu.provider(be, displayStack),
-                        (buf) -> {
-                            buf.writeItem(displayStack);
-                            be.sendToMenu(buf);
-                        });
-                } else {
-                    super.onShortInteract(player, hand, side, hitResult);
-                }
-            }
-
-            @Override
-            public boolean acceptsValueSettings() {
-                return false;
-            }
-        };
-    }
-
-    public static <BE extends SmartBlockEntity & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
+    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
         if (be.isTrusted(player)) {
             Utils.openScreen(player,
                 TrustListMenu.provider(be, displayStack),
                 (buf) -> {
-                    buf.writeItem(displayStack);
+                    ItemStack.STREAM_CODEC.encode(buf, displayStack);
                     be.sendToMenu(buf);
                 });
         }

@@ -9,7 +9,7 @@ on:
         options:
           - both
           - fabric
-          - forge
+          - neoforge
 
 jobs:
   build:

@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.content.bank;
 
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.VarIntContainerSetDataPacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
@@ -62,6 +63,6 @@ public class VarIntDataContainerSynchronizer implements ContainerSynchronizer {
 
     @Override
     public void sendDataChange(AbstractContainerMenu container, int id, int value) {
-        NumismaticsPackets.PACKETS.sendTo(connection.getPlayer(), new VarIntContainerSetDataPacket(container.containerId, id, value));
+        CatnipServices.NETWORK.sendToClient(connection.getPlayer(), new VarIntContainerSetDataPacket(container.containerId, id, value));
     }
 }

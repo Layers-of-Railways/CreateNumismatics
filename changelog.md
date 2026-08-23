@@ -34,6 +34,26 @@ Changes
   Additionally, enchantments and dyes can be applied to some items by shift-dragging items when using EMI on fabric or JEI on forge
 - OP'ed players no longer automatically have access to all Numismatics blocks. Instead, they can use the command `/numismatics toggle_admin_mode` to toggle that ability
 ------------------------------------------------------
+Numismatics 1.0.20
+------------------------------------------------------
+Fixes
+- Fix vendors dropping/duplicating items when assembled with Sable
+------------------------------------------------------
+Numismatics 1.0.19
+------------------------------------------------------
+Changes
+- Update to Create 6.0.7
+------------------------------------------------------
+Numismatics 1.0.18
+------------------------------------------------------
+Fixes
+- Fix recipes not accepting Create's iron sheets
+------------------------------------------------------
+Numismatics 1.0.16 Alpha
+------------------------------------------------------
+Changes
+- Port to 1.21.1
+------------------------------------------------------
 Numismatics 1.0.15
 ------------------------------------------------------
 Changes

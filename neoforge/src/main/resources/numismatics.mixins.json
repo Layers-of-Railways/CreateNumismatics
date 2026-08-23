@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.ithundxr.createnumismatics.neoforge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.MixinPonderTooltipHandler"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "plugin": "dev.ithundxr.createnumismatics.neoforge.mixin.plugin.NumismaticsMixinPlugin"
+}

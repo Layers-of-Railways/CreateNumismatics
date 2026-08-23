@@ -19,16 +19,23 @@
 package dev.ithundxr.createnumismatics.content.backend;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.data.Couple;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -51,6 +58,8 @@ public enum Coin implements INamedIconOptions {
     CROWN(512, Rarity.RARE, I_COIN_CROWN, I_COIN_CROWN_RED_LINE, "\uF015"), // 512 spurs, 64 bevels, 32 sprockets, 8 cogs
     SUN(4096, Rarity.EPIC, I_COIN_SUN, I_COIN_SUN_RED_LINE, "\uF016") // 4096 spurs, 512 bevels, 256 sprockets, 64 cogs, 8 crowns
     ;
+    
+    public static final StreamCodec<ByteBuf, Coin> STREAM_CODEC = CatnipStreamCodecBuilders.ofEnum(Coin.class);
 
     public final int value; // in terms of spurs
     public final Rarity rarity;

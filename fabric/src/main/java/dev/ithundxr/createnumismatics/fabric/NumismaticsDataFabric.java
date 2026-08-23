@@ -36,6 +36,9 @@ public class NumismaticsDataFabric implements DataGeneratorEntrypoint {
         );
         FabricDataGenerator.Pack pack = gen.createPack();
         Numismatics.registrate().setupDatagen(pack, helper);
-        Numismatics.gatherData(pack);
+        Numismatics.addRegistrateDataGenerators();
+        NumismaticsData.PROVIDERS.forEach(func -> {
+            pack.addProvider(output -> func(output, gen.getRegistries()));
+        });
     }
 }

@@ -39,7 +39,18 @@ dependencies {
     // dependencies must also be pulled in to minimize problems, from remapping issues to compile errors.
     // All dependencies except Flywheel and Registrate are NOT safe to use!
     // Flywheel and Registrate must also be used carefully due to differences.
-    modCompileOnly("com.simibubi.create:create-fabric:${"create_fabric_version"()}")
+    //modCompileOnly("com.simibubi.create:create-fabric:${"create_fabric_version"()}")
+
+    // Create and its dependencies
+    modImplementation("com.simibubi.create:create-${"minecraft_version"()}:${"create_neoforge_version"()}:slim") { isTransitive = false }
+    modImplementation("net.createmod.ponder:ponder-neoforge:${"ponder_version"()}+mc${"minecraft_version"()}")
+    modImplementation("com.tterrag.registrate:Registrate:${"registrate_neoforge_version"()}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${"minecraft_version"()}:${"flywheel_version"()}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
+
+    // Needed for compiling
+    compileOnly("net.neoforged:neoforge:${"neoforge_version"()}")
+    compileOnly("com.google.code.findbugs:jsr305:3.0.2")
 
     // required for proper remapping and compiling
     modCompileOnly("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
@@ -52,14 +63,15 @@ dependencies {
     modCompileOnly("com.railwayteam.railways:Steam_Rails-common-${"minecraft_version"()}:${"snr_version"()}+common-mc${"minecraft_version"() + buildNumber}") { isTransitive = false }
 
     // Carry On
-    modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
-    
+    //modCompileOnly("tschipp.carryon:carryon-fabric-${"minecraft_version"()}:${"carryon_fabric_version"()}")
+    modCompileOnly("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
+
     // CC: Tweaked
     compileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-common-api:${"cc_version"()}")
-    
+
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)
 }
-    
+
 
 tasks.processResources {
     // don't add development or to-do files into built jar

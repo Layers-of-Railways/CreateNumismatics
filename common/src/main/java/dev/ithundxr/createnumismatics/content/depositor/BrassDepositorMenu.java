@@ -29,6 +29,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +47,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     public static final int PLAYER_INV_START_INDEX = CARD_SLOT_INDEX + 1;
     public static final int PLAYER_HOTBAR_END_INDEX = PLAYER_INV_START_INDEX + 9;
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36;
-    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BrassDepositorMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -55,11 +56,11 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     }
 
     @Override
-    protected BrassDepositorBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected BrassDepositorBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof BrassDepositorBlockEntity brassDepositorBE) {
-            brassDepositorBE.readClient(extraData.readNbt());
+            brassDepositorBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return brassDepositorBE;
         }
         return null;
@@ -101,6 +102,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     @Override
     @SuppressWarnings({"RedundantMethodOverride", "RedundantSuppression", "DuplicatedCode"})
     protected void addPlayerSlots(int x, int y) {
+        // todo check how this is on 1.21.1
         for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
             this.addSlot(new Slot(playerInventory, hotbarSlot, x + hotbarSlot * 18, y + 58));
         for (int row = 0; row < 3; ++row)
@@ -165,6 +167,7 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
 
     @Override
     public void setSynchronizer(@NotNull ContainerSynchronizer synchronizer) {
+        // todo was not present on 1.21.1, why?
         if (player instanceof ServerPlayer serverPlayer) {
             super.setSynchronizer(new BigStackSizeContainerSynchronizer(serverPlayer));
             return;

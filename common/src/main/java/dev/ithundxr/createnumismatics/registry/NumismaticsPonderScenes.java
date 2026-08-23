@@ -39,7 +39,7 @@ public class NumismaticsPonderScenes {
     private static boolean createPondersRegistered = false;
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
         if (!createPondersRegistered)
             initialHelper = helper;
         /* TODO

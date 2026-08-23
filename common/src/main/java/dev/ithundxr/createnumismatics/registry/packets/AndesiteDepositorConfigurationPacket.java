@@ -20,33 +20,34 @@ package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.depositor.AndesiteDepositorBlockEntity;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 
-public class AndesiteDepositorConfigurationPacket extends BlockEntityConfigurationPacket<AndesiteDepositorBlockEntity> {
+public class AndesiteDepositorConfigurationPacket extends NumismaticsBlockEntityConfigurationPacket<AndesiteDepositorBlockEntity> {
+    public static final StreamCodec<ByteBuf, AndesiteDepositorConfigurationPacket> STREAM_CODEC = StreamCodec.composite(
+        BlockPos.STREAM_CODEC, i -> i.pos, 
+        Coin.STREAM_CODEC, i -> i.coin,
+        AndesiteDepositorConfigurationPacket::new
+    );
+    
+    private final Coin coin;
 
-    private Coin coin;
-
-    public AndesiteDepositorConfigurationPacket(FriendlyByteBuf buf) {
-        super(buf);
-    }
-
-    public AndesiteDepositorConfigurationPacket(AndesiteDepositorBlockEntity be) {
-        super(be.getBlockPos());
-        this.coin = be.getCoin();
-    }
-
-    @Override
-    protected void writeSettings(FriendlyByteBuf buffer) {
-        buffer.writeEnum(coin);
-    }
-
-    @Override
-    protected void readSettings(FriendlyByteBuf buf) {
-        coin = buf.readEnum(Coin.class);
+    public AndesiteDepositorConfigurationPacket(BlockPos pos, Coin coin) {
+        super(pos);
+        this.coin = coin;
     }
 
     @Override
-    protected void applySettings(AndesiteDepositorBlockEntity andesiteDepositorBlockEntity) {
+    protected void applySettings(ServerPlayer player, AndesiteDepositorBlockEntity andesiteDepositorBlockEntity) {
         andesiteDepositorBlockEntity.setCoin(coin);
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.ANDESITE_DEPOSITOR_CONFIGURATION;
     }
 }

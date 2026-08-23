@@ -108,29 +108,29 @@ public class DiscreteCoinBag implements CoinBag {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag tag) {
         for (Map.Entry<Coin, Integer> entry : coins.entrySet()) {
             if (entry.getValue() > 0) {
-                nbt.putInt(entry.getKey().name(), entry.getValue());
+                tag.putInt(entry.getKey().name(), entry.getValue());
             }
         }
-        return nbt;
+        return tag;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(CompoundTag tag) {
         coins.clear();
         for (Coin coin : Coin.values()) {
-            if (nbt.contains(coin.name())) {
-                coins.put(coin, nbt.getInt(coin.name()));
+            if (tag.contains(coin.name())) {
+                coins.put(coin, tag.getInt(coin.name()));
             }
         }
         calculateValue();
     }
 
-    public static DiscreteCoinBag of(CompoundTag nbt) {
+    public static DiscreteCoinBag of(CompoundTag tag) {
         DiscreteCoinBag bag = new DiscreteCoinBag();
-        bag.load(nbt);
+        bag.load(tag);
         return bag;
     }
 

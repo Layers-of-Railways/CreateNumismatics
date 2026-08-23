@@ -19,10 +19,13 @@
 package dev.ithundxr.createnumismatics.registry;
 
 import com.google.common.collect.Sets;
+import com.simibubi.create.foundation.advancement.CreateAdvancement;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement;
 import dev.ithundxr.createnumismatics.registry.advancement.NumismaticsAdvancement.Builder;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -91,30 +94,34 @@ public class NumismaticsAdvancements implements DataProvider {
 	// Datagen
 
 	private final PackOutput output;
+	private final CompletableFuture<HolderLookup.Provider> registries;
 
-	public NumismaticsAdvancements(PackOutput output) {
+	public NumismaticsAdvancements(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
 		this.output = output;
+		this.registries = registries;
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		PathProvider pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancements");
-		List<CompletableFuture<?>> futures = new ArrayList<>();
+		return this.registries.thenCompose(provider -> {
+			PathProvider pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancement");
+			List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		Set<ResourceLocation> set = Sets.newHashSet();
-		Consumer<Advancement> consumer = (advancement) -> {
-			ResourceLocation id = advancement.getId();
-			if (!set.add(id))
-				throw new IllegalStateException("Duplicate advancement " + id);
-			Path path = pathProvider.json(id);
-			futures.add(DataProvider.saveStable(cache, advancement.deconstruct()
-				.serializeToJson(), path));
-		};
+			Set<ResourceLocation> set = Sets.newHashSet();
+			Consumer<AdvancementHolder> consumer = (advancement) -> {
+				ResourceLocation id = advancement.id();
+				if (!set.add(id))
+					throw new IllegalStateException("Duplicate advancement " + id);
+				Path path = pathProvider.json(id);
+				LOGGER.info("Saving advancement {}", id);
+				futures.add(DataProvider.saveStable(cache, provider, Advancement.CODEC, advancement.value(), path));
+			};
 
-		for (NumismaticsAdvancement advancement : ENTRIES)
-			advancement.save(consumer);
+			for (NumismaticsAdvancement advancement : ENTRIES)
+				advancement.save(consumer);
 
-		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+		});
 	}
 
 	@Override
@@ -127,6 +134,7 @@ public class NumismaticsAdvancements implements DataProvider {
 			advancement.provideLang(consumer);
 	}
 
-	public static void register() {}
-
+	public static void register() {
+		
+	}
 }

@@ -147,7 +147,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
         MutableComponent balanceLabel = Component.translatable("block.numismatics.brass_depositor.tooltip.price",
             TextUtils.formatInt(cogs), NumismaticsConfig.common().referenceCoin.get().getName(cogs), spurs);
         Lang.builder(Numismatics.MOD_ID)
-            .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color))
+            .add(balanceLabel.withStyle(Coin.closest(price.getTotalPrice()).rarity.color()))
             .forGoggles(tooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {

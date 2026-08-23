@@ -19,59 +19,48 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.content.vendor.VendorMenu;
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
-import dev.ithundxr.createnumismatics.util.PacketUtils;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class BigStackSizeContainerSetContentPacket implements S2CPacket {
-    private final int containerId;
-    private final int stateId;
-    private final List<ItemStack> items;
-    private final ItemStack carriedItem;
+// todo check that this actually still handles big stack sizes correctly
+public record BigStackSizeContainerSetContentPacket(int containerId, int stateId, List<ItemStack> items, ItemStack carriedItem) implements ClientboundPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, BigStackSizeContainerSetContentPacket> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.BYTE, i -> (byte) i.containerId,
+        ByteBufCodecs.VAR_INT, BigStackSizeContainerSetContentPacket::stateId,
+        CatnipStreamCodecBuilders.nonNullList(ItemStack.OPTIONAL_STREAM_CODEC), p -> {
+            NonNullList<ItemStack> newList = NonNullList.withSize(p.items.size(), ItemStack.EMPTY);
+            for (int i = 0; i < p.items.size(); ++i)
+               newList.set(i, p.items.get(i).copy());
+            return newList;
+        },
+        ItemStack.OPTIONAL_STREAM_CODEC, BigStackSizeContainerSetContentPacket::carriedItem,
+        (containerId, stateId, items, carriedItem) -> new BigStackSizeContainerSetContentPacket(containerId, stateId, items, carriedItem)
+    );
 
-    public BigStackSizeContainerSetContentPacket(int containerId, int stateId, List<ItemStack> items, ItemStack carriedItem) {
-        this.containerId = containerId;
-        this.stateId = stateId;
-        this.items = NonNullList.withSize(items.size(), ItemStack.EMPTY);
-
-        for(int i = 0; i < items.size(); ++i) {
-            this.items.set(i, items.get(i).copy());
-        }
-
-        this.carriedItem = carriedItem;
-    }
-
-    public BigStackSizeContainerSetContentPacket(FriendlyByteBuf buffer) {
-        containerId = buffer.readUnsignedByte();
-        stateId = buffer.readVarInt();
-        items = buffer.readCollection(NonNullList::createWithCapacity, PacketUtils::readBigStackSizeItem);
-        carriedItem = buffer.readItem();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeByte(containerId);
-        buffer.writeVarInt(stateId);
-        buffer.writeCollection(items, PacketUtils::writeBigStackSizeItem);
-        buffer.writeItem(carriedItem);
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
-    public void handle(Minecraft mc) {
-        Player player = mc.player;
+    @Override
+    public void handle(LocalPlayer player) {
         // IntelliJ falsely thinks that player.containerMenu is never null
-        //noinspection ConstantValue,DataFlowIssue
+        //noinspection ConstantValue
         if (player.containerMenu != null && player.containerMenu instanceof VendorMenu && player.containerMenu.containerId == containerId) {
             player.containerMenu.initializeContents(stateId, items, carriedItem);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        // fixme rename
+        return NumismaticsPackets.VENDOR_CONTAINER_SET_CONTENT;
     }
 }

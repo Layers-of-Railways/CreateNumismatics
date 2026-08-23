@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
+import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -42,33 +43,20 @@ public class IDCardItem extends Item {
         super(properties);
         this.color = color;
     }
-
-    @SuppressWarnings("DataFlowIssue")
+    
     public static ItemStack clear(ItemStack itemStack) {
-        if (!itemStack.hasTag())
-            return itemStack;
-
-        CompoundTag tag = itemStack.getTag();
-        tag.remove("UUID");
-        itemStack.setTag(tag);
+        itemStack.remove(NumismaticsDataComponents.ID_CARD_UUID);
         return itemStack;
     }
 
     public static ItemStack set(ItemStack itemStack, UUID id) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putUUID("UUID", id);
-        itemStack.setTag(tag);
+        itemStack.set(NumismaticsDataComponents.ID_CARD_UUID, id);
         return itemStack;
     }
-
-    @SuppressWarnings("DataFlowIssue")
+    
     @Nullable
     public static UUID get(ItemStack itemStack) {
-        if (!isBound(itemStack))
-            return null;
-
-        CompoundTag tag = itemStack.getTag();
-        return tag.getUUID("UUID");
+        return itemStack.get(NumismaticsDataComponents.ID_CARD_UUID);
     }
 
     @Nullable
@@ -77,10 +65,9 @@ public class IDCardItem extends Item {
             return null;
         return UsernameUtils.INSTANCE.getName(get(itemStack));
     }
-
-    @SuppressWarnings("DataFlowIssue")
+    
     public static boolean isBound(ItemStack itemStack) {
-        return itemStack.hasTag() && itemStack.getTag().hasUUID("UUID");
+        return itemStack.has(NumismaticsDataComponents.ID_CARD_UUID);
     }
 
     @Override
@@ -108,11 +95,11 @@ public class IDCardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isBound(stack)) {
             tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.bound.to", getPlayerName(stack))
-                .withStyle(ChatFormatting.GREEN));
+                    .withStyle(ChatFormatting.GREEN));
         } else {
             tooltipComponents.add(Component.translatable("item.numismatics.card.tooltip.blank"));
         }

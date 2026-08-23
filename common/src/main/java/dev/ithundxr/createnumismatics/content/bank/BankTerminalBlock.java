@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -83,20 +84,15 @@ public class BankTerminalBlock extends Block {
         builder.add(HORIZONTAL_FACING);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos,
-                                          @NotNull Player player, @NotNull InteractionHand hand,
-                                          @NotNull BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level.isClientSide)
-            return InteractionResult.SUCCESS;
-
-        ItemStack handStack = player.getItemInHand(hand);
+            return ItemInteractionResult.SUCCESS;
 
         BankAccount account = null;
 
-        if (NumismaticsTags.AllItemTags.CARDS.matches(handStack) && CardItem.isBound(handStack)) {
-            account = Numismatics.BANK.getAccount(CardItem.get(handStack));
+        if (NumismaticsTags.AllItemTags.CARDS.matches(stack) && CardItem.isBound(stack)) {
+            account = Numismatics.BANK.getAccount(CardItem.get(stack));
         }
         if (account == null) {
             account = Numismatics.BANK.getAccount(player);
@@ -104,9 +100,9 @@ public class BankTerminalBlock extends Block {
 
         if (account.isAuthorized(player)) {
             Utils.openScreen((ServerPlayer) player, account, account::sendToMenu);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
     }
 }

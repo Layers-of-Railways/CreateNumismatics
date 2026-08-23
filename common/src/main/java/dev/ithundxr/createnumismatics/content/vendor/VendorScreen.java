@@ -39,6 +39,7 @@ import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.CommonComponents;
@@ -279,8 +280,8 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
     @Override
     public void removed() {
-        NumismaticsPackets.PACKETS.send(new SliderStylePriceConfigurationPacket(menu.contentHolder));
-        NumismaticsPackets.PACKETS.send(new VendorConfigurationPacket(menu.contentHolder));
+        CatnipServices.NETWORK.sendToServer(new SliderStylePriceConfigurationPacket(menu.contentHolder));
+        CatnipServices.NETWORK.sendToServer(new VendorConfigurationPacket(menu.contentHolder.getBlockPos(), menu.contentHolder.getMode()));
         super.removed();
     }
 }

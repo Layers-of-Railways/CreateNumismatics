@@ -32,6 +32,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.AndesiteDepositorConfigurationPacket;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.CommonComponents;
@@ -146,6 +147,6 @@ public class AndesiteDepositorScreen extends AbstractSimiContainerScreen<Andesit
     @Override
     public void removed() {
         super.removed();
-        NumismaticsPackets.PACKETS.send(new AndesiteDepositorConfigurationPacket(menu.contentHolder));
+        CatnipServices.NETWORK.sendToServer(new AndesiteDepositorConfigurationPacket(menu.contentHolder.getBlockPos(), menu.contentHolder.getCoin()));
     }
 }

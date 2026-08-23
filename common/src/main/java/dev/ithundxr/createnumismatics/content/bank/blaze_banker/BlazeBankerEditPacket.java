@@ -18,65 +18,45 @@
 
 package dev.ithundxr.createnumismatics.content.bank.blaze_banker;
 
-import dev.ithundxr.createnumismatics.registry.packets.BlockEntityConfigurationPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import dev.ithundxr.createnumismatics.registry.packets.NumismaticsBlockEntityConfigurationPacket;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
-public class BlazeBankerEditPacket extends BlockEntityConfigurationPacket<BlazeBankerBlockEntity> {
-    /*@Nullable
-    private Boolean allowExtraction;*/
+public class BlazeBankerEditPacket extends NumismaticsBlockEntityConfigurationPacket<BlazeBankerBlockEntity> {
+    public static final StreamCodec<ByteBuf, BlazeBankerEditPacket> STREAM_CODEC = StreamCodec.composite(
+        BlockPos.STREAM_CODEC, i -> i.pos,
+        CatnipStreamCodecBuilders.nullable(ByteBufCodecs.STRING_UTF8), i -> i.label,
+        BlazeBankerEditPacket::new
+    );
+    
+//    @Nullable
+//    private Boolean allowExtraction;
 
     @Nullable
-    private String label;
-    public BlazeBankerEditPacket(FriendlyByteBuf buf) {
-        super(buf);
-    }
+    private final String label;
 
-    /*public BlazeBankerEditPacket(BlockPos pos, boolean allowExtraction) {
-        super(pos);
-        this.allowExtraction = allowExtraction;
-    }*/
-
-    public BlazeBankerEditPacket(BlockPos pos, String label) {
+    public BlazeBankerEditPacket(BlockPos pos, @Nullable String label) {
         super(pos);
         this.label = label;
     }
 
     @Override
-    protected void writeSettings(FriendlyByteBuf buffer) {
-        /*buffer.writeBoolean(allowExtraction != null);
-        if (allowExtraction != null) {
-            buffer.writeBoolean(allowExtraction);
-            return;
-        }*/
-
-        buffer.writeBoolean(label != null);
-        if (label != null) {
-            buffer.writeUtf(label);
-            return;
-        }
-    }
-
-    @Override
-    protected void readSettings(FriendlyByteBuf buf) {
-        /*if (buf.readBoolean()) {
-            allowExtraction = buf.readBoolean();
-            return;
-        }*/
-
-        if (buf.readBoolean()) {
-            label = buf.readUtf(256);
-            return;
-        }
-    }
-
-    @Override
-    protected void applySettings(BlazeBankerBlockEntity blazeBankerBlockEntity) {
+    protected void applySettings(ServerPlayer player, BlazeBankerBlockEntity blazeBankerBlockEntity) {
 //        if (allowExtraction != null)
 //            blazeBankerBlockEntity.setAllowExtraction(allowExtraction);
 
         if (label != null)
-            blazeBankerBlockEntity.setLabel(label);
+            blazeBankerBlockEntity.setLabel(label); 
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.BLAZE_BANKER_EDIT;
     }
 }

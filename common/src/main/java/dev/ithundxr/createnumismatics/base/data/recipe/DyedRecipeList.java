@@ -18,7 +18,7 @@
 
 package dev.ithundxr.createnumismatics.base.data.recipe;
 
-import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsRecipeProvider.GeneratedRecipe;
+import com.simibubi.create.api.data.recipe.BaseRecipeProvider.GeneratedRecipe;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

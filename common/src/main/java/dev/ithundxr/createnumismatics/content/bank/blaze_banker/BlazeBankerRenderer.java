@@ -72,9 +72,6 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 		float offset2 = Mth.sin((float) ((renderTick / 16f + Math.PI / 2) % (2 * Math.PI))) / offsetMult;
 		float headY = offset - (animation * .75f);
 
-		VertexConsumer solid = bufferSource.getBuffer(RenderType.solid());
-		VertexConsumer cutout = bufferSource.getBuffer(RenderType.cutoutMipped());
-
 		ms.pushPose();
 
 		if (blockAbove) {
@@ -102,14 +99,14 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 
 			SuperByteBuffer flameBuffer = CachedBuffers.partial(AllPartialModels.BLAZE_BURNER_FLAME, blockState);
             flameBuffer.shiftUVScrolling(spriteShift, (float) uScroll, (float) vScroll);
-			draw(flameBuffer, horizontalAngle, ms, cutout);
+			draw(flameBuffer, horizontalAngle, ms, bufferSource.getBuffer(RenderType.cutoutMipped()));
 		}
 
 		PartialModel blazeModel = blockAbove ? AllPartialModels.BLAZE_ACTIVE : AllPartialModels.BLAZE_IDLE;
 
         SuperByteBuffer blazeBuffer = CachedBuffers.partial(blazeModel, blockState);
         blazeBuffer.translate(0, headY, 0);
-		draw(blazeBuffer, horizontalAngle, ms, solid);
+		draw(blazeBuffer, horizontalAngle, ms, bufferSource.getBuffer(RenderType.solid()));
 
         {
 			SuperByteBuffer hatBuffer = CachedBuffers.partial(NumismaticsPartialModels.TOP_HAT, blockState);
@@ -119,7 +116,7 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 				.rotateCentered(horizontalAngle + Mth.PI, Direction.UP)
 				.translate(0.5f, 0, 0.5f)
 				.light(LightTexture.FULL_BRIGHT)
-				.renderInto(ms, solid);
+				.renderInto(ms, bufferSource.getBuffer(RenderType.solid()));
 		}
 
 		{
@@ -129,12 +126,12 @@ public class BlazeBankerRenderer extends SafeBlockEntityRenderer<BlazeBankerBloc
 			SuperByteBuffer rodsBuffer = CachedBuffers.partial(rodsModel, blockState);
             rodsBuffer.translate(0, offset1 + animation + .125f, 0)
 				.light(LightTexture.FULL_BRIGHT)
-				.renderInto(ms, solid);
+				.renderInto(ms, bufferSource.getBuffer(RenderType.solid()));
 
 			SuperByteBuffer rodsBuffer2 = CachedBuffers.partial(rodsModel2, blockState);
             rodsBuffer2.translate(0, offset2 + animation - 3 / 16f, 0)
 				.light(LightTexture.FULL_BRIGHT)
-				.renderInto(ms, solid);
+				.renderInto(ms, bufferSource.getBuffer(RenderType.solid()));
 		}
 
 		ms.popPose();

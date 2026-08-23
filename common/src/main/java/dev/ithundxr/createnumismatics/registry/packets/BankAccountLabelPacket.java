@@ -18,36 +18,32 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
+import com.mojang.serialization.Codec;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class BankAccountLabelPacket implements S2CPacket {
-
-    private final boolean isSubAccount;
-
-    @NotNull
-    private final UUID id;
-    @Nullable
-    private final String label;
-
-    public BankAccountLabelPacket(FriendlyByteBuf buf) {
-        this(
-            buf.readBoolean(), // isSubAccount
-            buf.readUUID(), // id
-            buf.readBoolean() ? buf.readUtf(256) : null // label
-        );
-    }
+public record BankAccountLabelPacket(boolean isSubAccount, UUID id, @Nullable String label) implements ClientboundPacketPayload {
+    public static final StreamCodec<ByteBuf, BankAccountLabelPacket> STREAM_CODEC = StreamCodec.composite(
+        Codec.BOOL, BankAccountLabelPacket::isSubAccount,
+        UUIDUtil.STREAM_CODEC, BankAccountLabelPacket::id,
+        CatnipStreamCodecBuilders.nullable(ByteBufCodecs.STRING_UTF8), BankAccountLabelPacket::label,
+        BankAccountLabelPacket::new
+    );
 
     public BankAccountLabelPacket(BankAccount account) {
         this(false, account.id, account.getLabel());
@@ -55,12 +51,6 @@ public class BankAccountLabelPacket implements S2CPacket {
 
     public BankAccountLabelPacket(SubAccount subAccount) {
         this(true, subAccount.getAuthorizationID(), subAccount.getLabel());
-    }
-
-    private BankAccountLabelPacket(boolean isSubAccount, @NotNull UUID id, @Nullable String label) {
-        this.isSubAccount = isSubAccount;
-        this.id = id;
-        this.label = label;
     }
 
     public static BankAccountLabelPacket remove(BankAccount account) {
@@ -71,23 +61,19 @@ public class BankAccountLabelPacket implements S2CPacket {
         return new BankAccountLabelPacket(true, subAccount.getAuthorizationID(), null);
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(isSubAccount);
-        buffer.writeUUID(id);
-        buffer.writeBoolean(label != null);
-        if (label != null)
-            buffer.writeUtf(label);
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
-    public void handle(Minecraft mc) {
+    @Override
+    public void handle(LocalPlayer player) {
         Map<UUID, String> labelMap = isSubAccount ? NumismaticsClient.subAccountLabels : NumismaticsClient.bankAccountLabels;
         if (label == null) {
             labelMap.remove(id);
         } else {
             labelMap.put(id, label);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.BANK_ACCOUNT_LABEL;
     }
 }

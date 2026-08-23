@@ -29,6 +29,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
 
     private CardWritingContainer cardWritingContainer;
 
-    public BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public BlazeBankerMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -59,11 +60,11 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
     }
 
     @Override
-    protected BlazeBankerBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected BlazeBankerBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof BlazeBankerBlockEntity blazeBankerBE) {
-            blazeBankerBE.readClient(extraData.readNbt());
+            blazeBankerBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return blazeBankerBE;
         }
         return null;
@@ -163,7 +164,7 @@ public class BlazeBankerMenu extends MenuBase<BlazeBankerBlockEntity> {
             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 slot = this.slots.get(i);
                 itemStack = slot.getItem();
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack)) {
+                if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack)) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxStackSize()) {
                         stack.setCount(0);

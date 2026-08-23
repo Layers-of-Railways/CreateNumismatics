@@ -17,8 +17,11 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import dev.ithundxr.silk.ChangelogText
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import me.modmuss50.mpp.ModPublishExtension
+import me.modmuss50.mpp.ReleaseType
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 import org.objectweb.asm.ClassReader
@@ -37,8 +40,8 @@ plugins {
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
     id("dev.architectury.loom") version "1.11.+" apply false
-    id("me.modmuss50.mod-publish-plugin") version "0.3.4" apply false // https://github.com/modmuss50/mod-publish-plugin
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false // https://github.com/modmuss50/mod-publish-plugin
+    id("com.gradleup.shadow") version "8.3.8" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
     id("net.kyori.blossom") version "2.1.0" apply false // https://github.com/KyoriPowered/blossom
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
@@ -97,7 +100,13 @@ subprojects {
 
     setupRepositories()
 
-    val capitalizedName = project.name.replaceFirstChar { it.uppercase() }
+    val capitalizedName = {
+        if (project.name == "neoforge") {
+            "NeoForge"
+        } else {
+            project.name.replaceFirstChar { it.uppercase() }
+        }
+    }();
 
     val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
     loom.apply {
@@ -108,9 +117,6 @@ subprojects {
             vmArg("-Dmixin.debug.export=true")
             vmArg("-Dmixin.env.remapRefMap=true")
             vmArg("-Dmixin.env.refMapRemappingFile=${projectDir}/build/createSrgToMcp/output.srg")
-
-            if (project.name == "forge")
-                programArg("-mixin.config=create.mixins.json")
         }
     }
 
@@ -151,14 +157,14 @@ subprojects {
         return@subprojects
     }
 
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.gradleup.shadow")
     apply(plugin = "me.modmuss50.mod-publish-plugin")
 
     architectury {
         platformSetupLoomIde()
     }
 
-    tasks.named<RemapJarTask>("remapJar") {
+    val remapJar = tasks.named<RemapJarTask>("remapJar") {
         val shadowJar = project.tasks.named<ShadowJar>("shadowJar").get()
         inputFile.set(shadowJar.archiveFile)
         injectAccessWidener = true
@@ -186,30 +192,36 @@ subprojects {
         destinationDirectory = layout.buildDirectory.dir("devlibs").get()
     }
 
+    @Suppress("RedundantLambdaOrAnonymousFunction")
     tasks.processResources {
-        val createForgeVersion = "create_forge_version"().split("-")[0] // cut off build number
-        val createForgeUpperBounds = {
-            val parts = createForgeVersion.split(".").map { it.toInt() }
+        val createNeoForgeVersion = "create_neoforge_version"().split("-")[0] // cut off build number
+        val createNeoForgeUpperBounds = {
+            val parts = createNeoForgeVersion.split(".").map { it.toInt() }
             val newMinor = parts[1] + 1
             "${parts[0]}.$newMinor.0"
-        }
-
+        }()
+val createFabricVersionRange = {
+            val regex = Regex("(([0-9]\\.[0-9])\\.[0-9])\\.[0-9]")
+            val match = regex.find("create_fabric_version"())
+            val groups = match?.groups;
+            ">=${groups?.get(0)} ~${groups?.get(1)}"
+        }()
+        
         // set up properties for filling into metadata
         val properties = mapOf(
             "version" to version,
             "minecraft_version" to "minecraft_version"(),
             "fabric_api_version" to "fabric_api_version"(),
             "fabric_loader_version" to "fabric_loader_version"(),
-            "forge_version" to "forge_version"().split(".")[0], // only specify major version of forge
-            "create_forge_version" to createForgeVersion,
-            "create_forge_upper_bounds" to createForgeUpperBounds.invoke(),
-            "create_fabric_version" to "create_fabric_version"().split("+")[0], // Trim +mcX.XX.X from version string
-            "create_fabric_version_range" to "create_fabric_version_range"()
+            "neoforge_version" to "neoforge_version"(),
+            "create_neoforge_version" to createNeoForgeVersion,
+            "create_neoforge_upper_bounds" to createNeoForgeUpperBounds,
+            "create_fabric_version_range" to createFabricVersionRange
         )
 
         inputs.properties(properties)
 
-        filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml")) {
+        filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml")) {
             expand(properties)
         }
     }
@@ -235,6 +247,46 @@ subprojects {
     components.getByName<AdhocComponentWithVariants>("java") {
         withVariantsFromConfiguration(project.configurations["shadowRuntimeElements"]) {
             skip()
+        }
+    }
+
+    val releaseType = {
+        val versionStr = version.toString()
+        if (versionStr.contains("alpha")) {
+            ReleaseType.ALPHA;
+        } else if (versionStr.contains("beta")) {
+            ReleaseType.BETA;
+        } else {
+            ReleaseType.STABLE;
+        }
+    }()
+    configure<ModPublishExtension> {
+        file.set(remapJar.get().archiveFile)
+        version.set(project.version.toString())
+        changelog = ChangelogText.getChangelogText(rootProject).toString()
+        type = releaseType
+        displayName = "Numismatics ${"mod_version"()} ${capitalizedName} ${"minecraft_version"()}"
+        modLoaders.add(project.name)
+
+        val createVersionType = if (project.name == "fabric") "create-fabric" else "create"
+        curseforge {
+            projectId = "curseforge_id"()
+            accessToken = System.getenv("CURSEFORGE_TOKEN")
+            minecraftVersions.add("minecraft_version"())
+
+            requires {
+                slug = createVersionType
+            }
+        }
+
+        modrinth {
+            projectId = "modrinth_id"()
+            accessToken = System.getenv("MODRINTH_TOKEN")
+            minecraftVersions.add("minecraft_version"())
+
+            requires {
+                slug = createVersionType
+            }
         }
     }
 }
@@ -324,20 +376,34 @@ fun hasUnstaged(): Boolean {
 tasks.register("numismaticsPublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "both" -> {
-            dependsOn(tasks.build, ":fabric:publish", ":forge:publish", ":common:publish", ":fabric:publishMods", ":forge:publishMods")
+            dependsOn(tasks.build, ":fabric:publish", ":neoforge:publish", ":common:publish", ":fabric:publishMods", ":neoforge:publishMods")
         }
-        "fabric", "forge" -> {
+        "fabric", "neoforge" -> {
             dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
         }
     }
 }
 
-operator fun String.invoke(): String {
-    return rootProject.ext[this] as? String
-        ?: throw IllegalStateException("Property $this is not defined")
+fun Project.setupRepositories() {
+    repositories {
+        mavenCentral()
+        maven("https://maven.neoforged.net/releases") // NeoForge
+        maven("https://maven.createmod.net") // Create, Ponder, Flywheel
+        maven("https://mvn.devos.one/snapshots/") // Create Fabric, Registrate Fabric, Milk Lib, Dripstone Lib
+
+        exclusiveMaven("https://maven.parchmentmc.org", "org.parchmentmc.data") // Parchment mappings
+        exclusiveMaven("https://mvn.devos.one/releases", "io.github.fabricators_of_create.Porting-Lib") // Porting Lib Releases
+        exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate") // Registrate
+        exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon") // Carry On
+        exclusiveMaven("https://maven.terraformersmc.com/releases", "dev.emi", "com.terraformersmc") // EMI, Mod Menu
+        exclusiveMaven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven", "fuzs.forgeconfigapiport") // Forge config api port
+        exclusiveMaven("https://maven.jamieswhiteshirt.com/libs-release", "com.jamieswhiteshirt") // Reach Entity Attributes
+        exclusiveMaven("https://maven.siphalor.de/", "de.siphalor") // Amecs API (required by Carry On)
+    }
 }
 
-fun Project.setupRepositories() {
+/*fun Project.setupRepositories() {
+fixem from 1.20.1, maybe some of these are needed?
     repositories {
         mavenCentral()
         maven("https://modmaven.dev/") // Create
@@ -368,7 +434,7 @@ fun Project.setupRepositories() {
         }
         maven("https://maven.theillusivec4.top/") // Curios
     }
-}
+}*/
 
 @Suppress("UnstableApiUsage")
 fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
@@ -380,4 +446,9 @@ fun RepositoryHandler.exclusiveMaven(url: String, vararg groups: String) {
             }
         }
     }
+}
+
+operator fun String.invoke(): String {
+    return rootProject.ext[this] as? String
+        ?: throw IllegalStateException("Property $this is not defined")
 }

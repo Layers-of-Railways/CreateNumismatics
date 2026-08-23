@@ -18,46 +18,35 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class VarIntContainerSetDataPacket implements S2CPacket {
+public record VarIntContainerSetDataPacket(int containerId, int id, int value) implements ClientboundPacketPayload {
+    public static final StreamCodec<ByteBuf, VarIntContainerSetDataPacket> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.BYTE, i -> (byte) i.containerId,
+        ByteBufCodecs.SHORT, i -> (short) i.id,
+        ByteBufCodecs.VAR_INT, VarIntContainerSetDataPacket::value,
+		(containerId, id, value) -> new VarIntContainerSetDataPacket(containerId, id, value)
+    );
 
-    private final int containerId;
-    private final int id;
-    private final int value;
-
-    public VarIntContainerSetDataPacket(FriendlyByteBuf buf) {
-        containerId = buf.readUnsignedByte();
-        id = buf.readShort();
-        value = buf.readVarInt();
-    }
-
-    public VarIntContainerSetDataPacket(int containerId, int id, int value) {
-        this.containerId = containerId;
-        this.id = id;
-        this.value = value;
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeByte(containerId);
-        buffer.writeShort(id);
-        buffer.writeVarInt(value);
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
-    public void handle(Minecraft mc) {
-        Player player = mc.player;
+    @Override
+    public void handle(LocalPlayer player) {
         // IntelliJ falsely things that player.containerMenu is never null
-        //noinspection ConstantValue,DataFlowIssue
+        //noinspection ConstantValue
         if (player.containerMenu != null && player.containerMenu.containerId == containerId) {
             player.containerMenu.setData(id, value);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.VAR_INT_CONTAINER_SET_DATA;
     }
 }

@@ -28,6 +28,7 @@ import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -91,8 +92,8 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
     }
 
     @Override
-    public void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    public void write(CompoundTag tag, Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         CompoundTag priceTag = new CompoundTag();
         for (Coin coin : Coin.values()) {
             priceTag.putInt(coin.getName(), getPrice(coin));
@@ -106,11 +107,11 @@ public class SliderStylePriceBehaviour extends BlockEntityBehaviour {
     }
 
     @Override
-    public void read(CompoundTag tag, boolean clientPacket) {
+    public void read(CompoundTag tag, Provider registries, boolean clientPacket) {
         if (clientPacket && !clientReadEnabled)
             return;
 
-        super.read(tag, clientPacket);
+        super.read(tag, registries, clientPacket);
         this.prices.clear();
         if (tag.contains("Prices", Tag.TAG_COMPOUND)) {
             CompoundTag priceTag = tag.getCompound("Prices");

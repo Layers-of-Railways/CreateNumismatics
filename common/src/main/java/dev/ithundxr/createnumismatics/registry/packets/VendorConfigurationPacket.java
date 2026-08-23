@@ -18,38 +18,40 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
+import com.mojang.serialization.Codec;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity.Mode;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 
-public class VendorConfigurationPacket extends BlockEntityConfigurationPacket<VendorBlockEntity> {
-    private VendorBlockEntity.Mode mode;
-    private boolean enableAutomatedExtraction;
+public class VendorConfigurationPacket extends NumismaticsBlockEntityConfigurationPacket<VendorBlockEntity> {
+    public static final StreamCodec<ByteBuf, VendorConfigurationPacket> STREAM_CODEC = StreamCodec.composite(
+        BlockPos.STREAM_CODEC, i -> i.pos,
+        Mode.STREAM_CODEC, i -> i.mode,
+        Codec.BOOL, i -> i.enableAutomatedExtraction,
+        VendorConfigurationPacket::new
+    );
 
-    public VendorConfigurationPacket(FriendlyByteBuf buf) {
-        super(buf);
-    }
+    private final Mode mode;
+    private final boolean enableAutomatedExtraction;
 
-    public VendorConfigurationPacket(VendorBlockEntity be) {
-        super(be.getBlockPos());
-        mode = be.getMode();
-        enableAutomatedExtraction = be.isAutomatedExtractionEnabled();
-    }
-
-    @Override
-    protected void writeSettings(FriendlyByteBuf buffer) {
-        buffer.writeEnum(mode);
-        buffer.writeBoolean(enableAutomatedExtraction);
-    }
-
-    @Override
-    protected void readSettings(FriendlyByteBuf buf) {
-        mode = buf.readEnum(VendorBlockEntity.Mode.class);
-        enableAutomatedExtraction = buf.readBoolean();
+    public VendorConfigurationPacket(BlockPos pos, Mode mode, boolean enableAutomatedExtraction) {
+        super(pos);
+        this.mode = mode;
+        this.enableAutomatedExtraction = enableAutomatedExtraction;
     }
 
     @Override
-    protected void applySettings(VendorBlockEntity vendorBlockEntity) {
+    protected void applySettings(ServerPlayer player, VendorBlockEntity vendorBlockEntity) {
         vendorBlockEntity.setMode(mode);
         vendorBlockEntity.setAutomatedExtractionEnabled(enableAutomatedExtraction);
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.VENDOR_CONFIGURATION;
     }
 }

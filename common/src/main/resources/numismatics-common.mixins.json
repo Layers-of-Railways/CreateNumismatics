@@ -32,7 +32,6 @@
     "client.dev_export.MixinPonderLocalization"
   ],
   "mixins": [
-    "AccessorSimpleContainer",
     "MixinAbstractContainerMenu",
     "MixinServerPlayer",
     "compat.carryon.MixinPickupHandler",

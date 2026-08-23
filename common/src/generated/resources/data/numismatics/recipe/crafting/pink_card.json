@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "/": {
+      "tag": "c:dyes/pink"
+    },
+    "@": {
+      "item": "create:precision_mechanism"
+    },
+    "_": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    "@_/"
+  ],
+  "result": {
+    "count": 1,
+    "id": "numismatics:pink_card"
+  }
+}

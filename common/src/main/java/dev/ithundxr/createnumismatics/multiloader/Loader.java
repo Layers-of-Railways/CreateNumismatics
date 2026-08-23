@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum Loader {
-    FORGE, NEOFORGE, FABRIC, QUILT;
+	NEOFORGE, FABRIC, QUILT;
 
     public static final Loader CURRENT = getCurrent();
 
@@ -43,7 +43,7 @@ public enum Loader {
     public static String getFormatted() {
         return TextUtils.titleCaseConversion(getActual().name().toLowerCase(Locale.ROOT));
     }
-    
+
     // Returns the actual loader, ex: quilt on quilt instead of fabric for quilt
     public static Loader getActual() {
         //noinspection ConstantValue

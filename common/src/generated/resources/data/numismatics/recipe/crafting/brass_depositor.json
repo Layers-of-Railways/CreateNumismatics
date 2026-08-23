@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:brass_casing"
+    },
+    {
+      "item": "create:sturdy_sheet"
+    },
+    {
+      "item": "create:electron_tube"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "numismatics:brass_depositor"
+  }
+}

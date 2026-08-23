@@ -27,6 +27,7 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
@@ -70,18 +71,18 @@ public class BankAccountBehaviour extends BlockEntityBehaviour {
     }
 
     @Override
-    public void read(CompoundTag nbt, boolean clientPacket) {
-        super.read(nbt, clientPacket);
-        if (nbt.hasUUID("accountUUID")) {
-            accountUUID = nbt.getUUID("accountUUID");
+    public void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
+        if (tag.hasUUID("accountUUID")) {
+            accountUUID = tag.getUUID("accountUUID");
         }
     }
 
     @Override
-    public void write(CompoundTag nbt, boolean clientPacket) {
-        super.write(nbt, clientPacket);
+    public void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         if (accountUUID != null) {
-            nbt.putUUID("accountUUID", accountUUID);
+            tag.putUUID("accountUUID", accountUUID);
         }
     }
 

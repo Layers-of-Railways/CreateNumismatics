@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.content.backend;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetContentPacket;
 import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetSlotPacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -39,7 +40,7 @@ public class BigStackSizeContainerSynchronizer implements ContainerSynchronizer 
 
     @Override
     public void sendInitialData(AbstractContainerMenu container, @NotNull NonNullList<ItemStack> items, @NotNull ItemStack carriedItem, int[] initialData) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new BigStackSizeContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
+        CatnipServices.NETWORK.sendToClient(serverPlayer, new BigStackSizeContainerSetContentPacket(container.containerId, container.incrementStateId(), items, carriedItem));
 
         for (int i = 0; i < initialData.length; ++i) {
             sendDataChange(container, i, initialData[i]);
@@ -48,7 +49,7 @@ public class BigStackSizeContainerSynchronizer implements ContainerSynchronizer 
 
     @Override
     public void sendSlotChange(AbstractContainerMenu container, int slot, ItemStack itemStack) {
-        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new BigStackSizeContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
+        CatnipServices.NETWORK.sendToClient(serverPlayer, new BigStackSizeContainerSetSlotPacket(container.containerId, container.incrementStateId(), slot, itemStack));
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
+import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -48,35 +49,22 @@ public class CardItem extends Item {
 
     @SuppressWarnings("DataFlowIssue")
     public static ItemStack clear(ItemStack itemStack) {
-        if (!itemStack.hasTag())
-            return itemStack;
-
-        CompoundTag tag = itemStack.getTag();
-        tag.remove("AccountID");
-        itemStack.setTag(tag);
+        itemStack.remove(NumismaticsDataComponents.CARD_ACCOUNT_ID);
         return itemStack;
     }
 
     public static ItemStack set(ItemStack itemStack, UUID id) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putUUID("AccountID", id);
-        itemStack.setTag(tag);
+        itemStack.set(NumismaticsDataComponents.CARD_ACCOUNT_ID, id);
         return itemStack;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Nullable
     public static UUID get(ItemStack itemStack) {
-        if (!isBound(itemStack))
-            return null;
-
-        CompoundTag tag = itemStack.getTag();
-        return tag.getUUID("AccountID");
+        return itemStack.get(NumismaticsDataComponents.CARD_ACCOUNT_ID);
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public static boolean isBound(ItemStack itemStack) {
-        return itemStack.hasTag() && itemStack.getTag().hasUUID("AccountID");
+        return itemStack.has(NumismaticsDataComponents.CARD_ACCOUNT_ID);
     }
 
     @Nullable
@@ -87,8 +75,8 @@ public class CardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isBound(stack)) {
             String name = getPlayerName(stack);
             if (name == null) {

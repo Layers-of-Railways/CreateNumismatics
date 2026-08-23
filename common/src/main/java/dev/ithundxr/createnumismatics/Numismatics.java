@@ -24,7 +24,6 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import com.tterrag.registrate.providers.ProviderType;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.base.data.NumismaticsTagGen;
 import dev.ithundxr.createnumismatics.base.data.emi.EmiExcludedTagGen;
@@ -33,7 +32,6 @@ import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsSequencedAssem
 import dev.ithundxr.createnumismatics.base.data.recipe.NumismaticsStandardRecipeGen;
 import dev.ithundxr.createnumismatics.content.backend.GlobalBankManager;
 import dev.ithundxr.createnumismatics.multiloader.Loader;
-import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCommands;
 import dev.ithundxr.createnumismatics.registry.NumismaticsCreativeModeTabs.Tabs;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
@@ -42,8 +40,9 @@ import net.createmod.catnip.lang.FontHelper.Palette;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,8 @@ public class Numismatics {
     private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     static {
-        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
+        REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
+                .setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
                 .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
         Tabs.MAIN.use();
     }
@@ -66,11 +66,16 @@ public class Numismatics {
     public static void init() {
         LOGGER.info("{} v{} initializing! Commit hash: {} Create version: {} on platform: {}", NAME, NumismaticsBuildInfo.VERSION, NumismaticsBuildInfo.GIT_COMMIT, CreateBuildInfo.VERSION, Loader.getFormatted());
 
-        ModSetup.register();
+        // TODO make this better
+        Runnable modSetup = ModSetup::register;
+        if (Loader.FABRIC.isCurrent())
+            modSetup.run();
         finalizeRegistrate();
+        if (Loader.NEOFORGE.isCurrent())
+            modSetup.run();
 
         registerCommands(NumismaticsCommands::register);
-        NumismaticsPackets.PACKETS.registerC2SListener();
+        NumismaticsPackets.register();
 
         if (Utils.isDevEnv() && Loader.FABRIC.isCurrent()) {
             SharedConstants.IS_RUNNING_IN_IDE = false; // enable this to test commands
@@ -78,10 +83,6 @@ public class Numismatics {
 
         //if (Utils.isDevEnv() && !Mods.SODIUM.isLoaded) // force all mixins to load in dev - this breaks model loading, only use sporadically to test
         //    MixinEnvironment.getCurrentEnvironment().audit();
-    }
-
-    public static void postRegistrationInit() {
-        ModSetupLate.registerPostRegistration();
     }
 
     public static CreateRegistrate registrate() {
@@ -93,18 +94,8 @@ public class Numismatics {
         throw new AssertionError();
     }
 
-    public static void gatherData(DataGenerator.PackGenerator gen) {
-        REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, NumismaticsTagGen::generateBlockTags);
-        REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, NumismaticsTagGen::generateItemTags);
-        REGISTRATE.addDataGenerator(ProviderType.LANG, NumismaticsLangGen::generate);
-        gen.addProvider(NumismaticsSequencedAssemblyRecipeGen::new);
-        gen.addProvider(NumismaticsStandardRecipeGen::new);
-        gen.addProvider(NumismaticsAdvancements::new);
-        gen.addProvider(EmiExcludedTagGen::new);
-    }
-
     public static ResourceLocation asResource(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static void crashDev(String message) {

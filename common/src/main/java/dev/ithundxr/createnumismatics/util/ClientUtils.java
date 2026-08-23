@@ -36,20 +36,4 @@ public class ClientUtils {
     public static boolean testClientPlayer(Predicate<Player> predicate) {
         return predicate.test(Minecraft.getInstance().player);
     }
-
-    public static ItemStack changeGoggleOverlayItem(Supplier<ItemStack> original) {
-        HitResult hitResult = Minecraft.getInstance().hitResult;
-        if (!(hitResult instanceof BlockHitResult blockHitResult))
-            return original.get();
-
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return original.get();
-
-        if (level.getBlockEntity(blockHitResult.getBlockPos()) instanceof CustomGoggleOverlayStack be) {
-            return be.getCustomGoggleOverlayStack();
-        }
-
-        return original.get();
-    }
 }

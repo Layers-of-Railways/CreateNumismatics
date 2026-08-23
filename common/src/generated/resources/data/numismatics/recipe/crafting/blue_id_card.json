@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    ",": {
+      "tag": "c:nuggets/brass"
+    },
+    "-": {
+      "item": "minecraft:paper"
+    },
+    "/": {
+      "tag": "c:dyes/blue"
+    },
+    "_": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    " / ",
+    "_-,"
+  ],
+  "result": {
+    "count": 1,
+    "id": "numismatics:blue_id_card"
+  }
+}

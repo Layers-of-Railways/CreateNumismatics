@@ -34,10 +34,9 @@ public class NumismaticsClient {
     public static final Map<UUID, String> subAccountLabels = new HashMap<>();
 
     public static void init() {
-        NumismaticsPackets.PACKETS.registerS2CListener();
+        PonderIndex.addPlugin(new NumismaticsPonderPlugin());
 
         NumismaticsPartialModels.init();
-        PonderIndex.addPlugin(new NumismaticsPonderPlugin());
 
         bankAccountLabels.put(BlazeBankerBlockEntity.PONDER_ACCOUNT, "Blaze Banker");
     }
