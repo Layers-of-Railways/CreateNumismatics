@@ -111,6 +111,11 @@ public class FluidSalepointStateImpl extends FluidSalepointState {
     }
 
     @Override
+    public void clearContent() {
+        buffer.setFluid(FluidStack.EMPTY);
+    }
+
+    @Override
     public void onUnload() {
         bufferWrapper.invalidate();
     }

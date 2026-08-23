@@ -212,6 +212,7 @@ public class AndesiteDepositorBlockEntity extends AbstractDepositorBlockEntity i
     @Override
     public void clearContent() {
         inputStack = ItemStack.EMPTY;
+        super.clearContent();
     }
 
     @Override

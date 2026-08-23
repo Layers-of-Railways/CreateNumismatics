@@ -36,6 +36,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
@@ -55,7 +56,7 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemSalepointState implements ISalepointState<ItemStack> {
+public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable {
 
     private UUID uuid;
     private @NotNull ItemStack filter = ItemStack.EMPTY;
@@ -109,6 +110,11 @@ public class ItemSalepointState implements ISalepointState<ItemStack> {
     public void onDestroy(Level level, BlockPos pos) {
         onUnload();
         Containers.dropContents(level, pos, buffer);
+    }
+
+    @Override
+    public void clearContent() {
+        buffer.clearContent();
     }
 
     @Override

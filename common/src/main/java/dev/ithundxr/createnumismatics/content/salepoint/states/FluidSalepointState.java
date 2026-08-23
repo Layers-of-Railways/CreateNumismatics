@@ -38,6 +38,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +51,7 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class FluidSalepointState implements ISalepointState<MultiloaderFluidStack> {
+public abstract class FluidSalepointState implements ISalepointState<MultiloaderFluidStack>, Clearable {
 
     private UUID uuid;
     private @NotNull MultiloaderFluidStack filter = MultiloaderFluidStack.EMPTY;

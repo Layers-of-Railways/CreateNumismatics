@@ -39,6 +39,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,7 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnergySalepointState implements ISalepointState<Energy> {
+public class EnergySalepointState implements ISalepointState<Energy>, Clearable {
 
     private UUID uuid;
     private @NotNull Energy filter = new Energy();
@@ -91,6 +92,11 @@ public class EnergySalepointState implements ISalepointState<Energy> {
     @Override
     public void onDestroy(Level level, BlockPos pos) {
         onUnload();
+        buffer.setAmount(0);
+    }
+
+    @Override
+    public void clearContent() {
         buffer.setAmount(0);
     }
 

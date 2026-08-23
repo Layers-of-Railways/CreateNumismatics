@@ -66,6 +66,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -87,7 +88,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack {
+public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack, Clearable {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -594,6 +595,16 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             return ItemStack.EMPTY;
 
         return salepointState.state().getDisplayItem();
+    }
+
+    @Override
+    public void clearContent() {
+        cardContainer.clearContent();
+        trustListContainer.clearContent();
+        inventory.clear();
+        if (salepointState != null && salepointState.state() instanceof Clearable c) {
+            c.clearContent();
+        }
     }
 
     private class ConfigMenuProvider implements MenuProvider {

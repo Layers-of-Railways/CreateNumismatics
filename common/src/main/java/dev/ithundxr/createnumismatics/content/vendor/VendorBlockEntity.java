@@ -573,6 +573,10 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     @Override
     public void clearContent() {
         items.clear();
+        cardContainer.clearContent();
+        isFilterSlotLegacy = false;
+        inventory.clear();
+        trustListContainer.clearContent();
         setChanged();
     }
 
