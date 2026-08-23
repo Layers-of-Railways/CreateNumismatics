@@ -55,6 +55,8 @@ import java.util.stream.Collectors;
 import static dev.ithundxr.createnumismatics.Numismatics.crashDev;
 
 public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChecker {
+    private static final int MAX_STANDARD_BALANCE = Integer.MAX_VALUE >> 1; // leave a bit of margin
+
     public enum Type {
         PLAYER(false, false),
         BLAZE_BANKER(true, true);
@@ -91,6 +93,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     public final UUID id;
     public final Type type;
     private int balance;
+    private long additionalBalance;
 
     @Nullable
     private List<UUID> trustList; // only present on server
@@ -191,10 +194,24 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     }
 
     public void setBalance(int balance) {
-        if (balance == this.balance)
+        if (balance > MAX_STANDARD_BALANCE && !clientSide) {
+            int extra = balance - MAX_STANDARD_BALANCE;
+            additionalBalance += extra;
+            balance -= extra;
+            Numismatics.LOGGER.warn("Account {} overflowed the standard maximum balance ({}). Additional currency will be stored but not displayed", this, MAX_STANDARD_BALANCE);
+        } else if (balance < MAX_STANDARD_BALANCE && additionalBalance > 0 && !clientSide) {
+            int cap = MAX_STANDARD_BALANCE - balance;
+            int moved = (int) Math.min(additionalBalance, cap);
+            balance += moved;
+            additionalBalance -= moved;
+        } else if (balance == this.balance) {
             return;
+        }
+
         if (balance < 0) {
             crashDev("Balance cannot be negative! (Account: "+this+")");
+            balance = 0; // reset things so recovery is possible
+            additionalBalance = 0;
         }
         this.balance = balance;
         markDirty();
@@ -209,7 +226,18 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             crashDev("Cannot add negative amount to balance! (Account: "+this+")");
             return;
         }
-        setBalance(getBalance() + amount);
+
+        final int balance = getBalance();
+        final int standardCapacity = MAX_STANDARD_BALANCE - balance;
+        if (standardCapacity < amount) {
+            Numismatics.LOGGER.warn("Account {} overflowed the standard maximum balance ({}). Additional currency will be stored but not displayed.", this, MAX_STANDARD_BALANCE);
+            int extra = amount - standardCapacity;
+            additionalBalance += extra;
+            amount -= extra;
+            markDirty();
+        }
+
+        setBalance(balance + amount);
     }
 
     @Override
@@ -236,19 +264,32 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             crashDev("Cannot remove negative amount from balance! (Account: "+this+")");
             return false;
         }
-        if (getBalance() < amount) {
+
+        final long totalBalance = additionalBalance + getBalance();
+
+        if (totalBalance < (long) amount) {
             if (force) {
+                balance = 1; // to force setBalance to do something
+                additionalBalance = 0;
                 setBalance(0);
             }
             return false;
         }
+
+        if (additionalBalance > 0 && amount > 0) {
+            int taken = (int) Math.min(additionalBalance, amount);
+            additionalBalance -= taken;
+            amount -= taken;
+            markDirty();
+        }
+
         setBalance(getBalance() - amount);
         return true;
     }
 
     @Override
     public String toString() {
-        return super.toString() + " {id=" + id + ", balance=" + balance + ", clientside=" + clientSide + "}";
+        return super.toString() + " {id=" + id + ", balance=" + balance + ", additionalBalance=" + additionalBalance + ", clientside=" + clientSide + "}";
     }
 
     public static BankAccount create(Type type) {
@@ -264,6 +305,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             return null;
         }
         account.balance = nbt.getInt("balance");
+        account.additionalBalance = nbt.getLong("additionalBalance");
         if (account.trustList != null && nbt.contains("TrustList")) {
             account.trustList.clear();
             account.trustList.addAll(NBTHelper.readCompoundList(
@@ -290,6 +332,10 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         nbt.putUUID("id", id);
         type.write(nbt);
         nbt.putInt("balance", balance);
+
+        if (additionalBalance > 0) {
+            nbt.putLong("AdditionalBalance", additionalBalance);
+        }
 
         if (type.useTrustList && trustList != null) {
             trustList = trustList.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
