@@ -395,7 +395,7 @@ fun Project.setupRepositories() {
         exclusiveMaven("https://api.modrinth.com/maven", "maven.modrinth") // Create Crafts and Additions
         exclusiveMaven("https://mvn.devos.one/releases", "io.github.fabricators_of_create.Porting-Lib") // Porting Lib Releases
         exclusiveMaven("https://maven.ithundxr.dev/snapshots", "com.tterrag.registrate") // Registrate
-        exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon") // Carry On
+        exclusiveMaven("https://maven.blamejared.com", "tschipp.carryon", "mezz.jei") // JEI, Carry On
         exclusiveMaven("https://maven.terraformersmc.com/releases", "dev.emi", "com.terraformersmc") // EMI, Mod Menu
         exclusiveMaven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven", "fuzs.forgeconfigapiport") // Forge config api port
         exclusiveMaven("https://maven.jamieswhiteshirt.com/libs-release", "com.jamieswhiteshirt") // Reach Entity Attributes

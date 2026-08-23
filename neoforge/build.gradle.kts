@@ -61,6 +61,12 @@ dependencies {
 
     modLocalRuntime("dev.emi:emi-neoforge:${"emi_version"()}")
 
+    // compile against the JEI API but do not include it at runtime
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-common-api:${"jei_version"()}")
+    modCompileOnly("mezz.jei:jei-${"minecraft_version"()}-neoforge-api:${"jei_version"()}")
+    // at runtime, use the full JEI jar for Forge
+    modLocalRuntime("mezz.jei:jei-${"minecraft_version"()}-neoforge:${"jei_version"()}")
+
     // Carry On
     modCompileOnly("tschipp.carryon:carryon-neoforge-${"minecraft_version"()}:${"carryon_neoforge_version"()}")
     if ("enable_carryon"().toBoolean()) {
