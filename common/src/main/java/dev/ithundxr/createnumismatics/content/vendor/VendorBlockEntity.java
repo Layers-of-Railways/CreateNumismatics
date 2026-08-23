@@ -927,15 +927,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         if (!matchesFilterItem(stack)) return;
         if (isCreativeVendor()) return;
 
+        int maxStackSize = getFilterItem().getMaxStackSize();
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             if (item.isEmpty() || matchesFilterItem(item)) {
-                if (item.getCount() + stack.getCount() <= item.getMaxStackSize()) {
+                if (item.getCount() + stack.getCount() <= maxStackSize) {
                     items.set(i, getFilterItem().copyWithCount(item.getCount() + stack.getCount()));
                     return;
                 } else {
-                    int diff = item.getMaxStackSize() - item.getCount();
-                    items.set(i, getFilterItem().copyWithCount(item.getMaxStackSize()));
+                    int diff = maxStackSize - item.getCount();
+                    items.set(i, getFilterItem().copyWithCount(maxStackSize));
                     stack.shrink(diff);
                 }
             }
