@@ -18,11 +18,11 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
-import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public record ResetSubAccountSpendingPacket(@NotNull UUID subAccountID) implements ServerboundPacketPayload {
-    public static final StreamCodec<ByteBuf, ResetSubAccountSpendingPacket> STREAM_CODEC = NumismaticsStreamCodecs.UUID.map(
+    public static final StreamCodec<ByteBuf, ResetSubAccountSpendingPacket> STREAM_CODEC = UUIDUtil.STREAM_CODEC.map(
         ResetSubAccountSpendingPacket::new,
         ResetSubAccountSpendingPacket::subAccountID
     );

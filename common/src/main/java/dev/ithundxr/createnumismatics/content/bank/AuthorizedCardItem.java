@@ -18,11 +18,17 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
+import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -44,39 +50,23 @@ public class AuthorizedCardItem extends Item {
         this.color = color;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public static ItemStack clear(ItemStack itemStack) {
-        if (!itemStack.hasTag())
-            return itemStack;
-
-        CompoundTag tag = itemStack.getTag();
-        tag.remove("AccountID");
-        tag.remove("AuthorizationID");
-        itemStack.setTag(tag);
+        itemStack.remove(NumismaticsDataComponents.AUTHORIZATION_PAIR);
         return itemStack;
     }
 
     public static ItemStack set(ItemStack itemStack, AuthorizationPair pair) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        tag.putUUID("AccountID", pair.accountID());
-        tag.putUUID("AuthorizationID", pair.authorizationID());
-        itemStack.setTag(tag);
+        itemStack.set(NumismaticsDataComponents.AUTHORIZATION_PAIR, pair);
         return itemStack;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Nullable
     public static AuthorizationPair get(ItemStack itemStack) {
-        if (!itemStack.hasTag())
-            return null;
-
-        CompoundTag tag = itemStack.getTag();
-        return AuthorizationPair.get(tag);
+        return itemStack.get(NumismaticsDataComponents.AUTHORIZATION_PAIR);
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public static boolean isBound(ItemStack itemStack) {
-        return get(itemStack) != null;
+        return itemStack.has(NumismaticsDataComponents.AUTHORIZATION_PAIR);
     }
 
     @Nullable
@@ -100,8 +90,13 @@ public class AuthorizedCardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isBound(stack)) {
             String name = getPlayerName(stack);
             String label = getAccountLabel(stack);
@@ -147,6 +142,17 @@ public class AuthorizedCardItem extends Item {
     }
 
     public record AuthorizationPair(UUID accountID, UUID authorizationID) {
+        public static final Codec<AuthorizationPair> CODEC = RecordCodecBuilder.create(i -> i.group(
+            UUIDUtil.CODEC.fieldOf("AccountID").forGetter(AuthorizationPair::accountID),
+            UUIDUtil.CODEC.fieldOf("AuthorizationID").forGetter(AuthorizationPair::authorizationID)
+        ).apply(i, AuthorizationPair::new));
+
+        public static final StreamCodec<ByteBuf, AuthorizationPair> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC, AuthorizationPair::accountID,
+            UUIDUtil.STREAM_CODEC, AuthorizationPair::authorizationID,
+            AuthorizationPair::new
+        );
+
         private static @Nullable AuthorizationPair get(CompoundTag tag) {
             if (!(tag.hasUUID("AccountID") && tag.hasUUID("AuthorizationID")))
                 return null;

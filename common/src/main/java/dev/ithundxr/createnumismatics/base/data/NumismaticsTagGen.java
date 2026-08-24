@@ -21,16 +21,21 @@ package dev.ithundxr.createnumismatics.base.data;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllBlockTags;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags.AllItemTags;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,14 +54,7 @@ public class NumismaticsTagGen {
     }
 
     public static void generateBlockTags(RegistrateTagsProvider<Block> tags) {
-        /*
-        todo
         addTagToAllInRegistry(tags, BuiltInRegistries.BLOCK, NumismaticsTags.AllBlockTags.NUMISMATICS_BLOCKS.tag);
-
-        CommonTags.RELOCATION_NOT_SUPPORTED.generateBoth(tags, tag -> {
-                tag.addTag(CommonTags.RELOCATION_NOT_SUPPORTED.tag);
-        });
-         */
 
         for (TagKey<Block> tag : OPTIONAL_TAGS.keySet()) {
             TagsProvider.TagAppender<Block> appender = tagAppender(tags, tag);
@@ -66,7 +64,7 @@ public class NumismaticsTagGen {
     }
 
     public static void generateItemTags(RegistrateItemTagsProvider tags) {
-        // todo addTagToAllInRegistry(tags, BuiltInRegistries.ITEM, NumismaticsTags.AllItemTags.NUMISMATICS_ITEMS.tag);
+        addTagToAllInRegistry(tags, BuiltInRegistries.ITEM, NumismaticsTags.AllItemTags.NUMISMATICS_ITEMS.tag);
 
         for (AllItemTags tag : AllItemTags.values()) {
             if (tag.alwaysDatagen)
@@ -88,12 +86,11 @@ public class NumismaticsTagGen {
 
     @SuppressWarnings("unchecked")
     public static <T> void addTagToAllInRegistry(RegistrateTagsProvider<T> prov, DefaultedRegistry<T> defaultedRegistry, TagKey<T> tagKey) {
-        T[] array = (T[]) defaultedRegistry.keySet()
+        ResourceKey<T>[] array = (ResourceKey<T>[]) defaultedRegistry.registryKeySet()
                 .stream()
-                .filter(rs -> rs.getNamespace().equals(Numismatics.MOD_ID))
-                .sorted(Comparator.comparing(ResourceLocation::getPath))
-                .map(defaultedRegistry::get)
-                .toArray();
+                .filter(rs -> rs.location().getNamespace().equals(Numismatics.MOD_ID))
+                .sorted(Comparator.comparing(rs -> rs.location().getPath()))
+                .toArray(ResourceKey[]::new);
 
         prov.addTag(tagKey)
                 .add(array);

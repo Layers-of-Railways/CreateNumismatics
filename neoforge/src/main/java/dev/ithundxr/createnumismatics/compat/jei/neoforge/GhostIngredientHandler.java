@@ -22,12 +22,12 @@ import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.ithundxr.createnumismatics.content.backend.IGhostItemMenu;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.GhostItemSubmitPacket;
 import dev.ithundxr.createnumismatics.util.ClientCraftingUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
@@ -100,7 +100,7 @@ public class GhostIngredientHandler<T extends MenuBase<?> & IGhostItemMenu>
 			gui.getMenu().setGhostStackInSlot(slotIndex, stack);
 
 			// sync new filter contents with server
-			NumismaticsPackets.PACKETS.send(new GhostItemSubmitPacket(slotIndex, stack));
+			CatnipServices.NETWORK.sendToServer(new GhostItemSubmitPacket(slotIndex, stack));
 		}
 	}
 }

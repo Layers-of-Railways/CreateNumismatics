@@ -24,17 +24,17 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.mixin.StripFromRelease;
+import dev.ithundxr.createnumismatics.mixin.client.dev_export.AccessorDeltaTrackerTimer;
 import dev.ithundxr.createnumismatics.mixin.client.dev_export.AccessorMinecraft;
 import dev.ithundxr.createnumismatics.mixin.client.dev_export.AccessorPonderUI;
 import net.createmod.ponder.foundation.ui.PonderUI;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker.Timer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Timer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.FogRenderer;
@@ -44,6 +44,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -86,7 +87,7 @@ public class PonderExport {
                 KeyMapping.releaseAll();
             }
             while (!tasks.isEmpty()) {
-                PonderUI ponder = tasks.remove(0);
+                PonderUI ponder = tasks.removeFirst();
                 if (!renderPonder(ponder)) {
                     Component msg = Component.literal("Failed to render ponder "+loc(ponder))
                         .withStyle(ChatFormatting.RED);
@@ -161,7 +162,7 @@ public class PonderExport {
         final Screen screen0 = mc.screen;
         final int winWidth0 = window.getWidth();
         final int winHeight0 = window.getHeight();
-        final float partialTick0 = timer.partialTick;
+        final float partialTick0 = timer.getGameTimeDeltaPartialTick(true);
 
         mc.screen = null;
         window.setWidth(width);
@@ -192,9 +193,9 @@ public class PonderExport {
                 21000.0F
             );
             RenderSystem.setProjectionMatrix(projMat, VertexSorting.ORTHOGRAPHIC_Z);
-            PoseStack msModelView = RenderSystem.getModelViewStack();
-            msModelView.pushPose();
-            msModelView.setIdentity();
+            Matrix4fStack msModelView = RenderSystem.getModelViewStack();
+            msModelView.pushMatrix();
+            msModelView.identity();
             msModelView.translate(0.0f, 0.0f, -11000.0f);
             RenderSystem.applyModelViewMatrix();
             Lighting.setupFor3DItems();
@@ -205,7 +206,7 @@ public class PonderExport {
             Outer: for (int frame = 0; true; frame++) {
                 final int tick = frame * 20 / fps;
                 final float partialTicks = (frame * 20.0f / fps) - tick;
-                timer.partialTick = partialTicks;
+                ((AccessorDeltaTrackerTimer) timer).numismatics$setDeltaTickResidual(partialTicks);
 
                 while (tick > lastTick) {
                     lastTick++;
@@ -247,11 +248,11 @@ public class PonderExport {
             }
 
             // SHARED-FRAME TEARDOWN
-            msModelView.popPose();
+            msModelView.popMatrix();
             RenderSystem.applyModelViewMatrix();
         } finally {
             // TEARDOWN
-            timer.partialTick = partialTick0;
+            ((AccessorDeltaTrackerTimer) timer).numismatics$setDeltaTickResidual(partialTick0);
             window.setWidth(winWidth0);
             window.setHeight(winHeight0);
             window.setGuiScale(window.calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));

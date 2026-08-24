@@ -18,12 +18,10 @@
 
 package dev.ithundxr.createnumismatics.util;
 
-import dev.ithundxr.createnumismatics.mixin.AccessorSimpleContainer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerListener;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +29,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.List;
 
 public class ItemUtil {
     public static Item woolByColor(DyeColor color) {
@@ -182,7 +178,7 @@ public class ItemUtil {
     public static boolean copyInto(SimpleContainer source, SimpleContainer target) {
         boolean changed = false;
         for (int i = 0; i < source.getContainerSize(); i++) {
-            if (!changed && (!ItemStack.isSameItemSameTags(source.getItem(i), target.getItem(i)) || source.getItem(i).getCount() != target.getItem(i).getCount())) {
+            if (!changed && (!ItemStack.isSameItemSameComponents(source.getItem(i), target.getItem(i)) || source.getItem(i).getCount() != target.getItem(i).getCount())) {
                 changed = true;
             }
             target.setItem(i, source.getItem(i).copy());

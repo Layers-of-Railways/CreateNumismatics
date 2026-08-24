@@ -19,14 +19,13 @@
 package dev.ithundxr.createnumismatics.mixin.client.dev_export;
 
 import dev.ithundxr.createnumismatics.annotation.mixin.DevMixin;
-import net.minecraft.client.DeltaTracker.Timer;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.DeltaTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @DevMixin
-@Mixin(Minecraft.class)
-public interface AccessorMinecraft {
-    @Accessor("timer")
-    Timer numismatics$getTimer();
+@Mixin(DeltaTracker.Timer.class)
+public interface AccessorDeltaTrackerTimer {
+    @Accessor("deltaTickResidual")
+    void numismatics$setDeltaTickResidual(float deltaTickResidual);
 }

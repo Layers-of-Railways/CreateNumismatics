@@ -244,7 +244,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             int scaleCenterY = window.getGuiScaledHeight() / 2;
 
             ms.translate(scaleCenterX, scaleCenterY, 0);
-            ms.mulPoseMatrix(new Matrix4f().scaling(scale, scale, 0.01f));
+            ms.mulPose(new Matrix4f().scaling(scale, scale, 0.01f));
             ms.translate(-scaleCenterX, -scaleCenterY, 0);
 
             // TODO: is it nicer to immediately floor/round this down?
@@ -290,7 +290,7 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
             if (cursor != null) {
                 ms.pushPose();
                 ms.translate(localMouseX - 1, localMouseY - 1, 2000);
-                ms.mulPoseMatrix(new Matrix4f().scaling(1/scale, 1/scale, 1));
+                ms.mulPose(new Matrix4f().scaling(1/scale, 1/scale, 1));
                 cursor.render(graphics, 0, 0);
                 if (cursorSneak) {
                     String text = PonderIndex.getLangAccess().getShared(Ponder.asResource("sneak_and"));

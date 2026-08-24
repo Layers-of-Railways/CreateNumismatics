@@ -18,15 +18,12 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import com.simibubi.create.content.trains.RailwaySavedData;
 import dev.ithundxr.createnumismatics.Numismatics;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,8 +40,8 @@ public class BankSavedData extends SavedData {
     }
     
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag, @NotNull Provider registries) {
-        tag.put("Accounts", NBTHelper.writeCompoundList(Numismatics.BANK.accounts.values(), t -> t.save(new CompoundTag())));
+    public @NotNull CompoundTag save(CompoundTag tag, @NotNull HolderLookup.Provider registries) {
+        tag.put("Accounts", NBTHelper.writeCompoundList(Numismatics.BANK.accounts.values(), t -> t.save(new CompoundTag(), registries)));
         return tag;
     }
 
@@ -53,7 +50,7 @@ public class BankSavedData extends SavedData {
         sd.accounts = new HashMap<>();
 
         NBTHelper.iterateCompoundList(tag.getList("Accounts", Tag.TAG_COMPOUND), c -> {
-            BankAccount account = BankAccount.load(c);
+            BankAccount account = BankAccount.load(c, registries);
             if (account != null)
                 sd.accounts.put(account.id, account);
         });

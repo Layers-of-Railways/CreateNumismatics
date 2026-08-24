@@ -26,9 +26,9 @@ import dev.ithundxr.createnumismatics.content.backend.IAuthorizationCheckingDedu
 import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
-import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
+import net.createmod.catnip.platform.CatnipServices;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -76,7 +76,7 @@ public final class SubAccount implements IAuthorizationChecker {
         this.label = label;
         markDirty();
 
-        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), new BankAccountLabelPacket(this));
+        CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(this));
     }
 
     public @NotNull String getLabel() {
@@ -177,7 +177,7 @@ public final class SubAccount implements IAuthorizationChecker {
         return trustListContainer;
     }
 
-    public CompoundTag write() {
+    public CompoundTag write(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
 
         tag.putString("label", label);
@@ -188,13 +188,13 @@ public final class SubAccount implements IAuthorizationChecker {
         tag.put("TotalLimit", totalLimit.write());
 
         if (!trustListContainer.isEmpty()) {
-            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag(), registries));
         }
 
         return tag;
     }
 
-    public static SubAccount read(BankAccount parentAccount, CompoundTag tag) {
+    public static SubAccount read(BankAccount parentAccount, CompoundTag tag, HolderLookup.Provider registries) {
         SubAccount subAccount = new SubAccount(
             parentAccount,
             tag.getString("label"),
@@ -210,7 +210,7 @@ public final class SubAccount implements IAuthorizationChecker {
         subAccount.trustListContainer.clearContent();
         subAccount.trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
-            subAccount.trustListContainer.load(tag.getCompound("TrustListInv"));
+            subAccount.trustListContainer.load(tag.getCompound("TrustListInv"), registries);
         }
 
         return subAccount;
@@ -230,7 +230,7 @@ public final class SubAccount implements IAuthorizationChecker {
         totalLimit.write(buf);
     }
 
-    public void updateFrom(SubAccount other) {
+    public void updateFrom(SubAccount other, HolderLookup.Provider registries) {
         if (this.authorizationID != other.authorizationID) {
             Numismatics.LOGGER.warn("Tried to update a sub account with a different authorization ID");
             return;
@@ -238,7 +238,7 @@ public final class SubAccount implements IAuthorizationChecker {
         this.label = other.label;
         this.authorizationType = other.authorizationType;
         this.totalLimit = other.totalLimit;
-        this.trustListContainer.load(other.trustListContainer.save(new CompoundTag()));
+        this.trustListContainer.load(other.trustListContainer.save(new CompoundTag(), registries), registries);
         other.setRemoved();
     }
 

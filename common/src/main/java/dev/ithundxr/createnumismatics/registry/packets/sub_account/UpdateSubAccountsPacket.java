@@ -28,6 +28,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -36,7 +37,7 @@ import java.util.UUID;
 /** Only works for players who have a SubAccountListMenu open */
 public class UpdateSubAccountsPacket implements ClientboundPacketPayload {
     public static final StreamCodec<FriendlyByteBuf, UpdateSubAccountsPacket> STREAM_CODEC = StreamCodec.composite(
-        NumismaticsStreamCodecs.UUID, i -> i.accountID,
+        UUIDUtil.STREAM_CODEC, i -> i.accountID,
         NumismaticsStreamCodecs.NESTED_BUF, i -> i.data,
         UpdateSubAccountsPacket::new
     );
@@ -62,7 +63,7 @@ public class UpdateSubAccountsPacket implements ClientboundPacketPayload {
         if (mc.screen instanceof SubAccountListScreen sal) {
             BankAccount account = sal.getMenu().contentHolder;
             if (account.id.equals(accountID)) {
-                account.updateSubAccountsFrom(data);
+                account.updateSubAccountsFrom(data, player.registryAccess());
             }
         }
     }

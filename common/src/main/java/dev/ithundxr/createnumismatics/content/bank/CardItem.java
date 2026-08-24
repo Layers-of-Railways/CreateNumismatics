@@ -22,7 +22,6 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -47,7 +46,6 @@ public class CardItem extends Item {
         this.color = color;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public static ItemStack clear(ItemStack itemStack) {
         itemStack.remove(NumismaticsDataComponents.CARD_ACCOUNT_ID);
         return itemStack;
@@ -75,7 +73,12 @@ public class CardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isBound(stack)) {
             String name = getPlayerName(stack);

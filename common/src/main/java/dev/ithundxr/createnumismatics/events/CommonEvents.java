@@ -26,7 +26,6 @@ import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
@@ -82,12 +81,12 @@ public class CommonEvents {
     @MultiLoaderEvent
     public static void onPlayerJoin(ServerPlayer player) {
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
-            CatnipServices.NETWORK.sendToClient(player, new BankAccountLabelPacket(account.id, account.getLabel()));
+            CatnipServices.NETWORK.sendToClient(player, new BankAccountLabelPacket(account));
 
             Collection<SubAccount> subAccounts = account.getSubAccounts();
             if (subAccounts != null) {
                 for (SubAccount subAccount : subAccounts) {
-                    NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(subAccount));
+                    CatnipServices.NETWORK.sendToClient(player, new BankAccountLabelPacket(subAccount));
                 }
             }
         }

@@ -18,13 +18,13 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
-import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +40,7 @@ public record ConfigureSubAccountPacket(
     @Nullable String label
 ) implements ServerboundPacketPayload {
     public static final StreamCodec<ByteBuf, ConfigureSubAccountPacket> STREAM_CODEC = StreamCodec.composite(
-        NumismaticsStreamCodecs.UUID, ConfigureSubAccountPacket::subAccountID,
+        UUIDUtil.STREAM_CODEC, ConfigureSubAccountPacket::subAccountID,
         CatnipStreamCodecBuilders.nullable(ByteBufCodecs.VAR_INT), ConfigureSubAccountPacket::limit,
         CatnipStreamCodecBuilders.nullable(AuthorizationType.STREAM_CODEC), ConfigureSubAccountPacket::authorizationType,
         CatnipStreamCodecBuilders.nullable(ByteBufCodecs.STRING_UTF8), ConfigureSubAccountPacket::label,

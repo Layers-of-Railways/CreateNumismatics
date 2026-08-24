@@ -18,22 +18,12 @@
 
 package dev.ithundxr.createnumismatics.base.codec;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public interface NumismaticsStreamCodecs {
-    StreamCodec<ByteBuf, UUID> UUID = StreamCodec.composite(
-        ByteBufCodecs.VAR_LONG, java.util.UUID::getMostSignificantBits,
-        ByteBufCodecs.VAR_LONG, java.util.UUID::getLeastSignificantBits,
-        UUID::new
-    );
-
     StreamCodec<FriendlyByteBuf, FriendlyByteBuf> NESTED_BUF = new StreamCodec<>() {
         @Override
         public @NotNull FriendlyByteBuf decode(@NotNull FriendlyByteBuf buffer) {

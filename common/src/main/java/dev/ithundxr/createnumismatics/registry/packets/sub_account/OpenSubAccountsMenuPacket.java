@@ -19,11 +19,11 @@
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -33,7 +33,7 @@ import java.util.UUID;
 
 public record OpenSubAccountsMenuPacket(UUID accountID, boolean open) implements ServerboundPacketPayload {
     public static final StreamCodec<FriendlyByteBuf, OpenSubAccountsMenuPacket> STREAM_CODEC = StreamCodec.composite(
-        NumismaticsStreamCodecs.UUID, OpenSubAccountsMenuPacket::accountID,
+        UUIDUtil.STREAM_CODEC, OpenSubAccountsMenuPacket::accountID,
         ByteBufCodecs.BOOL, OpenSubAccountsMenuPacket::open,
         OpenSubAccountsMenuPacket::new
     );

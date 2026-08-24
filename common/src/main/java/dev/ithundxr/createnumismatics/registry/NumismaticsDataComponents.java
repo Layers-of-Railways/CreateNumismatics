@@ -3,6 +3,7 @@ package dev.ithundxr.createnumismatics.registry;
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.AuthorizationPair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -26,6 +27,11 @@ public class NumismaticsDataComponents {
 	public static final DataComponentType<UUID> CARD_ACCOUNT_ID = register(
 		"card_account_id",
 		b -> b.persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC)
+	);
+
+	public static final DataComponentType<AuthorizationPair> AUTHORIZATION_PAIR = register(
+		"authorization_pair",
+		b -> b.persistent(AuthorizationPair.CODEC).networkSynchronized(AuthorizationPair.STREAM_CODEC)
 	);
 
 	public static final DataComponentType<BlockPos> SALEPOINT_SELECTED_POS = register(

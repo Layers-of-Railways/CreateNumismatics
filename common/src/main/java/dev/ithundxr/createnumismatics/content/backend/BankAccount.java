@@ -26,15 +26,15 @@ import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.content.coins.LinkedMergingCoinBag;
 import dev.ithundxr.createnumismatics.content.coins.MergingCoinBag;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
 import dev.ithundxr.createnumismatics.registry.packets.sub_account.OpenSubAccountsMenuPacket;
 import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.createmod.catnip.platform.CatnipServices;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -48,7 +48,16 @@ import net.minecraft.world.inventory.ContainerData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -162,7 +171,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         return account;
     }
 
-    public void updateSubAccountsFrom(FriendlyByteBuf buf) {
+    public void updateSubAccountsFrom(FriendlyByteBuf buf, HolderLookup.Provider registries) {
         if (!clientSide) {
             crashDev("updateSubAccountsFrom called on server side! (Account: "+this+")");
             return;
@@ -181,7 +190,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             if (existingSubAccount == null) {
                 existingSubAccount = newSubAccount;
             } else {
-                existingSubAccount.updateFrom(newSubAccount);
+                existingSubAccount.updateFrom(newSubAccount, registries);
             }
             subAccounts.put(existingSubAccount.getAuthorizationID(), existingSubAccount);
         }
@@ -296,7 +305,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         return new BankAccount(UUID.randomUUID(), type);
     }
 
-    public static BankAccount load(CompoundTag tag) {
+    public static BankAccount load(CompoundTag tag, HolderLookup.Provider registries) {
         BankAccount account;
         if (tag.hasUUID("id")) {
             account = new BankAccount(tag.getUUID("id"), Type.read(tag));
@@ -305,7 +314,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             return null;
         }
         account.balance = tag.getInt("balance");
-        account.additionalBalance = nbt.getLong("additionalBalance");
+        account.additionalBalance = tag.getLong("additionalBalance");
         if (account.trustList != null && tag.contains("TrustList")) {
             account.trustList.clear();
             account.trustList.addAll(NBTHelper.readCompoundList(
@@ -316,24 +325,24 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         if (account.type.hasLabel && tag.contains("Label", Tag.TAG_STRING))
             account.label = tag.getString("Label");
 
-        if (account.subAccounts != null && nbt.contains("SubAccounts")) {
+        if (account.subAccounts != null && tag.contains("SubAccounts")) {
             account.subAccounts.clear();
 
             NBTHelper.readCompoundList(
-                nbt.getList("SubAccounts", Tag.TAG_COMPOUND),
-                (tag) -> SubAccount.read(account, tag)
+                tag.getList("SubAccounts", Tag.TAG_COMPOUND),
+                (t) -> SubAccount.read(account, t, registries)
             ).forEach(subAccount -> account.subAccounts.put(subAccount.getAuthorizationID(), subAccount));
         }
         return account;
     }
 
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putUUID("id", id);
         type.write(tag);
         tag.putInt("balance", balance);
 
         if (additionalBalance > 0) {
-            nbt.putLong("AdditionalBalance", additionalBalance);
+            tag.putLong("AdditionalBalance", additionalBalance);
         }
 
         if (type.useTrustList && trustList != null) {
@@ -349,7 +358,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             tag.putString("Label", label);
 
         if (subAccounts != null) {
-            nbt.put("SubAccounts", NBTHelper.writeCompoundList(subAccounts.values(), SubAccount::write));
+            tag.put("SubAccounts", NBTHelper.writeCompoundList(subAccounts.values(), s -> s.write(registries)));
         }
 
         return tag;
@@ -371,7 +380,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
                 return;
             this.label = label;
             markDirty();
-            CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(id, label));
+            CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(this));
         }
     }
 
@@ -420,7 +429,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
 
         SubAccount subAccount = new SubAccount(this, label, UUID.randomUUID());
         subAccounts.put(subAccount.getAuthorizationID(), subAccount);
-        NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), new BankAccountLabelPacket(subAccount));
+        CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(subAccount));
         markDirty();
         return subAccount.getAuthorizationID();
     }
@@ -433,7 +442,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         subAccount.setRemoved();
 
         if (!clientSide)
-            NumismaticsPackets.PACKETS.sendTo(PlayerSelection.all(), BankAccountLabelPacket.remove(subAccount));
+            CatnipServices.NETWORK.sendToAllClients(BankAccountLabelPacket.remove(subAccount));
         markDirty();
         return subAccount;
     }
@@ -532,12 +541,12 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
 
     @Environment(EnvType.CLIENT)
     public void openSubAccountsMenu() {
-        NumismaticsPackets.PACKETS.send(new OpenSubAccountsMenuPacket(this));
+        CatnipServices.NETWORK.sendToServer(new OpenSubAccountsMenuPacket(this));
     }
 
     @Environment(EnvType.CLIENT)
     public void openNormalMenu() {
-        NumismaticsPackets.PACKETS.send(new OpenSubAccountsMenuPacket(this, false));
+        CatnipServices.NETWORK.sendToServer(new OpenSubAccountsMenuPacket(this, false));
     }
 
     private class SubAccountsMenuProvider implements MenuProvider {

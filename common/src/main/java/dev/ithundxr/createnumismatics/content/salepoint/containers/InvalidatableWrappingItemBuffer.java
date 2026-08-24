@@ -80,7 +80,7 @@ public class InvalidatableWrappingItemBuffer extends InvalidatableAbstractBuffer
         int total = 0;
         for (int slot = 0; slot < buffer.getContainerSize(); slot++) {
             ItemStack stack = buffer.getItem(slot);
-            if (ItemStack.isSameItemSameTags(source, stack)) {
+            if (ItemStack.isSameItemSameComponents(source, stack)) {
                 int remainingAmount = maxAmount - total;
                 int count = Math.min(remainingAmount, stack.getCount());
                 ItemStack newStack = buffer.removeItem(slot, count);

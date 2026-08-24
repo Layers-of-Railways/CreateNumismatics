@@ -25,6 +25,7 @@
     "client.MixinStandardBogeyBlockEntity",
     "client.MixinTextWindowElement",
     "client.MixinTextWindowElement$MixinBuilder",
+    "client.dev_export.AccessorDeltaTrackerTimer",
     "client.dev_export.AccessorMinecraft",
     "client.dev_export.AccessorPonderUI",
     "client.dev_export.MixinEmiScreenManager",

@@ -23,8 +23,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.ithundxr.createnumismatics.content.bank.BankMenu;
 import dev.ithundxr.createnumismatics.content.bank.VarIntDataContainerSynchronizer;
 import dev.ithundxr.createnumismatics.mixin_interfaces.IAdminModePlayer;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SetAdminModePacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -61,7 +61,7 @@ public class MixinServerPlayer implements IAdminModePlayer {
     public void numismatics$setAdminMode(boolean adminMode) {
         if (adminMode != numismatics$isAdminMode) {
             numismatics$isAdminMode = adminMode;
-            NumismaticsPackets.PACKETS.sendTo((ServerPlayer) (Object) this, new SetAdminModePacket(adminMode));
+            CatnipServices.NETWORK.sendToClient((ServerPlayer) (Object) this, new SetAdminModePacket(adminMode));
         }
     }
 }

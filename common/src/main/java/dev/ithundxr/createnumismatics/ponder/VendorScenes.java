@@ -38,8 +38,11 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.foundation.PonderScene;
 import net.createmod.ponder.foundation.element.InputWindowElement;
 import net.createmod.ponder.foundation.instruction.ShowInputInstruction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -498,6 +501,9 @@ public class VendorScenes {
             .whileSneaking();
         scene.idle(15);
 
+        var regs = Minecraft.getInstance().level.registryAccess();
+        var enchants = regs.registryOrThrow(Registries.ENCHANTMENT);
+
         List<ItemStack> fakeEmiItems = new ArrayList<>();
         fakeEmiItems.add(new ItemStack(Items.WHITE_DYE));
         fakeEmiItems.add(new ItemStack(Items.LIGHT_GRAY_DYE));
@@ -509,19 +515,19 @@ public class VendorScenes {
         fakeEmiItems.add(new ItemStack(Items.RED_DYE));
         fakeEmiItems.add(new ItemStack(Items.ORANGE_DYE));
         fakeEmiItems.add(new ItemStack(Items.YELLOW_DYE));
-        fakeEmiItems.add(enchantedBook(Enchantments.MENDING, 1));
+        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.MENDING), 1));
 
         fakeEmiItems.add(new ItemStack(Items.LIME_DYE));
         fakeEmiItems.add(new ItemStack(Items.GREEN_DYE));
         fakeEmiItems.add(new ItemStack(Items.CYAN_DYE));
         fakeEmiItems.add(new ItemStack(Items.LIGHT_BLUE_DYE));
-        fakeEmiItems.add(enchantedBook(Enchantments.UNBREAKING, 3));
+        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.UNBREAKING), 3));
 
         fakeEmiItems.add(new ItemStack(Items.BLUE_DYE));
         fakeEmiItems.add(new ItemStack(Items.PURPLE_DYE));
         fakeEmiItems.add(new ItemStack(Items.MAGENTA_DYE));
         fakeEmiItems.add(new ItemStack(Items.PINK_DYE));
-        fakeEmiItems.add(enchantedBook(Enchantments.ALL_DAMAGE_PROTECTION, 4));
+        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.PROTECTION), 4));
 
         var menu = scenex.showContainerMenu(
                 5,
@@ -641,7 +647,7 @@ public class VendorScenes {
         scene.idle(70);
     }
 
-    private static ItemStack enchantedBook(Enchantment enchantment, int level) {
+    private static ItemStack enchantedBook(Holder<Enchantment> enchantment, int level) {
         return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
     }
 

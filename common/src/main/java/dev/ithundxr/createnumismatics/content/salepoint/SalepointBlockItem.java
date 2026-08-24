@@ -120,7 +120,7 @@ public class SalepointBlockItem extends BlockItem {
             CompoundTag salepointStateTag = new CompoundTag();
 
             salepointStateTag.put("pos", NbtUtils.writeBlockPos(selectedPos.subtract(placedPos)));
-            salepointStateTag.put("state", salepointState.save());
+            salepointStateTag.put("state", salepointState.save(level.registryAccess()));
 
             teTag.put("SalepointState", salepointStateTag);
         }
