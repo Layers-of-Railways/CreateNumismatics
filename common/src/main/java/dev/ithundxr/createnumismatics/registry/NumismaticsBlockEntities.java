@@ -44,7 +44,7 @@ public class NumismaticsBlockEntities {
 
     public static final BlockEntityEntry<BrassDepositorBlockEntity> BRASS_DEPOSITOR = REGISTRATE.blockEntity("brass_depositor", BrassDepositorBlockEntity::new)
         .validBlocks(NumismaticsBlocks.BRASS_DEPOSITOR)
-        .transform(BuilderTransformers.discreteCoinBagStorage()) // fixme 1.21.1
+        .transform(BuilderTransformers.discreteCoinBagStorage())
         .register();
 
     public static final BlockEntityEntry<BlazeBankerBlockEntity> BLAZE_BANKER = REGISTRATE.blockEntity("blaze_banker", BlazeBankerBlockEntity::new)

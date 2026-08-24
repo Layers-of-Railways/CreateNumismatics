@@ -602,7 +602,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private static PatchedDataComponentMap cleanComponents(@NotNull DataComponentMap dataComponents) {
         PatchedDataComponentMap map = new PatchedDataComponentMap(dataComponents);
         map.remove(DataComponents.REPAIR_COST);
-        // todo check enchantment order
+        // enchantment order is handled by vanilla
         return map;
     }
 

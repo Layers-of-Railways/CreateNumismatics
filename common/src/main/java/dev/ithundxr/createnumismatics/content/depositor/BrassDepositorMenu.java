@@ -98,7 +98,6 @@ public class BrassDepositorMenu extends MenuBase<BrassDepositorBlockEntity> {
     @Override
     @SuppressWarnings({"RedundantMethodOverride", "RedundantSuppression", "DuplicatedCode"})
     protected void addPlayerSlots(int x, int y) {
-        // todo check how this is on 1.21.1
         for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot)
             this.addSlot(new Slot(playerInventory, hotbarSlot, x + hotbarSlot * 18, y + 58));
         for (int row = 0; row < 3; ++row)

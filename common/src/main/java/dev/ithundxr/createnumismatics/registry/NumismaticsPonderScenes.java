@@ -32,8 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
-// TODO: fix up imports
-
 public class NumismaticsPonderScenes {
     private static @Nullable PonderSceneRegistrationHelper<ResourceLocation> initialHelper;
     private static boolean createPondersRegistered = false;
@@ -89,23 +87,23 @@ public class NumismaticsPonderScenes {
         createPondersRegistered = true;
         if (initialHelper == null)
             return;
-        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = initialHelper.withKeyFunction(RegistryEntry::getId);
+        PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = initialHelper.withKeyFunction(RegistryEntry::getId);
 
         HELPER.forComponents(AllBlocks.BLAZE_BURNER, NumismaticsItems.BANKING_GUIDE)
             .addStoryBoard("blaze_banker", BlazeBankerScene::banker);
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Iterable<? extends ItemProviderEntry<?>> iterableThenVarArgs(
-        Iterable<? extends ItemProviderEntry<?>> iter,
-        ItemProviderEntry<?>... items
+    private static Iterable<? extends ItemProviderEntry<?, ?>> iterableThenVarArgs(
+        Iterable<? extends ItemProviderEntry<?, ?>> iter,
+        ItemProviderEntry<?, ?>... items
     ) {
         if (items.length == 0)
             return iter;
 
         return () -> new Iterator<>() {
             private int i = -1;
-            private final Iterator<? extends ItemProviderEntry<?>> iter$ = iter.iterator();
+            private final Iterator<? extends ItemProviderEntry<?, ?>> iter$ = iter.iterator();
 
             @Override
             public boolean hasNext() {
@@ -113,7 +111,7 @@ public class NumismaticsPonderScenes {
             }
 
             @Override
-            public ItemProviderEntry<?> next() {
+            public ItemProviderEntry<?, ?> next() {
                 if (i == -1) {
                     if (iter$.hasNext())
                         return iter$.next();
