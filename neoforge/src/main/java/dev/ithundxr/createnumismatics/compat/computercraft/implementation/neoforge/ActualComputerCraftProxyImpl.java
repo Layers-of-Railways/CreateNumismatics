@@ -36,17 +36,6 @@ public class ActualComputerCraftProxyImpl {
         /* Comment if computercraft.implementation is not in the source set */
         ComputerCraftProxy.computerFactory = ComputerBehaviour::new;
 
-        // fixme(merge): RegisterCapabilitiesEvent
-        /*ForgeComputerCraftAPI.registerPeripheralProvider((level, pos, direction) -> {
-            BlockState state = level.getBlockState(pos);
-
-            if (NumismaticsBlocks.BANK_TERMINAL.has(state)) {
-                return LazyOptional.of(() -> BankTerminalPeripheral.INSTANCE);
-            }
-
-            return LazyOptional.empty();
-        });*/
-
         VanillaDetailRegistries.ITEM_STACK.addProvider((detailMap, stack) -> {
             Map<Object, @Nullable Object> cardDetails = null;
             if (NumismaticsTags.AllItemTags.CARDS.matches(stack)) {

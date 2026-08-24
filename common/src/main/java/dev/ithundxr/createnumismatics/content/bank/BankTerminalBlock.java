@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.bank;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.registry.NumismaticsShapes;
@@ -27,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,21 +61,18 @@ public class BankTerminalBlock extends Block {
         return this.defaultBlockState().setValue(HORIZONTAL_FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return NumismaticsShapes.BANK_TERMINAL.get(state.getValue(HORIZONTAL_FACING));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(HORIZONTAL_FACING, rotation.rotate(state.getValue(HORIZONTAL_FACING)));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(HORIZONTAL_FACING)));
     }
 
@@ -85,7 +82,15 @@ public class BankTerminalBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(
+        @NotNull ItemStack stack,
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull InteractionHand hand,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (level.isClientSide)
             return ItemInteractionResult.SUCCESS;
 
@@ -103,6 +108,39 @@ public class BankTerminalBlock extends Block {
             return ItemInteractionResult.SUCCESS;
         } else {
             return ItemInteractionResult.FAIL;
+        }
+    }
+
+    @ExpectPlatform
+    private static void invalidateCapabilities(@NotNull Level level, @NotNull BlockPos pos) {
+        throw new AssertionError();
+    }
+
+    @Override
+    protected void onPlace(
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull BlockState oldState,
+        boolean movedByPiston
+    ) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (state.getBlock() != oldState.getBlock()) {
+            invalidateCapabilities(level, pos);
+        }
+    }
+
+    @Override
+    protected void onRemove(
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull BlockState newState,
+        boolean movedByPiston
+    ) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if (state.getBlock() != newState.getBlock()) {
+            invalidateCapabilities(level, pos);
         }
     }
 }

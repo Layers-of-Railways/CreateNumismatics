@@ -1,7 +1,14 @@
 package dev.ithundxr.createnumismatics.events.neoforge;
 
+import dan200.computercraft.api.peripheral.PeripheralCapability;
+import dev.ithundxr.createnumismatics.compat.Mods;
+import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.BankTerminalPeripheral;
 import dev.ithundxr.createnumismatics.events.CommonEvents;
+import dev.ithundxr.createnumismatics.neoforge.capability_ducks.BrassDepositorBlockEntity_Duck;
+import dev.ithundxr.createnumismatics.neoforge.capability_ducks.SalepointBlockEntity_Duck;
+import dev.ithundxr.createnumismatics.neoforge.capability_ducks.VendorBlockEntity_Duck;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -45,5 +52,20 @@ public class CommonEventsNeoForge {
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         CommonEvents.onUseBlock(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
+    }
+
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        BrassDepositorBlockEntity_Duck.registerCapabilities(event);
+        VendorBlockEntity_Duck.registerCapabilities(event);
+        SalepointBlockEntity_Duck.registerCapabilities(event);
+
+        if (Mods.COMPUTERCRAFT.isLoaded) {
+            event.registerBlock(
+                PeripheralCapability.get(),
+                ($1, $2, $3, $4, $5) -> BankTerminalPeripheral.INSTANCE,
+                NumismaticsBlocks.BANK_TERMINAL.get()
+            );
+        }
     }
 }

@@ -13,7 +13,10 @@
     "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
     "PortableItemInterfaceBlockEntityMixin",
     "compat.PortableEnergyInterfaceBlockEntityMixin",
-    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor"
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor",
+    "self.BrassDepositorBlockEntityCapabilities",
+    "self.SalepointBlockEntityCapabilities",
+    "self.VendorBlockEntityCapabilities"
   ],
   "injectors": {
     "defaultRequire": 1

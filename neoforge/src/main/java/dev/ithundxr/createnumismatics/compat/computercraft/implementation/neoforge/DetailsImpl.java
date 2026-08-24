@@ -21,7 +21,7 @@ package dev.ithundxr.createnumismatics.compat.computercraft.implementation.neofo
 import dan200.computercraft.api.detail.ForgeDetailRegistries;
 import dan200.computercraft.api.detail.VanillaDetailRegistries;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
-import dev.ithundxr.createnumismatics.multiloader.fluid.forge.MultiloaderFluidStackImpl;
+import dev.ithundxr.createnumismatics.multiloader.fluid.neoforge.MultiloaderFluidStackImpl;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;

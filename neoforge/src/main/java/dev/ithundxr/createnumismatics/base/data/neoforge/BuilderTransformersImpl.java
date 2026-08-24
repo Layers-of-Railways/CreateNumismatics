@@ -100,7 +100,6 @@ public class BuilderTransformersImpl {
     }
 
     public static <B extends BlockEntity & DiscreteCoinBag.StorageTarget, P> NonNullUnaryOperator<BlockEntityBuilder<B, P>> discreteCoinBagStorage() {
-        // todo how does this work on 1.21.1?
         // must be implemented via self-mixin on forge
         return b -> b;
     }
