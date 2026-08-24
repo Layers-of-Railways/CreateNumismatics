@@ -24,8 +24,6 @@ import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePric
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerEditPacket;
 import dev.ithundxr.createnumismatics.registry.packets.AndesiteDepositorConfigurationPacket;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
-import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetContentPacket;
-import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetSlotPacket;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointCardPacket;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointEnergyFilterPacket;
@@ -73,9 +71,6 @@ public enum NumismaticsPackets implements PacketTypeProvider {
     // S2C
     BANK_ACCOUNT_LABEL(BankAccountLabelPacket.class, BankAccountLabelPacket.STREAM_CODEC),
     VAR_INT_CONTAINER_SET_DATA(VarIntContainerSetDataPacket.class, VarIntContainerSetDataPacket.STREAM_CODEC),
-
-    VENDOR_CONTAINER_SET_SLOT(BigStackSizeContainerSetSlotPacket.class, BigStackSizeContainerSetSlotPacket.STREAM_CODEC),
-    VENDOR_CONTAINER_SET_CONTENT(BigStackSizeContainerSetContentPacket.class, BigStackSizeContainerSetContentPacket.STREAM_CODEC),
 
     UPDATE_SUB_ACCOUNTS(UpdateSubAccountsPacket.class, UpdateSubAccountsPacket.STREAM_CODEC),
     SALEPOINT_CARD(SalepointCardPacket.class, SalepointCardPacket.STREAM_CODEC),
