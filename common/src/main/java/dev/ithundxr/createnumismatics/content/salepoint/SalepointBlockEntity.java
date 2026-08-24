@@ -646,7 +646,10 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         }
 
         public static @Nullable SalepointStateWrapper deserialize(CompoundTag tag, HolderLookup.Provider registries) {
-            if (!tag.contains("state", Tag.TAG_COMPOUND) || !tag.contains("pos", Tag.TAG_COMPOUND))
+            if (
+                !tag.contains("state", Tag.TAG_COMPOUND) ||
+                !(tag.contains("pos", Tag.TAG_COMPOUND) || tag.contains("pos", Tag.TAG_INT_ARRAY))
+            )
                 return null;
 
             ISalepointState<?> state = SalepointTypes.load(tag.getCompound("state"), registries);
