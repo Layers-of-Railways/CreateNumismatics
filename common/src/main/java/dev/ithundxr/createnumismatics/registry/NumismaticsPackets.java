@@ -18,12 +18,12 @@
 
 package dev.ithundxr.createnumismatics.registry;
 
-import com.simibubi.create.foundation.gui.menu.GhostItemSubmitPacket;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceConfigurationPacket;
 import dev.ithundxr.createnumismatics.content.bank.blaze_banker.BlazeBankerEditPacket;
 import dev.ithundxr.createnumismatics.registry.packets.AndesiteDepositorConfigurationPacket;
 import dev.ithundxr.createnumismatics.registry.packets.BankAccountLabelPacket;
+import dev.ithundxr.createnumismatics.registry.packets.GhostItemSubmitPacket;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointCardPacket;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointEnergyFilterPacket;

@@ -40,7 +40,7 @@ public interface NumismaticsStreamCodecs {
         @Override
         public void encode(@NotNull FriendlyByteBuf buffer, @NotNull FriendlyByteBuf value) {
             buffer.writeVarInt(value.readableBytes());
-            buffer.writeBytes(value);
+            buffer.writeBytes(value.copy());
         }
     };
 }

@@ -21,6 +21,7 @@ package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,10 +31,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public record OpenSubAccountEditScreenPacket(@Nullable UUID subAccountID) implements ServerboundPacketPayload {
-    public static final StreamCodec<ByteBuf, OpenSubAccountEditScreenPacket> STREAM_CODEC = UUIDUtil.STREAM_CODEC.map(
-        OpenSubAccountEditScreenPacket::new,
-        OpenSubAccountEditScreenPacket::subAccountID
-    );
+    public static final StreamCodec<ByteBuf, OpenSubAccountEditScreenPacket> STREAM_CODEC =
+        CatnipStreamCodecBuilders.nullable(UUIDUtil.STREAM_CODEC).map(
+            OpenSubAccountEditScreenPacket::new,
+            OpenSubAccountEditScreenPacket::subAccountID
+        );
 
     @Override
     public void handle(ServerPlayer sender) {
