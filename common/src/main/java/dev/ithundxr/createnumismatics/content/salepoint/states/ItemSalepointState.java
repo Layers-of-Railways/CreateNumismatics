@@ -323,9 +323,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
         for (int i = 0; i < buffer.getContainerSize(); i++) {
             ItemStack stack = buffer.getItem(i);
             if (!stack.isEmpty()) {
-                CompoundTag stackTag = new CompoundTag();
-                stack.save(registries, stackTag);
-                bufferTag.add(stackTag);
+                bufferTag.add(stack.save(registries));
             }
         }
         tag.put("Buffer", bufferTag);

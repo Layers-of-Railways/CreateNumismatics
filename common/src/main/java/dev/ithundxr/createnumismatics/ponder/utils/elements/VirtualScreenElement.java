@@ -30,6 +30,7 @@ import dev.ithundxr.createnumismatics.mixin.client.AccessorAbstractContainerScre
 import dev.ithundxr.createnumismatics.mixin_interfaces.PonderUI_Duck;
 import dev.ithundxr.createnumismatics.ponder.utils.dev_export.PonderExport;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.Ponder;
@@ -123,13 +124,20 @@ public class VirtualScreenElement<M extends AbstractContainerMenu, S extends Abs
         this.menuFactory = menuFactory;
         this.screenFactory = screenFactory;
         this.titleFactory = titleFactory;
-        this.scaleDown = NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
+        this.scaleDown = shouldScaleDown();
+    }
+
+    private static boolean shouldScaleDown() {
+        if (Utils.isDataGen()) // don't want to access config in datagen
+            return true;
+
+        return NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
     }
 
     @ApiStatus.Internal
     public void clearState() {
         state = null;
-        scaleDown = NumismaticsConfig.client().scalePonderGui.get() && !PonderExport.active;
+        scaleDown = shouldScaleDown();
     }
 
     public @NotNull M getMenu() {

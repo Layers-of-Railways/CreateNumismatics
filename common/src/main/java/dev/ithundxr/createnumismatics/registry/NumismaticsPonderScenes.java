@@ -26,6 +26,7 @@ import dev.ithundxr.createnumismatics.ponder.BlazeBankerScene;
 import dev.ithundxr.createnumismatics.ponder.DepositorScenes;
 import dev.ithundxr.createnumismatics.ponder.SalepointScenes;
 import dev.ithundxr.createnumismatics.ponder.VendorScenes;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ import java.util.Iterator;
 
 public class NumismaticsPonderScenes {
     private static @Nullable PonderSceneRegistrationHelper<ResourceLocation> initialHelper;
-    private static boolean createPondersRegistered = false;
+    private static boolean createPondersRegistered = Utils.isDataGen();
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);

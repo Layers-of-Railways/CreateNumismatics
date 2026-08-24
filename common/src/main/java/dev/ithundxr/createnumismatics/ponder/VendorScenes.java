@@ -30,6 +30,7 @@ import dev.ithundxr.createnumismatics.ponder.utils.elements.VirtualScreenElement
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlockEntities;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
 import dev.ithundxr.createnumismatics.util.ClientCraftingUtils;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
@@ -44,6 +45,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
@@ -501,8 +503,15 @@ public class VendorScenes {
             .whileSneaking();
         scene.idle(15);
 
-        var regs = Minecraft.getInstance().level.registryAccess();
-        var enchants = regs.registryOrThrow(Registries.ENCHANTMENT);
+        Function<ResourceKey<Enchantment>, Holder<Enchantment>> enchants;
+        {
+            if (Utils.isDataGen()) {
+                enchants = $ -> null;
+            } else {
+                var regs = Minecraft.getInstance().level.registryAccess();
+                enchants = regs.registryOrThrow(Registries.ENCHANTMENT)::getHolderOrThrow;
+            }
+        }
 
         List<ItemStack> fakeEmiItems = new ArrayList<>();
         fakeEmiItems.add(new ItemStack(Items.WHITE_DYE));
@@ -515,19 +524,19 @@ public class VendorScenes {
         fakeEmiItems.add(new ItemStack(Items.RED_DYE));
         fakeEmiItems.add(new ItemStack(Items.ORANGE_DYE));
         fakeEmiItems.add(new ItemStack(Items.YELLOW_DYE));
-        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.MENDING), 1));
+        fakeEmiItems.add(enchantedBook(enchants.apply(Enchantments.MENDING), 1));
 
         fakeEmiItems.add(new ItemStack(Items.LIME_DYE));
         fakeEmiItems.add(new ItemStack(Items.GREEN_DYE));
         fakeEmiItems.add(new ItemStack(Items.CYAN_DYE));
         fakeEmiItems.add(new ItemStack(Items.LIGHT_BLUE_DYE));
-        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.UNBREAKING), 3));
+        fakeEmiItems.add(enchantedBook(enchants.apply(Enchantments.UNBREAKING), 3));
 
         fakeEmiItems.add(new ItemStack(Items.BLUE_DYE));
         fakeEmiItems.add(new ItemStack(Items.PURPLE_DYE));
         fakeEmiItems.add(new ItemStack(Items.MAGENTA_DYE));
         fakeEmiItems.add(new ItemStack(Items.PINK_DYE));
-        fakeEmiItems.add(enchantedBook(enchants.getHolderOrThrow(Enchantments.PROTECTION), 4));
+        fakeEmiItems.add(enchantedBook(enchants.apply(Enchantments.PROTECTION), 4));
 
         var menu = scenex.showContainerMenu(
                 5,
@@ -648,6 +657,8 @@ public class VendorScenes {
     }
 
     private static ItemStack enchantedBook(Holder<Enchantment> enchantment, int level) {
+        if (Utils.isDataGen())
+            return new ItemStack(Items.ENCHANTED_BOOK);
         return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
     }
 

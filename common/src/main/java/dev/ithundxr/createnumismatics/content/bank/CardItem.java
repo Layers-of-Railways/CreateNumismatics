@@ -65,6 +65,10 @@ public class CardItem extends Item {
         return itemStack.has(NumismaticsDataComponents.CARD_ACCOUNT_ID);
     }
 
+    public static boolean isAnyCardBound(ItemStack itemStack) {
+        return CardItem.isBound(itemStack) || AuthorizedCardItem.isBound(itemStack);
+    }
+
     @Nullable
     public static String getPlayerName(ItemStack itemStack) {
         if (!isBound(itemStack))

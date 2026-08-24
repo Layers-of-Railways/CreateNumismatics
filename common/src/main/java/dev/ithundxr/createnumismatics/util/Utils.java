@@ -22,7 +22,6 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.multiloader.Env;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +29,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -37,6 +37,20 @@ public class Utils {
     @ExpectPlatform
     public static boolean isDevEnv() {
         throw new AssertionError();
+    }
+
+    public static boolean isDataGen() {
+        return isEnvVarTrue("DATAGEN");
+    }
+
+    public static boolean isEnvVarTrue(String name) {
+        try {
+            String result = System.getenv(name);
+            return result != null && result.toLowerCase(Locale.ROOT).equals("true");
+        } catch (SecurityException e) {
+            Numismatics.LOGGER.warn("Caught a security exception while trying to access environment variable `{}`.", name);
+            return false;
+        }
     }
 
     public static boolean testClientPlayerOrElse(Predicate<Player> predicate, boolean defaultValue) {

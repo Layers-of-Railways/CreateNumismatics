@@ -52,7 +52,7 @@ public class AnyCardSlot extends Slot {
 
         @Override
         public boolean mayPlace(@NotNull ItemStack stack) {
-            return super.mayPlace(stack) && !CardItem.isBound(stack);
+            return super.mayPlace(stack) && !CardItem.isAnyCardBound(stack);
         }
     }
 
@@ -63,7 +63,7 @@ public class AnyCardSlot extends Slot {
 
         @Override
         public boolean mayPlace(@NotNull ItemStack stack) {
-            return super.mayPlace(stack) && CardItem.isBound(stack);
+            return super.mayPlace(stack) && CardItem.isAnyCardBound(stack);
         }
     }
 }
