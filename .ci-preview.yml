@@ -9,7 +9,7 @@ buttons:
   fabric:
     style: link
     url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-fabric-${minecraft_version}/${mod_version}+fabric-mc${minecraft_version}-build.${build_number}/CreateNumismatics-fabric-${minecraft_version}-${mod_version}+fabric-mc${minecraft_version}-build.${build_number}.jar
-    label: Fabric
+    label: ~~Fabric~~ (Disabled)
   neoforge:
     style: link
     url: https://maven.ithundxr.dev/snapshots/dev/ithundxr/createnumismatics/CreateNumismatics-neoforge-${minecraft_version}/${mod_version}+neoforge-mc${minecraft_version}-build.${build_number}/CreateNumismatics-neoforge-${minecraft_version}-${mod_version}+neoforge-mc${minecraft_version}-build.${build_number}.jar
