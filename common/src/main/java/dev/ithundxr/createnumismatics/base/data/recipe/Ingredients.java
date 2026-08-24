@@ -3,7 +3,9 @@ package dev.ithundxr.createnumismatics.base.data.recipe;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
+import com.simibubi.create.foundation.data.recipe.CommonMetal;
 import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,15 +27,15 @@ public class Ingredients {
 	}
 
 	public static TagKey<Item> ironNugget() {
-		return conventionalTag("nuggets/iron");
+		return CommonMetal.IRON.nuggets;
 	}
 
 	public static TagKey<Item> ironIngot() {
-		return conventionalTag("ingots/iron");
+		return CommonMetal.IRON.ingots;
 	}
 
 	public static TagKey<Item> zincNugget() {
-		return conventionalTag("nuggets/zinc");
+		return CommonMetal.ZINC.nuggets;
 	}
 
 	public static ItemLike girder() {
@@ -45,7 +47,7 @@ public class Ingredients {
 	}
 
 	public static TagKey<Item> ironSheet() {
-		return conventionalTag("plates/iron");
+		return CommonMetal.IRON.plates;
 	}
 
 	public static TagKey<Item> dye(@NotNull DyeColor color) {
@@ -93,11 +95,11 @@ public class Ingredients {
 	}
 
 	public static TagKey<Item> copperIngot() {
-		return conventionalTag("ingots/copper");
+		return CommonMetal.COPPER.ingots;
 	}
 
 	public static TagKey<Item> brassNugget() {
-		return conventionalTag("nuggets/brass");
+		return CommonMetal.BRASS.nuggets;
 	}
 
 	public static ItemLike phantomMembrane() {
@@ -128,7 +130,19 @@ public class Ingredients {
 		return AllPaletteBlocks.FRAMED_GLASS;
 	}
 
+	public static ItemLike vendor() {
+		return NumismaticsBlocks.VENDOR;
+	}
+
+	public static ItemLike placard() {
+		return AllBlocks.PLACARD;
+	}
+
+	public static TagKey<Item> goldSheet() {
+		return CommonMetal.GOLD.plates;
+	}
+
 	private static TagKey<Item> conventionalTag(String name) {
-		return new TagKey<>(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", name));
+		return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", name));
 	}
 }

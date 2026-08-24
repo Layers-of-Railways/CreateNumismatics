@@ -1,6 +1,5 @@
 package dev.ithundxr.createnumismatics.neoforge;
 
-import com.simibubi.create.Create;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.NumismaticsData;
 import net.minecraft.core.HolderLookup.Provider;

@@ -9,6 +9,7 @@ public class CommonTags {
 	public static class Blocks {
 		public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = tag("relocation_not_supported");
 
+		@SuppressWarnings("SameParameterValue")
 		private static TagKey<Block> tag(String name) {
 			return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", name));
 		}
