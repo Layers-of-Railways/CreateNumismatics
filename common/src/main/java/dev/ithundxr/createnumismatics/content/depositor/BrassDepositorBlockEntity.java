@@ -53,10 +53,7 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     private SliderStylePriceBehaviour price;
     AbstractComputerBehaviour computerBehaviour;
-    protected final DiscreteCoinBag.SidedStorageParams storageParams = new DiscreteCoinBag.SidedStorageParams(
-        () -> false,
-        () -> price.getTotalPrice() == 0
-    );
+    protected DiscreteCoinBag.SidedStorageParams storageParams = null;
     protected @Nullable Object $discreteCoinBag$cache = null;
 
     public BrassDepositorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -72,6 +69,11 @@ public class BrassDepositorBlockEntity extends AbstractDepositorBlockEntity impl
 
     @Override
     public DiscreteCoinBag.@NotNull SidedStorageParams $discreteCoinBag$getParams() {
+        if (storageParams == null)
+            storageParams = new DiscreteCoinBag.SidedStorageParams(
+                () -> false,
+                () -> price.getTotalPrice() == 0
+            );
         return storageParams;
     }
 
