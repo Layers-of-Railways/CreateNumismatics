@@ -3,20 +3,20 @@
   "category": "misc",
   "key": {
     "/": {
-      "tag": "numismatics:internal/dyes/red_dyes"
+      "tag": "c:dyes/red"
     },
     "@": {
       "item": "create:precision_mechanism"
     },
     "_": {
-      "tag": "numismatics:internal/plates/gold_plates"
+      "tag": "c:plates/gold"
     }
   },
   "pattern": [
     "@_/"
   ],
   "result": {
-    "item": "numismatics:red_authorized_card"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "numismatics:red_authorized_card"
+  }
 }

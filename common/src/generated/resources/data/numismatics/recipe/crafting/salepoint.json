@@ -21,7 +21,7 @@
     " @ "
   ],
   "result": {
-    "item": "numismatics:salepoint"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "numismatics:salepoint"
+  }
 }

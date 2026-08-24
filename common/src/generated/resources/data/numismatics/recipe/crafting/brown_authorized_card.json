@@ -3,20 +3,20 @@
   "category": "misc",
   "key": {
     "/": {
-      "tag": "numismatics:internal/dyes/brown_dyes"
+      "tag": "c:dyes/brown"
     },
     "@": {
       "item": "create:precision_mechanism"
     },
     "_": {
-      "tag": "numismatics:internal/plates/gold_plates"
+      "tag": "c:plates/gold"
     }
   },
   "pattern": [
     "@_/"
   ],
   "result": {
-    "item": "numismatics:brown_authorized_card"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "numismatics:brown_authorized_card"
+  }
 }
