@@ -66,7 +66,11 @@ dependencies {
     modImplementation("net.createmod.ponder:ponder-neoforge:${"ponder_version"()}+mc${"minecraft_version"()}")
     modImplementation("com.tterrag.registrate:Registrate:${"registrate_neoforge_version"()}")
     modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${"minecraft_version"()}:${"flywheel_version"()}")
-    modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
+    //modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
+    // arch loom remapping destroys the @Mixin(targets = "...") of dev.engine_room.flywheel.backend.mixin.light.SkyDataLayerStorageMapAccessor
+    // because it replaces dots with slashes, ignoring the fact that the last separator should be a `$`
+    // see https://github.com/Engine-Room/Flywheel/issues/336
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${"minecraft_version"()}:${"flywheel_version"()}")
 
     modLocalRuntime("dev.emi:emi-neoforge:${"emi_version"()}")
 
