@@ -30,9 +30,9 @@ import net.createmod.catnip.data.Couple;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,10 +45,10 @@ import java.util.List;
 public class MixinShoppingListItem {
     @Inject(method = "appendHoverText", at = @At("HEAD"))
     private void appendCardHintPre(
-        ItemStack pStack,
-        Level pLevel,
-        List<Component> pTooltipComponents,
-        TooltipFlag pIsAdvanced,
+        ItemStack stack,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag,
         CallbackInfo ci,
         @Share("coinCost") LocalBooleanRef coinCost
     ) {
@@ -77,17 +77,17 @@ public class MixinShoppingListItem {
 
     @Inject(method = "appendHoverText", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/utility/CreateLang;translate(Ljava/lang/String;[Ljava/lang/Object;)Lnet/createmod/catnip/lang/LangBuilder;", ordinal = 3))
     private void appendCardHint(
-        ItemStack pStack,
-        Level pLevel,
-        List<Component> pTooltipComponents,
-        TooltipFlag pIsAdvanced,
+        ItemStack stack,
+        Item.TooltipContext context,
+        List<Component> tooltipComponents,
+        TooltipFlag tooltipFlag,
         CallbackInfo ci,
         @Share("coinCost") LocalBooleanRef coinCost
     ) {
         if (coinCost.get()) {
             CreateLang.translate("table_cloth.hand_to_shop_keeper.numismatics.card")
                 .style(ChatFormatting.GRAY)
-                .addTo(pTooltipComponents);
+                .addTo(tooltipComponents);
         }
     }
 }

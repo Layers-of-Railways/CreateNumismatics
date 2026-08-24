@@ -44,11 +44,11 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
         return FluidStack.OPTIONAL_CODEC.xmap(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
     }
 
-    private static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeStreamCodec() {
+    public static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeStreamCodec() {
         return FluidStack.STREAM_CODEC.map(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
     }
 
-    private static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeOptionalStreamCodec() {
+    public static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeOptionalStreamCodec() {
         return FluidStack.OPTIONAL_STREAM_CODEC.map(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
     }
 

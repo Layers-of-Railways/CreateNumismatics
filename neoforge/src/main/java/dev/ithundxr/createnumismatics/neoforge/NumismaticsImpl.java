@@ -26,6 +26,7 @@ import dev.ithundxr.createnumismatics.registry.NumismaticsTriggers;
 import dev.ithundxr.createnumismatics.registry.commands.arguments.EnumArgument;
 import dev.ithundxr.createnumismatics.registry.neoforge.NumismaticsCreativeModeTabsImpl;
 import dev.ithundxr.createnumismatics.registry.neoforge.NumismaticsDataComponentsImpl;
+import dev.ithundxr.createnumismatics.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands.CommandSelection;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
@@ -40,7 +41,12 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -51,6 +57,7 @@ public class NumismaticsImpl {
     static IEventBus modEventBus;
 
     public NumismaticsImpl(IEventBus modEventBus, ModContainer modContainer) {
+        restoreLoggers();
         NumismaticsImpl.modEventBus = modEventBus;
         NumismaticsCreativeModeTabsImpl.register(modEventBus);
         NumismaticsDataComponentsImpl.register(modEventBus);
@@ -92,5 +99,21 @@ public class NumismaticsImpl {
         CommandSelection selection = event.getCommandSelection();
         boolean dedicated = selection == CommandSelection.ALL || selection == CommandSelection.DEDICATED;
         commandConsumers.forEach(consumer -> consumer.accept(event.getDispatcher(), dedicated));
+    }
+
+    private static void restoreLoggers() {
+        if (Utils.isDevEnv()) {
+            // restore our logging config, since forge likes to nuke it for fun
+            for (String prop : new String[] {"log4j.configurationFile", "log4j2.configurationFile"}) {
+                String file = System.getProperty(prop);
+                if (file != null) {
+                    Configurator.reconfigure(ConfigurationFactory.getInstance().getConfiguration(
+                        LoggerContext.getContext(),
+                        ConfigurationSource.fromUri(URI.create(file))
+                    ));
+                    break;
+                }
+            }
+        }
     }
 }

@@ -41,6 +41,15 @@ loom {
             }
         }
     }
+
+    neoForge {
+        log4jConfigs.setFrom(project(":neoforge").file("log4j.xml"))
+
+        runs.configureEach {
+            // force proper color logs
+            vmArg("-Dterminal.jline=true")
+        }
+    }
 }
 
 tasks.named<RemapJarTask>("remapJar") {
@@ -84,10 +93,15 @@ dependencies {
     modCompileOnly("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge-api:${"cc_version"()}")
     if ("enable_cc"().toBoolean()) {
         modLocalRuntime("cc.tweaked:cc-tweaked-${"minecraft_version"()}-forge:${"cc_version"()}")
+        forgeRuntimeLibrary("cc.tweaked:cobalt:0.9.9")
+        forgeRuntimeLibrary("com.jcraft:jzlib:1.1.3")
+        forgeRuntimeLibrary("io.netty:netty-codec-http:4.1.97.Final")
+        forgeRuntimeLibrary("io.netty:netty-codec-socks:4.1.97.Final")
+        forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.97.Final")
     }
 
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
-    implementation(include("io.github.llamalad7:mixinextras-fabric:${"mixin_extras_version"()}")!!)!!
+    implementation(include("io.github.llamalad7:mixinextras-neoforge:${"mixin_extras_version"()}")!!)!!
 }
 
 operator fun String.invoke(): String {
