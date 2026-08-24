@@ -35,11 +35,11 @@ import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePric
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
@@ -180,9 +180,9 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+    public void renderTransparentBackground(@NotNull GuiGraphics guiGraphics) {
         if (!isVirtual())
-            super.renderBackground(guiGraphics);
+            super.renderTransparentBackground(guiGraphics);
     }
 
     @Override
@@ -231,15 +231,15 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         ISalepointState<?> salepointState = getSalepointState();
         if (this.hoveredSlot != null && this.hoveredSlot.hasItem()
             && this.hoveredSlot.index == SalepointConfigMenu.FILTER_SLOT_INDEX && salepointState != null
             && salepointState.configGuiHasFilterSlot()) {
-            NumismaticsPackets.PACKETS.send(new ScrollSlotPacket(this.hoveredSlot.index, delta, AllKeys.shiftDown()));
+            CatnipServices.NETWORK.sendToServer(new ScrollSlotPacket(this.hoveredSlot.index, scrollY, AllKeys.shiftDown()));
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -288,7 +288,7 @@ public class SalepointConfigScreen extends AbstractSimiContainerScreen<Salepoint
 
     @Override
     public void removed() {
-        NumismaticsPackets.PACKETS.send(new SliderStylePriceConfigurationPacket(menu.contentHolder));
+        CatnipServices.NETWORK.sendToServer(new SliderStylePriceConfigurationPacket(menu.contentHolder));
         super.removed();
     }
 }

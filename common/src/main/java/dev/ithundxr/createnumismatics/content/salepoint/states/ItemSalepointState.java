@@ -30,6 +30,7 @@ import net.createmod.catnip.lang.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,6 +43,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -295,7 +297,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
                 if (other.isEmpty())
                     continue;
 
-                if (stack.isEmpty() || ItemStack.isSameItemSameTags(stack, other)) {
+                if (stack.isEmpty() || ItemStack.isSameItemSameComponents(stack, other)) {
                     // do merging
                     int space = other.getMaxStackSize() - stack.getCount();
                     int transfer = Math.min(space, other.getCount());
@@ -311,7 +313,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
     }
 
     @Override
-    public CompoundTag save() {
+    public CompoundTag save(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", getType().getId());
         tag.putUUID("UUID", uuid);
@@ -322,20 +324,20 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
             ItemStack stack = buffer.getItem(i);
             if (!stack.isEmpty()) {
                 CompoundTag stackTag = new CompoundTag();
-                stack.save(stackTag);
+                stack.save(registries, stackTag);
                 bufferTag.add(stackTag);
             }
         }
         tag.put("Buffer", bufferTag);
 
         if (!filter.isEmpty())
-            tag.put("Filter", filter.save(new CompoundTag()));
+            tag.put("Filter", filter.save(registries));
 
         return tag;
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(CompoundTag tag, HolderLookup.Provider registries) {
         uuid = tag.getUUID("UUID");
 
         // load buffer
@@ -343,11 +345,11 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
         ListTag bufferTag = tag.getList("Buffer", Tag.TAG_COMPOUND);
         for (int i = 0; i < bufferTag.size(); i++) {
             CompoundTag stackTag = bufferTag.getCompound(i);
-            buffer.setItem(i, ItemStack.of(stackTag));
+            buffer.setItem(i, ItemStack.parseOptional(registries, stackTag));
         }
 
         if (tag.contains("Filter", Tag.TAG_COMPOUND))
-            filter = ItemStack.of(tag.getCompound("Filter"));
+            filter = ItemStack.parseOptional(registries, tag.getCompound("Filter"));
         else
             filter = ItemStack.EMPTY;
     }
@@ -475,7 +477,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
     }
 
     @Override
-    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos, Item.TooltipContext ctx) {
         if (filter.isEmpty()) {
             Lang.builder(Numismatics.MOD_ID)
                 .add(Component.translatable("gui.numismatics.salepoint.fluid_empty"))
@@ -484,7 +486,7 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
         }
 
         boolean isFirst = true;
-        for (Component component : filter.getTooltipLines(null, TooltipFlag.ADVANCED)) {
+        for (Component component : filter.getTooltipLines(ctx, null, TooltipFlag.ADVANCED)) {
             MutableComponent mutable = component.copy();
             if (isFirst) {
                 isFirst = false;

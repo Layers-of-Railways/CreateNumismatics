@@ -83,9 +83,9 @@ public class TrustListScreen extends AbstractSimiContainerScreen<TrustListMenu> 
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+    public void renderTransparentBackground(@NotNull GuiGraphics guiGraphics) {
         if (!isVirtual())
-            super.renderBackground(guiGraphics);
+            super.renderTransparentBackground(guiGraphics);
     }
 
     @Override

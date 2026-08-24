@@ -10,6 +10,7 @@
     "client.AccessorAbstractContainerMenu",
     "client.AccessorAbstractContainerScreen",
     "client.AccessorInputWindowElement",
+    "client.AccessorScreen",
     "client.MixinAllCreatePonderScenes",
     "client.MixinBitmapProvider$Definition",
     "client.MixinBogeyBlockEntityRenderer",

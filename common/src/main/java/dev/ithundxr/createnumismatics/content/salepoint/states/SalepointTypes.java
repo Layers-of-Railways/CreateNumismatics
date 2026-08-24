@@ -20,6 +20,7 @@ package dev.ithundxr.createnumismatics.content.salepoint.states;
 
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
@@ -57,7 +58,7 @@ public enum SalepointTypes {
         return state;
     }
 
-    public static @Nullable ISalepointState<?> load(@NotNull CompoundTag tag) {
+    public static @Nullable ISalepointState<?> load(@NotNull CompoundTag tag, HolderLookup.Provider registries) {
         if (!tag.contains("id", CompoundTag.TAG_STRING))
             return null;
 
@@ -65,7 +66,7 @@ public enum SalepointTypes {
         for (SalepointTypes type : values()) {
             if (type.name().equals(id)) {
                 ISalepointState<?> state = type.create();
-                state.load(tag);
+                state.load(tag, registries);
                 return state;
             }
         }

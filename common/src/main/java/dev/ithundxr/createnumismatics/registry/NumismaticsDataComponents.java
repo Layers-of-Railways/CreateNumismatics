@@ -3,6 +3,7 @@ package dev.ithundxr.createnumismatics.registry;
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponentType.Builder;
@@ -25,6 +26,11 @@ public class NumismaticsDataComponents {
 	public static final DataComponentType<UUID> CARD_ACCOUNT_ID = register(
 		"card_account_id",
 		b -> b.persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC)
+	);
+
+	public static final DataComponentType<BlockPos> SALEPOINT_SELECTED_POS = register(
+		"salepoint_selected_pos",
+		b -> b.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC)
 	);
 
 	private static <T> DataComponentType<T> register(String name, UnaryOperator<Builder<T>> builder) {

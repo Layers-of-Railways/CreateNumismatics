@@ -22,12 +22,14 @@ import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
+import dev.ithundxr.createnumismatics.registry.NumismaticsDataComponents;
 import net.createmod.catnip.outliner.Outliner;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -35,6 +37,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -60,11 +63,11 @@ public class SalepointBlockItem extends BlockItem {
         if (player == null)
             return InteractionResult.FAIL;
 
-        if (player.isShiftKeyDown() && stack.hasTag()) {
+        if (player.isShiftKeyDown() && stack.has(NumismaticsDataComponents.SALEPOINT_SELECTED_POS)) {
             if (level.isClientSide)
                 return InteractionResult.SUCCESS;
             player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.clear"), true);
-            stack.setTag(null);
+            stack.remove(NumismaticsDataComponents.SALEPOINT_SELECTED_POS);
             AllSoundEvents.CONTROLLER_CLICK.play(level, null, pos, 1, .5f);
             return InteractionResult.SUCCESS;
         }
@@ -74,25 +77,21 @@ public class SalepointBlockItem extends BlockItem {
             if (level.isClientSide)
                 return InteractionResult.SUCCESS;
 
-            CompoundTag stackTag = stack.getOrCreateTag();
-            stackTag.put("SelectedPos", NbtUtils.writeBlockPos(pos));
+            stack.set(NumismaticsDataComponents.SALEPOINT_SELECTED_POS, pos);
             player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.set"), true);
-            stack.setTag(stackTag);
             AllSoundEvents.CONTROLLER_CLICK.play(level, null, pos, 1, 1);
             return InteractionResult.SUCCESS;
         }
 
-        if (!stack.hasTag()) {
+        BlockPos selectedPos = stack.get(NumismaticsDataComponents.SALEPOINT_SELECTED_POS);
+        if (selectedPos == null) {
             player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.missing")
                 .withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
 
-        CompoundTag tag = stack.getTag();
         CompoundTag teTag = new CompoundTag();
 
-        //noinspection DataFlowIssue - tag can't be null here, due to `hasTag` check
-        BlockPos selectedPos = NbtUtils.readBlockPos(tag.getCompound("SelectedPos"));
         BlockPos placedPos = pos.relative(context.getClickedFace(), state.canBeReplaced() ? 0 : 1);
 
         if (!selectedPos.closerThan(placedPos, 16)) {
@@ -126,9 +125,12 @@ public class SalepointBlockItem extends BlockItem {
             teTag.put("SalepointState", salepointStateTag);
         }
 
-        tag.put("BlockEntityTag", teTag);
+        stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(teTag));
+        stack.remove(NumismaticsDataComponents.SALEPOINT_SELECTED_POS);
 
         InteractionResult useOn = super.useOn(context);
+        stack.remove(DataComponents.BLOCK_ENTITY_DATA);
+
         if (level.isClientSide || useOn == InteractionResult.FAIL) {
             if (salepointState != null) {
                 selectedBehaviour.unbindSalepoint(salepointState);
@@ -138,7 +140,7 @@ public class SalepointBlockItem extends BlockItem {
 
         ItemStack itemInHand = player.getItemInHand(context.getHand());
         if (!itemInHand.isEmpty())
-            itemInHand.setTag(null);
+            itemInHand.remove(NumismaticsDataComponents.SALEPOINT_SELECTED_POS);
         player.displayClientMessage(Component.translatable("block.numismatics.salepoint.tooltip.success")
             .withStyle(ChatFormatting.GREEN), true);
 
@@ -158,13 +160,10 @@ public class SalepointBlockItem extends BlockItem {
         ItemStack heldItemMainhand = player.getMainHandItem();
         if (!(heldItemMainhand.getItem() instanceof SalepointBlockItem))
             return;
-        if (!heldItemMainhand.hasTag())
-            return;
-        CompoundTag stackTag = heldItemMainhand.getOrCreateTag();
-        if (!stackTag.contains("SelectedPos"))
-            return;
 
-        BlockPos selectedPos = NbtUtils.readBlockPos(stackTag.getCompound("SelectedPos"));
+        BlockPos selectedPos = heldItemMainhand.get(NumismaticsDataComponents.SALEPOINT_SELECTED_POS);
+        if (selectedPos == null)
+            return;
 
         if (!selectedPos.equals(lastShownPos)) {
             lastShownAABB = getBounds(selectedPos);

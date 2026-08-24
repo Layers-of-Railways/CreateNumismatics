@@ -25,9 +25,9 @@ import dev.ithundxr.createnumismatics.base.client.rendering.IItemApplicableWidge
 import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
 import dev.ithundxr.createnumismatics.multiloader.fluid.FluidUnits;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointFluidFilterPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.platform.CatnipServices;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -48,12 +48,12 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         MultiloaderFluidStack filter = state.getFilter();
         if (filter.isEmpty())
             return false;
 
-        int offset = delta > 0 ? 1 : -1;
+        int offset = scrollY > 0 ? 1 : -1;
 
         if (AllKeys.shiftDown() && AllKeys.ctrlDown())
             //noinspection DataFlowIssue
@@ -72,7 +72,7 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
         long max = FluidSalepointState.getFilterCapacity();
         long amount = Math.max(min, Math.min(oldAmount + offset, max));
         if (oldAmount != amount) {
-            NumismaticsPackets.PACKETS.send(new SalepointFluidFilterPacket(filter.copy().setAmount(amount)));
+            CatnipServices.NETWORK.sendToServer(new SalepointFluidFilterPacket(filter.copy().setAmount(amount)));
             if (!soundPlayed) {
                 Minecraft.getInstance()
                     .getSoundManager()
@@ -96,7 +96,7 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
     public void onItemApplied(ItemStack stack) {
         MultiloaderFluidStack fluidStack = getFluidFrom(stack);
         if (fluidStack != null) {
-            NumismaticsPackets.PACKETS.send(new SalepointFluidFilterPacket(fluidStack));
+            CatnipServices.NETWORK.sendToServer(new SalepointFluidFilterPacket(fluidStack));
             this.playDownSound(Minecraft.getInstance().getSoundManager());
         }
     }

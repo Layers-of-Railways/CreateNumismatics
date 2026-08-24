@@ -23,7 +23,11 @@ import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.gui.widget.*;
+import com.simibubi.create.foundation.gui.widget.IconButton;
+import com.simibubi.create.foundation.gui.widget.Indicator;
+import com.simibubi.create.foundation.gui.widget.Label;
+import com.simibubi.create.foundation.gui.widget.ScrollInput;
+import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
@@ -33,7 +37,6 @@ import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity.Mode;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.ScrollSlotPacket;
 import dev.ithundxr.createnumismatics.registry.packets.VendorConfigurationPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -215,9 +218,9 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+    public void renderTransparentBackground(@NotNull GuiGraphics guiGraphics) {
         if (!isVirtual())
-            super.renderBackground(guiGraphics);
+            super.renderTransparentBackground(guiGraphics);
     }
 
     @Override
@@ -269,19 +272,23 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.hoveredSlot != null && this.hoveredSlot.hasItem() && this.hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
-            NumismaticsPackets.PACKETS.send(new ScrollSlotPacket(this.hoveredSlot.index, delta, AllKeys.shiftDown()));
+            CatnipServices.NETWORK.sendToServer(new ScrollSlotPacket(this.hoveredSlot.index, scrollY, AllKeys.shiftDown()));
             return true;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
     public void removed() {
         CatnipServices.NETWORK.sendToServer(new SliderStylePriceConfigurationPacket(menu.contentHolder));
-        CatnipServices.NETWORK.sendToServer(new VendorConfigurationPacket(menu.contentHolder.getBlockPos(), menu.contentHolder.getMode()));
+        CatnipServices.NETWORK.sendToServer(new VendorConfigurationPacket(
+            menu.contentHolder.getBlockPos(),
+            menu.contentHolder.getMode(),
+            menu.contentHolder.isAutomatedExtractionEnabled()
+        ));
         super.removed();
     }
 }

@@ -18,12 +18,12 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import com.mojang.serialization.Codec;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlockEntity.Mode;
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -31,7 +31,7 @@ public class VendorConfigurationPacket extends NumismaticsBlockEntityConfigurati
     public static final StreamCodec<ByteBuf, VendorConfigurationPacket> STREAM_CODEC = StreamCodec.composite(
         BlockPos.STREAM_CODEC, i -> i.pos,
         Mode.STREAM_CODEC, i -> i.mode,
-        Codec.BOOL, i -> i.enableAutomatedExtraction,
+        ByteBufCodecs.BOOL, i -> i.enableAutomatedExtraction,
         VendorConfigurationPacket::new
     );
 

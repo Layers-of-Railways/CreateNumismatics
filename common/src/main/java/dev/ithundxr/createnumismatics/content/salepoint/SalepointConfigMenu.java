@@ -30,7 +30,7 @@ import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -49,7 +49,7 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
     public static final int PLAYER_INV_END_INDEX = PLAYER_INV_START_INDEX + 36; // exclusive
     public static final int FILTER_SLOT_INDEX = PLAYER_INV_END_INDEX; // may not always actually exist
 
-    public SalepointConfigMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public SalepointConfigMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -59,11 +59,11 @@ public class SalepointConfigMenu extends MenuBase<SalepointBlockEntity> implemen
 
     @Override
     @SuppressWarnings("DataFlowIssue")
-    protected SalepointBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    protected SalepointBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof SalepointBlockEntity salepointBE) {
-            salepointBE.readClient(extraData.readNbt());
+            salepointBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return salepointBE;
         }
         return null;

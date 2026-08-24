@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint;
 
-import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
@@ -33,6 +32,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -78,21 +78,18 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos,
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos,
                                         @NotNull CollisionContext context) {
         return NumismaticsShapes.SALEPOINT.get(state.getValue(HORIZONTAL_FACING));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(HORIZONTAL_FACING, rotation.rotate(state.getValue(HORIZONTAL_FACING)));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(HORIZONTAL_FACING)));
     }
 
@@ -118,8 +115,7 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void tick(BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void tick(BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         if (state.getValue(POWERED)) {
             level.setBlock(pos, state.setValue(POWERED, false), 2);
         } else {
@@ -143,34 +139,29 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isSignalSource(@NotNull BlockState state) {
+    protected boolean isSignalSource(@NotNull BlockState state) {
         return true;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getDirectSignal(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    protected int getDirectSignal(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
         return state.getSignal(level, pos, direction);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getSignal(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    protected int getSignal(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Direction direction) {
         if (direction != state.getValue(HORIZONTAL_FACING))
             return 0;
         return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
+    protected boolean hasAnalogOutputSignal(@NotNull BlockState state) {
         return true;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof SalepointBlockEntity be)
             return be.getTargetAnalogOutput();
         return 0;
@@ -190,8 +181,7 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void onPlace(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    protected void onPlace(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState oldState, boolean movedByPiston) {
         if (!state.is(oldState.getBlock())) {
             if (!level.isClientSide() && state.getValue(POWERED) && !level.getBlockTicks().hasScheduledTick(pos, this)) {
                 BlockState blockState = state.setValue(POWERED, false);
@@ -202,8 +192,7 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
+    protected void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof SalepointBlockEntity sbe) {
@@ -228,14 +217,17 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-                                          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)))
-            return InteractionResult.PASS;
-
+    protected @NotNull ItemInteractionResult useItemOn(
+        @NotNull ItemStack stack,
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull InteractionHand hand,
+        @NotNull BlockHitResult hitResult
+    ) {
         if (level.isClientSide)
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
 
         boolean crouching = player.isShiftKeyDown();
         if (crouching) {
@@ -244,19 +236,18 @@ public class SalepointBlock extends Block implements IBE<SalepointBlockEntity>, 
                 withBlockEntityDo(level, pos,
                     be -> Utils.openScreen((ServerPlayer) player, be.configMenuProvider, be::sendToMenu));
 
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
 
         withBlockEntityDo(level, pos,
             be -> Utils.openScreen((ServerPlayer) player, be.purchaseMenuProvider, be::sendToMenu));
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter level, @NotNull BlockPos pos) {
+    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         if (!isTrusted(player, level, pos)) {
             return 0.0f;
         }

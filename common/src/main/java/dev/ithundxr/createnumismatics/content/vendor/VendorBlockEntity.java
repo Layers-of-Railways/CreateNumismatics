@@ -20,14 +20,18 @@ package dev.ithundxr.createnumismatics.content.vendor;
 
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
+import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
-import dev.ithundxr.createnumismatics.content.backend.*;
+import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.Coin;
+import dev.ithundxr.createnumismatics.content.backend.IDeductable;
+import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
+import dev.ithundxr.createnumismatics.content.backend.Trusted;
 import dev.ithundxr.createnumismatics.content.backend.behaviours.SliderStylePriceBehaviour;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListContainer;
 import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder;
@@ -37,7 +41,10 @@ import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.Authorizat
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.CoinItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
-import dev.ithundxr.createnumismatics.registry.*;
+import dev.ithundxr.createnumismatics.registry.NumismaticsAdvancements;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
+import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
+import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.ItemUtil;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -61,7 +68,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -70,14 +76,19 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.*;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -85,7 +96,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
     private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
@@ -184,12 +199,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
-    public void writeSafe(CompoundTag tag) {
-        super.writeSafe(tag);
+    public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
+        super.writeSafe(tag, registries);
 
         if (!getFilterItem().isEmpty()) {
             // safe (i.e. schematic load) NBT always gets a modern filter, even if this BE is legacy
-            tag.put("Filter", getFilterItem().save(new CompoundTag()));
+            tag.put("Filter", getFilterItem().save(registries));
         }
 
         tag.putInt("Mode", mode.ordinal());
@@ -934,7 +949,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     public void openTrustList() {
         if (level == null || !level.isClientSide)
             return;
-        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(getBlockPos()));
+        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(this));
     }
 
     public Mode getMode() {

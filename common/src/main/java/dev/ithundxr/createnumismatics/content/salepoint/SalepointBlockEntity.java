@@ -44,7 +44,6 @@ import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.states.SalepointTypes;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsMenuTypes;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
@@ -52,6 +51,8 @@ import dev.ithundxr.createnumismatics.util.UsernameUtils;
 import dev.ithundxr.createnumismatics.util.Utils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.lang.Lang;
+import net.createmod.catnip.nbt.NBTHelper;
+import net.createmod.catnip.platform.CatnipServices;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -75,6 +76,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -194,8 +196,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         if (owner != null)
             tag.putUUID("Owner", owner);
 
@@ -203,14 +205,14 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             tag.put("CoinInventory", inventory.save(new CompoundTag()));
 
         if (!cardContainer.getItem(0).isEmpty())
-            tag.put("Card", cardContainer.getItem(0).save(new CompoundTag()));
+            tag.put("Card", cardContainer.getItem(0).save(registries));
 
         if (!trustListContainer.isEmpty())
-            tag.put("TrustListInv", trustListContainer.save(new CompoundTag()));
+            tag.put("TrustListInv", trustListContainer.save(new CompoundTag(), registries));
 
         // this does have to be checked because the block place process includes serializing NBT, merging, and re-loading
         if (salepointState != null)
-            tag.put("SalepointState", salepointState.serialize());
+            tag.put("SalepointState", salepointState.serialize(registries));
 
         if (clientPacket) {
             if (salepointState != null && transaction != null) {
@@ -224,7 +226,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
             ListTag tooltip = new ListTag();
             for (Component component : clientsideTooltip) {
-                String json = Component.Serializer.toJson(component);
+                String json = Component.Serializer.toJson(component, registries);
                 CompoundTag compoundTag = new CompoundTag();
                 compoundTag.putString("Text", json);
                 tooltip.add(compoundTag);
@@ -243,7 +245,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             inventory.load(tag.getCompound("CoinInventory"));
 
         if (tag.contains("Card", Tag.TAG_COMPOUND)) {
-            ItemStack cardStack = ItemStack.of(tag.getCompound("Card"));
+            ItemStack cardStack = ItemStack.parseOptional(registries, tag.getCompound("Card"));
             cardContainer.setItem(0, cardStack);
         } else {
             cardContainer.setItem(0, ItemStack.EMPTY);
@@ -257,7 +259,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
 
         salepointState = null;
         if (tag.contains("SalepointState", Tag.TAG_COMPOUND))
-            salepointState = SalepointStateWrapper.deserialize(tag.getCompound("SalepointState"));
+            salepointState = SalepointStateWrapper.deserialize(tag.getCompound("SalepointState"), registries);
         onSalepointStateSet();
 
         if (clientPacket) {
@@ -272,7 +274,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
             for (Tag t : tooltip) {
                 CompoundTag compoundTag = (CompoundTag) t;
                 String json = compoundTag.getString("Text");
-                clientsideTooltip.add(Component.Serializer.fromJson(json));
+                clientsideTooltip.add(Component.Serializer.fromJson(json, registries));
             }
         }
     }
@@ -469,7 +471,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     public void openTrustList() {
         if (level == null || !level.isClientSide)
             return;
-        NumismaticsPackets.PACKETS.send(new OpenTrustListPacket<>(this));
+        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(this));
     }
 
     public int getTotalPrice() {
@@ -543,6 +545,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         if (state == null)
             return;
 
+        Item.TooltipContext ctx = Item.TooltipContext.of(getLevel());
+
         ReasonHolder reasonHolder = new ReasonHolder();
         if (!state.isValidForPurchase(getLevel(), getTargetedPos(), reasonHolder)) {
             Lang.builder(Numismatics.MOD_ID)
@@ -572,14 +576,14 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         MutableComponent balanceLabel = Component.translatable("gui.numismatics.salepoint.price",
             TextUtils.formatInt(reference), referenceCoin.getName(reference), spurs);
 
-        state.createTooltip(clientsideTooltip, getLevel(), getTargetedPos());
+        state.createTooltip(clientsideTooltip, getLevel(), getTargetedPos(), ctx);
 
         clientsideTooltip.add(CommonComponents.EMPTY);
 
         // For: ...
 
         Lang.builder(Numismatics.MOD_ID)
-            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color))
+            .add(balanceLabel.withStyle(Coin.closest(getTotalPrice()).rarity.color()))
             .forGoggles(clientsideTooltip);
 
         for (MutableComponent component : price.getCondensedPriceBreakdown()) {
@@ -634,19 +638,19 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     }
 
     protected record SalepointStateWrapper(@NotNull ISalepointState<?> state, @NotNull BlockPos offset) {
-        public CompoundTag serialize() {
+        public CompoundTag serialize(HolderLookup.Provider registries) {
             CompoundTag tag = new CompoundTag();
-            tag.put("state", state().save());
+            tag.put("state", state().save(registries));
             tag.put("pos", NbtUtils.writeBlockPos(offset()));
             return tag;
         }
 
-        public static @Nullable SalepointStateWrapper deserialize(CompoundTag tag) {
+        public static @Nullable SalepointStateWrapper deserialize(CompoundTag tag, HolderLookup.Provider registries) {
             if (!tag.contains("state", Tag.TAG_COMPOUND) || !tag.contains("pos", Tag.TAG_COMPOUND))
                 return null;
 
-            ISalepointState<?> state = SalepointTypes.load(tag.getCompound("state"));
-            BlockPos pos = NbtUtils.readBlockPos(tag.getCompound("pos"));
+            ISalepointState<?> state = SalepointTypes.load(tag.getCompound("state"), registries);
+            BlockPos pos = NBTHelper.readBlockPos(tag, "pos");
 
             if (state == null)
                 return null;

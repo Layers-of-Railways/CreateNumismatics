@@ -23,12 +23,12 @@ import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.bank.AnyCardSlot;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointCardPacket;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -63,7 +63,7 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
 
     private Container purchaseCardContainer;
 
-    public SalepointPurchaseMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public SalepointPurchaseMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -72,11 +72,12 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
     }
 
     @Override
-    protected SalepointBlockEntity createOnClient(FriendlyByteBuf extraData) {
+    @SuppressWarnings("DataFlowIssue")
+    protected SalepointBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         ClientLevel world = Minecraft.getInstance().level;
         BlockEntity blockEntity = world.getBlockEntity(extraData.readBlockPos());
         if (blockEntity instanceof SalepointBlockEntity salepointBE) {
-            salepointBE.readClient(extraData.readNbt());
+            salepointBE.readClient(extraData.readNbt(), extraData.registryAccess());
             return salepointBE;
         }
         return null;
@@ -116,7 +117,7 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
                     }
 
                     if (!Objects.equals(lastServerSentCardMessage, serverSentCardMessage) || lastServerSentMaxWithdrawal != serverSentMaxWithdrawal) {
-                        NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
+                        CatnipServices.NETWORK.sendToClient(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
                     }
                 }
             };
@@ -232,6 +233,6 @@ public class SalepointPurchaseMenu extends MenuBase<SalepointBlockEntity> {
         }
 
         if (!Objects.equals(lastServerSentStateMessage, serverSentStateMessage))
-            NumismaticsPackets.PACKETS.sendTo(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
+            CatnipServices.NETWORK.sendToClient(serverPlayer, new SalepointCardPacket(serverSentCardMessage, serverSentMaxWithdrawal, serverSentStateMessage));
     }
 }

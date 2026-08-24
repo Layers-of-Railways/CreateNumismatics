@@ -36,11 +36,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -139,7 +141,7 @@ public class EnergySalepointState implements ISalepointState<Energy>, Clearable 
     }
 
     @Override
-    public CompoundTag save() {
+    public CompoundTag save(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", getType().getId());
         tag.putUUID("UUID", uuid);
@@ -152,7 +154,7 @@ public class EnergySalepointState implements ISalepointState<Energy>, Clearable 
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(CompoundTag tag, HolderLookup.Provider registries) {
         uuid = tag.getUUID("UUID");
 
         buffer.setAmountNoUpdate(0);
@@ -281,7 +283,7 @@ public class EnergySalepointState implements ISalepointState<Energy>, Clearable 
     }
 
     @Override
-    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos, Item.TooltipContext ctx) {
         Lang.builder(Numismatics.MOD_ID)
             .add(Component.translatable("gui.numismatics.salepoint.energy"))
             .forGoggles(tooltip);

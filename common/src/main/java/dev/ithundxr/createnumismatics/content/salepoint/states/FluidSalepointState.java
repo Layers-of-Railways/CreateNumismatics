@@ -36,10 +36,12 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -122,34 +124,34 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public final CompoundTag save() {
+    public final CompoundTag save(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", getType().getId());
         tag.putUUID("UUID", uuid);
 
-        saveInternal(tag);
+        saveInternal(tag, registries);
 
         if (!filter.isEmpty())
-            tag.put("Filter", filter.saveOptional());
+            tag.put("Filter", filter.saveOptional(registries));
 
         return tag;
     }
 
-    protected abstract void saveInternal(CompoundTag tag);
+    protected abstract void saveInternal(CompoundTag tag, HolderLookup.Provider registries);
 
     @Override
-    public final void load(CompoundTag tag) {
+    public final void load(CompoundTag tag, HolderLookup.Provider registries) {
         uuid = tag.getUUID("UUID");
 
-        loadInternal(tag);
+        loadInternal(tag, registries);
 
         if (tag.contains("Filter", CompoundTag.TAG_COMPOUND))
-            filter = MultiloaderFluidStack.parseOptional(tag.getCompound("Filter"));
+            filter = MultiloaderFluidStack.parseOptional(registries, tag.getCompound("Filter"));
         else
             filter = MultiloaderFluidStack.EMPTY;
     }
 
-    protected abstract void loadInternal(CompoundTag tag);
+    protected abstract void loadInternal(CompoundTag tag, HolderLookup.Provider registries);
 
     @Override
     public final boolean isValidForPurchase(Level level, BlockPos targetedPos, ReasonHolder reasonHolder) {
@@ -262,7 +264,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
     }
 
     @Override
-    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos) {
+    public void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos, Item.TooltipContext ctx) {
         if (filter.isEmpty()) {
             Lang.builder(Numismatics.MOD_ID)
                 .add(Component.translatable("gui.numismatics.salepoint.fluid_empty"))

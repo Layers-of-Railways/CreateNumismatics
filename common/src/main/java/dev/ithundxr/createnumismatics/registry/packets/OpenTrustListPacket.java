@@ -23,7 +23,6 @@ import dev.ithundxr.createnumismatics.content.backend.trust_list.TrustListHolder
 import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -32,7 +31,11 @@ public class OpenTrustListPacket<BE extends SyncedBlockEntity & TrustListHolder>
 	public static final StreamCodec<ByteBuf, OpenTrustListPacket> STREAM_CODEC = BlockPos.STREAM_CODEC
             .map(OpenTrustListPacket::new, i -> i.pos);
 
-    public OpenTrustListPacket(BlockPos pos) {
+    public OpenTrustListPacket(BE be) {
+        this(be.getBlockPos());
+    }
+
+    private OpenTrustListPacket(BlockPos pos) {
         super(pos);
     }
 

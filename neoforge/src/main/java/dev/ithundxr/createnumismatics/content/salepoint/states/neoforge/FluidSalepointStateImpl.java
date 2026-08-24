@@ -26,6 +26,7 @@ import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import dev.ithundxr.createnumismatics.multiloader.fluid.neoforge.MultiloaderFluidStackImpl;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
@@ -70,18 +71,18 @@ public class FluidSalepointStateImpl extends FluidSalepointState {
     }
 
     @Override
-    protected void saveInternal(CompoundTag tag) {
+    protected void saveInternal(CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag bufferTag = new CompoundTag();
-        buffer.writeToNBT(bufferTag);
+        buffer.writeToNBT(registries, bufferTag);
         tag.put("Buffer", bufferTag);
     }
 
     @Override
-    protected void loadInternal(CompoundTag tag) {
+    protected void loadInternal(CompoundTag tag, HolderLookup.Provider registries) {
         buffer.setFluid(FluidStack.EMPTY);
 
         if (tag.contains("Buffer", Tag.TAG_COMPOUND)) {
-            buffer.readFromNBT(tag.getCompound("Buffer"));
+            buffer.readFromNBT(registries, tag.getCompound("Buffer"));
         }
     }
 

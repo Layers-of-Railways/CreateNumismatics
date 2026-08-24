@@ -29,10 +29,12 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -234,14 +236,14 @@ public interface ISalepointState<C> {
      * Implementations MUST include an "id" tag with the return value of calling {@link SalepointTypes#getId()} on {@link #getType()}.
      * @return The saved state.
      */
-    CompoundTag save();
+    CompoundTag save(HolderLookup.Provider registries);
 
     /**
      * Load the state of the salepoint from a {@link CompoundTag}.
      * @param tag The tag to load from.
      */
     @ApiStatus.OverrideOnly
-    void load(CompoundTag tag);
+    void load(CompoundTag tag, HolderLookup.Provider registries);
 
     /**
      * If the salepoint can execute a purchase right now, at the specified position.
@@ -314,7 +316,7 @@ public interface ISalepointState<C> {
         return SalepointTargetBehaviour.get(be, (Class<C>) getType().getContentClass());
     }
 
-    void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos);
+    void createTooltip(List<Component> tooltip, Level level, BlockPos targetedPos, Item.TooltipContext ctx);
 
     /**
      * @return Item to display in hover tooltip

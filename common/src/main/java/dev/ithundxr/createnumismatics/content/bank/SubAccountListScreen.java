@@ -34,12 +34,13 @@ import dev.ithundxr.createnumismatics.content.backend.Coin;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.Limit;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
+import dev.ithundxr.createnumismatics.mixin.client.AccessorScreen;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.sub_account.OpenSubAccountEditScreenPacket;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -145,7 +146,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
 
     protected void editSubAccount(UUID subAccountID) {
         menu.openSubAccountEditScreen(subAccountID);
-        NumismaticsPackets.PACKETS.send(new OpenSubAccountEditScreenPacket(subAccountID));
+        CatnipServices.NETWORK.sendToServer(new OpenSubAccountEditScreenPacket(subAccountID));
     }
 
     protected void startPopup() {
@@ -240,8 +241,6 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
             editorLabelBox.setCursorPosition(editorLabelBox.getValue().length());
             editorLabelBox.setHighlightPos(editorLabelBox.getCursorPosition());
         }
-
-        nameBox.tick();
     }
 
     @Override
@@ -251,7 +250,7 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        partialTicks = minecraft.getFrameTime();
+        partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
 
         if (menu.slotsActive()) {
             if (!hasPopup) {
@@ -262,9 +261,9 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
             if (hasPopup) {
                 stopPopup();
             }
-            renderBackground(graphics);
+            renderTransparentBackground(graphics);
             renderBg(graphics, partialTicks, mouseX, mouseY);
-            for (Renderable widget : renderables)
+            for (Renderable widget : ((AccessorScreen) this).numismatics$getRenderables())
                 widget.render(graphics, mouseX, mouseY, partialTicks);
             renderForeground(graphics, mouseX, mouseY, partialTicks);
         }
@@ -675,9 +674,9 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (hasPopup) {
-            return super.mouseScrolled(mouseX, mouseY, delta);
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         float chaseTarget = scroll.getChaseTarget();
@@ -688,14 +687,14 @@ public class SubAccountListScreen extends AbstractSimiContainerScreen<SubAccount
         }
 
         if (max > 0) {
-            chaseTarget -= delta * 12;
+            chaseTarget -= scrollY * 12;
             chaseTarget = Mth.clamp(chaseTarget, 0, max);
             scroll.chase((int) chaseTarget, 0.7f, LerpedFloat.Chaser.EXP);
         } else {
             scroll.chase(0, 0.7f, LerpedFloat.Chaser.EXP);
         }
 
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override

@@ -33,12 +33,12 @@ import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
 import dev.ithundxr.createnumismatics.registry.NumismaticsIcons;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointPurchasePacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.gui.element.GuiGameElement;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
@@ -179,9 +179,9 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+    public void renderTransparentBackground(@NotNull GuiGraphics guiGraphics) {
         if (!isVirtual())
-            super.renderBackground(guiGraphics);
+            super.renderTransparentBackground(guiGraphics);
     }
 
     @Override
@@ -290,11 +290,11 @@ public class SalepointPurchaseScreen extends AbstractSimiContainerScreen<Salepoi
     private void onAction() {
         completedCooldown = 0;
         switch (action) {
-            case GO -> NumismaticsPackets.PACKETS.send(new SalepointPurchasePacket(countScrollInput.getState()));
-            case CANCEL -> NumismaticsPackets.PACKETS.send(new SalepointPurchasePacket(0));
+            case GO -> CatnipServices.NETWORK.sendToServer(new SalepointPurchasePacket(countScrollInput.getState()));
+            case CANCEL -> CatnipServices.NETWORK.sendToServer(new SalepointPurchasePacket(0));
             case ALERT -> {
                 if (menu.contentHolder.clientsideMultiplier > 0)
-                    NumismaticsPackets.PACKETS.send(new SalepointPurchasePacket(0));
+                    CatnipServices.NETWORK.sendToServer(new SalepointPurchasePacket(0));
             }
         }
     }

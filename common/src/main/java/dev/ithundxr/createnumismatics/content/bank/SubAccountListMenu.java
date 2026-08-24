@@ -26,10 +26,14 @@ import dev.ithundxr.createnumismatics.content.backend.ItemWritingContainer;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.multiloader.PlayerSelection;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
-import dev.ithundxr.createnumismatics.registry.packets.sub_account.*;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.AddSubAccountPacket;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.ConfigureSubAccountPacket;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.RemoveSubAccountPacket;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.ResetSubAccountSpendingPacket;
+import dev.ithundxr.createnumismatics.registry.packets.sub_account.UpdateSubAccountsPacket;
+import net.createmod.catnip.platform.CatnipServices;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -59,7 +63,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
 
     private DynamicContainer trustListContainer;
 
-    public SubAccountListMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf extraData) {
+    public SubAccountListMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
@@ -76,7 +80,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
     }
 
     @Override
-    protected BankAccount createOnClient(FriendlyByteBuf extraData) {
+    protected BankAccount createOnClient(RegistryFriendlyByteBuf extraData) {
         return BankAccount.clientSideSubAccountList(extraData);
     }
 
@@ -128,7 +132,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
     }
 
     @Override
-    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+    protected boolean moveItemStackTo(@NotNull ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
         ItemStack itemStack;
         Slot slot;
         boolean bl = false;
@@ -140,7 +144,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 slot = this.slots.get(i);
                 itemStack = slot.getItem();
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack)) {
+                if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack)) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxStackSize()) {
                         stack.setCount(0);
@@ -240,7 +244,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
 
     private void sendUpdate(boolean includeSelf) {
         if (player instanceof ServerPlayer serverPlayer) {
-            NumismaticsPackets.PACKETS.sendTo(PlayerSelection.allWith((p) -> {
+            CatnipServices.NETWORK.sendToClients(PlayerSelection.allWith((p) -> {
                 if (!includeSelf && p == serverPlayer)
                     return false;
 
@@ -257,7 +261,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
             contentHolder.addSubAccount(label);
             sendUpdate(true);
         } else {
-            NumismaticsPackets.PACKETS.send(new AddSubAccountPacket(label));
+            CatnipServices.NETWORK.sendToServer(new AddSubAccountPacket(label));
         }
     }
 
@@ -272,7 +276,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
                 clearContainer(player, subAccount.getTrustListContainer());
             sendUpdateToOthers();
         } else {
-            NumismaticsPackets.PACKETS.send(new RemoveSubAccountPacket(subAccountID));
+            CatnipServices.NETWORK.sendToServer(new RemoveSubAccountPacket(subAccountID));
         }
     }
 
@@ -287,7 +291,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
         if (player instanceof ServerPlayer) {
             sendUpdateToOthers();
         } else {
-            NumismaticsPackets.PACKETS.send(new ResetSubAccountSpendingPacket(subAccountID));
+            CatnipServices.NETWORK.sendToServer(new ResetSubAccountSpendingPacket(subAccountID));
         }
     }
 
@@ -301,7 +305,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
             if (player instanceof ServerPlayer) {
                 sendUpdateToOthers();
             } else {
-                NumismaticsPackets.PACKETS.send(new ConfigureSubAccountPacket(subAccountID, limit));
+                CatnipServices.NETWORK.sendToServer(new ConfigureSubAccountPacket(subAccountID, limit));
             }
         }
     }
@@ -316,7 +320,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
             if (player instanceof ServerPlayer) {
                 sendUpdateToOthers();
             } else {
-                NumismaticsPackets.PACKETS.send(new ConfigureSubAccountPacket(subAccountID, authorizationType));
+                CatnipServices.NETWORK.sendToServer(new ConfigureSubAccountPacket(subAccountID, authorizationType));
             }
         }
     }
@@ -335,7 +339,7 @@ public class SubAccountListMenu extends MenuBase<BankAccount> {
             if (player instanceof ServerPlayer) {
                 sendUpdateToOthers();
             } else {
-                NumismaticsPackets.PACKETS.send(new ConfigureSubAccountPacket(subAccountID, label));
+                CatnipServices.NETWORK.sendToServer(new ConfigureSubAccountPacket(subAccountID, label));
             }
         }
     }

@@ -24,6 +24,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -93,8 +94,8 @@ public abstract class SalepointTargetBehaviour<C> extends BlockEntityBehaviour {
     }
 
     @Override
-    public void read(CompoundTag nbt, boolean clientPacket) {
-        super.read(nbt, clientPacket);
+    public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(nbt, registries, clientPacket);
 
         if (nbt.hasUUID("ControllingSalepoint"))
             controllerId = nbt.getUUID("ControllingSalepoint");
@@ -103,8 +104,9 @@ public abstract class SalepointTargetBehaviour<C> extends BlockEntityBehaviour {
     }
 
     @Override
-    public void write(CompoundTag nbt, boolean clientPacket) {
-        super.write(nbt, clientPacket);
+    public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(nbt, registries, clientPacket);
+
         if (controllerId != null)
             nbt.putUUID("ControllingSalepoint", controllerId);
     }

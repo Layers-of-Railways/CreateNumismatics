@@ -22,9 +22,9 @@ import com.simibubi.create.AllKeys;
 import com.simibubi.create.AllSoundEvents;
 import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.SalepointEnergyFilterPacket;
 import dev.ithundxr.createnumismatics.util.TextUtils;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -41,10 +41,10 @@ public class SalepointEnergyConfigWidget extends SalepointEnergyDisplayWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         Energy filter = state.getFilter();
 
-        int offset = delta > 0 ? 1 : -1;
+        int offset = scrollY > 0 ? 1 : -1;
 
         if (AllKeys.shiftDown() && AllKeys.ctrlDown())
             //noinspection DataFlowIssue
@@ -63,7 +63,7 @@ public class SalepointEnergyConfigWidget extends SalepointEnergyDisplayWidget {
         long max = EnergySalepointState.getFilterCapacity();
         long amount = Math.max(min, Math.min(oldAmount + offset, max));
         if (oldAmount != amount) {
-            NumismaticsPackets.PACKETS.send(new SalepointEnergyFilterPacket(filter.copy().setAmount(amount)));
+            CatnipServices.NETWORK.sendToServer(new SalepointEnergyFilterPacket(filter.copy().setAmount(amount)));
             if (!soundPlayed) {
                 Minecraft.getInstance()
                     .getSoundManager()

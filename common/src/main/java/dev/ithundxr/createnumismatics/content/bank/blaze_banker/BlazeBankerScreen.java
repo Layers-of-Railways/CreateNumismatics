@@ -25,12 +25,10 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.gui.widget.Indicator;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import net.createmod.catnip.gui.element.GuiGameElement;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.client.Minecraft;
@@ -128,9 +126,9 @@ public class BlazeBankerScreen extends AbstractSimiContainerScreen<BlazeBankerMe
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
+    public void renderTransparentBackground(@NotNull GuiGraphics guiGraphics) {
         if (!isVirtual())
-            super.renderBackground(guiGraphics);
+            super.renderTransparentBackground(guiGraphics);
     }
 
     @Override

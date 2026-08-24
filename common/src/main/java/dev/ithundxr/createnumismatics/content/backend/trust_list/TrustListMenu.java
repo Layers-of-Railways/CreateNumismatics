@@ -233,7 +233,7 @@ public class TrustListMenu extends MenuBase<TrustListHolder> {
         }
     }
 
-    public static <BE extends SmartBlockEntity & MenuProvider & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
+    public static <BE extends SmartBlockEntity & Trusted & TrustListHolder> void openMenu(BE be, ServerPlayer player, ItemStack displayStack) {
         if (be.isTrusted(player)) {
             Utils.openScreen(player,
                 TrustListMenu.provider(be, displayStack),

@@ -31,7 +31,6 @@ import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
 import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem.AuthorizationPair;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.coins.DiscreteCoinBag;
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import dev.ithundxr.createnumismatics.registry.packets.OpenTrustListPacket;
 import dev.ithundxr.createnumismatics.util.Utils;
@@ -205,7 +204,7 @@ public abstract class AbstractDepositorBlockEntity extends SmartBlockEntity impl
     public void openTrustList() {
         if (level == null || !level.isClientSide)
             return;
-        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(getBlockPos()));
+        CatnipServices.NETWORK.sendToServer(new OpenTrustListPacket<>(this));
     }
 
     @Override
