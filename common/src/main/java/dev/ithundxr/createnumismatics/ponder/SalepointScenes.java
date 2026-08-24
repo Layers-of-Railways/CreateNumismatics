@@ -627,7 +627,7 @@ public class SalepointScenes {
     private static Function<PonderScene, ItemStack> salepointTooltipItem(BlockPos pos) {
         return (scene) -> {
             if (scene.getWorld().getBlockEntity(pos) instanceof SalepointBlockEntity sbe) {
-                return sbe.getCustomGoggleOverlayStack();
+                return sbe.getIcon(false);
             } else {
                 return ItemStack.EMPTY;
             }

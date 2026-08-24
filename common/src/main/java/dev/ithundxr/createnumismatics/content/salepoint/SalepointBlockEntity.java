@@ -25,7 +25,6 @@ import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
@@ -57,6 +56,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -88,7 +88,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack, Clearable {
+public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, Clearable {
     public final Container cardContainer = new SimpleContainer(1) {
         @Override
         public void setChanged() {
@@ -234,8 +234,8 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
 
         inventory.clear();
@@ -252,7 +252,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
         trustListContainer.clearContent();
         trustList.clear();
         if (tag.contains("TrustListInv", Tag.TAG_COMPOUND)) {
-            trustListContainer.load(tag.getCompound("TrustListInv"));
+            trustListContainer.load(tag.getCompound("TrustListInv"), registries);
         }
 
         salepointState = null;
@@ -524,7 +524,7 @@ public class SalepointBlockEntity extends SmartBlockEntity implements Trusted, T
     }
 
     @Override
-    public ItemStack getCustomGoggleOverlayStack() {
+    public ItemStack getIcon(boolean isPlayerSneaking) {
         ItemStack display = getDisplayItem();
         return display.isEmpty() ? NumismaticsBlocks.SALEPOINT.asStack() : display;
     }

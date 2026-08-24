@@ -19,26 +19,29 @@
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public record AddSubAccountPacket(@NotNull String label) implements C2SPacket {
-
-    public AddSubAccountPacket(FriendlyByteBuf buf) {
-        this(buf.readUtf());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeUtf(label);
-    }
+public record AddSubAccountPacket(@NotNull String label) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, AddSubAccountPacket> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(
+        AddSubAccountPacket::new,
+        AddSubAccountPacket::label
+    );
 
     @Override
     public void handle(ServerPlayer sender) {
         if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
             subAccountListMenu.addSubAccount(label);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.ADD_SUB_ACCOUNT;
     }
 }

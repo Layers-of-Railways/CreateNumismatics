@@ -23,23 +23,21 @@ import dev.ithundxr.createnumismatics.content.backend.IDeductable;
 import dev.ithundxr.createnumismatics.content.backend.ReasonHolder;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointBlockEntity;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
  * @param multiplier If 0, cancel the current transaction.
  */
-public record SalepointPurchasePacket(int multiplier) implements C2SPacket {
-
-    public SalepointPurchasePacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(multiplier);
-    }
+public record SalepointPurchasePacket(int multiplier) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, SalepointPurchasePacket> STREAM_CODEC = ByteBufCodecs.VAR_INT.map(
+        SalepointPurchasePacket::new,
+        SalepointPurchasePacket::multiplier
+    );
 
     @Override
     public void handle(ServerPlayer sender) {
@@ -57,5 +55,10 @@ public record SalepointPurchasePacket(int multiplier) implements C2SPacket {
 
             salepointBE.startTransaction(deductable, multiplier);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.SALEPOINT_PURCHASE;
     }
 }

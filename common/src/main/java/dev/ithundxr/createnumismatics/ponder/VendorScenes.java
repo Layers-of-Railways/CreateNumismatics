@@ -656,7 +656,7 @@ public class VendorScenes {
     private static Function<PonderScene, ItemStack> vendorTooltipItem(BlockPos pos) {
         return (scene) -> {
             if (scene.getWorld().getBlockEntity(pos) instanceof VendorBlockEntity vbe) {
-                return vbe.getCustomGoggleOverlayStack();
+                return vbe.getIcon(false);
             } else {
                 return ItemStack.EMPTY;
             }

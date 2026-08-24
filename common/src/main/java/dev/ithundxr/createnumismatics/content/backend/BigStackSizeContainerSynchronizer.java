@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.content.backend;
 
-import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetContentPacket;
 import dev.ithundxr.createnumismatics.registry.packets.BigStackSizeContainerSetSlotPacket;
 import net.createmod.catnip.platform.CatnipServices;
@@ -31,6 +30,8 @@ import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+// todo vanilla handles this fine, remove
+@Deprecated
 public class BigStackSizeContainerSynchronizer implements ContainerSynchronizer {
     private final ServerPlayer serverPlayer;
 

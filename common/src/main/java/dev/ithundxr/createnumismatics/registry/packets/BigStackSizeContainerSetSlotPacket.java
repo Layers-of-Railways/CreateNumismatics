@@ -28,7 +28,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
-// todo check that extra stack size still works, apply PR
+// todo vanilla handles this correctly
+@Deprecated
 public record BigStackSizeContainerSetSlotPacket(int containerId, int stateId, int slot, ItemStack itemStack) implements ClientboundPacketPayload {
     public static final StreamCodec<RegistryFriendlyByteBuf, BigStackSizeContainerSetSlotPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.BYTE, i -> (byte) i.containerId,

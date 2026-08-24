@@ -19,24 +19,33 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.mixin_interfaces.IAdminModePlayer;
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public record SetAdminModePacket(boolean adminMode) implements S2CPacket {
-
-    public SetAdminModePacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(adminMode);
-    }
+public record SetAdminModePacket(boolean adminMode) implements ClientboundPacketPayload {
+    public static final StreamCodec<ByteBuf, SetAdminModePacket> STREAM_CODEC = ByteBufCodecs.BOOL.map(
+        SetAdminModePacket::new,
+        SetAdminModePacket::adminMode
+    );
 
     @Override
-    public void handle(Minecraft mc) {
+    @Environment(EnvType.CLIENT)
+    public void handle(LocalPlayer player) {
+        Minecraft mc = Minecraft.getInstance();
+
         if (mc.player instanceof IAdminModePlayer adminModePlayer)
             adminModePlayer.numismatics$setAdminMode(adminMode);
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.SET_ADMIN_MODE;
     }
 }

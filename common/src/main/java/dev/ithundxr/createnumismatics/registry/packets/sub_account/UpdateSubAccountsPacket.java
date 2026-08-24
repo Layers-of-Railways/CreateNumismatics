@@ -18,46 +18,57 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
+import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListScreen;
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import io.netty.buffer.Unpooled;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.UUID;
 
 /** Only works for players who have a SubAccountListMenu open */
-public class UpdateSubAccountsPacket implements S2CPacket {
+public class UpdateSubAccountsPacket implements ClientboundPacketPayload {
+    public static final StreamCodec<FriendlyByteBuf, UpdateSubAccountsPacket> STREAM_CODEC = StreamCodec.composite(
+        NumismaticsStreamCodecs.UUID, i -> i.accountID,
+        NumismaticsStreamCodecs.NESTED_BUF, i -> i.data,
+        UpdateSubAccountsPacket::new
+    );
 
     private final UUID accountID;
-    private final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());;
+    private final FriendlyByteBuf data;
+
+    private UpdateSubAccountsPacket(UUID accountID, FriendlyByteBuf data) {
+        this.accountID = accountID;
+        this.data = data;
+    }
 
     public UpdateSubAccountsPacket(BankAccount account) {
-        this.accountID = account.id;
+        this(account.id, new FriendlyByteBuf(Unpooled.buffer()));
         account.sendSubAccountsOnlyToMenu(data);
     }
 
-    public UpdateSubAccountsPacket(FriendlyByteBuf buf) {
-        accountID = buf.readUUID();
-        int length = buf.readVarInt();
-        buf.readBytes(data, length);
-    }
-
     @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeUUID(accountID);
-        buffer.writeVarInt(data.readableBytes());
-        buffer.writeBytes(data);
-    }
+    @Environment(EnvType.CLIENT)
+    public void handle(LocalPlayer player) {
+        Minecraft mc = Minecraft.getInstance();
 
-    @Override
-    public void handle(Minecraft mc) {
         if (mc.screen instanceof SubAccountListScreen sal) {
             BankAccount account = sal.getMenu().contentHolder;
             if (account.id.equals(accountID)) {
                 account.updateSubAccountsFrom(data);
             }
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.UPDATE_SUB_ACCOUNTS;
     }
 }

@@ -18,10 +18,17 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.types;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public class Energy {
+    public static final StreamCodec<ByteBuf, Energy> STREAM_CODEC = ByteBufCodecs.VAR_LONG.map(
+        Energy::new,
+        Energy::getAmount
+    );
+
     private long amount;
 
     public Energy() {
@@ -53,13 +60,5 @@ public class Energy {
 
     public Energy copy() {
         return new Energy(amount);
-    }
-
-    public static Energy readFromPacket(FriendlyByteBuf buf) {
-        return new Energy(buf.readLong());
-    }
-
-    public void writeToPacket(FriendlyByteBuf buf) {
-        buf.writeLong(amount);
     }
 }

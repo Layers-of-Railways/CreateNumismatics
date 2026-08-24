@@ -153,7 +153,7 @@ public class SalepointFluidDisplayWidget extends AbstractSimiWidget implements I
             );
 
         return List.of(
-            filter.getDisplayName(),
+            filter.getHoverName(),
             Component.literal(TextUtils.formatFluid(filter.getAmount()))
         );
     }

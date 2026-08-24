@@ -20,21 +20,19 @@ package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
 import dev.ithundxr.createnumismatics.content.salepoint.states.FluidSalepointState;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
-public record SalepointFluidFilterPacket(MultiloaderFluidStack filter) implements C2SPacket {
-
-    public SalepointFluidFilterPacket(FriendlyByteBuf buf) {
-        this(MultiloaderFluidStack.readFromPacket(buf));
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        filter.writeToPacket(buffer);
-    }
+public record SalepointFluidFilterPacket(MultiloaderFluidStack filter) implements ServerboundPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, SalepointFluidFilterPacket> STREAM_CODEC =
+        MultiloaderFluidStack.OPTIONAL_STREAM_CODEC.map(
+            SalepointFluidFilterPacket::new,
+            SalepointFluidFilterPacket::filter
+        );
 
     @Override
     @SuppressWarnings("DataFlowIssue")
@@ -44,5 +42,10 @@ public record SalepointFluidFilterPacket(MultiloaderFluidStack filter) implement
                 fluidSalepointState.setFilter(filter, salepointConfigMenu.contentHolder.getLevel(), salepointConfigMenu.contentHolder.getBlockPos(), sender);
             }
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.SALEPOINT_FLUID_FILTER;
     }
 }

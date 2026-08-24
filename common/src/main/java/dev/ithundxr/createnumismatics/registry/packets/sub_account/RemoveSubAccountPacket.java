@@ -18,29 +18,32 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
+import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public record RemoveSubAccountPacket(@NotNull UUID subAccountID) implements C2SPacket {
-
-    public RemoveSubAccountPacket(FriendlyByteBuf buf) {
-        this(buf.readUUID());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeUUID(subAccountID);
-    }
+public record RemoveSubAccountPacket(@NotNull UUID subAccountID) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, RemoveSubAccountPacket> STREAM_CODEC = NumismaticsStreamCodecs.UUID.map(
+        RemoveSubAccountPacket::new,
+        RemoveSubAccountPacket::subAccountID
+    );
 
     @Override
     public void handle(ServerPlayer sender) {
         if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
             subAccountListMenu.removeSubAccount(subAccountID);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.REMOVE_SUB_ACCOUNT;
     }
 }

@@ -20,12 +20,17 @@ package dev.ithundxr.createnumismatics.multiloader.fluid.neoforge;
 
 import com.mojang.serialization.Codec;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +38,18 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
 
     public static Codec<MultiloaderFluidStack> makeCodec() {
         return FluidStack.CODEC.xmap(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
+    }
+
+    public static Codec<MultiloaderFluidStack> makeOptionalCodec() {
+        return FluidStack.OPTIONAL_CODEC.xmap(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
+    }
+
+    private static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeStreamCodec() {
+        return FluidStack.STREAM_CODEC.map(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
+    }
+
+    private static StreamCodec<RegistryFriendlyByteBuf, MultiloaderFluidStack> makeOptionalStreamCodec() {
+        return FluidStack.OPTIONAL_STREAM_CODEC.map(MultiloaderFluidStackImpl::new, fs -> ((MultiloaderFluidStackImpl) fs).wrapped);
     }
 
     public static MultiloaderFluidStack makeEmpty() {
@@ -49,12 +66,12 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
         this(new FluidStack(fluid, amount));
     }
 
-    public MultiloaderFluidStackImpl(Fluid fluid, int amount, CompoundTag nbt) {
-        this(new FluidStack(fluid, amount, nbt));
+    public MultiloaderFluidStackImpl(Fluid fluid, int amount, @NotNull DataComponentPatch patch) {
+        this(new FluidStack(Holder.direct(fluid), amount, patch));
     }
 
     public MultiloaderFluidStackImpl(FluidStack stack, int amount) {
-        this(new FluidStack(stack, amount));
+        this(stack.copyWithAmount(amount));
     }
 
     public MultiloaderFluidStackImpl(MultiloaderFluidStack stack, int amount) {
@@ -72,10 +89,6 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
         return wrapped.getFluid();
     }
 
-    public final Fluid getRawFluid() {
-        return wrapped.getRawFluid();
-    }
-
     @Override
     public long getAmount() {
         return wrapped.getAmount();
@@ -88,53 +101,12 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
 
     @Override
     public boolean isFluidEqual(MultiloaderFluidStack other) {
-        return wrapped.isFluidEqual(((MultiloaderFluidStackImpl) other).wrapped);
+        return FluidStack.isSameFluidSameComponents(wrapped, ((MultiloaderFluidStackImpl) other).wrapped);
     }
 
     @Override
-    public CompoundTag writeToNBT(CompoundTag nbt) {
-        return wrapped.writeToNBT(nbt);
-    }
-
-    public static MultiloaderFluidStack loadFluidStackFromNBT(CompoundTag tag) {
-        return new MultiloaderFluidStackImpl(FluidStack.loadFluidStackFromNBT(tag));
-    }
-
-    @Override
-    public void setTag(CompoundTag tag) {
-        wrapped.setTag(tag);
-    }
-
-    @Override
-    public @Nullable CompoundTag getTag() {
-        return wrapped.getTag();
-    }
-
-    public @Nullable CompoundTag getChildTag(String childName) {
-        return wrapped.getChildTag(childName);
-    }
-
-    public @Nullable CompoundTag getOrCreateChildTag(String childName) {
-        return wrapped.getOrCreateChildTag(childName);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return wrapped.getDisplayName();
-    }
-
-    public String getTranslationKey() {
-        return wrapped.getTranslationKey();
-    }
-
-    public static MultiloaderFluidStack readFromPacket(FriendlyByteBuf buffer) {
-        return new MultiloaderFluidStackImpl(FluidStack.readFromPacket(buffer));
-    }
-
-    @Override
-    public FriendlyByteBuf writeToPacket(FriendlyByteBuf buffer) {
-        wrapped.writeToPacket(buffer);
-        return buffer;
+    public Component getHoverName() {
+        return wrapped.getHoverName();
     }
 
     @Override
@@ -143,18 +115,15 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
     }
 
     @Override
-    public boolean containsFluid(@NotNull MultiloaderFluidStack other) {
-        return wrapped.containsFluid(((MultiloaderFluidStackImpl) other).wrapped);
-    }
-
-    @Override
     public boolean isFluidStackIdentical(MultiloaderFluidStack other) {
-        return wrapped.isFluidStackIdentical(((MultiloaderFluidStackImpl) other).wrapped);
+        return FluidStack.matches(wrapped, ((MultiloaderFluidStackImpl) other).wrapped);
     }
 
     @Override
     public boolean isFluidEqual(@NotNull ItemStack other) {
-        return wrapped.isFluidEqual(other);
+        return FluidUtil.getFluidContained(other)
+            .map(other1 -> FluidStack.isSameFluidSameComponents(wrapped, other1))
+            .orElse(false);
     }
 
     @Override
@@ -180,11 +149,36 @@ public class MultiloaderFluidStackImpl extends MultiloaderFluidStack {
         return isFluidEqual(fs);
     }
 
-    public static MultiloaderFluidStack create(Fluid fluid, long amount, @Nullable CompoundTag nbt) {
-        return new MultiloaderFluidStackImpl(fluid, (int) amount, nbt);
+    public static MultiloaderFluidStack create(Fluid fluid, long amount, @Nullable DataComponentPatch patch) {
+        return new MultiloaderFluidStackImpl(fluid, (int) amount, patch == null ? DataComponentPatch.EMPTY : patch);
     }
 
     public FluidStack getWrapped() {
         return wrapped;
+    }
+
+    @Override
+    public <T> @Nullable T set(@NotNull DataComponentType<? super T> component, @Nullable T value) {
+        return wrapped.set(component, value);
+    }
+
+    @Override
+    public <T> @Nullable T remove(@NotNull DataComponentType<? extends T> component) {
+        return wrapped.remove(component);
+    }
+
+    @Override
+    public void applyComponents(@NotNull DataComponentPatch components) {
+        wrapped.applyComponents(components);
+    }
+
+    @Override
+    public void applyComponents(@NotNull DataComponentMap components) {
+        wrapped.applyComponents(components);
+    }
+
+    @Override
+    public @NotNull DataComponentMap getComponents() {
+        return wrapped.getComponents();
     }
 }

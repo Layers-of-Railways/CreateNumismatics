@@ -130,7 +130,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
         saveInternal(tag);
 
         if (!filter.isEmpty())
-            tag.put("Filter", filter.writeToNBT(new CompoundTag()));
+            tag.put("Filter", filter.saveOptional());
 
         return tag;
     }
@@ -144,7 +144,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
         loadInternal(tag);
 
         if (tag.contains("Filter", CompoundTag.TAG_COMPOUND))
-            filter = MultiloaderFluidStack.loadFluidStackFromNBT(tag.getCompound("Filter"));
+            filter = MultiloaderFluidStack.parseOptional(tag.getCompound("Filter"));
         else
             filter = MultiloaderFluidStack.EMPTY;
     }
@@ -271,7 +271,7 @@ public abstract class FluidSalepointState implements ISalepointState<Multiloader
         }
 
         Lang.builder(Numismatics.MOD_ID)
-            .add(filter.getDisplayName().copy())
+            .add(filter.getHoverName().copy())
             .forGoggles(tooltip);
 
         Lang.builder(Numismatics.MOD_ID)

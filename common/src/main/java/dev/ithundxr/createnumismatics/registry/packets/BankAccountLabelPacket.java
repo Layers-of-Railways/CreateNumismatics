@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.registry.packets;
 
-import com.mojang.serialization.Codec;
 import dev.ithundxr.createnumismatics.NumismaticsClient;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
@@ -39,7 +38,7 @@ import java.util.UUID;
 
 public record BankAccountLabelPacket(boolean isSubAccount, UUID id, @Nullable String label) implements ClientboundPacketPayload {
     public static final StreamCodec<ByteBuf, BankAccountLabelPacket> STREAM_CODEC = StreamCodec.composite(
-        Codec.BOOL, BankAccountLabelPacket::isSubAccount,
+        ByteBufCodecs.BOOL, BankAccountLabelPacket::isSubAccount,
         UUIDUtil.STREAM_CODEC, BankAccountLabelPacket::id,
         CatnipStreamCodecBuilders.nullable(ByteBufCodecs.STRING_UTF8), BankAccountLabelPacket::label,
         BankAccountLabelPacket::new

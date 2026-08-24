@@ -25,7 +25,6 @@ import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
-import dev.ithundxr.createnumismatics.base.block.CustomGoggleOverlayStack;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
 import dev.ithundxr.createnumismatics.content.backend.*;
@@ -88,7 +87,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, CustomGoggleOverlayStack, WorldlyContainer, MenuProvider {
+public class VendorBlockEntity extends SmartBlockEntity implements Trusted, TrustListHolder, IHaveHoveringInformation, WorldlyContainer, MenuProvider {
     private static final ItemStack BARRIER_STACK = new ItemStack(Items.BARRIER);
 
     public final Container cardContainer = new SimpleContainer(1) {
@@ -585,7 +584,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
     @NotNull
     @Contract("_ -> new")
-    private PatchedDataComponentMap cleanComponents(@NotNull DataComponentMap dataComponents) {
+    private static PatchedDataComponentMap cleanComponents(@NotNull DataComponentMap dataComponents) {
         PatchedDataComponentMap map = new PatchedDataComponentMap(dataComponents);
         map.remove(DataComponents.REPAIR_COST);
         // todo check enchantment order

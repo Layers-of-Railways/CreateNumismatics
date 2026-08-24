@@ -18,106 +18,63 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
+import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.AuthorizationType;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class ConfigureSubAccountPacket implements C2SPacket {
-
-    private final @NotNull UUID subAccountID;
-    private final @NotNull Type type;
-
-    private @Nullable Integer limit;
-    private @Nullable AuthorizationType authorizationType;
-    private @Nullable String label;
+public record ConfigureSubAccountPacket(
+    @NotNull UUID subAccountID,
+    @Nullable Integer limit,
+    @Nullable AuthorizationType authorizationType,
+    @Nullable String label
+) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, ConfigureSubAccountPacket> STREAM_CODEC = StreamCodec.composite(
+        NumismaticsStreamCodecs.UUID, ConfigureSubAccountPacket::subAccountID,
+        CatnipStreamCodecBuilders.nullable(ByteBufCodecs.VAR_INT), ConfigureSubAccountPacket::limit,
+        CatnipStreamCodecBuilders.nullable(AuthorizationType.STREAM_CODEC), ConfigureSubAccountPacket::authorizationType,
+        CatnipStreamCodecBuilders.nullable(ByteBufCodecs.STRING_UTF8), ConfigureSubAccountPacket::label,
+        ConfigureSubAccountPacket::new
+    );
 
     public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @Nullable Integer limit) {
-        this(subAccountID, Type.LIMIT);
-
-        this.limit = limit;
+        this(subAccountID, limit, null, null);
     }
 
     public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @NotNull AuthorizationType authorizationType) {
-        this(subAccountID, Type.AUTHORIZATION_TYPE);
-
-        this.authorizationType = authorizationType;
+        this(subAccountID, null, authorizationType, null);
     }
 
     public ConfigureSubAccountPacket(@NotNull UUID subAccountID, @NotNull String label) {
-        this(subAccountID, Type.LABEL);
-
-        this.label = label;
-    }
-
-    private ConfigureSubAccountPacket(@NotNull UUID subAccountID, @NotNull Type type) {
-        this.subAccountID = subAccountID;
-        this.type = type;
-    }
-
-    public ConfigureSubAccountPacket(FriendlyByteBuf buf) {
-        this(buf.readUUID(), buf.readEnum(Type.class));
-
-        switch (type) {
-            case LIMIT:
-                if (buf.readBoolean())
-                    limit = buf.readVarInt();
-                break;
-            case AUTHORIZATION_TYPE:
-                authorizationType = AuthorizationType.values()[buf.readByte()];
-                break;
-            case LABEL:
-                label = buf.readUtf();
-                break;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("DataFlowIssue") // IntelliJ complains about nullability of limit, authorizationType, and label
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeUUID(subAccountID);
-        buffer.writeEnum(type);
-
-        switch (type) {
-            case LIMIT:
-                buffer.writeBoolean(limit != null);
-                if (limit != null)
-                    buffer.writeVarInt(limit);
-                break;
-            case AUTHORIZATION_TYPE:
-                buffer.writeByte(authorizationType.ordinal());
-                break;
-            case LABEL:
-                buffer.writeUtf(label);
-                break;
-        }
+        this(subAccountID, null, null, label);
     }
 
     @Override
     public void handle(ServerPlayer sender) {
         if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
-            switch (type) {
-                case LIMIT:
-                    subAccountListMenu.setLimit(subAccountID, limit);
-                    break;
-                case AUTHORIZATION_TYPE:
-                    subAccountListMenu.setAuthorizationType(subAccountID, authorizationType);
-                    break;
-                case LABEL:
-                    subAccountListMenu.setLabel(subAccountID, label);
-                    break;
-            }
+            if (limit != null)
+                subAccountListMenu.setLimit(subAccountID, limit);
+
+            if (authorizationType != null)
+                subAccountListMenu.setAuthorizationType(subAccountID, authorizationType);
+
+            if (label != null)
+                subAccountListMenu.setLabel(subAccountID, label);
         }
     }
 
-    private enum Type {
-        LIMIT,
-        AUTHORIZATION_TYPE,
-        LABEL
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.CONFIGURE_SUB_ACCOUNT;
     }
 }

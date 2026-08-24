@@ -33,7 +33,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-// todo check that this actually still handles big stack sizes correctly
+// todo vanilla handles this perfectly fine, remove
+@Deprecated
 public record BigStackSizeContainerSetContentPacket(int containerId, int stateId, List<ItemStack> items, ItemStack carriedItem) implements ClientboundPacketPayload {
     public static final StreamCodec<RegistryFriendlyByteBuf, BigStackSizeContainerSetContentPacket> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.BYTE, i -> (byte) i.containerId,

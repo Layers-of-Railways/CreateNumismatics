@@ -117,7 +117,7 @@ public class SalepointFluidConfigWidget extends SalepointFluidDisplayWidget impl
             );
 
         return List.of(
-            filter.getDisplayName(),
+            filter.getHoverName(),
             Component.literal(TextUtils.formatFluid(filter.getAmount())),
             Component.translatable("create.gui.scrollInput.scrollToAdjustAmount"),
             Component.translatable("create.gui.scrollInput.shiftScrollsFaster")

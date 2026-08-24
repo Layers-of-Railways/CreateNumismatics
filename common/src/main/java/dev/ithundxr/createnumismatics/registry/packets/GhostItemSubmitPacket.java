@@ -19,22 +19,20 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.content.backend.IGhostItemMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public record GhostItemSubmitPacket(int slot, ItemStack stack) implements C2SPacket {
-
-    public GhostItemSubmitPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readItem());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(slot);
-        buffer.writeItem(stack);
-    }
+public record GhostItemSubmitPacket(int slot, ItemStack stack) implements ServerboundPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, GhostItemSubmitPacket> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.VAR_INT, GhostItemSubmitPacket::slot,
+        ItemStack.OPTIONAL_STREAM_CODEC, GhostItemSubmitPacket::stack,
+        GhostItemSubmitPacket::new
+    );
 
     @Override
     public void handle(ServerPlayer sender) {
@@ -43,5 +41,10 @@ public record GhostItemSubmitPacket(int slot, ItemStack stack) implements C2SPac
                 ghostItemMenu.setGhostStackInSlot(slot, stack);
             }
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.GHOST_ITEM_SUBMIT;
     }
 }

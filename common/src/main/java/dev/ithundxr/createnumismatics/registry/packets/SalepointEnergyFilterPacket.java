@@ -21,20 +21,17 @@ package dev.ithundxr.createnumismatics.registry.packets;
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointConfigMenu;
 import dev.ithundxr.createnumismatics.content.salepoint.states.EnergySalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
-public record SalepointEnergyFilterPacket(Energy filter) implements C2SPacket {
-
-    public SalepointEnergyFilterPacket(FriendlyByteBuf buf) {
-        this(Energy.readFromPacket(buf));
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        filter.writeToPacket(buffer);
-    }
+public record SalepointEnergyFilterPacket(Energy filter) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, SalepointEnergyFilterPacket> STREAM_CODEC = Energy.STREAM_CODEC.map(
+        SalepointEnergyFilterPacket::new,
+        SalepointEnergyFilterPacket::filter
+    );
 
     @Override
     @SuppressWarnings("DataFlowIssue")
@@ -44,5 +41,10 @@ public record SalepointEnergyFilterPacket(Energy filter) implements C2SPacket {
                 energySalepointState.setFilter(filter, salepointConfigMenu.contentHolder.getLevel(), salepointConfigMenu.contentHolder.getBlockPos(), sender);
             }
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.SALEPOINT_ENERGY_FILTER;
     }
 }

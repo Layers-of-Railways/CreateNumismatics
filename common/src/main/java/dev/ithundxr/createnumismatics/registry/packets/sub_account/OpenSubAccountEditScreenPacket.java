@@ -18,31 +18,32 @@
 
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
+import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.bank.SubAccountListMenu;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
-import net.minecraft.network.FriendlyByteBuf;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public record OpenSubAccountEditScreenPacket(@Nullable UUID subAccountID) implements C2SPacket {
-
-    public OpenSubAccountEditScreenPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean() ? buf.readUUID() : null);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(subAccountID != null);
-        if (subAccountID != null)
-            buffer.writeUUID(subAccountID);
-    }
+public record OpenSubAccountEditScreenPacket(@Nullable UUID subAccountID) implements ServerboundPacketPayload {
+    public static final StreamCodec<ByteBuf, OpenSubAccountEditScreenPacket> STREAM_CODEC = NumismaticsStreamCodecs.UUID.map(
+        OpenSubAccountEditScreenPacket::new,
+        OpenSubAccountEditScreenPacket::subAccountID
+    );
 
     @Override
     public void handle(ServerPlayer sender) {
         if (sender.containerMenu instanceof SubAccountListMenu subAccountListMenu) {
             subAccountListMenu.openSubAccountEditScreen(subAccountID);
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.OPEN_SUB_ACCOUNT_EDIT_SCREEN;
     }
 }

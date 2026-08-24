@@ -19,34 +19,46 @@
 package dev.ithundxr.createnumismatics.registry.packets;
 
 import dev.ithundxr.createnumismatics.content.salepoint.SalepointPurchaseScreen;
-import dev.ithundxr.createnumismatics.multiloader.S2CPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.createmod.catnip.net.base.ClientboundPacketPayload;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
-public record SalepointCardPacket(@Nullable Component message, int maxWithdrawal, @Nullable Component stateMessage) implements S2CPacket {
-    public SalepointCardPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean() ? buf.readComponent() : null, buf.readVarInt(), buf.readBoolean() ? buf.readComponent() : null);
-    }
+public record SalepointCardPacket(
+    @Nullable Component message,
+    int maxWithdrawal,
+    @Nullable Component stateMessage
+) implements ClientboundPacketPayload {
+    public static final StreamCodec<RegistryFriendlyByteBuf, SalepointCardPacket> STREAM_CODEC = StreamCodec.composite(
+        CatnipStreamCodecBuilders.nullable(ComponentSerialization.STREAM_CODEC), SalepointCardPacket::message,
+        ByteBufCodecs.VAR_INT, SalepointCardPacket::maxWithdrawal,
+        CatnipStreamCodecBuilders.nullable(ComponentSerialization.STREAM_CODEC), SalepointCardPacket::stateMessage,
+        SalepointCardPacket::new
+    );
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(message != null);
-        if (message != null)
-            buffer.writeComponent(message);
-        buffer.writeVarInt(maxWithdrawal);
-        buffer.writeBoolean(stateMessage != null);
-        if (stateMessage != null)
-            buffer.writeComponent(stateMessage);
-    }
+    @Environment(EnvType.CLIENT)
+    public void handle(LocalPlayer player) {
+        Minecraft mc = Minecraft.getInstance();
 
-    @Override
-    public void handle(Minecraft mc) {
         if (mc.screen instanceof SalepointPurchaseScreen salepointPurchaseScreen) {
             salepointPurchaseScreen.getMenu().serverSentCardMessage = message;
             salepointPurchaseScreen.getMenu().serverSentMaxWithdrawal = maxWithdrawal;
             salepointPurchaseScreen.getMenu().serverSentStateMessage = stateMessage;
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.SALEPOINT_CARD;
     }
 }

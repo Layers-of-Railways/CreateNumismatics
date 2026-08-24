@@ -19,37 +19,31 @@
 package dev.ithundxr.createnumismatics.registry.packets.sub_account;
 
 import dev.ithundxr.createnumismatics.Numismatics;
+import dev.ithundxr.createnumismatics.base.codec.NumismaticsStreamCodecs;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
-import dev.ithundxr.createnumismatics.multiloader.C2SPacket;
+import dev.ithundxr.createnumismatics.registry.NumismaticsPackets;
 import dev.ithundxr.createnumismatics.util.Utils;
+import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class OpenSubAccountsMenuPacket implements C2SPacket {
-
-    private final UUID accountID;
-    private final boolean open;
+public record OpenSubAccountsMenuPacket(UUID accountID, boolean open) implements ServerboundPacketPayload {
+    public static final StreamCodec<FriendlyByteBuf, OpenSubAccountsMenuPacket> STREAM_CODEC = StreamCodec.composite(
+        NumismaticsStreamCodecs.UUID, OpenSubAccountsMenuPacket::accountID,
+        ByteBufCodecs.BOOL, OpenSubAccountsMenuPacket::open,
+        OpenSubAccountsMenuPacket::new
+    );
 
     public OpenSubAccountsMenuPacket(BankAccount bankAccount) {
         this(bankAccount, true);
     }
 
     public OpenSubAccountsMenuPacket(BankAccount bankAccount, boolean open) {
-        this.accountID = bankAccount.id;
-        this.open = open;
-    }
-
-    public OpenSubAccountsMenuPacket(FriendlyByteBuf buf) {
-        accountID = buf.readUUID();
-        open = buf.readBoolean();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeUUID(accountID);
-        buffer.writeBoolean(open);
+        this(bankAccount.id, open);
     }
 
     @Override
@@ -62,5 +56,10 @@ public class OpenSubAccountsMenuPacket implements C2SPacket {
                 Utils.openScreen(sender, account, account::sendToMenu);
             }
         }
+    }
+
+    @Override
+    public PacketTypeProvider getTypeProvider() {
+        return NumismaticsPackets.OPEN_SUB_ACCOUNTS_MENU;
     }
 }

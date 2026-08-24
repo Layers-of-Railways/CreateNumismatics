@@ -20,7 +20,10 @@ package dev.ithundxr.createnumismatics.content.backend.sub_authorization;
 
 import com.google.common.collect.ImmutableList;
 import dev.ithundxr.createnumismatics.registry.NumismaticsGuiTextures;
+import io.netty.buffer.ByteBuf;
+import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +47,8 @@ public enum AuthorizationType implements StringRepresentable {
         "Anybody with the ID, including automation such as ComputerCraft computers",
         NumismaticsGuiTextures.SUB_ACCOUNT_MODE_ANY
     );
+
+    public static final StreamCodec<ByteBuf, AuthorizationType> STREAM_CODEC = CatnipStreamCodecBuilders.ofEnum(AuthorizationType.class);
 
     private final String englishTitle;
     private final String englishDescription;
