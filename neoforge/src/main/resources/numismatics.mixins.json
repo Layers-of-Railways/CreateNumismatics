@@ -7,6 +7,13 @@
     "client.MixinPonderTooltipHandler"
   ],
   "mixins": [
+    "ItemHandlerWrapperAccessor",
+    "PortableFluidInterfaceBlockEntityMixin",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerAccessor",
+    "PortableFluidInterfaceBlockEntityMixin$InterfaceFluidHandlerMixin",
+    "PortableItemInterfaceBlockEntityMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin",
+    "compat.PortableEnergyInterfaceBlockEntityMixin$InterfaceEnergyHandlerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -21,7 +21,7 @@ package dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge;
 import dev.ithundxr.createnumismatics.content.salepoint.containers.InvalidatableWrappingItemBuffer;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 public class InvalidatableWrappingItemBufferHandler extends InvalidatableWrappingItemBuffer implements IItemHandlerModifiable {

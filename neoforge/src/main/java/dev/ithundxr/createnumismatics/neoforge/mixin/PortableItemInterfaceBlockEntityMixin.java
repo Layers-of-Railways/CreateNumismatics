@@ -16,41 +16,41 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.forge.mixin;
+package dev.ithundxr.createnumismatics.neoforge.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.actors.psi.PortableItemInterfaceBlockEntity;
 import com.simibubi.create.content.contraptions.actors.psi.PortableStorageInterfaceBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.ItemSalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingItemBufferHandler;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge.InvalidatableWrappingItemBufferHandler;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Objects;
 
 @Mixin(PortableItemInterfaceBlockEntity.class)
 public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
-    @Shadow(remap = false) protected LazyOptional<IItemHandlerModifiable> capability;
+    @Shadow(remap = false) protected IItemHandlerModifiable capability;
 
     @Unique
     private ItemSalepointTargetBehaviour numismatics$salepointBehaviour;
@@ -63,46 +63,53 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
         super(type, pos, state);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "startTransferringTo",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableItemInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/items/IItemHandlerModifiable;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
+    private void keepControl(
+        PortableItemInterfaceBlockEntity instance,
+        IItemHandlerModifiable value,
+        Operation<Void> original,
+        Contraption contraption
+    ) {
         numismatics$contraptionStorage = contraption.getStorage().getAllItems();
 
-        oldCap.ifPresent(itemHandler -> {
-            IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
+        if (capability instanceof ItemHandlerWrapperAccessor oldWrapper && value instanceof ItemHandlerWrapperAccessor newWrapper) {
+            IItemHandlerModifiable existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingItemBufferHandler) {
-                capability.ifPresent(newItemHandler -> {
-                    ((ItemHandlerWrapperAccessor) newItemHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
+
+        original.call(instance, value);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "stopTransferring",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableItemInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/items/IItemHandlerModifiable;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl2(CallbackInfo ci, @Local(name = "oldCap") LazyOptional<IItemHandlerModifiable> oldCap) {
+    private void keepControl2(PortableItemInterfaceBlockEntity instance, IItemHandlerModifiable value, Operation<Void> original) {
         numismatics$contraptionStorage = null;
 
-        oldCap.ifPresent(itemHandler -> {
-            IItemHandlerModifiable existingWrapped = ((ItemHandlerWrapperAccessor) itemHandler).getWrapped();
+        if (capability instanceof ItemHandlerWrapperAccessor oldWrapper && value instanceof ItemHandlerWrapperAccessor newWrapper) {
+            IItemHandlerModifiable existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingItemBufferHandler) {
-                capability.ifPresent(newItemHandler -> {
-                    ((ItemHandlerWrapperAccessor) newItemHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
+
+        original.call(instance, value);
     }
 
     @Override
@@ -123,9 +130,9 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             protected void ensureUnderControlInternal(@NotNull ISalepointState<ItemStack> state) {
-                capability.ifPresent(itemHandler -> {
-                    ((ItemHandlerWrapperAccessor) itemHandler).setWrapped((InvalidatableWrappingItemBufferHandler) state.getBuffer());
-                });
+                if (capability instanceof ItemHandlerWrapperAccessor wrapper) {
+                    wrapper.setWrapped((InvalidatableWrappingItemBufferHandler) state.getBuffer());
+                }
 
                 if (!underControl) {
                     underControl = true;
@@ -135,12 +142,12 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
 
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<ItemStack> state) {
-                capability.ifPresent(itemHandler -> {
-                    ((ItemHandlerWrapperAccessor) itemHandler).setWrapped(Objects.requireNonNullElseGet(
+                if (capability instanceof ItemHandlerWrapperAccessor wrapper) {
+                    wrapper.setWrapped(Objects.requireNonNullElseGet(
                         numismatics$contraptionStorage,
                         () -> new ItemStackHandler(0)
                     ));
-                });
+                }
 
                 if (underControl) {
                     underControl = false;
@@ -176,15 +183,15 @@ public abstract class PortableItemInterfaceBlockEntityMixin extends PortableStor
             }
 
             @Override
-            public void read(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.read(nbt, clientPacket);
+            public void read(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.read(nbt, registries, clientPacket);
 
                 underControl = nbt.getBoolean("SalepointUnderControl");
             }
 
             @Override
-            public void write(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.write(nbt, clientPacket);
+            public void write(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.write(nbt, registries, clientPacket);
 
                 nbt.putBoolean("SalepointUnderControl", underControl);
             }

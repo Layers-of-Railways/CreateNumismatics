@@ -16,7 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.forge.mixin.compat;
+// todo reinstate once SnR is ported
+/*package dev.ithundxr.createnumismatics.forge.mixin.compat;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -244,4 +245,4 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
             return original.call(instance) || this$0.getBehaviour(SalepointTargetBehaviour.TYPE).isControlledBySalepoint();
         }
     }
-}
+}*/

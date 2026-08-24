@@ -16,9 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.forge.mixin.compat;
+package dev.ithundxr.createnumismatics.neoforge.mixin.compat;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyInterfaceBlockEntity;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyInterfaceBlockEntity.InterfaceEnergyHandler;
 import com.mrh0.createaddition.blocks.portable_energy_interface.PortableEnergyManager;
@@ -29,23 +30,25 @@ import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
 import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.EnergySalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingEnergyBufferStorage;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge.InvalidatableWrappingEnergyBufferStorage;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.content.salepoint.types.Energy;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.*;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +57,7 @@ import java.util.Objects;
 @Mixin(PortableEnergyInterfaceBlockEntity.class)
 public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow(remap = false) protected LazyOptional<IEnergyStorage> capability;
+    @Shadow(remap = false) protected IEnergyStorage capability;
 
     @Unique
     private EnergySalepointTargetBehaviour numismatics$salepointBehaviour;
@@ -67,46 +70,49 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
         super(type, pos, state);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "startTransferringTo",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/mrh0/createaddition/blocks/portable_energy_interface/PortableEnergyInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/energy/IEnergyStorage;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IEnergyStorage> oldcap) {
+    private void keepControl(
+        PortableEnergyInterfaceBlockEntity instance,
+        IEnergyStorage value,
+        Operation<Void> original,
+        Contraption contraption
+    ) {
         numismatics$contraptionStorage = PortableEnergyManager.get(contraption);
 
-        oldcap.ifPresent(energyHandler -> {
-            IEnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) energyHandler).getWrapped();
+        if (capability instanceof InterfaceEnergyHandlerAccessor oldWrapper && value instanceof InterfaceEnergyHandlerAccessor newWrapper) {
+            IEnergyStorage existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage) {
-                capability.ifPresent(newEnergyHandler -> {
-                    ((InterfaceEnergyHandlerAccessor) newEnergyHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
     }
 
-    @Inject(
+    @WrapOperation(
         method = "stopTransferring",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/mrh0/createaddition/blocks/portable_energy_interface/PortableEnergyInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/energy/IEnergyStorage;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl2(CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IEnergyStorage> oldcap) {
+    private void keepControl2(PortableEnergyInterfaceBlockEntity instance, IEnergyStorage value, Operation<Void> original) {
         numismatics$contraptionStorage = null;
 
-        oldcap.ifPresent(energyHandler -> {
-            IEnergyStorage existingWrapped = ((InterfaceEnergyHandlerAccessor) energyHandler).getWrapped();
+        if (capability instanceof InterfaceEnergyHandlerAccessor oldWrapper && value instanceof InterfaceEnergyHandlerAccessor newWrapper) {
+            IEnergyStorage existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingEnergyBufferStorage) {
-                capability.ifPresent(newEnergyHandler -> {
-                    ((InterfaceEnergyHandlerAccessor) newEnergyHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
     }
 
     @Override
@@ -127,9 +133,9 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             protected void ensureUnderControlInternal(@NotNull ISalepointState<Energy> state) {
-                capability.ifPresent(energyHandler -> {
-                    ((InterfaceEnergyHandlerAccessor) energyHandler).setWrapped((InvalidatableWrappingEnergyBufferStorage) state.getBuffer());
-                });
+                if (capability instanceof InterfaceEnergyHandlerAccessor wrapper) {
+                    wrapper.setWrapped((InvalidatableWrappingEnergyBufferStorage) state.getBuffer());
+                }
 
                 if (!underControl) {
                     underControl = true;
@@ -139,12 +145,12 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
 
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<Energy> state) {
-                capability.ifPresent(energyHandler -> {
-                    ((InterfaceEnergyHandlerAccessor) energyHandler).setWrapped(Objects.requireNonNullElseGet(
+                if (capability instanceof InterfaceEnergyHandlerAccessor wrapper) {
+                    wrapper.setWrapped(Objects.requireNonNullElseGet(
                         numismatics$contraptionStorage,
                         () -> new EnergyStorage(0)
                     ));
-                });
+                }
 
                 if (underControl) {
                     underControl = false;
@@ -194,15 +200,15 @@ public abstract class PortableEnergyInterfaceBlockEntityMixin extends PortableSt
             }
 
             @Override
-            public void read(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.read(nbt, clientPacket);
+            public void read(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.read(nbt, registries, clientPacket);
 
                 underControl = nbt.getBoolean("SalepointUnderControl");
             }
 
             @Override
-            public void write(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.write(nbt, clientPacket);
+            public void write(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.write(nbt, registries, clientPacket);
 
                 nbt.putBoolean("SalepointUnderControl", underControl);
             }

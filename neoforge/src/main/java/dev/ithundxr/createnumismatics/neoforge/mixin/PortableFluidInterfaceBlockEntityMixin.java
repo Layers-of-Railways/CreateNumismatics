@@ -16,11 +16,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.ithundxr.createnumismatics.forge.mixin;
+package dev.ithundxr.createnumismatics.neoforge.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.actors.psi.PortableFluidInterfaceBlockEntity;
 import com.simibubi.create.content.contraptions.actors.psi.PortableFluidInterfaceBlockEntity.InterfaceFluidHandler;
@@ -29,27 +28,26 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.FluidSalepointTargetBehaviour;
 import dev.ithundxr.createnumismatics.content.salepoint.behaviours.SalepointTargetBehaviour;
-import dev.ithundxr.createnumismatics.content.salepoint.containers.forge.InvalidatableWrappingFluidBufferTank;
+import dev.ithundxr.createnumismatics.content.salepoint.containers.neoforge.InvalidatableWrappingFluidBufferTank;
 import dev.ithundxr.createnumismatics.content.salepoint.states.ISalepointState;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
-import dev.ithundxr.createnumismatics.multiloader.fluid.forge.MultiloaderFluidStackImpl;
+import dev.ithundxr.createnumismatics.multiloader.fluid.neoforge.MultiloaderFluidStackImpl;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +55,7 @@ import java.util.Objects;
 @Mixin(PortableFluidInterfaceBlockEntity.class)
 public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableStorageInterfaceBlockEntity {
 
-    @Shadow(remap = false) protected LazyOptional<IFluidHandler> capability;
+    @Shadow(remap = false) protected IFluidHandler capability;
 
     @Unique
     private FluidSalepointTargetBehaviour numismatics$salepointBehaviour;
@@ -70,46 +68,53 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
         super(type, pos, state);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "startTransferringTo",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableFluidInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/fluids/capability/IFluidHandler;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl(Contraption contraption, float distance, CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap) {
+    private void keepControl(
+        PortableFluidInterfaceBlockEntity instance,
+        IFluidHandler value,
+        Operation<Void> original,
+        Contraption contraption
+    ) {
         numismatics$contraptionStorage = contraption.getStorage().getFluids();
 
-        oldcap.ifPresent(fluidHandler -> {
-            IFluidHandler existingWrapped = ((InterfaceFluidHandlerAccessor) fluidHandler).getWrapped();
+        if (capability instanceof InterfaceFluidHandlerAccessor oldWrapper && value instanceof InterfaceFluidHandlerAccessor newWrapper) {
+            IFluidHandler existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingFluidBufferTank) {
-                capability.ifPresent(newFluidHandler -> {
-                    ((InterfaceFluidHandlerAccessor) newFluidHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
+
+        original.call(instance, value);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "stopTransferring",
         at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/common/util/LazyOptional;invalidate()V"
+            value = "FIELD",
+            target = "Lcom/simibubi/create/content/contraptions/actors/psi/PortableFluidInterfaceBlockEntity;capability:Lnet/neoforged/neoforge/fluids/capability/IFluidHandler;",
+            opcode = Opcodes.PUTFIELD
         ),
         remap = false
     )
-    private void keepControl2(CallbackInfo ci, @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap) {
+    private void keepControl2(PortableFluidInterfaceBlockEntity instance, IFluidHandler value, Operation<Void> original) {
         numismatics$contraptionStorage = null;
 
-        oldcap.ifPresent(fluidHandler -> {
-            IFluidHandler existingWrapped = ((InterfaceFluidHandlerAccessor) fluidHandler).getWrapped();
+        if (capability instanceof InterfaceFluidHandlerAccessor oldWrapper && value instanceof InterfaceFluidHandlerAccessor newWrapper) {
+            IFluidHandler existingWrapped = oldWrapper.getWrapped();
             if (existingWrapped instanceof InvalidatableWrappingFluidBufferTank) {
-                capability.ifPresent(newFluidHandler -> {
-                    ((InterfaceFluidHandlerAccessor) newFluidHandler).setWrapped(existingWrapped);
-                });
+                newWrapper.setWrapped(existingWrapped);
             }
-        });
+        }
+
+        original.call(instance, value);
     }
 
     @Override
@@ -130,9 +135,9 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
 
             @Override
             protected void ensureUnderControlInternal(@NotNull ISalepointState<MultiloaderFluidStack> state) {
-                capability.ifPresent(fluidHandler -> {
-                    ((InterfaceFluidHandlerAccessor) fluidHandler).setWrapped((InvalidatableWrappingFluidBufferTank) state.getBuffer());
-                });
+                if (capability instanceof InterfaceFluidHandlerAccessor wrapper) {
+                    wrapper.setWrapped((InvalidatableWrappingFluidBufferTank) state.getBuffer());
+                }
 
                 if (!underControl) {
                     underControl = true;
@@ -142,12 +147,12 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
 
             @Override
             protected void relinquishControlInternal(@NotNull ISalepointState<MultiloaderFluidStack> state) {
-                capability.ifPresent(fluidHandler -> {
-                    ((InterfaceFluidHandlerAccessor) fluidHandler).setWrapped(Objects.requireNonNullElseGet(
+                if (capability instanceof InterfaceFluidHandlerAccessor wrapper) {
+                    wrapper.setWrapped(Objects.requireNonNullElseGet(
                         numismatics$contraptionStorage,
                         () -> new FluidTank(0)
                     ));
-                });
+                }
 
                 if (underControl) {
                     underControl = false;
@@ -183,15 +188,15 @@ public abstract class PortableFluidInterfaceBlockEntityMixin extends PortableSto
             }
 
             @Override
-            public void read(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.read(nbt, clientPacket);
+            public void read(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.read(nbt, registries, clientPacket);
 
                 underControl = nbt.getBoolean("SalepointUnderControl");
             }
 
             @Override
-            public void write(@NotNull CompoundTag nbt, boolean clientPacket) {
-                super.write(nbt, clientPacket);
+            public void write(@NotNull CompoundTag nbt, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
+                super.write(nbt, registries, clientPacket);
 
                 nbt.putBoolean("SalepointUnderControl", underControl);
             }
