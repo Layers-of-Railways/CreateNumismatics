@@ -24,6 +24,7 @@ Fixes
 - Shops and Blaze Bankers drop ID Cards from their trust list when destroyed
 - Vendors and Depositors preserve price information and filter items in schematics
 - Bank accounts with absurdly high balances will store additional value in a `long` value to prevent integer overflows
+- Remove unnecessary-in-1.21.1 vendor-specific inventory packets, resolving issues #144, #147, #150, #151, #153, #156
 
 Changes
 - Allow rebinding the break keybind using the crouch keybind (was previously left shift + break key)
