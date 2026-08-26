@@ -104,6 +104,17 @@ dependencies {
         forgeRuntimeLibrary("io.netty:netty-handler-proxy:4.1.97.Final")
     }
 
+    // Sable
+    if ("enable_sable"().toBoolean()) {
+        modLocalRuntime("dev.ryanhcode.sable:sable-neoforge-${"minecraft_version"()}:${"sable_version"()}")
+        modLocalRuntime("foundry.veil:veil-neoforge-${"minecraft_version"()}:${"sable_veil_version"()}") {
+            exclude("maven.modrinth")
+            exclude("me.fallenbreath")
+        }
+        forgeRuntimeLibrary("gg.moonflower:molang-compiler:${"sable_molang_compiler_version"()}")
+        forgeRuntimeLibrary("io.github.ocelot:glsl-processor:${"sable_glsl_processor_version"()}")
+    }
+
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
     implementation(include("io.github.llamalad7:mixinextras-neoforge:${"mixin_extras_version"()}")!!)!!
 }

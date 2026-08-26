@@ -401,6 +401,12 @@ fun Project.setupRepositories() {
         exclusiveMaven("https://maven.jamieswhiteshirt.com/libs-release", "com.jamieswhiteshirt") // Reach Entity Attributes
         exclusiveMaven("https://maven.siphalor.de/", "de.siphalor") // Amecs API (required by Carry On)
         exclusiveMaven("https://maven.squiddev.cc/", "cc.tweaked") // CC Tweaked
+        exclusiveMaven("https://maven.ryanhcode.dev/releases", "dev.ryanhcode.sable", "dev.ryanhcode.sable-companion") // Sable
+        exclusiveMaven("https://maven.blamejared.com",
+            "foundry.veil",
+            "gg.moonflower",
+            "io.github.ocelot"
+        ) // Veil and dependencies, for Sable
     }
 }
 
