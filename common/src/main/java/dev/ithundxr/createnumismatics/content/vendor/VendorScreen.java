@@ -217,7 +217,11 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
                 : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
             extractionButton.active = extractionButtonActive$;
 
-            NumismaticsPackets.PACKETS.send(new VendorConfigurationPacket(menu.contentHolder));
+            CatnipServices.NETWORK.sendToServer(new VendorConfigurationPacket(
+                menu.contentHolder.getBlockPos(),
+                menu.contentHolder.getMode(),
+                menu.contentHolder.isAutomatedExtractionEnabled()
+            ));
         });
         addRenderableWidget(modeScrollInput);
 
