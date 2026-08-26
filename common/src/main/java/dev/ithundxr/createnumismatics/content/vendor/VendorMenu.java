@@ -83,7 +83,7 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
             x += 18;
         }
         addSlot(new AnyCardSlot.BoundAnyCardSlot(contentHolder.cardContainer, 0, 170+4+18, y)); // make here to preserve slot order
-        addSlot(new Slot(contentHolder.filterContainer, 0, 142+5+20, y));
+        addSlot(new FilteringSlot(contentHolder.filterContainer, 0, 142+5+20, y, contentHolder::canAcceptFilterStack));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -148,7 +148,9 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
             } else {
                 insert = held.copy();
             }
-            getSlot(slotId).set(insert);
+            if (contentHolder.canAcceptFilterStack(insert)) {
+                getSlot(slotId).set(insert);
+            }
         } else {
             super.clicked(slotId, button, clickType, player);
         }
@@ -256,9 +258,13 @@ public class VendorMenu extends MenuBase<VendorBlockEntity> implements IScrollab
 
     @Override
     public void setGhostStackInSlot(int slotID, ItemStack stack) {
-        if (isSlotGhost(slotID)) {
-            getSlot(slotID).set(stack);
-        }
+        if (!isSlotGhost(slotID))
+            return;
+
+        if (slotID == FILTER_SLOT_INDEX && !contentHolder.canAcceptFilterStack(stack))
+            return;
+
+        getSlot(slotID).set(stack);
     }
 
     @Override

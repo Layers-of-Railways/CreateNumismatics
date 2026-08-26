@@ -23,7 +23,11 @@ import com.simibubi.create.AllKeys;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
-import com.simibubi.create.foundation.gui.widget.*;
+import com.simibubi.create.foundation.gui.widget.IconButton;
+import com.simibubi.create.foundation.gui.widget.Indicator;
+import com.simibubi.create.foundation.gui.widget.Label;
+import com.simibubi.create.foundation.gui.widget.ScrollInput;
+import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import dev.ithundxr.createnumismatics.base.client.rendering.GuiBlockEntityRenderBuilder;
 import dev.ithundxr.createnumismatics.base.client.rendering.VirtualizableScreen;
 import dev.ithundxr.createnumismatics.config.NumismaticsConfig;
@@ -43,6 +47,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +56,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+
+import static net.createmod.catnip.gui.widget.AbstractSimiWidget.HINT_RGB;
 
 public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implements VirtualizableScreen {
 
@@ -73,6 +81,8 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
 
     private boolean virtualMode = false;
     private @Nullable VirtualHandle virtualHandle = null;
+
+    private Boolean filterActedSpecial = null;
 
     public VendorScreen(VendorMenu container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -187,7 +197,14 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         modeLabel = new Label(x + 90 + 3 + 9, y + 40 + 5, CommonComponents.EMPTY).withShadow();
         addRenderableWidget(modeLabel);
 
-        modeScrollInput = new SelectionScrollInput(x + 90 + 9, y + 40, 46, 18);
+        modeScrollInput = new SelectionScrollInput(x + 90 + 9, y + 40, 46, 18) {
+            @Override
+            protected void clampState() {
+                super.clampState();
+                if (menu.contentHolder.filterActsSpecial())
+                    state = Mode.SELL.ordinal();
+            }
+        };
         modeScrollInput.forOptions(Mode.getComponents());
         modeScrollInput.writingTo(modeLabel);
         modeScrollInput.titled(Component.translatable("block.numismatics.vendor.tooltip.mode"));
@@ -199,6 +216,8 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
                 ? (extractionButtonActive$ ? Indicator.State.GREEN : Indicator.State.ON)
                 : (extractionButtonActive$ ? Indicator.State.RED : Indicator.State.OFF);
             extractionButton.active = extractionButtonActive$;
+
+            NumismaticsPackets.PACKETS.send(new VendorConfigurationPacket(menu.contentHolder));
         });
         addRenderableWidget(modeScrollInput);
 
@@ -254,16 +273,26 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
     @Override
     protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int x, int y) {
         super.renderTooltip(guiGraphics, x, y);
-        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && !this.hoveredSlot.hasItem()) {
-            Component component = null;
-            if (hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
-                component = Component.translatable("block.numismatics.vendor.tooltip.trade_item");
-            } else if (VendorMenu.INV_START_INDEX <= hoveredSlot.index && hoveredSlot.index < VendorMenu.INV_END_INDEX) {
-                component = Component.translatable("block.numismatics.vendor.tooltip.stock");
+
+        Component component = null;
+
+        if (hoveredSlot != null) {
+            if (this.menu.getCarried().isEmpty() && !this.hoveredSlot.hasItem()) {
+                if (hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
+                    component = Component.translatable("block.numismatics.vendor.tooltip.trade_item");
+                } else if (VendorMenu.INV_START_INDEX <= hoveredSlot.index && hoveredSlot.index < VendorMenu.INV_END_INDEX) {
+                    component = Component.translatable("block.numismatics.vendor.tooltip.stock");
+                }
+            } else if (hoveredSlot.index == VendorMenu.FILTER_SLOT_INDEX) {
+                if (!menu.contentHolder.canAcceptFilterStack(menu.getCarried())) {
+                    component = Component.translatable("block.numismatics.vendor.tooltip.trade_item.no_filter")
+                        .withStyle(Style.EMPTY.withColor(HINT_RGB.getRGB()));
+                }
             }
-            if (component != null) {
-                guiGraphics.renderTooltip(font, component, x, y);
-            }
+        }
+
+        if (component != null) {
+            guiGraphics.renderTooltip(font, component, x, y);
         }
     }
 
@@ -275,6 +304,19 @@ public class VendorScreen extends AbstractSimiContainerScreen<VendorMenu> implem
         }
 
         return super.mouseScrolled(mouseX, mouseY, delta);
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+
+        boolean actsSpecial = menu.contentHolder.filterActsSpecial();
+        if (filterActedSpecial == null || filterActedSpecial != actsSpecial) {
+            filterActedSpecial = actsSpecial;
+
+            MutableComponent hint = actsSpecial ? Component.translatable("gui.numismatics.vendor.mode_locked") : null;
+            modeScrollInput.addHint(hint);
+        }
     }
 
     @Override
