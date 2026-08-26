@@ -18,6 +18,7 @@
 
 package dev.ithundxr.createnumismatics.content.salepoint.states;
 
+import com.simibubi.create.content.logistics.filter.FilterItem;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
@@ -133,7 +134,8 @@ public class ItemSalepointState implements ISalepointState<ItemStack>, Clearable
 
     @Override
     public boolean canChangeFilterTo(ItemStack filter) {
-        return filter.getCount() <= filter.getMaxStackSize();
+        // we disable all placement of filter items so that if we support them in the future we don't break anything
+        return filter.getCount() <= filter.getMaxStackSize() && !(filter.getItem() instanceof FilterItem);
     }
 
     @Override

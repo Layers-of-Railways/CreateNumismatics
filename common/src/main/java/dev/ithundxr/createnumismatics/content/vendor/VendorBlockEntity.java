@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.api.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
+import com.simibubi.create.content.logistics.filter.FilterItem;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import dev.ithundxr.createnumismatics.Numismatics;
@@ -139,6 +140,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     private boolean isFilterSlotLegacy = false;
     public final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
     private boolean hasEnoughMoneyFromServer = false;
+
+    private @Nullable ItemStack cachedDisplayItem = null;
 
     AbstractComputerBehaviour computerBehaviour;
 
@@ -323,6 +326,12 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     @Override
+    public void tick() {
+        cachedDisplayItem = null;
+        super.tick();
+    }
+
+    @Override
     public void lazyTick() {
         super.lazyTick();
         if (level == null || level.isClientSide)
@@ -370,7 +379,7 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     @Override
     @Environment(EnvType.CLIENT)
     public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        ItemStack filterStack = getFilterItem();
+        ItemStack filterStack = getDisplayItem();
         if (filterStack.isEmpty())
             return false;
 
@@ -504,8 +513,113 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         price.disableClientRead();
     }
 
+    /** The actual stack used for filtering */
     public ItemStack getFilterItem() {
         return filterContainer.getItem(0);
+    }
+
+    /**
+     * @return whether the filter item would be allowed to act special. Ignores whether it actually is {@code instanceof FilterItem}
+     */
+    @SuppressWarnings("RedundantIfStatement")
+    public boolean couldFilterActSpecial() {
+        if (isFilterSlotLegacy())
+            return false;
+
+        if (isCreativeVendor())
+            return false;
+
+        if (mode == Mode.BUY)
+            return false;
+
+        return true;
+    }
+
+    /**
+     * @return whether the filter item acts special. (i.e. it is {@code instanceof FilterItem} among other conditions)
+     */
+    public boolean filterActsSpecial() {
+        if (!couldFilterActSpecial())
+            return false;
+
+        ItemStack filter = getFilterItem();
+        return filter.getItem() instanceof FilterItem;
+    }
+
+    /**
+     * @return the special filter item, if it exists, according to the conditions of {@link VendorBlockEntity#couldFilterActSpecial()}
+     */
+    public @Nullable FilterItem getSpecialFilter() {
+        if (!couldFilterActSpecial())
+            return null;
+
+        ItemStack filter = getFilterItem();
+        return filter.getItem() instanceof FilterItem fi ? fi : null;
+    }
+
+    /**
+     * Find the first-if-special-filter-else-biggest matching {@link ItemStack} from our storage
+     * @return the biggest stack, may be EMPTY. Modifying will modify our inventory
+     */
+    public @NotNull ItemStack getStackToSell() {
+        if (filterActsSpecial()) {
+            for (ItemStack stack : items) {
+                if (matchesFilterItem(stack))
+                    return stack;
+            }
+            return ItemStack.EMPTY;
+        } else {
+            ItemStack best = ItemStack.EMPTY;
+            for (ItemStack stack : items) {
+                if (matchesFilterItem(stack) && stack.getCount() > best.getCount()) {
+                    best = stack;
+                }
+            }
+            return best;
+        }
+    }
+
+    /**
+     * @return whether the given stack is a valid filter given current mode
+     */
+    public boolean canAcceptFilterStack(ItemStack filter) {
+        return couldFilterActSpecial() || !(filter.getItem() instanceof FilterItem);
+    }
+
+    /**
+     * The item that should be displayed to buyers.
+     * May differ from {@link VendorBlockEntity#getFilterItem()} if a list/attribute filter is being used
+     */
+    public ItemStack getDisplayItem() {
+        if (cachedDisplayItem == null)
+            cachedDisplayItem = getDisplayItemUncached();
+
+        return cachedDisplayItem;
+    }
+
+    private ItemStack getDisplayItemUncached() {
+        FilterItem specialFilter = getSpecialFilter();
+        ItemStack filterStack = getFilterItem();
+        if (specialFilter != null) {
+            ItemStack toSell = getStackToSell();
+            if (!toSell.isEmpty()) {
+                int count = Math.min(toSell.getMaxStackSize(), filterStack.getCount());
+                return toSell.copyWithCount(count);
+            }
+
+            ItemStack[] representative = specialFilter.getFilterItems(filterStack);
+            if (representative.length > 0) {
+                long time = this.level != null ? this.level.getGameTime() : 0;
+                int idx = (int) ((time / 10) % (long) representative.length);
+                ItemStack toReturn = representative[idx];
+                int count = Math.min(toReturn.getMaxStackSize(), filterStack.getCount());
+                return toReturn.copyWithCount(count);
+            }
+
+            // fallthrough to just displaying the filter itself
+        }
+
+        return filterStack;
     }
 
     /* Begin Container */
@@ -606,6 +720,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return map;
     }
 
+    /**
+     * Compare two stacks on rough similarity (i.e. enchantments must match, but order needn't).
+     * Does not support checking list/attribute filters (i.e. they are treated as normal items).
+     * @param filterItem the stack acting as a filter
+     * @param other the stack being checked
+     * @return whether the stacks match
+     */
     public static boolean matchesFilterItem(@NotNull ItemStack filterItem, @NotNull ItemStack other) {
         if (filterItem.isEmpty() || other.isEmpty())
             return false;
@@ -622,11 +743,26 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
         return an.equals(bn);
     }
 
+    /**
+     * Compare whether a stack matches this vendor, potentially considering list/attribute filters
+     * @param b the stack to check
+     * @return whether stack {@code b} can be bought/sold by this vendor
+     */
     public boolean matchesFilterItem(@NotNull ItemStack b) {
         ItemStack a = getFilterItem();
-        return matchesFilterItem(a, b);
+
+        FilterItem specialFilter = getSpecialFilter();
+        if (specialFilter != null) {
+            return specialFilter.makeStackWrapper(a).test(level, b);
+        } else {
+            return matchesFilterItem(a, b);
+        }
     }
 
+    /**
+     * Reduce the amount of space taken up by inventory.
+     * Order remains unchanged, but identical stacks are combined if they fit
+     */
     protected void condenseItems() {
         NonNullList<ItemStack> newItems = NonNullList.withSize(items.size(), ItemStack.EMPTY);
         for (int i = 0; i < items.size(); i++) {
@@ -742,9 +878,13 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
 
         condenseItems();
 
-        int countMultiplier = bulk ? selling.getMaxStackSize() / selling.getCount() : 1;
+        int sellingMaxStackSize = filterActsSpecial()
+            ? getStackToSell().getMaxStackSize()
+            : selling.getMaxStackSize();
 
-        while (countMultiplier * selling.getCount() > selling.getMaxStackSize()) // in case there's improper flooring
+        int countMultiplier = bulk ? sellingMaxStackSize / selling.getCount() : 1;
+
+        while (countMultiplier * selling.getCount() > sellingMaxStackSize) // in case there's improper flooring
             countMultiplier--;
 
         if (isCreativeVendor()) {
@@ -765,26 +905,16 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
                 level.playSound(null, getBlockPos(), AllSoundEvents.DENY.getMainEvent(), SoundSource.BLOCKS, 0.5f, 1.0f);
             }
         } else {
-            int highestIdx = -1;
-            int highestCount = 0;
-            for (int i = 0; i < items.size(); i++) {
-                ItemStack stack = items.get(i);
-                if (matchesFilterItem(stack) && stack.getCount() > highestCount) {
-                    highestIdx = i;
-                    highestCount = stack.getCount();
-                }
-            }
+            ItemStack stackToSell = getStackToSell();
 
-            while (highestCount < selling.getCount() * countMultiplier)
+            while (stackToSell.getCount() < selling.getCount() * countMultiplier)
                 countMultiplier--;
 
-            if (countMultiplier > 0 && highestIdx >= 0) {
-                ItemStack stack = items.get(highestIdx);
-
+            if (countMultiplier > 0 && !stackToSell.isEmpty()) {
                 ReasonHolder reasonHolder = new ReasonHolder();
                 int actualCountMultiplier = price.deduct(player, hand, true, reasonHolder, countMultiplier);
                 if (actualCountMultiplier > 0) {
-                    ItemStack output = stack.split(selling.getCount() * actualCountMultiplier);
+                    ItemStack output = stackToSell.split(selling.getCount() * actualCountMultiplier);
                     ItemUtil.givePlayerItem(player, output);
                     giveSellingAdvancements(player);
 
@@ -957,6 +1087,8 @@ public class VendorBlockEntity extends SmartBlockEntity implements Trusted, Trus
     }
 
     public void setMode(Mode mode) {
+        if (filterActsSpecial())
+            mode = Mode.SELL;
         this.mode = mode;
         if (level != null && !level.isClientSide)
             setChanged();

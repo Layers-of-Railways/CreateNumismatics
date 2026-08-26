@@ -16,6 +16,7 @@
   "block.numismatics.vendor.tooltip.price": "For: %s %s, %s¤",
   "block.numismatics.vendor.tooltip.mode": "Mode",
   "block.numismatics.vendor.tooltip.trade_item": "Item to Trade",
+  "block.numismatics.vendor.tooltip.trade_item.no_filter": "Cannot accept special filters in Buy mode",
   "block.numismatics.vendor.tooltip.stock": "Stock",
 
   "create.table_cloth.hand_to_shop_keeper.numismatics.card": "You can pay with a bank card in your offhand",
