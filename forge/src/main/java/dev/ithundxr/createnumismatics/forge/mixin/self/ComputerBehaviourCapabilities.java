@@ -21,6 +21,8 @@ package dev.ithundxr.createnumismatics.forge.mixin.self;
 import com.simibubi.create.compat.computercraft.AbstractComputerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
+import dev.ithundxr.createnumismatics.compat.Mods;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -33,30 +35,31 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.function.Supplier;
 
 @Mixin(ComputerBehaviour.class)
+@ConditionalMixin(mods = Mods.COMPUTERCRAFT)
 public class ComputerBehaviourCapabilities extends AbstractComputerBehaviour {
     public ComputerBehaviourCapabilities(SmartBlockEntity te) {
         super(te);
     }
 
-    @Unique private static final Capability<IPeripheral> RAILWAYS$PERIPHERAL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-    @Unique LazyOptional<IPeripheral> railways$peripheral;
+    @Unique private static final Capability<IPeripheral> NUMISMATICS$PERIPHERAL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    @Unique LazyOptional<IPeripheral> numismatics$peripheral;
     @Shadow(remap = false) Supplier<IPeripheral> peripheralSupplier;
 
     @Override
     public <T> boolean isPeripheralCap(Capability<T> cap) {
-        return cap == RAILWAYS$PERIPHERAL_CAPABILITY;
+        return cap == NUMISMATICS$PERIPHERAL_CAPABILITY;
     }
 
     @Override
     public <T> LazyOptional<T> getPeripheralCapability() {
-        if (railways$peripheral == null || !railways$peripheral.isPresent())
-            railways$peripheral = LazyOptional.of(() -> peripheralSupplier.get());
-        return railways$peripheral.cast();
+        if (numismatics$peripheral == null || !numismatics$peripheral.isPresent())
+            numismatics$peripheral = LazyOptional.of(() -> peripheralSupplier.get());
+        return numismatics$peripheral.cast();
     }
 
     @Override
     public void removePeripheral() {
-        if (railways$peripheral != null)
-            railways$peripheral.invalidate();
+        if (numismatics$peripheral != null)
+            numismatics$peripheral.invalidate();
     }
 }
