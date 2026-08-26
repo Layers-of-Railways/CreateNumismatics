@@ -27,8 +27,10 @@ import dev.ithundxr.createnumismatics.compat.computercraft.implementation.Actual
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.Details;
 import dev.ithundxr.createnumismatics.multiloader.fluid.MultiloaderFluidStack;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ComputerCraftProxy {
@@ -39,6 +41,7 @@ public class ComputerCraftProxy {
 
     public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> fallbackFactory;
     public static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> computerFactory;
+    public static Consumer<RegisterCapabilitiesEvent> bankTerminalPeripheralRegistrar;
 
     @ExpectPlatform
     public static AbstractComputerBehaviour behaviour(SmartBlockEntity sbe) {

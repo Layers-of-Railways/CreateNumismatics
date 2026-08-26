@@ -20,11 +20,14 @@ package dev.ithundxr.createnumismatics.compat.computercraft.implementation.neofo
 
 import com.google.common.collect.ImmutableMap;
 import dan200.computercraft.api.detail.VanillaDetailRegistries;
+import dan200.computercraft.api.peripheral.PeripheralCapability;
 import dev.ithundxr.createnumismatics.compat.computercraft.ComputerCraftProxy;
 import dev.ithundxr.createnumismatics.compat.computercraft.implementation.ComputerBehaviour;
+import dev.ithundxr.createnumismatics.compat.computercraft.implementation.peripherals.BankTerminalPeripheral;
 import dev.ithundxr.createnumismatics.content.bank.AuthorizedCardItem;
 import dev.ithundxr.createnumismatics.content.bank.CardItem;
 import dev.ithundxr.createnumismatics.content.bank.IDCardItem;
+import dev.ithundxr.createnumismatics.registry.NumismaticsBlocks;
 import dev.ithundxr.createnumismatics.registry.NumismaticsTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +38,13 @@ public class ActualComputerCraftProxyImpl {
     public static void registerWithDependency() {
         /* Comment if computercraft.implementation is not in the source set */
         ComputerCraftProxy.computerFactory = ComputerBehaviour::new;
+        ComputerCraftProxy.bankTerminalPeripheralRegistrar = event -> {
+            event.registerBlock(
+                PeripheralCapability.get(),
+                ($1, $2, $3, $4, $5) -> BankTerminalPeripheral.INSTANCE,
+                NumismaticsBlocks.BANK_TERMINAL.get()
+            );
+        };
 
         VanillaDetailRegistries.ITEM_STACK.addProvider((detailMap, stack) -> {
             Map<Object, @Nullable Object> cardDetails = null;
