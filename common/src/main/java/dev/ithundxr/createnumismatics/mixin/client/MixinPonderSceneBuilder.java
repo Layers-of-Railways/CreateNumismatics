@@ -67,7 +67,7 @@ public class MixinPonderSceneBuilder implements SceneBuilder_Duck {
             return ret;
         }
 
-        @WrapOperation(method = "showControls", at = @At(value = "NEW", target = "(Lnet/minecraft/world/phys/Vec3;Lnet/createmod/catnip/math/Pointing;)Lnet/createmod/ponder/foundation/element/InputWindowElement;"), remap = false)
+        @WrapOperation(method = "showControls", at = @At(value = "NEW", target = "(Lnet/minecraft/world/phys/Vec3;Lnet/createmod/catnip/math/Pointing;)Lnet/createmod/ponder/foundation/element/InputWindowElement;", remap = true), remap = false)
         private InputWindowElement storeOverlayControls(Vec3 sceneSpace, Pointing direction, Operation<InputWindowElement> original) {
             InputWindowElement ret = original.call(sceneSpace, direction);
             PonderElementBase_Duck.numismatics$applyOverlay(this$0, ret);
