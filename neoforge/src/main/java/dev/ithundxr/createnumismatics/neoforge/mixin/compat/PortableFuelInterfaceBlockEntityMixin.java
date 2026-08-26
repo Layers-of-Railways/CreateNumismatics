@@ -25,10 +25,10 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.railwayteam.railways.content.fuel.LiquidFuelTrainHandler;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity.InterfaceFluidHandler;
+import com.railwayteam.railways.mixin_interfaces.IContraptionFuel;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.actors.psi.PortableStorageInterfaceBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import dev.ithundxr.createnumismatics.Numismatics;
 import dev.ithundxr.createnumismatics.annotation.mixin.ConditionalMixin;
 import dev.ithundxr.createnumismatics.compat.Mods;
@@ -86,9 +86,8 @@ public abstract class PortableFuelInterfaceBlockEntityMixin extends PortableStor
         remap = false
     )
     private void keepControl(Contraption contraption, float distance, CallbackInfo ci,
-                             @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap,
-                             @Local(name = "finalCtw") CombinedTankWrapper finalCtw) {
-        numismatics$contraptionStorage = finalCtw;
+                             @Local(name = "oldcap") LazyOptional<IFluidHandler> oldcap) {
+        numismatics$contraptionStorage = ((IContraptionFuel) contraption).railways$getFluidFuels();
 
         oldcap.ifPresent(fluidHandler -> {
             IFluidHandler existingWrapped = ((InterfaceFluidHandlerAccessor) fluidHandler).getWrapped();

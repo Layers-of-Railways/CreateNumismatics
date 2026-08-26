@@ -18,7 +18,6 @@
 
 package dev.ithundxr.createnumismatics.mixin.client;
 
-import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -67,8 +66,9 @@ public class MixinTextWindowElement implements TextWindowElement_Duck {
         }
     }
 
-    @Definition(id = "vec", field = "Lnet/createmod/ponder/foundation/element/TextWindowElement;vec:Lnet/minecraft/world/phys/Vec3;")
-    @Expression("this.vec != null")
+    /*@Definition(id = "vec", field = "Lnet/createmod/ponder/foundation/element/TextWindowElement;vec:Lnet/minecraft/world/phys/Vec3;")
+    @Expression("this.vec != null")*/ // forge remapping fails
+    @Expression("? != null")
     @ModifyExpressionValue(
         method = "render",
         at = @At(value = "MIXINEXTRAS:EXPRESSION"),
