@@ -273,6 +273,8 @@ subprojects {
             projectId = "curseforge_id"()
             accessToken = System.getenv("CURSEFORGE_TOKEN")
             minecraftVersions.add("minecraft_version"())
+            client.set(true)
+            server.set(true)
 
             requires {
                 slug = createVersionType
@@ -283,6 +285,7 @@ subprojects {
             projectId = "modrinth_id"()
             accessToken = System.getenv("MODRINTH_TOKEN")
             minecraftVersions.add("minecraft_version"())
+            environment.set(CLIENT_AND_SERVER)
 
             requires {
                 slug = createVersionType
