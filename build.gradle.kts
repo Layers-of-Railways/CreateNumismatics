@@ -40,7 +40,7 @@ plugins {
     `maven-publish`
     id("architectury-plugin") version "3.4.+"
     id("dev.architectury.loom") version "1.11.+" apply false
-    id("me.modmuss50.mod-publish-plugin") version "0.8.4" apply false // https://github.com/modmuss50/mod-publish-plugin
+    id("me.modmuss50.mod-publish-plugin") version "2.2.0" apply false // https://github.com/modmuss50/mod-publish-plugin
     id("com.gradleup.shadow") version "8.3.8" apply false
     id("dev.ithundxr.silk") version "0.11.+" // https://github.com/IThundxr/silk
     id("net.kyori.blossom") version "2.1.0" apply false // https://github.com/KyoriPowered/blossom
@@ -206,7 +206,7 @@ subprojects {
             val groups = match?.groups;
             ">=${groups?.get(0)} ~${groups?.get(1)}"
         }()
-        
+
         // set up properties for filling into metadata
         val properties = mapOf(
             "version" to version,
