@@ -46,7 +46,9 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import java.net.URI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -103,15 +105,30 @@ public class NumismaticsImpl {
 
     private static void restoreLoggers() {
         if (Utils.isDevEnv()) {
+
+            if (Boolean.getBoolean("numismatics.dev.skipLoggerRestoration")) {
+                return;
+            }
+
             // restore our logging config, since forge likes to nuke it for fun
             for (String prop : new String[] {"log4j.configurationFile", "log4j2.configurationFile"}) {
-                String file = System.getProperty(prop);
-                if (file != null) {
-                    Configurator.reconfigure(ConfigurationFactory.getInstance().getConfiguration(
-                        LoggerContext.getContext(),
-                        ConfigurationSource.fromUri(URI.create(file))
-                    ));
-                    break;
+                String fileStr = System.getProperty(prop);
+                if (fileStr != null) {
+                    File file = new File(fileStr);
+                    if (file.exists() && file.isFile() && file.canRead()) {
+                        ConfigurationSource source;
+                        try {
+                            source = new ConfigurationSource(new FileInputStream(file), file);
+                        } catch (FileNotFoundException e) {
+                            Numismatics.LOGGER.error("Failed to open log4j file", e);
+                            continue;
+                        }
+                        Configurator.reconfigure(ConfigurationFactory.getInstance().getConfiguration(
+                            LoggerContext.getContext(),
+                            source
+                        ));
+                        break;
+                    }
                 }
             }
         }
