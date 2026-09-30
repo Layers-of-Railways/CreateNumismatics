@@ -201,15 +201,21 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     public int getBalance() {
         return balance;
     }
+    public long getAdditionalBalance() {
+        return additionalBalance;
+    }
 
     public void setBalance(int balance) {
+        setBalance((long)balance);
+    }
+    public void setBalance(long balance) {
         if (balance > MAX_STANDARD_BALANCE && !clientSide) {
-            int extra = balance - MAX_STANDARD_BALANCE;
+            long extra = balance - MAX_STANDARD_BALANCE;
             additionalBalance += extra;
             balance -= extra;
             Numismatics.LOGGER.warn("Account {} overflowed the standard maximum balance ({}). Additional currency will be stored but not displayed", this, MAX_STANDARD_BALANCE);
         } else if (balance < MAX_STANDARD_BALANCE && additionalBalance > 0 && !clientSide) {
-            int cap = MAX_STANDARD_BALANCE - balance;
+            int cap = MAX_STANDARD_BALANCE - (int)balance;
             int moved = (int) Math.min(additionalBalance, cap);
             balance += moved;
             additionalBalance -= moved;
@@ -222,7 +228,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             balance = 0; // reset things so recovery is possible
             additionalBalance = 0;
         }
-        this.balance = balance;
+        this.balance = (int)balance;
         markDirty();
     }
 
@@ -231,6 +237,9 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     }
 
     public void deposit(int amount) {
+        deposit((long)amount);
+    }
+    public void deposit(long amount) {
         if (amount < 0) {
             crashDev("Cannot add negative amount to balance! (Account: "+this+")");
             return;
@@ -240,7 +249,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         final int standardCapacity = MAX_STANDARD_BALANCE - balance;
         if (standardCapacity < amount) {
             Numismatics.LOGGER.warn("Account {} overflowed the standard maximum balance ({}). Additional currency will be stored but not displayed.", this, MAX_STANDARD_BALANCE);
-            int extra = amount - standardCapacity;
+            long extra = amount - standardCapacity;
             additionalBalance += extra;
             amount -= extra;
             markDirty();
@@ -314,7 +323,7 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             return null;
         }
         account.balance = tag.getInt("balance");
-        account.additionalBalance = tag.getLong("additionalBalance");
+        account.additionalBalance = tag.getLong("AdditionalBalance");
         if (account.trustList != null && tag.contains("TrustList")) {
             account.trustList.clear();
             account.trustList.addAll(NBTHelper.readCompoundList(
