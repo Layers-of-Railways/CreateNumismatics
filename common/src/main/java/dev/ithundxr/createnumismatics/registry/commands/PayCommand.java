@@ -37,8 +37,8 @@ import net.minecraft.network.chat.Component;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
-import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static com.mojang.brigadier.arguments.LongArgumentType.getLong;
+import static com.mojang.brigadier.arguments.LongArgumentType.longArg;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -48,10 +48,10 @@ public class PayCommand {
             .requires(cs -> cs.hasPermission(2))
             .then(literal("banker")
                 .then(argument("pos", BlockPosArgument.blockPos())
-                    .then(argument("amount", integer(0))
+                    .then(argument("amount", longArg(0))
                         .executes(ctx -> {
                             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
-                            int amount = getInteger(ctx, "amount");
+                            long amount = getLong(ctx, "amount");
                             BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
                             if (bankAct == null) {
@@ -66,7 +66,7 @@ public class PayCommand {
                         .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                             .executes(ctx -> {
                                 BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
-                                int amount = getInteger(ctx, "amount");
+                                long amount = getLong(ctx, "amount");
                                 Coin coin = ctx.getArgument("coin", Coin.class);
                                 BankAccountBehaviour bankAct = BlockEntityBehaviour.get(ctx.getSource().getLevel(), pos, BankAccountBehaviour.TYPE);
 
@@ -84,10 +84,10 @@ public class PayCommand {
                 )
             )
             .then(argument("player", GameProfileArgument.gameProfile())
-                .then(argument("amount", integer(0))
+                .then(argument("amount", longArg(0))
                     .executes(ctx -> {
                         Collection<GameProfile> accounts = GameProfileArgument.getGameProfiles(ctx, "player");
-                        int amount = getInteger(ctx, "amount");
+                        long amount = getLong(ctx, "amount");
 
                         int sum = 0;
                         for (GameProfile account : accounts) {
@@ -98,7 +98,7 @@ public class PayCommand {
                     .then(argument("coin", EnumArgument.enumArgument(Coin.class))
                         .executes(ctx -> {
                             Collection<GameProfile> accounts = GameProfileArgument.getGameProfiles(ctx, "player");
-                            int amount = getInteger(ctx, "amount");
+                            long amount = getLong(ctx, "amount");
                             Coin coin = ctx.getArgument("coin", Coin.class);
 
                             int sum = 0;
@@ -112,22 +112,22 @@ public class PayCommand {
             );
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, int amount) {
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, long amount) {
         return execute(ctx, account, type, create, name, amount, Coin.SPUR);
     }
 
-    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, int amount, Coin coin) {
-        int spurValue = coin.toSpurs(amount);
+    private static int execute(CommandContext<CommandSourceStack> ctx, UUID account, Type type, boolean create, String name, long amount, Coin coin) {
+        long spurValue = coin.toSpurs(amount);
         if (pay(account, spurValue, create, type)) {
-            ctx.getSource().sendSuccess(() -> Component.literal("Paid "+amount+" "+coin.getName(amount)+" to "+name+"."), true);
-            return spurValue;
+            ctx.getSource().sendSuccess(() -> Component.literal("Paid "+amount+" "+coin.getName((int)Math.min(amount, Integer.MAX_VALUE))+" to "+name+"."), true);
+            return 1;
         } else {
             ctx.getSource().sendFailure(Component.literal("Could not find account for "+name+"."));
             return 0;
         }
     }
 
-    private static boolean pay(UUID id, int amount, boolean create, Type type) {
+    private static boolean pay(UUID id, long amount, boolean create, Type type) {
         BankAccount account = create ? Numismatics.BANK.getOrCreateAccount(id, type) : Numismatics.BANK.getAccount(id);
         if (account == null) {
             return false;

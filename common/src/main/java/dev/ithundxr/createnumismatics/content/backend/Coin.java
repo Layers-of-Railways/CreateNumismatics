@@ -87,6 +87,15 @@ public enum Coin implements INamedIconOptions {
     }
 
     /**
+     * Convert this coin to spurs
+     * @param amount Number of this coin
+     * @return Number of spurs
+     */
+    public long toSpurs(long amount) {
+        return amount * value;
+    }
+
+    /**
      * Convert spurs to this coin
      * @param amount Number of spurs
      * @return Couple of (amount of this coin, remainder of spurs)
