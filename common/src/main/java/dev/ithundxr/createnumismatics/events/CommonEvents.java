@@ -23,6 +23,7 @@ import dev.ithundxr.createnumismatics.annotation.event.MultiLoaderEvent;
 import dev.ithundxr.createnumismatics.base.block.ConditionalBreak;
 import dev.ithundxr.createnumismatics.base.block.NotifyFailedBreak;
 import dev.ithundxr.createnumismatics.content.backend.BankAccount;
+import dev.ithundxr.createnumismatics.content.backend.LoginRewardManager;
 import dev.ithundxr.createnumismatics.content.backend.TrustedBlock;
 import dev.ithundxr.createnumismatics.content.backend.sub_authorization.SubAccount;
 import dev.ithundxr.createnumismatics.content.vendor.VendorBlock;
@@ -79,6 +80,7 @@ public class CommonEvents {
 
     @MultiLoaderEvent
     public static void onPlayerJoin(ServerPlayer player) {
+        LoginRewardManager.handleLogin(player);
         for (BankAccount account : Numismatics.BANK.accounts.values()) {
             NumismaticsPackets.PACKETS.sendTo(player, new BankAccountLabelPacket(account));
 

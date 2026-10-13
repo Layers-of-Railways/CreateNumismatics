@@ -35,6 +35,26 @@ public class CServer extends ConfigBase {
     public final ConfigInt starterCrowns = i(0, 0, "starter_crowns");
     public final ConfigInt starterSuns = i(0, 0, "starter_suns");
 
+    public final ConfigGroup loginRewards = group(2, "loginRewards", Comments.loginRewards);
+
+    public final ConfigBool enableDailyRewards = b(false, "enableDailyRewards", Comments.enableDailyRewards);
+    public final ConfigInt dailySpurs = i(0, 0, "daily_spurs");
+    public final ConfigInt dailyBevels = i(0, 0, "daily_bevels");
+    public final ConfigInt dailySprockets = i(0, 0, "daily_sprockets");
+    public final ConfigInt dailyCogs = i(0, 0, "daily_cogs");
+    public final ConfigInt dailyCrowns = i(0, 0, "daily_crowns");
+    public final ConfigInt dailySuns = i(0, 0, "daily_suns");
+
+    public final ConfigBool enableWeeklyRewards = b(false, "enableWeeklyRewards", Comments.enableWeeklyRewards);
+    public final ConfigInt weeklySpurs = i(0, 0, "weekly_spurs");
+    public final ConfigInt weeklyBevels = i(0, 0, "weekly_bevels");
+    public final ConfigInt weeklySprockets = i(0, 0, "weekly_sprockets");
+    public final ConfigInt weeklyCogs = i(0, 0, "weekly_cogs");
+    public final ConfigInt weeklyCrowns = i(0, 0, "weekly_crowns");
+    public final ConfigInt weeklySuns = i(0, 0, "weekly_suns");
+
+    public final ConfigBool notifyOnLoginReward = b(true, "notifyOnReward", Comments.notifyOnLoginReward);
+
     public final ConfigGroup computerCraft = group(0, "computerCraft", Comments.computerCraft);
 
     public final ConfigBool getSubAccountsCommand = b(false, "get_sub_accounts_command", Comments.getSubAccountsCommand);
@@ -53,6 +73,12 @@ public class CServer extends ConfigBase {
         static final String coins = "Coin settings";
 
         static final String starterCurrency = "How much of this coin type should players receive in their bank account on first join";;
+
+        static final String loginRewards = "Daily and weekly login rewards deposited to the player's bank account. Boundaries use UTC calendar days and ISO weeks starting Monday";
+
+        static final String enableDailyRewards = "Grant the daily reward once per UTC calendar day on login";
+        static final String enableWeeklyRewards = "Grant the weekly reward once per ISO week (Monday 00:00 UTC) on login";
+        static final String notifyOnLoginReward = "Send a chat message when a login reward is granted";
 
         static final String computerCraft = "Settings relating to ComputerCraft compatibility";
 
