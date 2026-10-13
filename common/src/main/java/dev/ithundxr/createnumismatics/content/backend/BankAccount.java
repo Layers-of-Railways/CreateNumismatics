@@ -95,6 +95,10 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     private int balance;
     private long additionalBalance;
 
+    private long lastDailyClaimDay = -1;
+    private int lastWeeklyClaimYear = -1;
+    private int lastWeeklyClaimWeek = -1;
+
     @Nullable
     private List<UUID> trustList; // only present on server
 
@@ -306,6 +310,9 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
         }
         account.balance = nbt.getInt("balance");
         account.additionalBalance = nbt.getLong("additionalBalance");
+        account.lastDailyClaimDay = nbt.getLong("LastDailyClaimDay");
+        account.lastWeeklyClaimYear = nbt.getInt("LastWeeklyClaimYear");
+        account.lastWeeklyClaimWeek = nbt.getInt("LastWeeklyClaimWeek");
         if (account.trustList != null && nbt.contains("TrustList")) {
             account.trustList.clear();
             account.trustList.addAll(NBTHelper.readCompoundList(
@@ -337,6 +344,10 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
             nbt.putLong("AdditionalBalance", additionalBalance);
         }
 
+        nbt.putLong("LastDailyClaimDay", lastDailyClaimDay);
+        nbt.putInt("LastWeeklyClaimYear", lastWeeklyClaimYear);
+        nbt.putInt("LastWeeklyClaimWeek", lastWeeklyClaimWeek);
+
         if (type.useTrustList && trustList != null) {
             trustList = trustList.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
             nbt.put("TrustList", NBTHelper.writeCompoundList(trustList, (uuid) -> {
@@ -359,6 +370,29 @@ public class BankAccount implements MenuProvider, IDeductable, IAuthorizationChe
     public void markDirty() {
         if (!clientSide)
             Numismatics.BANK.markBankDirty();
+    }
+
+    public long getLastDailyClaimDay() {
+        return lastDailyClaimDay;
+    }
+
+    public void setLastDailyClaimDay(long lastDailyClaimDay) {
+        this.lastDailyClaimDay = lastDailyClaimDay;
+        markDirty();
+    }
+
+    public int getLastWeeklyClaimYear() {
+        return lastWeeklyClaimYear;
+    }
+
+    public int getLastWeeklyClaimWeek() {
+        return lastWeeklyClaimWeek;
+    }
+
+    public void setLastWeeklyClaim(int year, int week) {
+        this.lastWeeklyClaimYear = year;
+        this.lastWeeklyClaimWeek = week;
+        markDirty();
     }
 
     @Nullable

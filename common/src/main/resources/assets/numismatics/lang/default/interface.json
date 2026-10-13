@@ -75,6 +75,9 @@
 
   "block.numismatics.trusted_block.attempt_break": "Hold %1$s to break this block",
 
+  "gui.numismatics.login_reward.daily": "Daily reward: %s",
+  "gui.numismatics.login_reward.weekly": "Weekly reward: %s",
+
   "error.numismatics.card.not_bound": "Card not bound",
   "error.numismatics.card.account_not_found": "Account not found",
   "error.numismatics.card.not_authorized": "Not authorized",

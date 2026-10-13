@@ -70,6 +70,8 @@
   "gui.numismatics.limit": "Spent %s of %s",
   "gui.numismatics.limit.monetary": "Spent %s %s, %s¤ of %s %s, %s¤",
   "gui.numismatics.limit.none": "No limit",
+  "gui.numismatics.login_reward.daily": "Daily reward: %s",
+  "gui.numismatics.login_reward.weekly": "Weekly reward: %s",
   "gui.numismatics.salepoint.cancel": "Cancel transaction",
   "gui.numismatics.salepoint.count": "Units",
   "gui.numismatics.salepoint.energy": "Energy",

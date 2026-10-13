@@ -70,6 +70,8 @@
   "gui.numismatics.limit": "%s ɟo %s ʇuǝdS",
   "gui.numismatics.limit.monetary": "¤%s '%s %s ɟo ¤%s '%s %s ʇuǝdS",
   "gui.numismatics.limit.none": "ʇıɯıן oN",
+  "gui.numismatics.login_reward.daily": "%s :pɹɐʍǝɹ ʎןıɐᗡ",
+  "gui.numismatics.login_reward.weekly": "%s :pɹɐʍǝɹ ʎןʞǝǝM",
   "gui.numismatics.salepoint.cancel": "uoıʇɔɐsuɐɹʇ ןǝɔuɐƆ",
   "gui.numismatics.salepoint.count": "sʇıu∩",
   "gui.numismatics.salepoint.energy": "ʎbɹǝuƎ",
