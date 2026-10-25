@@ -76,7 +76,8 @@ public final class SubAccount implements IAuthorizationChecker {
         this.label = label;
         markDirty();
 
-        CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(this));
+        if (!parentAccount.isClientSide())
+            CatnipServices.NETWORK.sendToAllClients(new BankAccountLabelPacket(this));
     }
 
     public @NotNull String getLabel() {
